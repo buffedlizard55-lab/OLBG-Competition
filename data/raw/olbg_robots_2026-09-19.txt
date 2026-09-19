@@ -1,0 +1,72 @@
+# OLBG robots.txt — captured 2026-09-19 (manual review, policy evidence)
+# Abridged: the full file additionally lists ~200 named bot user-agents
+# (WebVac, Stanford, Wget, psbot, ...) each with "Disallow: /". All rules
+# relevant to collection policy are shown verbatim below.
+Source: https://www.olbg.com/robots.txt
+Mode: manual_snapshot (site disallows /api/, /sports/, /tipster/, /premium/)
+
+User-agent: *
+Disallow: /olbg-tools/bet-calculator
+Disallow: /bkm-2023-04
+Disallow: /csn-2023-04
+Disallow: /free-2023-04
+Disallow: /csn-offers-2023-04
+
+Disallow: /free-worker.php
+Disallow: /bookmakers-worker.php
+Disallow: /casino-sites-worker
+Disallow: /slots-worker
+Disallow: /free-spins-worker
+Disallow: /casinosites.php
+Disallow: /pokersites.php
+Disallow: /forum/posting.php
+Disallow: /adverts.php
+Disallow: /bookies.php
+Disallow: /bookiesi.php
+Disallow: /setlocation.php
+Disallow: /blogs/click.php
+Disallow: /cache/
+Disallow: /blogs2/
+Disallow: /blogsb/
+Disallow: /tips/register.php
+Disallow: /members/login/index.php
+Disallow: /mods/
+Disallow: /sports_event_commenters.php
+Disallow: /tipster/
+Disallow: /premium/
+Disallow: /blogs/create.php
+Disallow: /blogs/post_delete.php
+Disallow: /blogs/post_edit.php
+Disallow: /blogs/post_lock.php
+Disallow: /blogs/alerts.php
+Disallow: /forum/memberlist.php
+Disallow: /forum/ucp.php
+Disallow: /maintenance-forum.php
+Disallow: /forum/viewforum.php?f=47
+Disallow: /sports/
+Disallow: /tips/hot
+Disallow: /forum/profile.php
+Disallow: /api/
+Disallow: /bookiecenter/api/
+Disallow: /events.php
+Disallow: /newbg/
+Disallow: /app/android.php
+Disallow: /*-test-no-index*
+Disallow: /test/*
+Disallow: /storage/*
+Allow: /storage/app/*
+Disallow: /storage/app/json_data/*
+Disallow: /search*
+Disallow: /content-views-count/*
+Disallow: /bookmakersreviews-views-count/*
+
+User-agent: Python-urllib
+Disallow: /
+
+User-agent: httplib
+Disallow: /
+
+Sitemap: https://www.olbg.com/sitemap.xml
+Sitemap: https://www.olbg.com/sitemap-ie.xml
+Sitemap: https://www.olbg.com/sitemap-hreflang.xml
+Sitemap: https://www.olbg.com/sitemap-last-news.xml

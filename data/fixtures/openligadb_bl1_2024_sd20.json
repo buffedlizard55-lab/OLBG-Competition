@@ -1,0 +1,173 @@
+[
+  {
+    "matchID": 72390,
+    "matchDateTime": "2025-01-31T20:30:00",
+    "timeZoneID": "W. Europe Standard Time",
+    "leagueId": 4741,
+    "leagueName": "1. Fu\u00dfball-Bundesliga 2024/2025",
+    "leagueSeason": 2024,
+    "leagueShortcut": "bl1",
+    "matchDateTimeUTC": "2025-01-31T19:30:00Z",
+    "group": {"groupName": "20. Spieltag", "groupOrderID": 20, "groupID": 45136},
+    "team1": {"teamId": 134, "teamName": "SV Werder Bremen", "shortName": "Bremen"},
+    "team2": {"teamId": 81, "teamName": "1. FSV Mainz 05", "shortName": "Mainz"},
+    "lastUpdateDateTime": "2025-01-31T22:31:42.29",
+    "matchIsFinished": true,
+    "matchResults": [
+      {"resultID": 114346, "resultName": "Halbzeitergebnis", "pointsTeam1": 1, "pointsTeam2": 0, "resultOrderID": 1, "resultTypeID": 1, "resultTypeKind": "HalfTime", "resultDescription": "Ergebnis nach Ende der ersten Halbzeit"},
+      {"resultID": 114347, "resultName": "Endergebnis", "pointsTeam1": 1, "pointsTeam2": 0, "resultOrderID": 2, "resultTypeID": 2, "resultTypeKind": "After90Minutes", "resultDescription": "Ergebnis nach Ende der offiziellen Spielzeit"}
+    ]
+  },
+  {
+    "matchID": 72386,
+    "matchDateTime": "2025-02-01T15:30:00",
+    "timeZoneID": "W. Europe Standard Time",
+    "leagueId": 4741,
+    "leagueName": "1. Fu\u00dfball-Bundesliga 2024/2025",
+    "leagueSeason": 2024,
+    "leagueShortcut": "bl1",
+    "matchDateTimeUTC": "2025-02-01T14:30:00Z",
+    "group": {"groupName": "20. Spieltag", "groupOrderID": 20, "groupID": 45136},
+    "team1": {"teamId": 16, "teamName": "VfB Stuttgart", "shortName": "Stuttgart"},
+    "team2": {"teamId": 87, "teamName": "Borussia M\u00f6nchengladbach", "shortName": "Gladbach"},
+    "lastUpdateDateTime": "2025-02-01T17:24:22.33",
+    "matchIsFinished": true,
+    "matchResults": [
+      {"resultID": 114352, "resultName": "Halbzeitergebnis", "pointsTeam1": 0, "pointsTeam2": 1, "resultOrderID": 1, "resultTypeID": 1, "resultTypeKind": "HalfTime", "resultDescription": "Ergebnis nach Ende der ersten Halbzeit"},
+      {"resultID": 114353, "resultName": "Endergebnis", "pointsTeam1": 1, "pointsTeam2": 2, "resultOrderID": 2, "resultTypeID": 2, "resultTypeKind": "After90Minutes", "resultDescription": "Ergebnis nach Ende der offiziellen Spielzeit"}
+    ]
+  },
+  {
+    "matchID": 72387,
+    "matchDateTime": "2025-02-01T15:30:00",
+    "timeZoneID": "W. Europe Standard Time",
+    "leagueId": 4741,
+    "leagueName": "1. Fu\u00dfball-Bundesliga 2024/2025",
+    "leagueSeason": 2024,
+    "leagueShortcut": "bl1",
+    "matchDateTimeUTC": "2025-02-01T14:30:00Z",
+    "group": {"groupName": "20. Spieltag", "groupOrderID": 20, "groupID": 45136},
+    "team1": {"teamId": 40, "teamName": "FC Bayern M\u00fcnchen", "shortName": "Bayern"},
+    "team2": {"teamId": 104, "teamName": "Holstein Kiel", "shortName": "Kiel"},
+    "lastUpdateDateTime": "2025-02-01T17:23:25.787",
+    "matchIsFinished": true,
+    "matchResults": [
+      {"resultID": 114354, "resultName": "Halbzeitergebnis", "pointsTeam1": 2, "pointsTeam2": 0, "resultOrderID": 1, "resultTypeID": 1, "resultTypeKind": "HalfTime", "resultDescription": "Ergebnis nach Ende der ersten Halbzeit"},
+      {"resultID": 114355, "resultName": "Endergebnis", "pointsTeam1": 4, "pointsTeam2": 3, "resultOrderID": 2, "resultTypeID": 2, "resultTypeKind": "After90Minutes", "resultDescription": "Ergebnis nach Ende der offiziellen Spielzeit"}
+    ]
+  },
+  {
+    "matchID": 72389,
+    "matchDateTime": "2025-02-01T15:30:00",
+    "timeZoneID": "W. Europe Standard Time",
+    "leagueId": 4741,
+    "leagueName": "1. Fu\u00dfball-Bundesliga 2024/2025",
+    "leagueSeason": 2024,
+    "leagueShortcut": "bl1",
+    "matchDateTimeUTC": "2025-02-01T14:30:00Z",
+    "group": {"groupName": "20. Spieltag", "groupOrderID": 20, "groupID": 45136},
+    "team1": {"teamId": 199, "teamName": "1. FC Heidenheim 1846", "shortName": "Heidenheim"},
+    "team2": {"teamId": 7, "teamName": "Borussia Dortmund", "shortName": "Dortmund"},
+    "lastUpdateDateTime": "2025-02-01T17:23:51.01",
+    "matchIsFinished": true,
+    "matchResults": [
+      {"resultID": 114356, "resultName": "Halbzeitergebnis", "pointsTeam1": 0, "pointsTeam2": 1, "resultOrderID": 1, "resultTypeID": 1, "resultTypeKind": "HalfTime", "resultDescription": "Ergebnis nach Ende der ersten Halbzeit"},
+      {"resultID": 114357, "resultName": "Endergebnis", "pointsTeam1": 1, "pointsTeam2": 2, "resultOrderID": 2, "resultTypeID": 2, "resultTypeKind": "After90Minutes", "resultDescription": "Ergebnis nach Ende der offiziellen Spielzeit"}
+    ]
+  },
+  {
+    "matchID": 72392,
+    "matchDateTime": "2025-02-01T15:30:00",
+    "timeZoneID": "W. Europe Standard Time",
+    "leagueId": 4741,
+    "leagueName": "1. Fu\u00dfball-Bundesliga 2024/2025",
+    "leagueSeason": 2024,
+    "leagueShortcut": "bl1",
+    "matchDateTimeUTC": "2025-02-01T14:30:00Z",
+    "group": {"groupName": "20. Spieltag", "groupOrderID": 20, "groupID": 45136},
+    "team1": {"teamId": 129, "teamName": "VfL Bochum", "shortName": "Bochum"},
+    "team2": {"teamId": 112, "teamName": "SC Freiburg", "shortName": "Freiburg"},
+    "lastUpdateDateTime": "2025-02-01T17:23:41.21",
+    "matchIsFinished": true,
+    "matchResults": [
+      {"resultID": 114358, "resultName": "Halbzeitergebnis", "pointsTeam1": 0, "pointsTeam2": 1, "resultOrderID": 1, "resultTypeID": 1, "resultTypeKind": "HalfTime", "resultDescription": "Ergebnis nach Ende der ersten Halbzeit"},
+      {"resultID": 114359, "resultName": "Endergebnis", "pointsTeam1": 0, "pointsTeam2": 1, "resultOrderID": 2, "resultTypeID": 2, "resultTypeKind": "After90Minutes", "resultDescription": "Ergebnis nach Ende der offiziellen Spielzeit"}
+    ]
+  },
+  {
+    "matchID": 72393,
+    "matchDateTime": "2025-02-01T15:30:00",
+    "timeZoneID": "W. Europe Standard Time",
+    "leagueId": 4741,
+    "leagueName": "1. Fu\u00dfball-Bundesliga 2024/2025",
+    "leagueSeason": 2024,
+    "leagueShortcut": "bl1",
+    "matchDateTimeUTC": "2025-02-01T14:30:00Z",
+    "group": {"groupName": "20. Spieltag", "groupOrderID": 20, "groupID": 45136},
+    "team1": {"teamId": 98, "teamName": "FC St. Pauli", "shortName": "St. Pauli"},
+    "team2": {"teamId": 95, "teamName": "FC Augsburg", "shortName": "Augsburg"},
+    "lastUpdateDateTime": "2025-02-01T17:26:53.303",
+    "matchIsFinished": true,
+    "matchResults": [
+      {"resultID": 114360, "resultName": "Halbzeitergebnis", "pointsTeam1": 1, "pointsTeam2": 0, "resultOrderID": 1, "resultTypeID": 1, "resultTypeKind": "HalfTime", "resultDescription": "Ergebnis nach Ende der ersten Halbzeit"},
+      {"resultID": 114361, "resultName": "Endergebnis", "pointsTeam1": 1, "pointsTeam2": 1, "resultOrderID": 2, "resultTypeID": 2, "resultTypeKind": "After90Minutes", "resultDescription": "Ergebnis nach Ende der offiziellen Spielzeit"}
+    ]
+  },
+  {
+    "matchID": 72391,
+    "matchDateTime": "2025-02-01T18:30:00",
+    "timeZoneID": "W. Europe Standard Time",
+    "leagueId": 4741,
+    "leagueName": "1. Fu\u00dfball-Bundesliga 2024/2025",
+    "leagueSeason": 2024,
+    "leagueShortcut": "bl1",
+    "matchDateTimeUTC": "2025-02-01T17:30:00Z",
+    "group": {"groupName": "20. Spieltag", "groupOrderID": 20, "groupID": 45136},
+    "team1": {"teamId": 80, "teamName": "1. FC Union Berlin", "shortName": "Union Berlin"},
+    "team2": {"teamId": 1635, "teamName": "RB Leipzig", "shortName": "Leipzig"},
+    "lastUpdateDateTime": "2025-02-01T20:26:55.187",
+    "matchIsFinished": true,
+    "matchResults": [
+      {"resultID": 114368, "resultName": "Halbzeitergebnis", "pointsTeam1": 0, "pointsTeam2": 0, "resultOrderID": 1, "resultTypeID": 1, "resultTypeKind": "HalfTime", "resultDescription": "Ergebnis nach Ende der ersten Halbzeit"},
+      {"resultID": 114369, "resultName": "Endergebnis", "pointsTeam1": 0, "pointsTeam2": 0, "resultOrderID": 2, "resultTypeID": 2, "resultTypeKind": "After90Minutes", "resultDescription": "Ergebnis nach Ende der offiziellen Spielzeit"}
+    ]
+  },
+  {
+    "matchID": 72388,
+    "matchDateTime": "2025-02-02T15:30:00",
+    "timeZoneID": "W. Europe Standard Time",
+    "leagueId": 4741,
+    "leagueName": "1. Fu\u00dfball-Bundesliga 2024/2025",
+    "leagueSeason": 2024,
+    "leagueShortcut": "bl1",
+    "matchDateTimeUTC": "2025-02-02T14:30:00Z",
+    "group": {"groupName": "20. Spieltag", "groupOrderID": 20, "groupID": 45136},
+    "team1": {"teamId": 91, "teamName": "Eintracht Frankfurt", "shortName": "Frankfurt"},
+    "team2": {"teamId": 131, "teamName": "VfL Wolfsburg", "shortName": "Wolfsburg"},
+    "lastUpdateDateTime": "2025-02-02T17:25:28.807",
+    "matchIsFinished": true,
+    "matchResults": [
+      {"resultID": 114390, "resultName": "Halbzeitergebnis", "pointsTeam1": 0, "pointsTeam2": 0, "resultOrderID": 1, "resultTypeID": 1, "resultTypeKind": "HalfTime", "resultDescription": "Ergebnis nach Ende der ersten Halbzeit"},
+      {"resultID": 114391, "resultName": "Endergebnis", "pointsTeam1": 1, "pointsTeam2": 1, "resultOrderID": 2, "resultTypeID": 2, "resultTypeKind": "After90Minutes", "resultDescription": "Ergebnis nach Ende der offiziellen Spielzeit"}
+    ]
+  },
+  {
+    "matchID": 72385,
+    "matchDateTime": "2025-02-02T17:30:00",
+    "timeZoneID": "W. Europe Standard Time",
+    "leagueId": 4741,
+    "leagueName": "1. Fu\u00dfball-Bundesliga 2024/2025",
+    "leagueSeason": 2024,
+    "leagueShortcut": "bl1",
+    "matchDateTimeUTC": "2025-02-02T16:30:00Z",
+    "group": {"groupName": "20. Spieltag", "groupOrderID": 20, "groupID": 45136},
+    "team1": {"teamId": 6, "teamName": "Bayer 04 Leverkusen", "shortName": "Leverkusen"},
+    "team2": {"teamId": 175, "teamName": "TSG Hoffenheim", "shortName": "Hoffenheim"},
+    "lastUpdateDateTime": "2025-02-02T19:27:07.597",
+    "matchIsFinished": true,
+    "matchResults": [
+      {"resultID": 114392, "resultName": "Halbzeitergebnis", "pointsTeam1": 2, "pointsTeam2": 0, "resultOrderID": 1, "resultTypeID": 1, "resultTypeKind": "HalfTime", "resultDescription": "Ergebnis nach Ende der ersten Halbzeit"},
+      {"resultID": 114393, "resultName": "Endergebnis", "pointsTeam1": 3, "pointsTeam2": 1, "resultOrderID": 2, "resultTypeID": 2, "resultTypeKind": "After90Minutes", "resultDescription": "Ergebnis nach Ende der offiziellen Spielzeit"}
+    ]
+  }
+]
