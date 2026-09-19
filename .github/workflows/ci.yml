@@ -1,0 +1,25 @@
+name: Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install test dependencies
+        run: python -m pip install --upgrade pip pytest
+      - name: Run test suite (offline - committed fixtures only)
+        run: python -m pytest -v
+      - name: Re-verify fixture integrity + dual-source agreement
+        run: |
+          python -m northstar.cli run-pipeline --fresh
+          python -m northstar.cli verify

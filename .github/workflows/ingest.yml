@@ -1,0 +1,31 @@
+name: Full-season source verification (OpenLigaDB)
+
+# Verifies the OpenLigaDB result paths at full-season scale in CI (the only
+# source whose license permits automated API collection). Runs in a temporary
+# in-memory store and uploads a report artifact - it never commits data and
+# never touches football-data.co.uk (their policy forbids automated
+# retrieval). This is the scale-up verification harness for the
+# results_path_available sports (ice hockey, darts).
+
+on:
+  schedule:
+    - cron: "0 6 * * 1"  # Mondays 06:00 UTC
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Run full-season ingest verification
+        run: python -m northstar.cli ingest-fullseason --out data/fullseason-report.json
+      - name: Upload verification report
+        uses: actions/upload-artifact@v4
+        with:
+          name: fullseason-report
+          path: data/fullseason-report.json

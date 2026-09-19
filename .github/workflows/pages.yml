@@ -15,20 +15,39 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Build site data (offline pipeline on committed fixtures)
+        run: python -m northstar.cli run-pipeline --fresh
+      - name: Verify fixtures
+        run: python -m northstar.cli verify
+      - name: Assemble site artifact
+        run: |
+          mkdir -p site-dist/site-data
+          cp index.html app.js styles.css site-dist/
+          cp site-data/site.json site-dist/site-data/
+          cp README.md site-dist/
+          mkdir -p site-dist/docs
+          cp docs/*.md site-dist/docs/
+      - name: Upload site artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site-dist
+
   deploy:
+    needs: build
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Configure Pages
-        uses: actions/configure-pages@v5
-      - name: Upload static site
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: .
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
