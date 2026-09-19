@@ -87,12 +87,13 @@
                 <div class="empty-state compact"><div class="empty-icon">↗</div><h3>Nothing ranked yet</h3><p>Rank only after an automated result match and settlement audit. The empty table is intentional.</p><button class="outline-button" type="button" data-view-target="leaderboard">Review rules <span>→</span></button></div>
               </section>
               <section class="panel integrity-panel">
-                <div class="panel-heading"><div><p class="eyebrow">Integrity monitor</p><h2>Gate status</h2></div><span class="status-badge review">3 ready · 1 review</span></div>
+                <div class="panel-heading"><div><p class="eyebrow">Integrity monitor</p><h2>Gate status</h2></div><span class="status-badge review">3 ready · 2 review</span></div>
                 <ul class="check-list">
                   <li><span class="check">✓</span><div><strong>Source links</strong><small>Official / organizer source attached</small></div><span class="ready">Ready</span></li>
                   <li><span class="check">✓</span><div><strong>Paper-only accounting</strong><small>No cash, no live execution</small></div><span class="ready">Ready</span></li>
                   <li><span class="check">✓</span><div><strong>Uncertainty labels</strong><small>Pending is not a loss</small></div><span class="ready">Ready</span></li>
                   <li><span class="check warning-check">!</span><div><strong>Darts source mismatch</strong><small>List showed an event; direct page returned no tips</small></div><span class="ready review-text">Review</span></li>
+                  <li><span class="check warning-check">!</span><div><strong>Consensus count drift</strong><small>Venezia list 35/40; event page 36/41</small></div><span class="ready review-text">Review</span></li>
                 </ul>
               </section>
             </div>
@@ -120,7 +121,7 @@
 
           <section class="view" data-view-panel="tips" aria-labelledby="tips-title">
             <div class="page-intro"><p class="eyebrow green">Tipster intelligence</p><h1 id="tips-title">Tip desk</h1><p>Upcoming and recently published selections, kept separate from settlement until official outcomes are available.</p></div>
-            <div class="notice-banner amber-banner"><span class="notice-symbol">!</span><div><strong>Source preview, not a live feed.</strong><p>The four records below were captured from OLBG's public pages on 19 September 2026. One is flagged for review because its direct event page returned no tips; every card retains its review link and snapshot label.</p></div><a href="https://www.olbg.com/betting-tips" target="_blank" rel="noreferrer">Open OLBG tips ↗</a></div>
+            <div class="notice-banner amber-banner"><span class="notice-symbol">!</span><div><strong>Source preview, not a live feed.</strong><p>The four records below were captured from OLBG's public pages on 19 September 2026. Two source observations are flagged for review: one direct event page returned no tips, and one consensus count moved between the list and detail page; every card retains its review link and snapshot label.</p></div><a href="https://www.olbg.com/betting-tips" target="_blank" rel="noreferrer">Open OLBG tips ↗</a></div>
             <div class="toolbar"><div class="search-wrap"><span>⌕</span><input id="tip-search" type="search" placeholder="Search event, market, or selection" /></div><div class="filter-group"><label for="tip-sport">Sport</label><select id="tip-sport"><option>All sports</option><option>Football</option><option>Darts</option></select></div><div class="filter-group"><label for="tip-state">State</label><select id="tip-state"><option>All states</option><option>Upcoming</option><option>Review</option><option>Expired</option></select></div></div>
             <div class="tip-list" id="tip-list"></div>
             <div class="section-heading sources-subhead"><div><p class="eyebrow">No hidden edits</p><h2>What each tip record preserves</h2></div></div>

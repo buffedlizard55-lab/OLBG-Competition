@@ -20,7 +20,8 @@ const tipPreviews = [
     consensus: "36 / 41",
     percentage: "88%",
     state: "Upcoming",
-    experts: "OLBG event page", 
+    experts: "OLBG event page",
+    flag: "Count drift: list 35/40; event 36/41",
     url: "https://www.olbg.com/betting-tips/Football/European_Competitions/Italy_Serie_A/Venezia_v_Lazio/1?event_id=2039716"
   },
   {
@@ -60,6 +61,7 @@ const tipPreviews = [
     percentage: "—",
     state: "Review",
     experts: "Direct page returned no tips",
+    flag: "List showed tip; direct event page returned no tips",
     url: "https://www.olbg.com/betting-tips/Darts/All_Darts/All_Events/Gerwyn_Price_vs_Jim_Long/15?event_id=31644"
   }
 ];
@@ -129,6 +131,7 @@ function renderPreviewCards(targetId, records = tipPreviews) {
         <div class="tip-consensus">${escapeHtml(tip.consensus)}<br /><span>${escapeHtml(tip.percentage)} tips</span></div>
       </div>
       <a class="tip-source" href="${tip.url}" target="_blank" rel="noreferrer">View source · ${escapeHtml(tip.experts)} ↗</a>
+      ${tip.flag ? `<span class="tip-flag">⚑ ${escapeHtml(tip.flag)}</span>` : ""}
     </article>
   `).join("");
 }
@@ -149,7 +152,7 @@ function renderTipRows() {
       <div class="row-event"><strong>${escapeHtml(tip.event)}</strong><span>${escapeHtml(tip.league)} · ${escapeHtml(tip.time)}</span></div>
       <div class="row-market"><span>${escapeHtml(tip.market)}</span><strong class="row-pick">${escapeHtml(tip.pick)}</strong></div>
       <div class="row-consensus">${escapeHtml(tip.consensus)}<small>${escapeHtml(tip.percentage)} community split</small></div>
-      <div class="row-action"><a href="${tip.url}" target="_blank" rel="noreferrer">Review source ↗</a><small>Captured ${snapshotDate}</small></div>
+      <div class="row-action"><a href="${tip.url}" target="_blank" rel="noreferrer">Review source ↗</a><small>${tip.flag ? `⚑ ${escapeHtml(tip.flag)}` : `Captured ${snapshotDate}`}</small></div>
     </article>
   `).join("") : `<div class="empty-state"><div class="empty-icon">⌕</div><h3>No source preview matches</h3><p>Try a different sport, state, or search term.</p></div>`;
 }

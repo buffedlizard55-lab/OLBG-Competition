@@ -28,7 +28,7 @@ The app is designed for GitHub Pages and uses relative local assets. External so
 
 ## Research snapshot and source policy
 
-The four Tip desk records are a clearly labelled **OLBG public-page snapshot captured on 19 September 2026**. One Darts record is intentionally flagged because the list page showed it while its direct event page subsequently returned “No tips found.” They are not a claim that this repository has a live OLBG integration, and they are not counted in Northstar PnL.
+The four Tip desk records are a clearly labelled **OLBG public-page snapshot captured on 19 September 2026**. Two source observations are intentionally flagged: the list page showed the Darts event while its direct event page subsequently returned “No tips found,” and the Venezia consensus changed from 35/40 on the list to 36/41 on the event page during capture. They are not a claim that this repository has a live OLBG integration, and they are not counted in Northstar PnL.
 
 The primary source pages manually reviewed for the interface are:
 
