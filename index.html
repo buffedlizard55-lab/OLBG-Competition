@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#07121f" />
+    <meta name="description" content="A source-first paper trading and sports tipster research dashboard." />
+    <title>Northstar // OLBG Competition Lab</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Primary navigation">
+        <div class="brand-block">
+          <div class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></div>
+          <div>
+            <p class="eyebrow">Northstar</p>
+            <p class="brand-name">Competition Lab</p>
+          </div>
+        </div>
+
+        <div class="environment-pill"><span class="status-dot amber"></span> Paper environment</div>
+
+        <nav class="main-nav" id="main-nav">
+          <p class="nav-label">Workspace</p>
+          <button class="nav-item active" data-view="overview" type="button"><span class="nav-icon">⌂</span> Overview</button>
+          <button class="nav-item" data-view="leaderboard" type="button"><span class="nav-icon">↗</span> Leaderboard <span class="nav-count">0</span></button>
+          <button class="nav-item" data-view="tips" type="button"><span class="nav-icon">◎</span> Tip desk <span class="nav-count accent">4</span></button>
+          <button class="nav-item" data-view="strategies" type="button"><span class="nav-icon">⌁</span> Strategy lab</button>
+          <button class="nav-item" data-view="sources" type="button"><span class="nav-icon">⌘</span> Source registry</button>
+          <p class="nav-label second">Read first</p>
+          <a class="nav-item nav-link" href="README.md"><span class="nav-icon">▤</span> Project brief <span class="external">↗</span></a>
+          <a class="nav-item nav-link" href="docs/data-contract.md"><span class="nav-icon">◈</span> Data contract <span class="external">↗</span></a>
+        </nav>
+
+        <div class="sidebar-foot">
+          <div class="mini-shield">✓</div>
+          <div>
+            <strong>Source-first</strong>
+            <p>Unverified data never enters PnL.</p>
+          </div>
+        </div>
+      </aside>
+
+      <main class="main-content">
+        <header class="topbar">
+          <div class="breadcrumb"><span>Research workspace</span><span class="slash">/</span><strong id="page-name">Overview</strong></div>
+          <div class="topbar-actions">
+            <span class="last-sync"><span class="status-dot blue"></span> Static research build · 19 Sep 2026</span>
+            <a class="icon-button" href="https://github.com/buffedlizard55-lab/OLBG-Competition" target="_blank" rel="noreferrer" aria-label="Open GitHub repository">↗</a>
+          </div>
+        </header>
+
+        <div id="view-container">
+          <section class="view active" data-view-panel="overview" aria-labelledby="overview-title">
+            <div class="hero-row">
+              <div>
+                <p class="eyebrow green">Verified-source paper trading</p>
+                <h1 id="overview-title">Make every tip<br /><em>auditable.</em></h1>
+                <p class="hero-copy">A calm research desk for collecting tipster selections, testing sport-specific hypotheses, and tracking paper PnL without pretending uncertain data is fact.</p>
+              </div>
+              <div class="hero-callout">
+                <div class="callout-icon">✦</div>
+                <div>
+                  <p class="callout-label">The operating rule</p>
+                  <p>Every selection needs a timestamped source, recorded odds, official result, and settlement check before it can affect the table.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="metric-grid">
+              <article class="metric-card"><div class="metric-top"><span>Local entrants</span><span class="metric-icon">↗</span></div><strong>0</strong><p>Awaiting first verified submission</p></article>
+              <article class="metric-card"><div class="metric-top"><span>Source preview</span><span class="metric-icon green-text">◎</span></div><strong>4</strong><p>OLBG tips captured for review</p></article>
+              <article class="metric-card"><div class="metric-top"><span>Paper PnL</span><span class="metric-icon">∅</span></div><strong>—</strong><p>No locally settled tips yet</p></article>
+              <article class="metric-card"><div class="metric-top"><span>Sport coverage</span><span class="metric-icon green-text">✦</span></div><strong>27</strong><p>Sport and event families mapped</p></article>
+            </div>
+
+            <div class="section-heading"><div><p class="eyebrow">Live research queue</p><h2>Recent source previews</h2></div><button class="text-button" type="button" data-view-target="tips">Open tip desk <span>→</span></button></div>
+            <div class="tip-preview-grid" id="overview-tips"></div>
+
+            <div class="lower-grid">
+              <section class="panel leaderboard-panel">
+                <div class="panel-heading"><div><p class="eyebrow">Competition</p><h2>Paper leaderboard</h2></div><span class="badge muted">No ranked entrants</span></div>
+                <div class="empty-state compact"><div class="empty-icon">↗</div><h3>Nothing ranked yet</h3><p>Rank only after an automated result match and settlement audit. The empty table is intentional.</p><button class="outline-button" type="button" data-view-target="leaderboard">Review rules <span>→</span></button></div>
+              </section>
+              <section class="panel integrity-panel">
+                <div class="panel-heading"><div><p class="eyebrow">Integrity monitor</p><h2>Gate status</h2></div><span class="status-badge review">3 ready · 1 review</span></div>
+                <ul class="check-list">
+                  <li><span class="check">✓</span><div><strong>Source links</strong><small>Official / organizer source attached</small></div><span class="ready">Ready</span></li>
+                  <li><span class="check">✓</span><div><strong>Paper-only accounting</strong><small>No cash, no live execution</small></div><span class="ready">Ready</span></li>
+                  <li><span class="check">✓</span><div><strong>Uncertainty labels</strong><small>Pending is not a loss</small></div><span class="ready">Ready</span></li>
+                  <li><span class="check warning-check">!</span><div><strong>Darts source mismatch</strong><small>List showed an event; direct page returned no tips</small></div><span class="ready review-text">Review</span></li>
+                </ul>
+              </section>
+            </div>
+
+            <section class="how-section">
+              <div class="section-heading"><div><p class="eyebrow">Built for review</p><h2>From tip to trusted result</h2></div><span class="mono-note">no shortcuts / no invented outcomes</span></div>
+              <div class="how-grid">
+                <article class="how-card"><span class="step">01</span><h3>Collect</h3><p>Capture a tip with its original URL, event ID, publication time, market, selection, odds, and tipster identity.</p></article>
+                <article class="how-card"><span class="step">02</span><h3>Verify</h3><p>Match the event to an official competition result. Conflicts, voids, missing odds, and late edits go to review.</p></article>
+                <article class="how-card"><span class="step">03</span><h3>Settle</h3><p>Calculate level-stakes PnL only after the result is verified. Keep a permanent provenance trail for every number.</p></article>
+              </div>
+            </section>
+          </section>
+
+          <section class="view" data-view-panel="leaderboard" aria-labelledby="leaderboard-title">
+            <div class="page-intro"><p class="eyebrow green">Competition board</p><h1 id="leaderboard-title">Paper leaderboard</h1><p>Transparent rankings for verified paper performance. This first build deliberately shows no fabricated entrants or PnL.</p></div>
+            <div class="notice-banner"><span class="notice-symbol">i</span><div><strong>Ranking is locked until data clears every gate.</strong><p>The production collector needs to ingest tips and official results before a competitor can appear here. A pending or unverified outcome never counts as a loss.</p></div><a href="docs/data-contract.md">Read settlement rules ↗</a></div>
+            <div class="toolbar"><div class="filter-group"><label for="leaderboard-sport">Sport</label><select id="leaderboard-sport"><option>All sports</option><option>Football</option><option>Horse Racing</option><option>Tennis</option><option>Basketball</option></select></div><div class="filter-group"><label for="leaderboard-period">Window</label><select id="leaderboard-period"><option>Current month</option><option>Last 30 days</option><option>Last 6 months</option><option>Last 12 months</option></select></div><span class="toolbar-note">Level stake: 10 units · simulated only</span></div>
+            <div class="panel table-panel">
+              <div class="table-heading"><div><h2>Northstar entrants</h2><p>Sorted by verified level-stakes profit</p></div><span class="badge muted">0 verified</span></div>
+              <div class="empty-table"><div class="empty-icon large">∅</div><h3>The board is ready for its first clean record</h3><p>When a strategy or tipster is added through the automated ingestion layer, this table will show rank, verified tips, strike rate, ROI, PnL, and anomaly flags.</p></div>
+            </div>
+            <div class="two-col-note"><section class="panel"><div class="panel-heading"><div><p class="eyebrow">Benchmark context</p><h2>OLBG source snapshot</h2></div><span class="badge source">External</span></div><p class="panel-copy">These figures are displayed only as a reference to the source site's public presentation. They are not Northstar entrants and are not imported into our PnL.</p><a class="source-link" href="https://www.olbg.com/best-tipsters" target="_blank" rel="noreferrer">Review OLBG Best Tipsters ↗</a></section><section class="panel"><div class="panel-heading"><div><p class="eyebrow">Metric definitions</p><h2>What the board will show</h2></div></div><div class="definition-list"><div><strong>ROI</strong><span>verified PnL ÷ total stake</span></div><div><strong>Strike rate</strong><span>wins ÷ settled tips</span></div><div><strong>Max drawdown</strong><span>peak-to-trough verified PnL</span></div></div></section></div>
+          </section>
+
+          <section class="view" data-view-panel="tips" aria-labelledby="tips-title">
+            <div class="page-intro"><p class="eyebrow green">Tipster intelligence</p><h1 id="tips-title">Tip desk</h1><p>Upcoming and recently published selections, kept separate from settlement until official outcomes are available.</p></div>
+            <div class="notice-banner amber-banner"><span class="notice-symbol">!</span><div><strong>Source preview, not a live feed.</strong><p>The four records below were captured from OLBG's public pages on 19 September 2026. One is flagged for review because its direct event page returned no tips; every card retains its review link and snapshot label.</p></div><a href="https://www.olbg.com/betting-tips" target="_blank" rel="noreferrer">Open OLBG tips ↗</a></div>
+            <div class="toolbar"><div class="search-wrap"><span>⌕</span><input id="tip-search" type="search" placeholder="Search event, market, or selection" /></div><div class="filter-group"><label for="tip-sport">Sport</label><select id="tip-sport"><option>All sports</option><option>Football</option><option>Darts</option></select></div><div class="filter-group"><label for="tip-state">State</label><select id="tip-state"><option>All states</option><option>Upcoming</option><option>Review</option><option>Expired</option></select></div></div>
+            <div class="tip-list" id="tip-list"></div>
+            <div class="section-heading sources-subhead"><div><p class="eyebrow">No hidden edits</p><h2>What each tip record preserves</h2></div></div>
+            <div class="preserve-grid"><div><span class="preserve-icon">⌁</span><strong>Original selection</strong><p>What was tipped, exactly as published.</p></div><div><span class="preserve-icon">◷</span><strong>Publication context</strong><p>Snapshot time and event timing stay attached.</p></div><div><span class="preserve-icon">⌖</span><strong>Result source</strong><p>Outcome links are independent of the tip source.</p></div><div><span class="preserve-icon">⚑</span><strong>Anomaly flag</strong><p>Conflicts are visible, never silently resolved.</p></div></div>
+          </section>
+
+          <section class="view" data-view-panel="strategies" aria-labelledby="strategies-title">
+            <div class="page-intro"><p class="eyebrow green">Research and testing</p><h1 id="strategies-title">Strategy lab</h1><p>Sport-specific hypotheses with explicit data gates. A design is not a proven edge: every card stays untested until official outcomes and time-stamped odds are available.</p></div>
+            <div class="strategy-topline"><div class="strategy-stat"><strong>27</strong><span>sport families mapped</span></div><div class="strategy-stat"><strong>16</strong><span>research hypotheses</span></div><div class="strategy-stat warning"><strong>0</strong><span>strategies with verified backtest</span></div><div class="strategy-stat"><strong>0</strong><span>forward-test PnL</span></div></div>
+            <div class="notice-banner"><span class="notice-symbol">i</span><div><strong>Why the test count is zero.</strong><p>This static GitHub Pages build has no historical odds archive or official-result connectors. It records the methodology and readiness gates without inventing results. See the source registry for the next data work.</p></div><a href="docs/data-contract.md">View data contract ↗</a></div>
+            <div class="strategy-controls"><div class="filter-pills" id="strategy-filters"><button class="pill active" data-strategy-filter="All">All</button><button class="pill" data-strategy-filter="Ready to source">Ready to source</button><button class="pill" data-strategy-filter="Blocked">Blocked</button></div><span class="mono-note">hypothesis registry / version 0.1</span></div>
+            <div class="strategy-grid" id="strategy-grid"></div>
+          </section>
+
+          <section class="view" data-view-panel="sources" aria-labelledby="sources-title">
+            <div class="page-intro"><p class="eyebrow green">Chain of custody</p><h1 id="sources-title">Source registry</h1><p>Coverage is mapped to the governing body, league, competition organizer, or the original tip source. Verify a line manually before trusting it.</p></div>
+            <div class="source-summary"><div><span class="summary-number">27</span><span>sport families</span></div><div><span class="summary-number">22</span><span>primary links</span></div><div><span class="summary-number">5</span><span>caveat lanes</span></div><div><span class="summary-number">0</span><span>verified result ingests</span></div></div>
+            <div class="source-legend"><span><i class="legend-dot green-dot"></i> Primary / organizer source</span><span><i class="legend-dot amber-dot"></i> Coverage or jurisdiction caveat</span><span><i class="legend-dot grey-dot"></i> Not a live connection</span></div>
+            <div class="source-table-wrap"><table class="source-table"><thead><tr><th>Sport / family</th><th>Primary result source</th><th>What it can verify</th><th>State</th></tr></thead><tbody id="source-table-body"></tbody></table></div>
+            <div class="source-footnote"><strong>Important:</strong> “Primary source” means the link is the official governing body, league, or event organizer where one exists. It does not mean this prototype has permission to scrape it or that a feed is already connected. Boxing, horse racing outside the UK, greyhound racing outside Great Britain, and esports require jurisdiction or organizer-specific adapters.</div>
+          </section>
+        </div>
+
+        <footer class="site-footer"><span>Northstar Competition Lab · paper trading only</span><span><a href="README.md">Project brief</a><span class="footer-dot">·</span><a href="docs/data-contract.md">Data contract</a><span class="footer-dot">·</span><a href="https://www.olbg.com" target="_blank" rel="noreferrer">OLBG source</a></span></footer>
+      </main>
+    </div>
+    <script src="app.js"></script>
+  </body>
+</html>
