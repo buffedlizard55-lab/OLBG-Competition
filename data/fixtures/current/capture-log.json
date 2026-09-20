@@ -1,0 +1,68 @@
+{
+  "darts_discovery": [
+    {
+      "error": "HTTPError: HTTP Error 404: Not Found",
+      "leagueShortcut": "PDCMP"
+    },
+    {
+      "error": "HTTPError: HTTP Error 404: Not Found",
+      "leagueShortcut": "bsdo"
+    },
+    {
+      "error": "HTTPError: HTTP Error 404: Not Found",
+      "leagueShortcut": "PDCPCF"
+    },
+    {
+      "error": "HTTPError: HTTP Error 404: Not Found",
+      "leagueShortcut": "darts-wm-26"
+    },
+    {
+      "error": "HTTPError: HTTP Error 404: Not Found",
+      "leagueShortcut": "PDCWM"
+    },
+    {
+      "error": "HTTPError: HTTP Error 404: Not Found",
+      "leagueShortcut": "PDCEDC"
+    },
+    {
+      "error": "HTTPError: HTTP Error 404: Not Found",
+      "leagueShortcut": "PDCWGP"
+    },
+    {
+      "error": "HTTPError: HTTP Error 404: Not Found",
+      "leagueShortcut": "pdcfdt"
+    }
+  ],
+  "errors": [],
+  "finished_utc": "2026-09-20T18:59:29Z",
+  "season": 2026,
+  "started_utc": "2026-09-20T18:59:11Z",
+  "targets": [
+    {
+      "captured_at_utc": "2026-09-20T18:59:12Z",
+      "finished": 35,
+      "fixture": "/home/runner/work/OLBG-Competition/OLBG-Competition/data/fixtures/current/openligadb_bl1_2026.json",
+      "league_name": "1. Fußball-Bundesliga 2026/2027",
+      "matches": 306,
+      "season": 2026,
+      "sha256": "40478aa37056137080402f0c5729892af245334ebc234fb8788420c18e789a31",
+      "shortcut": "bl1",
+      "sport": "football",
+      "url": "https://api.openligadb.de/getmatchdata/bl1/2026",
+      "written": true
+    },
+    {
+      "captured_at_utc": "2026-09-20T18:59:15Z",
+      "finished": 13,
+      "fixture": "/home/runner/work/OLBG-Competition/OLBG-Competition/data/fixtures/current/openligadb_del_2026.json",
+      "league_name": "DEL 2026/2027",
+      "matches": 364,
+      "season": 2026,
+      "sha256": "59a9f4605aa7f2777f379018eb8006df1a7655554089cfa210c6a78fc25b4843",
+      "shortcut": "del",
+      "sport": "ice_hockey",
+      "url": "https://api.openligadb.de/getmatchdata/del/2026",
+      "written": true
+    }
+  ]
+}

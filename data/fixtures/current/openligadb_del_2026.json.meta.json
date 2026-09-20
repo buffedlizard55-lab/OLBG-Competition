@@ -1,0 +1,16 @@
+{
+  "captured_at_utc": "2026-09-20T18:59:15Z",
+  "collection_mode": "automated_api",
+  "fixture": "openligadb_del_2026.json",
+  "league_name": "DEL 2026/2027",
+  "league_season": 2026,
+  "league_shortcut": "del",
+  "license_id": "odbl-1.0",
+  "n_finished": 13,
+  "n_matches": 364,
+  "note": "whole-season payload fetched via the permitted automated API (ODbL-1.0); canonical compact JSON, unmodified content",
+  "sha256": "59a9f4605aa7f2777f379018eb8006df1a7655554089cfa210c6a78fc25b4843",
+  "source_id": "openligadb",
+  "sport": "ice_hockey",
+  "url": "https://api.openligadb.de/getmatchdata/del/2026"
+}
