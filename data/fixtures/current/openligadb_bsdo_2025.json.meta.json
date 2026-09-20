@@ -1,0 +1,16 @@
+{
+  "captured_at_utc": "2026-09-20T19:06:11Z",
+  "collection_mode": "automated_api",
+  "fixture": "openligadb_bsdo_2025.json",
+  "league_name": "Baltic Sea Darts Open 2025",
+  "league_season": 2025,
+  "league_shortcut": "bsdo",
+  "license_id": "odbl-1.0",
+  "n_finished": 47,
+  "n_matches": 47,
+  "note": "whole-season payload fetched via the permitted automated API (ODbL-1.0); canonical compact JSON, unmodified content",
+  "sha256": "f22027d138baf2d7776ac68b46758c3aae796f976fba4875fc33297f1a2ff08b",
+  "source_id": "openligadb",
+  "sport": "darts",
+  "url": "https://api.openligadb.de/getmatchdata/bsdo/2025"
+}

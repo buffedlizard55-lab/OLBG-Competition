@@ -1,0 +1,16 @@
+{
+  "captured_at_utc": "2026-09-20T19:06:09Z",
+  "collection_mode": "automated_api",
+  "fixture": "openligadb_pdcmp_2025.json",
+  "league_name": "PDC World Matchplay 2025",
+  "league_season": 2025,
+  "league_shortcut": "PDCMP",
+  "license_id": "odbl-1.0",
+  "n_finished": 31,
+  "n_matches": 31,
+  "note": "whole-season payload fetched via the permitted automated API (ODbL-1.0); canonical compact JSON, unmodified content",
+  "sha256": "ddd45869f59c827bac57076be4796673178b5b6d0ed9ff9d5de28de03c633517",
+  "source_id": "openligadb",
+  "sport": "darts",
+  "url": "https://api.openligadb.de/getmatchdata/PDCMP/2025"
+}

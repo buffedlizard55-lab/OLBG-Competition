@@ -1,67 +1,292 @@
 {
   "darts_discovery": [
     {
-      "error": "HTTPError: HTTP Error 404: Not Found",
+      "latest_season": 2025,
+      "leagueName": "PDC World Matchplay 2025",
+      "leagueShortcut": "PDCMP",
+      "season_probes": {
+        "2024": 0,
+        "2025": 31,
+        "2026": 0
+      },
+      "seasons": [
+        2025
+      ],
+      "seasons_endpoint_error": "HTTPError: HTTP Error 404: Not Found"
+    },
+    {
+      "latest_season": 2025,
+      "leagueName": "Baltic Sea Darts Open 2025",
+      "leagueShortcut": "bsdo",
+      "season_probes": {
+        "2024": 0,
+        "2025": 47,
+        "2026": 0
+      },
+      "seasons": [
+        2025
+      ],
+      "seasons_endpoint_error": "HTTPError: HTTP Error 404: Not Found"
+    },
+    {
+      "latest_season": 2025,
+      "leagueName": "Players Championship Finals 2025",
+      "leagueShortcut": "PDCPCF",
+      "season_probes": {
+        "2024": 0,
+        "2025": 63,
+        "2026": 0
+      },
+      "seasons": [
+        2025
+      ],
+      "seasons_endpoint_error": "HTTPError: HTTP Error 404: Not Found"
+    }
+  ],
+  "darts_league_index": [
+    {
+      "darts_candidate": true,
+      "leagueId": 4864,
+      "leagueName": "PDC World Matchplay 2025",
       "leagueShortcut": "PDCMP"
     },
     {
-      "error": "HTTPError: HTTP Error 404: Not Found",
+      "darts_candidate": true,
+      "leagueId": 4861,
+      "leagueName": "Baltic Sea Darts Open 2025",
       "leagueShortcut": "bsdo"
     },
     {
-      "error": "HTTPError: HTTP Error 404: Not Found",
+      "darts_candidate": true,
+      "leagueId": 4892,
+      "leagueName": "Players Championship Finals 2025",
       "leagueShortcut": "PDCPCF"
     },
     {
-      "error": "HTTPError: HTTP Error 404: Not Found",
+      "darts_candidate": true,
+      "leagueId": 4893,
+      "leagueName": "Darts WM 2026",
       "leagueShortcut": "darts-wm-26"
     },
     {
-      "error": "HTTPError: HTTP Error 404: Not Found",
+      "darts_candidate": true,
+      "leagueId": 4894,
+      "leagueName": "PDC Darts-WM",
       "leagueShortcut": "PDCWM"
     },
     {
-      "error": "HTTPError: HTTP Error 404: Not Found",
+      "darts_candidate": true,
+      "leagueId": 4886,
+      "leagueName": "European Darts Championship 2025",
       "leagueShortcut": "PDCEDC"
     },
     {
-      "error": "HTTPError: HTTP Error 404: Not Found",
+      "darts_candidate": true,
+      "leagueId": 4884,
+      "leagueName": "World Grand Prix 2025",
       "leagueShortcut": "PDCWGP"
     },
     {
-      "error": "HTTPError: HTTP Error 404: Not Found",
+      "darts_candidate": true,
+      "leagueId": 4878,
+      "leagueName": "Flanders Darts Trophy 2025",
       "leagueShortcut": "pdcfdt"
+    },
+    {
+      "darts_candidate": true,
+      "leagueId": 4879,
+      "leagueName": "Czech Darts Open 2025",
+      "leagueShortcut": "pdccdo"
+    },
+    {
+      "darts_candidate": true,
+      "leagueId": 4870,
+      "leagueName": "NZ Darts Masters",
+      "leagueShortcut": "NZDM"
+    },
+    {
+      "darts_candidate": true,
+      "leagueId": 4867,
+      "leagueName": "Australien Darts Masters",
+      "leagueShortcut": "adm"
+    },
+    {
+      "darts_candidate": true,
+      "leagueId": 4906,
+      "leagueName": "PDC World Masters 2026",
+      "leagueShortcut": "PDCWOMA"
+    },
+    {
+      "darts_candidate": true,
+      "leagueId": 4908,
+      "leagueName": "Poland Darts Open 2026",
+      "leagueShortcut": "EUPDO"
+    },
+    {
+      "darts_candidate": true,
+      "leagueId": 4925,
+      "leagueName": "Austrian Darts Open 2026",
+      "leagueShortcut": "PDCADO"
+    },
+    {
+      "darts_candidate": true,
+      "leagueId": 4918,
+      "leagueName": "German Darts Grand Prix",
+      "leagueShortcut": "gdgr"
+    },
+    {
+      "darts_candidate": true,
+      "leagueId": 4921,
+      "leagueName": "European Darts Grand Prix",
+      "leagueShortcut": "PDCEDGP"
+    },
+    {
+      "darts_candidate": true,
+      "leagueId": 4912,
+      "leagueName": "UK Open 2026",
+      "leagueShortcut": "PDCUKO"
+    },
+    {
+      "darts_candidate": true,
+      "leagueId": 4914,
+      "leagueName": "Belgian Darts Open",
+      "leagueShortcut": "ETBDO"
+    },
+    {
+      "darts_candidate": true,
+      "leagueId": 4889,
+      "leagueName": "Grand Slam of Darts 2025",
+      "leagueShortcut": "PDCGSOD"
+    },
+    {
+      "darts_candidate": true,
+      "leagueId": 4948,
+      "leagueName": "PDC World Cup 2026",
+      "leagueShortcut": "PDCWC"
+    },
+    {
+      "darts_candidate": true,
+      "leagueId": 4940,
+      "leagueName": "Baltic Sea Darts Open",
+      "leagueShortcut": "PDCBSDO"
+    },
+    {
+      "darts_candidate": true,
+      "leagueId": 4934,
+      "leagueName": "International Darts Open 2026",
+      "leagueShortcut": "PDCIDO"
+    },
+    {
+      "darts_candidate": true,
+      "leagueId": 4953,
+      "leagueName": "Slovak Darts Open 2026",
+      "leagueShortcut": "PDCSDO"
+    },
+    {
+      "darts_candidate": true,
+      "leagueId": 5968,
+      "leagueName": "European Darts Open 2026",
+      "leagueShortcut": "PDCEDO"
+    },
+    {
+      "darts_candidate": true,
+      "leagueId": 5976,
+      "leagueName": "World Matchplay 2026",
+      "leagueShortcut": "PDCWMP"
+    },
+    {
+      "darts_candidate": true,
+      "leagueId": 5999,
+      "leagueName": "Hungarian Darts Trophy 2026",
+      "leagueShortcut": "PDCHDT"
+    },
+    {
+      "darts_candidate": true,
+      "leagueId": 6008,
+      "leagueName": "Flanders Darts Trophy 2026",
+      "leagueShortcut": "PDCFDT"
+    },
+    {
+      "darts_candidate": true,
+      "leagueId": 6009,
+      "leagueName": "World Series of Darts Finals 2026",
+      "leagueShortcut": "PDCWSDF"
+    },
+    {
+      "darts_candidate": true,
+      "leagueId": 6005,
+      "leagueName": "Czech Darts Open 2026",
+      "leagueShortcut": "PDCCDO"
     }
   ],
   "errors": [],
-  "finished_utc": "2026-09-20T18:59:29Z",
+  "finished_utc": "2026-09-20T19:06:14Z",
   "season": 2026,
-  "started_utc": "2026-09-20T18:59:11Z",
+  "started_utc": "2026-09-20T19:05:41Z",
   "targets": [
     {
-      "captured_at_utc": "2026-09-20T18:59:12Z",
+      "captured_at_utc": "2026-09-20T19:05:42Z",
       "finished": 35,
       "fixture": "/home/runner/work/OLBG-Competition/OLBG-Competition/data/fixtures/current/openligadb_bl1_2026.json",
       "league_name": "1. Fußball-Bundesliga 2026/2027",
       "matches": 306,
       "season": 2026,
-      "sha256": "40478aa37056137080402f0c5729892af245334ebc234fb8788420c18e789a31",
+      "sha256": "c8f2433017efd21eca54d2cac21ba1d9afc9a85437e7f5c8483ac871435852dc",
       "shortcut": "bl1",
       "sport": "football",
       "url": "https://api.openligadb.de/getmatchdata/bl1/2026",
       "written": true
     },
     {
-      "captured_at_utc": "2026-09-20T18:59:15Z",
+      "captured_at_utc": "2026-09-20T19:05:44Z",
       "finished": 13,
       "fixture": "/home/runner/work/OLBG-Competition/OLBG-Competition/data/fixtures/current/openligadb_del_2026.json",
       "league_name": "DEL 2026/2027",
       "matches": 364,
       "season": 2026,
-      "sha256": "59a9f4605aa7f2777f379018eb8006df1a7655554089cfa210c6a78fc25b4843",
+      "sha256": "1fc86e9901fd6b19cfc5e3ede43a8a7204c26167675ab5baa323a45bbb1b8da2",
       "shortcut": "del",
       "sport": "ice_hockey",
       "url": "https://api.openligadb.de/getmatchdata/del/2026",
+      "written": true
+    },
+    {
+      "captured_at_utc": "2026-09-20T19:06:09Z",
+      "finished": 31,
+      "fixture": "/home/runner/work/OLBG-Competition/OLBG-Competition/data/fixtures/current/openligadb_pdcmp_2025.json",
+      "league_name": "PDC World Matchplay 2025",
+      "matches": 31,
+      "season": 2025,
+      "sha256": "ddd45869f59c827bac57076be4796673178b5b6d0ed9ff9d5de28de03c633517",
+      "shortcut": "PDCMP",
+      "sport": "darts",
+      "url": "https://api.openligadb.de/getmatchdata/PDCMP/2025",
+      "written": true
+    },
+    {
+      "captured_at_utc": "2026-09-20T19:06:11Z",
+      "finished": 47,
+      "fixture": "/home/runner/work/OLBG-Competition/OLBG-Competition/data/fixtures/current/openligadb_bsdo_2025.json",
+      "league_name": "Baltic Sea Darts Open 2025",
+      "matches": 47,
+      "season": 2025,
+      "sha256": "f22027d138baf2d7776ac68b46758c3aae796f976fba4875fc33297f1a2ff08b",
+      "shortcut": "bsdo",
+      "sport": "darts",
+      "url": "https://api.openligadb.de/getmatchdata/bsdo/2025",
+      "written": true
+    },
+    {
+      "captured_at_utc": "2026-09-20T19:06:12Z",
+      "finished": 63,
+      "fixture": "/home/runner/work/OLBG-Competition/OLBG-Competition/data/fixtures/current/openligadb_pdcpcf_2025.json",
+      "league_name": "Players Championship Finals 2025",
+      "matches": 63,
+      "season": 2025,
+      "sha256": "724ce36c64be66733387ef5024fc3c45e55dde68fa908867d82ce042f197c3f1",
+      "shortcut": "PDCPCF",
+      "sport": "darts",
+      "url": "https://api.openligadb.de/getmatchdata/PDCPCF/2025",
       "written": true
     }
   ]
