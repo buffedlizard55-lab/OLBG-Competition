@@ -112,8 +112,23 @@ sessions.
   <https://api.openligadb.de/getmatchdata/80237>, official PDC results at
   <https://www.pdc.tv/>.
 
-### 3.2 Entry-lag / availability
-`lastUpdateDateTime` − `matchDateTimeUTC` across all finished rows:
+### 3.2 Entry-lag / availability — and the `lastUpdateDateTime` timezone finding
+**`lastUpdateDateTime` carries no timezone suffix and is German local
+time (CET/CEST), not UTC.** Proof from the live WSDF final: the fixture
+captured at **2026-09-20T20:08:53Z** contains a row last-updated
+`22:07:50.923` — impossible if that value were UTC (a capture cannot
+contain an edit from its own future); as CEST it is 20:07:50Z, one minute
+before the capture. Consequence: the lag table below (computed as
+`lastUpdateDateTime` − `matchDateTimeUTC`, treating the former *as if*
+UTC) **overstates true entry lag by 1–2 h** (CET/CEST offset). The +12 h
+availability bound is therefore conservative with extra margin — treating
+local time as UTC shifts every availability *later*, never earlier, so no
+walk-forward can see a result before the match could have ended. The
+shift is documented as a known caveat (`docs/STATUS.md` #11); a proper
+CET/CEST→UTC conversion utility is backlog work, deliberately not rushed
+into this pass.
+
+Lags as computed (UTC-assumed; true values 1–2 h smaller):
 
 | event | min | median | max | same-day (<12 h) rows |
 |---|---|---|---|---|
@@ -130,8 +145,9 @@ Because entry behaviour mixes live per-match entry with multi-day batch
 entry, `lastUpdateDateTime` is unusable as the availability signal. The
 adapter uses a documented conservative construction:
 **availability = start + 12 h** (`INFERRED_GAME_DURATION["darts"]`), which
-covers every observed same-day entry across all eight events (max 11.73 h —
-the later payloads confirmed the bound chosen from the first three) and
+covers every observed same-day entry across all eight events (max 11.73 h
+as computed above — true lags are 1–2 h smaller per the timezone finding,
+so the margin is larger than the table suggests) and
 actual match end, while still releasing a round before the next day's first
 decision cutoff. This is an inference about when a desk *could have known*,
 not a claim about the source's timestamps — same convention as DEL hockey
@@ -142,12 +158,14 @@ The WSDF 2026 **final (Ross Smith v Gerwyn Price, 2026-09-20T19:30Z) had
 already started** at the 19:33Z capture. Per the ingest contract it is
 recorded `postponed` (unfinished at/before `as_of` → review queue, never
 guessed) and resolves automatically to `finished` at the next capture.
-The 22:05Z same-evening re-capture (awaiting-refresh priority, §1) caught
-the source **mid-entry**: a `7-5` score row was present but
-`matchIsFinished` was still `false` — the contract kept the match ungraded
-and `postponed` rather than trusting an unflagged score. This is the
+The 20:08:53Z same-evening re-capture (awaiting-refresh priority, §1)
+caught the source **mid-match**: a live `7-5` score row (last updated
+20:07:50Z per §3.2 — 38 minutes into the best-of-21-leg final) with
+`matchIsFinished` still `false`. The contract kept the match ungraded and
+`postponed` rather than trusting an unflagged in-play score. This is the
 pipeline meeting a genuinely live event for the first time — the flags
-worked as designed; the Monday capture resolves it.
+worked as designed; the next capture resolves it once the source flips the
+finished flag.
 
 ### 3.4 Player identity (a real limitation, not fixed by guessing)
 Players are stored in `team1/team2` with `teamName` as the player name.

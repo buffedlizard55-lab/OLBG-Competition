@@ -189,10 +189,18 @@ Licensing claims were re-fetched and re-confirmed verbatim (see the
 10. **Hockey & darts are single-source.** No independent DEL/PDC
     compilation is attached; identity stays `probable`; accuracy metrics
     are explicitly not verified official outcomes.
-11. **Result availability is inferred for hockey and darts.** DEL rows
-    carry end-of-season batch-edit timestamps; darts entry mixes live and
-    multi-day batch entry (audit: same-day lag 1.2–10.5 h). The adapters
-    release results at start+3h (hockey) and start+12h (darts) —
+11. **Result availability is inferred for hockey and darts — and
+    `lastUpdateDateTime` is German local time, not UTC.** DEL rows carry
+    end-of-season batch-edit timestamps; darts entry mixes live and
+    multi-day batch entry. The audit proved OpenLigaDB's
+    `lastUpdateDateTime` carries no timezone and is CET/CEST (a capture at
+    20:08:53Z contained a row stamped 22:07:50 — `docs/DARTS-AUDIT.md`
+    §3.2); where the pipeline uses it (football availability,
+    `retrieved_at_utc` on OpenLigaDB rows) the value is treated as UTC,
+    which shifts timestamps 1–2 h *later* — conservative for every
+    leakage-relevant read, never earlier — but the mislabel is a known
+    caveat and a proper CET/CEST conversion utility is backlog work. The
+    adapters release hockey/darts results at start+3h / start+12h —
     *conservative constructions* (a desk cannot know a result before the
     match ends, and +12h covers every observed same-day darts entry),
     documented, never a claim about the source's true availability. For
@@ -243,7 +251,11 @@ Licensing claims were re-fetched and re-confirmed verbatim (see the
 7. **Model work**: Poisson goal totals from pre-cutoff history, rating
    decay, draw-rate calibration — each as a new registry hypothesis with
    its own Holm family, never a silent parameter change.
-8. **Site**: per-tipster sparklines; per-group forward accuracy; keep the
+8. **Timezone utility for OpenLigaDB `lastUpdateDateTime`** (CET/CEST →
+   UTC with DST-refusal, mirroring `uk_local_to_utc`), then restate
+   `retrieved_at_utc`/football availability on exact timestamps (today's
+   treatment is conservatively shifted, see limitation #11).
+9. **Site**: per-tipster sparklines; per-group forward accuracy; keep the
    payload free of raw football-data rows.
 
 ## Reproduce everything
