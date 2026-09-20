@@ -1173,12 +1173,12 @@
     }
   ],
   "errors": [],
-  "finished_utc": "2026-09-20T20:09:00Z",
+  "finished_utc": "2026-09-20T20:20:11Z",
   "season": 2026,
-  "started_utc": "2026-09-20T20:05:35Z",
+  "started_utc": "2026-09-20T20:16:59Z",
   "targets": [
     {
-      "captured_at_utc": "2026-09-20T20:05:36Z",
+      "captured_at_utc": "2026-09-20T20:17:00Z",
       "finished": 36,
       "fixture": "/home/runner/work/OLBG-Competition/OLBG-Competition/data/fixtures/current/openligadb_bl1_2026.json",
       "league_name": "1. Fußball-Bundesliga 2026/2027",
@@ -1192,7 +1192,7 @@
       "written": true
     },
     {
-      "captured_at_utc": "2026-09-20T20:05:39Z",
+      "captured_at_utc": "2026-09-20T20:17:02Z",
       "finished": 14,
       "fixture": "/home/runner/work/OLBG-Competition/OLBG-Competition/data/fixtures/current/openligadb_del_2026.json",
       "league_name": "DEL 2026/2027",
@@ -1206,21 +1206,21 @@
       "written": true
     },
     {
-      "captured_at_utc": "2026-09-20T20:08:53Z",
+      "captured_at_utc": "2026-09-20T20:20:05Z",
       "finished": 30,
       "fixture": "/home/runner/work/OLBG-Competition/OLBG-Competition/data/fixtures/current/openligadb_pdcwsdf_2026.json",
       "league_name": "World Series of Darts Finals 2026",
       "matches": 31,
       "payload_shortcut": "PDCWSDF",
       "season": 2026,
-      "sha256": "41f05e4797daab2b4cfb7b4522133680f1a44a7ddad942921f90477cec779dba",
+      "sha256": "c5bb304462f6ad40774d61ea6e54f846fdb13c13cd821e77ae95d6987f2e1a22",
       "shortcut": "PDCWSDF",
       "sport": "darts",
       "url": "https://api.openligadb.de/getmatchdata/PDCWSDF/2026",
       "written": true
     },
     {
-      "captured_at_utc": "2026-09-20T20:08:55Z",
+      "captured_at_utc": "2026-09-20T20:20:07Z",
       "finished": 127,
       "fixture": "/home/runner/work/OLBG-Competition/OLBG-Competition/data/fixtures/current/openligadb_pdcwm_2026.json",
       "league_name": "PDC Darts-WM",
@@ -1234,7 +1234,7 @@
       "written": true
     },
     {
-      "captured_at_utc": "2026-09-20T20:08:57Z",
+      "captured_at_utc": "2026-09-20T20:20:09Z",
       "finished": 47,
       "fixture": "/home/runner/work/OLBG-Competition/OLBG-Competition/data/fixtures/current/openligadb_pdcfdt_2026.json",
       "league_name": "Flanders Darts Trophy 2026",
@@ -1248,7 +1248,7 @@
       "written": true
     },
     {
-      "captured_at_utc": "2026-09-20T20:08:59Z",
+      "captured_at_utc": "2026-09-20T20:20:10Z",
       "finished": 47,
       "fixture": "/home/runner/work/OLBG-Competition/OLBG-Competition/data/fixtures/current/openligadb_pdccdo_2026.json",
       "league_name": "Czech Darts Open 2026",

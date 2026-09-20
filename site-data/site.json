@@ -5,7 +5,7 @@
       {
         "anomaly_id": "an-763e7e78dbbcdd279e10",
         "detail": "decisive 'after regulation' entry coexists with an overtime/shootout entry (impossible layering in community-entered source; matchID=76100). Final read via hockey priority AfterPenalties > AfterExtraTime > After90Minutes; flagged for manual review, outcome kept 3-2 (AfterExtraTime)",
-        "detected_at_utc": "2026-09-20T20:15:30Z",
+        "detected_at_utc": "2026-09-20T20:20:12Z",
         "entity_id": "ev-ff0008b0c9aa899d4755",
         "entity_type": "result",
         "kind": "RESULT_KIND_INCONSISTENT",
@@ -18,7 +18,7 @@
       {
         "anomaly_id": "an-8590725575f24e03dba3",
         "detail": "decisive 'after regulation' entry coexists with an overtime/shootout entry (impossible layering in community-entered source; matchID=76273). Final read via hockey priority AfterPenalties > AfterExtraTime > After90Minutes; flagged for manual review, outcome kept 2-1 (AfterExtraTime)",
-        "detected_at_utc": "2026-09-20T20:15:30Z",
+        "detected_at_utc": "2026-09-20T20:20:12Z",
         "entity_id": "ev-c1a1db0ea682db60d797",
         "entity_type": "result",
         "kind": "RESULT_KIND_INCONSISTENT",
@@ -31,7 +31,7 @@
       {
         "anomaly_id": "an-23d18a627ed1aea5b092",
         "detail": "decisive 'after regulation' entry coexists with an overtime/shootout entry (impossible layering in community-entered source; matchID=76409). Final read via hockey priority AfterPenalties > AfterExtraTime > After90Minutes; flagged for manual review, outcome kept 1-2 (AfterExtraTime)",
-        "detected_at_utc": "2026-09-20T20:15:30Z",
+        "detected_at_utc": "2026-09-20T20:20:12Z",
         "entity_id": "ev-78dfc67268398c894ed5",
         "entity_type": "result",
         "kind": "RESULT_KIND_INCONSISTENT",
@@ -44,7 +44,7 @@
       {
         "anomaly_id": "an-28ab36176a0a1f02e8c8",
         "detail": "source left leagueSeason null for matchID 76412 (DEL Eishockey 2024/2025); normalised to 2024 from the payload's unambiguous rows and flagged for manual review",
-        "detected_at_utc": "2026-09-20T20:15:30Z",
+        "detected_at_utc": "2026-09-20T20:20:12Z",
         "entity_id": "ev-3f32836fac8ddfb0bb12",
         "entity_type": "event",
         "kind": "MISSING_METADATA",
@@ -57,7 +57,7 @@
       {
         "anomaly_id": "an-6f494ddd324692776bd3",
         "detail": "decisive 'after regulation' entry coexists with an overtime/shootout entry (impossible layering in community-entered source; matchID=76414). Final read via hockey priority AfterPenalties > AfterExtraTime > After90Minutes; flagged for manual review, outcome kept 5-6 (AfterPenalties)",
-        "detected_at_utc": "2026-09-20T20:15:30Z",
+        "detected_at_utc": "2026-09-20T20:20:12Z",
         "entity_id": "ev-8358bbded1593cbd6ea0",
         "entity_type": "result",
         "kind": "RESULT_KIND_INCONSISTENT",
@@ -70,7 +70,7 @@
       {
         "anomaly_id": "an-870a7d10688c5d15dd0d",
         "detail": "the same result kind appears more than once with conflicting scores (audit 2026-09-20, e.g. PDCPCF 2025 matchID=79962: one real entry plus stale 0-0 duplicates with consecutive resultIDs). The first entry is kept but NOT trusted silently: flagged for manual review against the official source, outcome kept 8-11 (After90Minutes)",
-        "detected_at_utc": "2026-09-20T20:15:30Z",
+        "detected_at_utc": "2026-09-20T20:20:12Z",
         "entity_id": "ev-bcdcfe1fb3d7753beee8",
         "entity_type": "result",
         "kind": "RESULT_KIND_INCONSISTENT",
@@ -83,7 +83,7 @@
       {
         "anomaly_id": "an-0bf555cbbc1c9d39b727",
         "detail": "the same result kind appears more than once with conflicting scores (audit 2026-09-20, e.g. PDCPCF 2025 matchID=80237: one real entry plus stale 0-0 duplicates with consecutive resultIDs). The first entry is kept but NOT trusted silently: flagged for manual review against the official source, outcome kept 5-0 (After90Minutes)",
-        "detected_at_utc": "2026-09-20T20:15:30Z",
+        "detected_at_utc": "2026-09-20T20:20:12Z",
         "entity_id": "ev-d614a2e17776ef1cb0fa",
         "entity_type": "result",
         "kind": "RESULT_KIND_INCONSISTENT",
@@ -5809,8 +5809,8 @@
     {
       "capture_id": "cap-openligadb_bl1_2026.json",
       "capture_mode": "automated_api",
-      "captured_at_utc": "2026-09-20T20:05:36Z",
-      "note": "1. Fußball-Bundesliga 2026/2027 whole-season payload captured 2026-09-20T20:05:36Z via permitted automated API (ODbL-1.0); sha256 67d34d8e749b84fb...",
+      "captured_at_utc": "2026-09-20T20:17:00Z",
+      "note": "1. Fußball-Bundesliga 2026/2027 whole-season payload captured 2026-09-20T20:17:00Z via permitted automated API (ODbL-1.0); sha256 67d34d8e749b84fb...",
       "path": "data/fixtures/current/openligadb_bl1_2026.json",
       "sha256": "67d34d8e749b84fbc7730fb43ab300567e14ad627e4ed2fd08a3b3d03455f6a3",
       "source_id": "openligadb"
@@ -5827,8 +5827,8 @@
     {
       "capture_id": "cap-openligadb_del_2026.json",
       "capture_mode": "automated_api",
-      "captured_at_utc": "2026-09-20T20:05:39Z",
-      "note": "DEL 2026/2027 whole-season payload captured 2026-09-20T20:05:39Z via permitted automated API (ODbL-1.0); sha256 4967e86efbbaf2ba...",
+      "captured_at_utc": "2026-09-20T20:17:02Z",
+      "note": "DEL 2026/2027 whole-season payload captured 2026-09-20T20:17:02Z via permitted automated API (ODbL-1.0); sha256 4967e86efbbaf2ba...",
       "path": "data/fixtures/current/openligadb_del_2026.json",
       "sha256": "4967e86efbbaf2ba9ca5f86aa4d34d5810432c6e9bd31708d6ffd1b06e494cd9",
       "source_id": "openligadb"
@@ -5836,8 +5836,8 @@
     {
       "capture_id": "cap-openligadb_pdccdo_2026.json",
       "capture_mode": "automated_api",
-      "captured_at_utc": "2026-09-20T20:08:59Z",
-      "note": "Czech Darts Open 2026 whole-season payload captured 2026-09-20T20:08:59Z via permitted automated API (ODbL-1.0); sha256 36f420bc4630436d...",
+      "captured_at_utc": "2026-09-20T20:20:10Z",
+      "note": "Czech Darts Open 2026 whole-season payload captured 2026-09-20T20:20:10Z via permitted automated API (ODbL-1.0); sha256 36f420bc4630436d...",
       "path": "data/fixtures/current/openligadb_pdccdo_2026.json",
       "sha256": "36f420bc4630436d60254939bce6f7414bef86284e59e24e81c545f3fa7a8731",
       "source_id": "openligadb"
@@ -5845,8 +5845,8 @@
     {
       "capture_id": "cap-openligadb_pdcfdt_2026.json",
       "capture_mode": "automated_api",
-      "captured_at_utc": "2026-09-20T20:08:57Z",
-      "note": "Flanders Darts Trophy 2026 whole-season payload captured 2026-09-20T20:08:57Z via permitted automated API (ODbL-1.0); sha256 e75dcb5535d20a12...",
+      "captured_at_utc": "2026-09-20T20:20:09Z",
+      "note": "Flanders Darts Trophy 2026 whole-season payload captured 2026-09-20T20:20:09Z via permitted automated API (ODbL-1.0); sha256 e75dcb5535d20a12...",
       "path": "data/fixtures/current/openligadb_pdcfdt_2026.json",
       "sha256": "e75dcb5535d20a12b4f98bc5a0ab3099f4b8877ace5cdf912a5aac2888c273d9",
       "source_id": "openligadb"
@@ -5872,8 +5872,8 @@
     {
       "capture_id": "cap-openligadb_pdcwm_2026.json",
       "capture_mode": "automated_api",
-      "captured_at_utc": "2026-09-20T20:08:55Z",
-      "note": "PDC Darts-WM whole-season payload captured 2026-09-20T20:08:55Z via permitted automated API (ODbL-1.0); sha256 a250b67aba7c2f98...",
+      "captured_at_utc": "2026-09-20T20:20:07Z",
+      "note": "PDC Darts-WM whole-season payload captured 2026-09-20T20:20:07Z via permitted automated API (ODbL-1.0); sha256 a250b67aba7c2f98...",
       "path": "data/fixtures/current/openligadb_pdcwm_2026.json",
       "sha256": "a250b67aba7c2f98d8275b84e48aa343acaed162c1e4553d13e7a3261ea09e6a",
       "source_id": "openligadb"
@@ -5890,10 +5890,10 @@
     {
       "capture_id": "cap-openligadb_pdcwsdf_2026.json",
       "capture_mode": "automated_api",
-      "captured_at_utc": "2026-09-20T20:08:53Z",
-      "note": "World Series of Darts Finals 2026 whole-season payload captured 2026-09-20T20:08:53Z via permitted automated API (ODbL-1.0); sha256 41f05e4797daab2b...",
+      "captured_at_utc": "2026-09-20T20:20:05Z",
+      "note": "World Series of Darts Finals 2026 whole-season payload captured 2026-09-20T20:20:05Z via permitted automated API (ODbL-1.0); sha256 c5bb304462f6ad40...",
       "path": "data/fixtures/current/openligadb_pdcwsdf_2026.json",
-      "sha256": "41f05e4797daab2b4cfb7b4522133680f1a44a7ddad942921f90477cec779dba",
+      "sha256": "c5bb304462f6ad40774d61ea6e54f846fdb13c13cd821e77ae95d6987f2e1a22",
       "source_id": "openligadb"
     }
   ],
@@ -6628,7 +6628,7 @@
         "sport": "darts"
       }
     ],
-    "latest_capture_utc": "2026-09-20T20:08:59Z",
+    "latest_capture_utc": "2026-09-20T20:20:10Z",
     "leak_violations": [],
     "model_version": "nr-forward-2026-09-20.1",
     "n_awaiting": 9,
@@ -7308,7 +7308,7 @@
     }
   ],
   "meta": {
-    "built_utc": "2026-09-20T20:15:30Z",
+    "built_utc": "2026-09-20T20:20:12Z",
     "event_count": 1152,
     "hockey": {
       "competition": "DEL Eishockey 2024/2025",
