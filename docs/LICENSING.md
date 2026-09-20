@@ -6,15 +6,29 @@ a collection mode a source has not permitted (`PolicyError`), so an unpermitted
 path cannot run silently. All entries below were verified by **direct
 retrieval** on the dates shown; keep the evidence links for manual review.
 
+> **Re-verified 2026-09-20.** Every quoted clause on this page was re-fetched
+> and re-confirmed verbatim on 2026-09-20: OpenLigaDB ODbL line + 60 req/min
+> rate limit + "completed seasons no longer change" (front page /
+> api.openligadb.de), football-data "private individuals only, NOT commerical
+> or data training products using automated bots/scrapers/AI" (data.php) +
+> Fri 17:00 / Tue 13:00 collection windows (matches.php) + Pinnacle 23/07/2025
+> notice, OLBG ToU §5.4/§7.1/§7.3/§9.1/§9.2/§13.3 + operator identity (Invendium
+> Ltd, 04490764, updated 09 July 2025) + robots.txt disallows
+> (`/api/`, `/sports/`, `/tipster/`, `/premium/`, `/newbg/`), The Odds API
+> historical quota (10/region/market), paid-plan-only statement + June 2020
+> start and snapshot intervals, and its terms (last updated 31 August 2026:
+> storage/UI/research/derived/ML-training permitted, raw-feed resale
+> prohibited). No claim here rested on memory.
+
 ## The matrix
 
 | Source | License / policy | Permitted collection modes | Rate limit | Verified |
 |---|---|---|---|---|
-| **OpenLigaDB** | Open Database License 1.0 (ODbL-1.0), share-alike | automated API · manual import · manual snapshot | 60 requests/min/IP | 2026-09-19 |
+| **OpenLigaDB** | Open Database License 1.0 (ODbL-1.0), share-alike | automated API · manual import · manual snapshot | 60 requests/min/IP | 2026-09-20 |
 | **The Odds API** | Paid-plan provider terms (not open data); storage/UI/research/derived values allowed, raw-feed redistribution prohibited | **licensed API/import only**, active entitlement required | historical endpoint: 10 credits per region per market | 2026-09-20 |
 | **Organizer result export** | Written permission/authority attestation required per competition; no blanket licence | **licensed import only**, authorization reference required | set by organizer agreement | 2026-09-20 |
-| **football-data.co.uk** | No public license. Private-individuals-only; **no automated bots/scrapers/AI** | manual import · manual snapshot (**no** automated) | n/a (no auto retrieval) | 2026-09-19 |
-| **OLBG (Invendium Ltd)** | Copyright reserved (ToU 9.1). Personal, non-commercial use only | **manual snapshot only** (no automated, no redistribution) | no bulk collection | 2026-09-19 |
+| **football-data.co.uk** | No public license. Private-individuals-only; **no automated bots/scrapers/AI** | manual import · manual snapshot (**no** automated) | n/a (no auto retrieval) | 2026-09-20 |
+| **OLBG (Invendium Ltd)** | Copyright reserved (ToU 9.1). Personal, non-commercial use only | **manual snapshot only** (no automated, no redistribution) | no bulk collection | 2026-09-20 |
 
 ## OpenLigaDB — ODbL-1.0 (the open-licensed result adapter)
 
@@ -28,7 +42,8 @@ retrieval** on the dates shown; keep the evidence links for manual review.
 
 **Consequences we enforce:**
 - Automated API collection **is** permitted (used by `northstar.cli
-  ingest-fullseason` in CI and by the pilot fixtures' provenance).
+  ingest-fullseason` in CI and by the pilot fixtures' provenance: football
+  `bl1` and ice hockey `del` committed fixtures, both ODbL with attribution).
 - ODbL is share-alike: derived **database files** must carry ODbL attribution.
   Our committed pilot fixtures under `data/fixtures/openligadb_*.json` are
   OpenLigaDB payloads; attribution + license are recorded here and in the
