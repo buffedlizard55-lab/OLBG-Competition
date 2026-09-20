@@ -119,6 +119,9 @@ _register(SourcePolicy(
         "https://openligadb.de/",
         "https://api.openligadb.de/",
         "https://openligadb.de/lizenz",
+        # Terms-of-use page linked from the API front page (re-checked
+        # 2026-09-20; keep under review alongside the ODbL statement).
+        "https://www.openligadb.de/nutzungsbedingungen",
         "https://opendatacommons.org/licenses/odbl/1-0/",
     ],
     caveats=[

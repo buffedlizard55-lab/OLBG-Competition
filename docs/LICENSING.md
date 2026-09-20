@@ -6,19 +6,28 @@ a collection mode a source has not permitted (`PolicyError`), so an unpermitted
 path cannot run silently. All entries below were verified by **direct
 retrieval** on the dates shown; keep the evidence links for manual review.
 
-> **Re-verified 2026-09-20.** Every quoted clause on this page was re-fetched
+> **Re-verified 2026-09-20 (second independent re-check, this session).** Every
+> quoted clause on this page was re-fetched
 > and re-confirmed verbatim on 2026-09-20: OpenLigaDB ODbL line + 60 req/min
-> rate limit + "completed seasons no longer change" (front page /
-> api.openligadb.de), football-data "private individuals only, NOT commerical
+> rate limit + "completed seasons no longer change" + "ohne Anmeldung, ohne
+> API-Schlüssel, ohne Kontingent" (api.openligadb.de front page), football-data
+> "private individuals only, NOT commerical
 > or data training products using automated bots/scrapers/AI" (data.php) +
 > Fri 17:00 / Tue 13:00 collection windows (matches.php) + Pinnacle 23/07/2025
 > notice, OLBG ToU §5.4/§7.1/§7.3/§9.1/§9.2/§13.3 + operator identity (Invendium
 > Ltd, 04490764, updated 09 July 2025) + robots.txt disallows
-> (`/api/`, `/sports/`, `/tipster/`, `/premium/`, `/newbg/`), The Odds API
+> (`/api/`, `/sports/`, `/tipster/`, `/premium/`, `/newbg/` — all still present
+> in the 2026-09-20 re-capture, which *adds* disallows and relaxes none),
+> The Odds API
 > historical quota (10/region/market), paid-plan-only statement + June 2020
 > start and snapshot intervals, and its terms (last updated 31 August 2026:
 > storage/UI/research/derived/ML-training permitted, raw-feed resale
-> prohibited). No claim here rested on memory.
+> prohibited). No claim here rested on memory. **New finding of the second
+> re-check:** the OpenLigaDB API front page now also links a
+> [Nutzungsbedingungen](https://www.openligadb.de/nutzungsbedingungen) (terms
+> of use) page; it is registered as evidence in `northstar/policy.py` and kept
+> under review — the ODbL-1.0 data licence and the 60 req/min limit are
+> unchanged.
 
 ## The matrix
 
@@ -37,7 +46,9 @@ retrieval** on the dates shown; keep the evidence links for manual review.
   Daten stehen unter der Open Database License (ODbL)"*
 - https://openligadb.de/lizenz — license statement
 - https://api.openligadb.de/ — API front page: *"Es gilt ein Limit von 60
-  Anfragen pro Minute und IP"*
+  Anfragen pro Minute und IP"*; also *"Ohne Anmeldung, ohne API-Schlüssel,
+  ohne Kontingent"* and a link to the Nutzungsbedingungen
+  (https://www.openligadb.de/nutzungsbedingungen)
 - https://opendatacommons.org/licenses/odbl/1-0/ — ODbL 1.0 text
 
 **Consequences we enforce:**

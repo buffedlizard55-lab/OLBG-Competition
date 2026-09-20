@@ -1,0 +1,22 @@
+# OLBG robots.txt — captured 2026-09-20 (manual review, policy evidence)
+# Re-capture to confirm the 2026-09-19 reading still holds. All five paths
+# that gate our collection policy are STILL disallowed for User-agent: *:
+#   /api/  /sports/  /tipster/  /premium/  /newbg/
+# The live file has EXPANDED since the 2026-09-19 capture (additional
+# internal/worker paths plus new blanket disallows such as /search*,
+# /storage/app/json_data/*, /content-views-count/*); none of the additions
+# relax the five policy paths above. The full file also lists ~250 named
+# bot user-agents (WebVac, Stanford, Wget, psbot, Python-urllib, ...) each
+# with "Disallow: /".
+Source: https://www.olbg.com/robots.txt
+Mode: manual_snapshot (personal, non-commercial review per ToU 7.1/13.3)
+Key rules for collection policy (verbatim, User-agent: *):
+Disallow: /tipster/
+Disallow: /premium/
+Disallow: /sports/
+Disallow: /api/
+Disallow: /newbg/
+Disallow: /search*
+Disallow: /storage/app/json_data/*
+Sitemaps: https://www.olbg.com/sitemap.xml, sitemap-ie.xml,
+sitemap-hreflang.xml, sitemap-last-news.xml
