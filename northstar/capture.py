@@ -87,42 +87,80 @@ def discover_leagues(fetch=openligadb.fetch_url) -> Dict[str, Any]:
     }
 
 
+def _probe_season_matches(fetch, shortcut: str, season: int) -> Optional[int]:
+    """Return the match count for a shortcut/season, or None on failure.
+
+    Darts leagues on OpenLigaDB 404 on getavailableseasons (observed live
+    2026-09-20), so the season list is probed directly through
+    getmatchdata: an empty list means "no data for that season", a 404
+    means the shortcut itself is unknown.
+    """
+    url = f"{openligadb.API_BASE}/getmatchdata/{shortcut}/{season}"
+    try:
+        payload = json.loads(fetch(url))
+    except Exception:  # noqa: BLE001 - probe failures are findings
+        return None
+    if isinstance(payload, list):
+        return len(payload)
+    return None
+
+
 def discover_darts_seasons(fetch=openligadb.fetch_url,
-                           max_leagues: int = 3) -> List[Dict[str, Any]]:
-    """For each discovered darts league, list its available seasons."""
+                           max_leagues: int = 3,
+                           this_year: Optional[int] = None
+                           ) -> List[Dict[str, Any]]:
+    """For each discovered darts league, find seasons that carry data.
+
+    Two-step discovery, everything recorded: getavailableseasons first; on
+    failure/empty (the observed darts behaviour) probe getmatchdata for the
+    last three seasons directly.  League names are kept so the capture log
+    documents what each shortcut is.
+    """
     report = discover_leagues(fetch)
+    names = {l["leagueShortcut"]: l["leagueName"]
+             for l in report["darts_candidates"]}
     out: List[Dict[str, Any]] = []
     seen = set()
+    year = this_year or models.utcnow().year
     candidates = [l["leagueShortcut"] for l in report["darts_candidates"]]
     for extra in DARTS_SHORTCUT_CANDIDATES:
         if extra not in candidates:
             candidates.append(extra)   # probe documented-but-missing too
-    for shortcut in candidates[: max_leagues + len(
-            DARTS_SHORTCUT_CANDIDATES)]:
+    for shortcut in candidates:
         if not shortcut or shortcut in seen:
             continue
         seen.add(shortcut)
+        row: Dict[str, Any] = {"leagueShortcut": shortcut,
+                               "leagueName": names.get(shortcut)}
         time.sleep(MIN_REQUEST_GAP_S)
+        seasons = None
         try:
             seasons = json.loads(fetch(
                 f"https://api.openligadb.de/getavailableseasons/{shortcut}"))
         except Exception as exc:  # noqa: BLE001 - report, don't crash
-            out.append({"leagueShortcut": shortcut, "error":
-                        f"{type(exc).__name__}: {exc}"})
-            continue
+            row["seasons_endpoint_error"] = f"{type(exc).__name__}: {exc}"
         if isinstance(seasons, list) and seasons:
-            latest = max(int(s["leagueSeason"]) for s in seasons
-                         if str(s.get("leagueSeason", "")).isdigit()) \
-                if any(str(s.get("leagueSeason", "")).isdigit()
-                       for s in seasons) else None
-            out.append({"leagueShortcut": shortcut,
-                        "seasons": [s.get("leagueSeason") for s in seasons],
-                        "latest_season": latest})
+            digits = [int(s["leagueSeason"]) for s in seasons
+                      if str(s.get("leagueSeason", "")).isdigit()]
+            row["seasons"] = [s.get("leagueSeason") for s in seasons]
+            row["latest_season"] = max(digits) if digits else None
         else:
-            out.append({"leagueShortcut": shortcut, "seasons": [],
-                        "latest_season": None,
-                        "note": "shortcut returns no seasons (empty)"})
-        if len([o for o in out if o.get("seasons")]) >= max_leagues:
+            # Direct per-season probe (darts leagues 404 on the seasons
+            # endpoint but answer getmatchdata - verified 2026-09-20).
+            probes = {}
+            for season in (year, year - 1, year - 2):
+                time.sleep(MIN_REQUEST_GAP_S)
+                probes[season] = _probe_season_matches(fetch, shortcut,
+                                                       season)
+            row["season_probes"] = probes
+            with_data = [s for s, n in probes.items() if n]
+            row["seasons"] = sorted(with_data)
+            row["latest_season"] = max(with_data) if with_data else None
+            if not with_data:
+                row["note"] = ("no data for the last three seasons "
+                               "(or shortcut unknown)")
+        out.append(row)
+        if len([o for o in out if o.get("latest_season")]) >= max_leagues:
             break
     return out
 
@@ -227,6 +265,9 @@ def capture_current(out_dir: str, season: int = 2026,
     # Darts: discovery-driven (the documented shortcut/season was found
     # empty on 2026-09-20; discovery decides what is capturable).
     try:
+        index = discover_leagues(fetch=fetch)
+        log["darts_league_index"] = index["darts_candidates"]
+        time.sleep(MIN_REQUEST_GAP_S)
         darts = discover_darts_seasons(fetch=fetch)
         log["darts_discovery"] = darts
         for d in darts:

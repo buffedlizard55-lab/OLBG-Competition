@@ -137,17 +137,24 @@ class TestDiscovery:
                 {"leagueId": 9, "leagueShortcut": "PDCX",
                  "leagueName": "PDC Something Darts"}]),
         }
-        for shortcut in ("PDCX",) + tuple(
-                capture.DARTS_SHORTCUT_CANDIDATES):
+        shortcuts = ("PDCX",) + tuple(capture.DARTS_SHORTCUT_CANDIDATES)
+        for shortcut in shortcuts:
             urls[f"https://api.openligadb.de/getavailableseasons/{shortcut}"
                  ] = "[]" if shortcut != "PDCX" else json.dumps(
                 [{"leagueSeason": 2025}, {"leagueSeason": 2026}])
-        out = capture.discover_darts_seasons(fetch=fake_fetch(urls))
+            # direct per-season probes (the darts fallback path)
+            for season in (2026, 2025, 2024):
+                urls[f"https://api.openligadb.de/getmatchdata/{shortcut}/"
+                     f"{season}"] = "[]"
+        out = capture.discover_darts_seasons(fetch=fake_fetch(urls),
+                                             this_year=2026)
         pdcx = next(o for o in out if o["leagueShortcut"] == "PDCX")
         assert pdcx["latest_season"] == 2026
-        empties = [o for o in out if o.get("seasons") == []]
-        assert empties and all("empty" in o.get("note", "")
+        assert pdcx["leagueName"] == "PDC Something Darts"
+        empties = [o for o in out if o.get("latest_season") is None]
+        assert empties and all("no data" in o.get("note", "")
                                for o in empties)
+        assert all(o.get("season_probes") for o in empties)
 
 
 class TestLoadCurrentFixtures:
