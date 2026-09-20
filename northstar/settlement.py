@@ -21,6 +21,7 @@ Rules implemented (versioned in SETTLEMENT_RULE_VERSION):
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+import math
 from typing import Any, Dict, List, Optional
 
 from . import models
@@ -58,13 +59,13 @@ class GateLog:
 
 def decimal_pnl(stake: float, odds: Optional[float], outcome: str) -> float:
     """Pure settlement arithmetic for level-stakes decimal bets."""
-    if stake <= 0:
-        raise ValueError(f"stake must be > 0, got {stake}")
+    if not math.isfinite(float(stake)) or stake <= 0:
+        raise ValueError(f"stake must be finite and > 0, got {stake}")
     if outcome in ("void", "push"):
         return 0.0
     if odds is None:
         raise ValueError(f"outcome '{outcome}' requires stored odds")
-    if odds <= 1.0 or odds != odds or odds in (float("inf"),):
+    if not math.isfinite(float(odds)) or odds <= 1.0:
         raise ValueError(f"odds must be finite and > 1.0, got {odds}")
     if outcome == "won":
         return round(stake * (odds - 1), 10)
@@ -75,8 +76,9 @@ def decimal_pnl(stake: float, odds: Optional[float], outcome: str) -> float:
 
 def implied_probabilities(odds: List[float]) -> List[float]:
     """Margin-removed (proportional normalisation) implied probabilities."""
-    if any((o is None) or o <= 1.0 for o in odds):
-        raise ValueError(f"odds must be > 1.0, got {odds}")
+    if any((o is None) or not math.isfinite(float(o)) or o <= 1.0
+           for o in odds):
+        raise ValueError(f"odds must be finite and > 1.0, got {odds}")
     inv = [1.0 / o for o in odds]
     total = sum(inv)
     return [x / total for x in inv]
@@ -84,6 +86,13 @@ def implied_probabilities(odds: List[float]) -> List[float]:
 
 def match_outcome_3way(selection_key: str, home_goals: int,
                        away_goals: str | int) -> str:
+    if selection_key not in ("home", "draw", "away"):
+        raise ValueError(f"unknown 3-way selection: {selection_key}")
+    if (isinstance(home_goals, bool) or isinstance(away_goals, bool)
+            or not isinstance(home_goals, int)
+            or not isinstance(away_goals, int)
+            or home_goals < 0 or away_goals < 0):
+        raise ValueError(f"invalid final score: {home_goals}-{away_goals}")
     if home_goals > away_goals:
         win = "home"
     elif home_goals < away_goals:
@@ -110,11 +119,21 @@ def settle_tip(store: Store, tip_id: str,
         raise KeyError(f"tip {tip_id} references unknown event")
 
     # Idempotency: re-settling the same (tip, result) is a no-op, so
-    # backtest re-runs cannot double-count PnL.
+    # backtest re-runs cannot double-count PnL.  A changed result_id is not a
+    # no-op: it must create an auditable settlement revision.
     prior = store.latest_settlement(tip_id)
-    if (prior and prior.get("result_id")
-            and prior["rule_version"] == SETTLEMENT_RULE_VERSION
-            and prior["outcome"] in ("won", "lost", "void", "push")):
+    current_result_ids = {
+        r["result_id"] for r in store.results(tip["event_id"])
+    }
+    same_result = bool(prior and prior.get("result_id") in current_result_ids)
+    same_void = bool(
+        prior and not prior.get("result_id")
+        and prior.get("outcome") == "void"
+        and event["status"] in (EVENT_STATUS_CANCELLED, "abandoned")
+    )
+    if (prior and prior["rule_version"] == SETTLEMENT_RULE_VERSION
+            and prior["outcome"] in ("won", "lost", "void", "push")
+            and (same_result or same_void)):
         return {"action": "already_settled",
                 "settlement_id": prior["settlement_id"],
                 "gates": prior["gate_log"],
@@ -208,7 +227,7 @@ def settle_tip(store: Store, tip_id: str,
                 "gates": gates.to_dict(), "anomalies": anomalies}
 
     allowed = [r for r in results
-               if parse_utc(r["officially_final_at_utc"]) >= start]
+               if parse_utc(r["officially_final_at_utc"]) > start]
     if not allowed:
         gates.result = "fail:result timestamp before start"
         return {"action": "blocked", "settlement_id": None,
@@ -236,8 +255,21 @@ def settle_tip(store: Store, tip_id: str,
     gates.integrity = ("pass" if ok_integrity
                        else "fail:no raw hash: " + ",".join(missing))
 
-    # Gate 7: arithmetic + settle
-    primary = max(allowed, key=lambda r: r["officially_final_at_utc"])
+    # Gate 7: arithmetic + settle.  A number without a named, timestamped
+    # odds source is not a bet price; do not turn it into a guessed loss.
+    if tip["odds_decimal"] is None or not tip.get("odds_source"):
+        gates.arithmetic = "fail:missing odds"
+        anomalies.append(store.add_anomaly(Anomaly(
+            anomaly_id=stable_id("an", models.ANOMALY_MISSING_ODDS, tip_id),
+            kind=models.ANOMALY_MISSING_ODDS, entity_type="tip",
+            entity_id=tip_id, detected_at_utc=utcnow(),
+            detail="settlement requires a stored decimal price and odds source",
+            source_urls=[tip["source_url"] or ""],
+        )))
+        return {"action": "blocked", "settlement_id": None,
+                "gates": gates.to_dict(), "anomalies": anomalies}
+    primary = max(allowed, key=lambda r: parse_utc(
+        r["officially_final_at_utc"]))
     try:
         outcome = match_outcome_3way(tip["selection_key"],
                                      primary["home_goals"],

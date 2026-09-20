@@ -15,7 +15,7 @@ Guarantees (enforced, and tested):
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Any, Callable, Dict, List, Optional, Sequence
 
 from . import models
@@ -40,6 +40,41 @@ class TimeBoundedStore:
     team_history: Dict[str, List[Dict[str, Any]]] = field(default_factory=dict)
     ratings: Dict[str, float] = field(default_factory=dict)
     rating_updates: Dict[str, List[Dict[str, Any]]] = field(default_factory=dict)
+    # Read-audit state is reset for every decision.  It lets the engine catch
+    # a strategy that reads a feature at t=12:00 but falsely declares a
+    # cutoff of t=11:00 after returning.
+    _decision_reads: List[datetime] = field(default_factory=list,
+                                             init=False, repr=False)
+    _decision_start: Optional[datetime] = field(default=None,
+                                                init=False, repr=False)
+
+    # ---------------------------------------------------------- read auditing
+
+    def begin_decision(self, event_start: datetime) -> None:
+        self._decision_reads = []
+        self._decision_start = event_start
+
+    def record_external_read(self, available_at: Optional[datetime]) -> None:
+        if available_at is not None:
+            self._record_read(available_at)
+
+    def end_decision(self) -> None:
+        self._decision_start = None
+
+    @property
+    def latest_read_at(self) -> Optional[datetime]:
+        return max(self._decision_reads) if self._decision_reads else None
+
+    def _record_read(self, at: datetime) -> None:
+        if at.tzinfo is None:
+            raise TimeLeakageError("feature read timestamp must be timezone-aware")
+        at = at.astimezone(at.tzinfo)
+        if self._decision_start is not None and at >= self._decision_start:
+            raise TimeLeakageError(
+                f"feature read at {at} is not strictly before decision event "
+                f"start {self._decision_start}"
+            )
+        self._decision_reads.append(at)
 
     # ------------------------------------------------------------ ingestion
 
@@ -73,6 +108,7 @@ class TimeBoundedStore:
     # ---------------------------------------------------------------- reads
 
     def team_rating(self, team: str, at: datetime) -> Optional[float]:
+        self._record_read(at)
         updates = [u for u in self.rating_updates.get(team, [])
                    if u["available_at"] <= at]
         if not updates:
@@ -81,6 +117,7 @@ class TimeBoundedStore:
         return latest["rating"]
 
     def last_result(self, team: str, at: datetime) -> Optional[Dict[str, Any]]:
+        self._record_read(at)
         rows = [r for r in self.team_history.get(team, [])
                 if r["available_at"] <= at]
         if not rows:
@@ -89,10 +126,12 @@ class TimeBoundedStore:
 
     def head_to_head(self, team_a: str, team_b: str, at: datetime
                      ) -> List[Dict[str, Any]]:
+        self._record_read(at)
         return [r for r in self.team_history.get(team_a, [])
                 if r["available_at"] <= at and r["opponent"] == team_b]
 
     def event(self, event_id: str, at: datetime) -> Dict[str, Any]:
+        self._record_read(at)
         ev = self.events.get(event_id)
         if ev is None:
             raise TimeLeakageError(f"unknown event {event_id}")
@@ -140,8 +179,18 @@ def run_walk_forward(store: Store, events: Sequence[Dict[str, Any]],
             result.skipped.append({"event_id": e["event_id"],
                                    "reason": "no finished result"})
             continue
+        score_pairs = {(r["home_goals"], r["away_goals"]) for r in results}
+        if len(score_pairs) != 1 or any(
+                r["home_goals"] is None or r["away_goals"] is None
+                for r in results):
+            # A walk-forward must not use a disputed/correction-sensitive
+            # result to update ratings.  Leave it in the review queue instead
+            # of allowing the latest row to win by insertion order.
+            result.skipped.append({"event_id": e["event_id"],
+                                   "reason": "conflicting or incomplete result"})
+            continue
         primary = max(results,
-                      key=lambda r: r["officially_final_at_utc"])
+                      key=lambda r: parse_utc(r["officially_final_at_utc"]))
 
         # Market view the desk could see: earliest stored market_avg
         # snapshot strictly before start (same window for every strategy).
@@ -164,21 +213,48 @@ def run_walk_forward(store: Store, events: Sequence[Dict[str, Any]],
             market_odds = None
 
         # Strategy declares its cutoff (the latest time any input it used
-        # became available) and reads features only at/before that.
-        decision = strategy.predict(e, tbs, start,
-                                    market_odds=market_odds,
-                                    odds_observed_at=odds_observed_at)
-        if not decision["selection_key"] or \
+        # became available) and reads features only at/before that.  The
+        # market snapshot is itself an input, even if the strategy does not
+        # call a TimeBoundedStore method.
+        tbs.begin_decision(start)
+        tbs.record_external_read(odds_observed_at)
+        try:
+            decision = strategy.predict(e, tbs, start,
+                                        market_odds=market_odds,
+                                        odds_observed_at=odds_observed_at)
+        except TimeLeakageError as exc:
+            result.leak_violations.append(
+                f"{strategy_id}: {exc} for {e['event_id']}")
+            continue
+        cutoff = decision.get("cutoff_utc")
+        if cutoff is not None:
+            if not isinstance(cutoff, datetime) or cutoff.tzinfo is None:
+                result.leak_violations.append(
+                    f"{strategy_id}: cutoff must be timezone-aware datetime "
+                    f"for {e['event_id']}"
+                )
+                continue
+            cutoff = cutoff.astimezone(timezone.utc)
+        latest_read = tbs.latest_read_at
+        if latest_read is not None and (cutoff is None or latest_read > cutoff):
+            result.leak_violations.append(
+                f"{strategy_id}: read at {latest_read} exceeds declared "
+                f"cutoff {cutoff} for {e['event_id']}")
+            continue
+        if cutoff is not None and cutoff >= start:
+            result.leak_violations.append(
+                f"{strategy_id}: cutoff {cutoff} not before start {start} "
+                f"for {e['event_id']}")
+            continue
+        if not decision.get("selection_key") or \
                 decision["selection_key"] == "none":
             result.skipped.append({"event_id": e["event_id"],
                                    "reason": "strategy passed",
                                    "model": decision.get("model", {})})
             continue
-        cutoff = decision["cutoff_utc"]
-        if cutoff is None or cutoff >= start:
+        if cutoff is None:
             result.leak_violations.append(
-                f"{strategy_id}: cutoff {cutoff} not before start {start} "
-                f"for {e['event_id']}")
+                f"{strategy_id}: bet has no cutoff for {e['event_id']}")
             continue
 
         # Entry price: earliest stored snapshot at/before cutoff (the price
@@ -186,9 +262,11 @@ def run_walk_forward(store: Store, events: Sequence[Dict[str, Any]],
         odds = None
         provider = None
         if decision["selection_key"]:
+            provider_key = decision.get(
+                "odds_provider", getattr(strategy, "odds_provider", "market_avg")
+            )
             snaps = [s for s in store.odds_snapshots(e["event_id"])
-                     if s["provider"] == decision.get("odds_provider",
-                                                      "market_avg")
+                     if s["provider"] == provider_key
                      and s["selection_key"] == decision["selection_key"]
                      and parse_utc(s["observed_at_utc"]) <= cutoff]
             if snaps:
@@ -241,6 +319,9 @@ def run_walk_forward(store: Store, events: Sequence[Dict[str, Any]],
                             "outcome_action": outcome["action"],
                             "settlement_id": outcome.get("settlement_id")})
         # Release this event's result to the feature store AFTER the bet.
+        # The post-result rating update is allowed to read the final timestamp;
+        # it is outside the decision audit window above.
+        tbs.end_decision()
         tbs.add_result(e, primary["home_goals"], primary["away_goals"],
                        available_at=parse_utc(primary["officially_final_at_utc"]))
         final_at = parse_utc(primary["officially_final_at_utc"])

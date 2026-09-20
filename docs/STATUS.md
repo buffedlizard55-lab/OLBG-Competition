@@ -1,6 +1,6 @@
 # Status, limitations & remaining work
 
-**Updated 2026-09-19** (end of the full-implementation pass). Read together
+**Updated 2026-09-20** (licensing, odds-connector and audit-hardening pass). Read together
 with `README.md` (what this is), `docs/LICENSING.md` (what sources allow),
 `docs/OLBG-RESEARCH.md` (what OLBG is), and `docs/data-contract.md` (the rules
 every number must pass).
@@ -9,9 +9,12 @@ every number must pass).
 
 - **Source licensing confirmed first-hand** with evidence links
   (`docs/LICENSING.md`): OpenLigaDB = ODbL-1.0 (automated API allowed);
-  football-data.co.uk = private use, no bots (manual import only); OLBG =
-  copyright reserved, manual personal review only. The policy gates live in
-  code (`northstar/policy.py`) and are tested.
+  The Odds API = paid-plan historical endpoint with storage/UI/research
+  permitted but raw-feed redistribution prohibited; football-data.co.uk =
+  private use, no bots (manual import only); OLBG = copyright reserved,
+  manual personal review only. The policy gates live in code
+  (`northstar/policy.py`) and are tested. No provider account or key is
+  claimed for The Odds API.
 - **Pilot dataset, locked and committed** (hash-checked by
   `python -m northstar.cli verify`): Bundesliga 1 2024/25 matchdays 1, 10, 20
   = 27 matches. Results from OpenLigaDB (ODbL); odds from a human-captured
@@ -20,9 +23,16 @@ every number must pass).
 - **Dual-source verification: 27/27** full-time results agree between the two
   independent compilations; UK-local → UTC join is exact-minute for all 27.
   Events are upgraded to `verified` identity only after this agreement.
-- **One official-result adapter** (OpenLigaDB) plus the football-data import
-  adapter and the manual-snapshot OLBG adapter. All ingestion is idempotent
-  (re-runs create no duplicates; re-settlement is a no-op).
+- **Result adapters**: OpenLigaDB's ODbL community/reference adapter plus a
+  separate authorization-gated official-organizer export adapter. The latter
+  has contract tests but is inactive without written organizer permission;
+  OpenLigaDB is not called an official governing-body feed. The football-data
+  import adapter and manual-snapshot OLBG adapter remain policy-gated. All
+  ingestion is idempotent and result/odds source edits are flagged.
+- **Licensed historical odds adapter** for The Odds API: paid-plan key and
+  terms acknowledgement required, source-event joins are explicit, raw
+  payload hashes are retained, and post-start snapshots are rejected. No
+  licensed response is bundled or claimed as pilot data.
 - **Settlement engine** with the 7 verification gates, versioned rule
   (`SETTLEMENT_RULE_VERSION`), and the required edge-case behaviour:
   postponed → pending (never a loss), cancelled/abandoned → void (stake
@@ -32,13 +42,13 @@ every number must pass).
   (`TimeBoundedStore` raises `TimeLeakageError` on post-cutoff reads; cutoff
   must be pre-start; entry price = earliest stored snapshot ≤ cutoff; ordering
   invariance tested).
-- **Four football strategies backtested on real verified outcomes**
+- **Four football strategies backtested on real cross-checked outcomes**
   (level 1.0 units): market favourite, market longshot probe, Elo value edge
   (K=40, home advantage 60, 3% edge threshold), Draw-No-Bet decisive.
   **Honest result: all four are negative on this 27-match sample** (best: Elo
   edge −4.04 units / ROI −36.7%; full table on the site). Bootstrap 95% CIs
   all include zero. No edge claimed.
-- **Automated tests: 105 passing** covering the user-specified matrix —
+- **Automated tests: 126 passing** covering the user-specified matrix —
   postponements, voids, duplicate tips, time leakage, disputed results,
   settlement arithmetic — plus adapter parsing of the real fixtures, the
   27/27 cross-check, policy gates, leaderboard math, and walk-forward
@@ -53,7 +63,7 @@ every number must pass).
 - **Sport coverage table for all OLBG sport families**: Football
   `pilot_verified`; Ice Hockey + Darts `results_path_available` (OpenLigaDB
   del/del2/CHL/PDC endpoints, ODbL — no permissioned odds yet); the other
-  seven `verification_blocked` with explicit not-covered states.
+  18 `verification_blocked` with explicit not-covered states.
 - **CI**: `ci.yml` runs the test suite + fixture re-verification on every
   PR/push; `pages.yml` rebuilds the site data and deploys only the site
   payload; `ingest.yml` (Monday 06:00 UTC) runs the full-season OpenLigaDB
@@ -70,10 +80,12 @@ every number must pass).
    per-event timestamp. We store the *close of the collection window* as
    `observed_at` with `timestamp_precision = window_close_inferred`, which is
    a conservative (earlier) bound — no leakage — but not the true trade time.
-3. **"Official" results are an open community source.** OpenLigaDB is ODbL
-   and reliable, but community-entered, not the DFL's feed. That is why
-   identity needs the independent cross-check, and why full-season CI runs
-   keep events at `probable` until a second source is attached.
+3. **The pilot has no active governing-body result feed.** OpenLigaDB is ODbL
+   and useful, but community-entered, not the DFL's feed. The new official
+   result adapter refuses unauthorised/unauthenticated exports; its tests use
+   only a synthetic schema fixture. Pilot identity therefore needs the
+   independent cross-check, and full-season CI runs keep events at `probable`
+   until a second source is attached.
 4. **One market only.** Only `match_winner_3way` has a settled rule set.
    OLBG's other markets (totals, handicaps, each-way, darts sets…) are not
    settleable here yet — imported OLBG tips therefore stay `pending` forever.
@@ -82,10 +94,14 @@ every number must pass).
    unavailable) starts only when a recurring capture cadence exists.
 6. **OLBG is manual-only.** No automated OLBG access exists or is permitted.
    Its tipster statistics are self-reported and never enter PnL.
-7. **football-data residual risk.** Research-use flag: no redistribution, no
-   scale-up, no commercial/training use without explicit permission or a
-   licensed provider.
-8. **Multiple comparisons.** 16 hypotheses were designed; 4 were run on one
+7. **Odds licensing boundary.** The Odds API connector is permissioned only
+   for an active paid-plan customer who accepts the current terms; this repo
+   has no such key or response. The provider permits value-adding UI/research
+   use but prohibits a raw odds feed, so raw captures must stay local. The
+   football-data pilot remains a private/manual research fixture and should
+   not be redistributed or used for automated collection, commercial use, or
+   training without separate permission.
+8. **Multiple comparisons.** 25 hypotheses were designed; 4 were run on one
    27-match sample. No correction for multiple testing has been applied —
    treat all four results as exploratory, not confirmatory.
 9. **DST clock-change days.** UK wall times on the two clock-change days are
@@ -114,7 +130,7 @@ every number must pass).
      match/result schema differences (shootouts, extra time, legs/sets,
      walkovers), design market rules, *then* backtest results-only baselines
      and forward-test (no permissioned odds yet).
-   - The seven `verification_blocked` sports each need a permissioned results
+   - The 18 `verification_blocked` sports each need a permissioned results
      path first; keep them visibly blocked until then.
 4. **More markets** (totals, Asian handicap, each-way) once odds coverage
    allows; each market gets its own versioned rule set and test matrix row.
@@ -131,7 +147,7 @@ every number must pass).
 
 ```bash
 python -m venv .venv && .venv/bin/pip install pytest
-python -m pytest                     # 105 tests, offline
+python -m pytest                     # 126 tests, offline
 python -m northstar.cli run-pipeline --fresh   # rebuild store + site-data/site.json
 python -m northstar.cli verify               # re-check fixture hashes + 27/27
 ```

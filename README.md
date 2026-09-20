@@ -2,15 +2,16 @@
 
 A source-first **paper-trading** research desk for the OLBG-Competition
 project: it collects tipster selections (manually, where sources forbid
-automation), verifies official results, settles paper PnL through audit
+automation), verifies final results through permissioned/reference adapters,
+settles paper PnL through audit
 gates, and backtests sport-specific strategies **walk-forward with strict
 time cutoffs** — all on data whose licensing is documented and whose hashes
 are checked.
 
-> **Honesty status (2026-09-19):** the pipeline is implemented and
+> **Honesty status (2026-09-20):** the pipeline is implemented and
 > verified on a **27-match football pilot** (Bundesliga 1 2024/25, matchdays
 > 1/10/20) with **27/27 dual-source result agreement**. Four strategies were
-> backtested on those real verified outcomes; **all four are negative on this
+> backtested on those real cross-checked outcomes; **all four are negative on this
 > tiny sample** (best: −4.04 units, ROI −36.7%, 95% CI includes 0). Nothing
 > here claims an edge, and no number on the site exists that the pipeline did
 > not compute from hash-checked fixtures. Read
@@ -19,16 +20,27 @@ are checked.
 ## What is built (this pass)
 
 - **Licensing gates in code** (`northstar/policy.py`, tested): OpenLigaDB
-  ODbL-1.0 (automated API permitted), football-data.co.uk (manual import
-  only — their no-bots policy), OLBG (manual personal review only — ToS
-  §7.1/7.3/9.1/9.2). Unpermitted collection modes raise `PolicyError`.
+  ODbL-1.0 (automated API permitted), The Odds API (paid-plan historical
+  access with explicit entitlement/terms acknowledgement), football-data.co.uk
+  (manual import only — their no-bots policy), and OLBG (manual personal review
+  only — ToS §7.1/7.3/9.1/9.2). Unpermitted collection modes raise
+  `PolicyError`.
   Full matrix + evidence links: [`docs/LICENSING.md`](docs/LICENSING.md).
 - **Entities**: `events`, `tips`, `odds_snapshots`, `results`,
   `settlements` (append-only, revisioned), `anomalies` — SQLite store in
   `northstar/db.py`, schema per [`docs/data-contract.md`](docs/data-contract.md).
-- **One official-result adapter** (OpenLigaDB, ODbL) + a football-data
-  import adapter (manual, research-use flag, Pinnacle excluded per the
-  source's notice) + a manual-snapshot OLBG adapter (auto path policy-blocked).
+- **Result adapters**: an ODbL OpenLigaDB reference-result adapter (the
+  verified pilot path) and a separate authorization-gated official-organizer
+  export adapter. The latter is tested as a contract but is inactive until a
+  governing body grants written permission; OpenLigaDB is not mislabeled as an
+  official governing-body feed. A football-data import adapter (manual,
+  research-use flag, Pinnacle excluded per the source's notice) and a
+  manual-snapshot OLBG adapter (auto path policy-blocked) complete the pilot.
+- **Permissioned historical odds connector** for The Odds API: paid-plan
+  historical snapshots, explicit entitlement/terms acknowledgement (plus a
+  non-secret entitlement reference for offline imports), provider event-id
+  reconciliation, hash preservation, and strict pre-start rejection.
+  No key or provider response is committed; it is ready but inactive here.
 - **Settlement engine** with 7 verification gates and the required
   edge-case behaviour: postponed → pending, cancelled/abandoned → void,
   disputed/conflicting results → withheld + anomaly, duplicate tips →
@@ -41,7 +53,7 @@ are checked.
 - **Four football strategies** (level 1.0 units): market favourite, market
   longshot probe, Elo value edge (K=40, home adv 60, 3% edge threshold),
   Draw-No-Bet decisive — all negative on the pilot; results shown as-is.
-- **105 automated tests** (offline, `python -m pytest`) covering the
+- **126 automated tests** (offline, `python -m pytest`) covering the
   required matrix: postponements, voids, duplicate tips, time leakage,
   disputed results, settlement arithmetic — plus adapter parsing of the
   real fixtures, the 27/27 cross-check, policy gates, leaderboard math,
@@ -51,8 +63,8 @@ are checked.
   review-state demotion), **per-tipster tip desk**, **full review of all
   placed and all upcoming bets**, strategy lab with backtest + CI,
   tipster-style generated predictions (evidence-only, refuses without a
-  full model/fair/edge trail), source registry with official verified
-  links, and hash-checked fixture provenance.
+  full model/fair/edge trail), source registry with evidence links for
+  manual review, and hash-checked fixture provenance.
 - **CI**: `ci.yml` (tests + fixture re-verification on PR/push),
   `pages.yml` (rebuilds site data, deploys only the site payload),
   `ingest.yml` (Monday: full-season OpenLigaDB verification for
@@ -63,7 +75,7 @@ are checked.
 ```bash
 python3 -m venv .venv && .venv/bin/pip install pytest
 
-python -m pytest                      # 105 tests, offline
+python -m pytest                      # 126 tests, offline
 python -m northstar.cli run-pipeline --fresh   # rebuild store + site data
 python -m northstar.cli verify              # fixture hashes + 27/27 agreement
 node scripts/site-smoke.mjs            # (optional) site render smoke test
@@ -81,7 +93,7 @@ Pages; external source links open in a new tab for manual review.
 | Competition | 1. Fußball-Bundesliga 2024/25 | [`data/fixtures/openligadb_bl1_2024_sd{1,10,20}.json`](data/fixtures/) |
 | Matches | 27 (matchdays 1, 10, 20) | sha256-verified by `verify` |
 | Results source | OpenLigaDB (ODbL-1.0, community-entered) | [api.openligadb.de](https://api.openligadb.de/) |
-| Odds source | football-data.co.uk D1 manual import (research-use flag) | [football-data.co.uk/data.php](https://www.football-data.co.uk/data.php) |
+| Odds source | football-data.co.uk D1 manual import (research-use flag); The Odds API connector ready but inactive | [football-data.co.uk/data.php](https://www.football-data.co.uk/data.php) · [The Odds API historical docs](https://the-odds-api.com/historical-odds-data/) |
 | Cross-check | **27/27 FT results agree**, UK-time join exact-minute | `run-pipeline` output |
 | Odds snapshots | 405 (5 providers × 3 selections × 27), pre-start, window-close inferred | `site-data/site.json` |
 | Backtest | 4 strategies, 11–27 bets each, all negative, CIs include 0 | site → Strategy lab |
@@ -136,8 +148,9 @@ Full protocol: [`docs/data-contract.md`](docs/data-contract.md).
 ```
 northstar/            package: models, db, policy, settlement, backtest,
                       leaderboard, predictor, report, timeutil, cli,
-                      adapters/{openligadb,football_data,olbg}, strategies/
-tests/                105 offline tests (pytest)
+                      adapters/{openligadb,official_results,the_odds_api,
+                      football_data,olbg}, strategies/
+tests/                126 offline tests (pytest)
 data/fixtures/        committed pilot fixtures (sha256-verified)
 data/raw/             manual OLBG snapshots (provenance headers)
 site-data/site.json   generated site payload (rebuilt by the pipeline)

@@ -11,6 +11,7 @@ Design rules (from docs/data-contract.md):
 from __future__ import annotations
 
 import json
+import math
 import os
 import sqlite3
 from typing import Any, Dict, Iterable, List, Optional
@@ -71,6 +72,7 @@ CREATE TABLE IF NOT EXISTS odds_snapshots (
   market_key TEXT NOT NULL,
   selection_key TEXT NOT NULL,
   decimal_odds REAL NOT NULL,
+  source_event_id TEXT,
   timestamp_precision TEXT NOT NULL,
   raw_row_hash TEXT,
   source_url TEXT,
@@ -151,7 +153,21 @@ class Store:
         self.conn = sqlite3.connect(path)
         self.conn.row_factory = sqlite3.Row
         self.conn.executescript(_SCHEMA)
+        self._migrate_schema()
         self.conn.commit()
+
+    def _migrate_schema(self) -> None:
+        """Apply additive migrations to stores created by older releases.
+
+        The project keeps raw captures out of the public site, but local
+        research databases can survive a code upgrade.  Migrations are
+        intentionally additive and never rewrite an audit row.
+        """
+        columns = {row["name"] for row in self._rows(
+            "PRAGMA table_info(odds_snapshots)")}
+        if "source_event_id" not in columns:
+            self.conn.execute(
+                "ALTER TABLE odds_snapshots ADD COLUMN source_event_id TEXT")
 
     # ------------------------------------------------------------- helpers
 
@@ -219,13 +235,26 @@ class Store:
                     f"source_version {existing['source_version']}->"
                     f"{event.source_version}"),
                 source_urls=[event.source_url or ""])))
-        new_conf = event.identity_confidence
+        confidence_rank = {"unmatched": 0, "probable": 1, "verified": 2}
+        old_conf = existing["identity_confidence"]
+        new_conf = (event.identity_confidence
+                    if confidence_rank.get(event.identity_confidence, -1)
+                    >= confidence_rank.get(old_conf, -1)
+                    else old_conf)
         new_rev = existing["revision"] + (1 if changed else 0)
         self.conn.execute(
-            """UPDATE events SET status=?, source_version=?,
-               identity_confidence=?, revision=? WHERE event_id=?""",
-            (event.status, event.source_version, new_conf, new_rev,
-             event.event_id))
+            """UPDATE events SET sport=?, competition=?, home_team_id=?,
+               home_team=?, away_team_id=?, away_team=?,
+               scheduled_start_utc=?, status=?, group_order=?, group_name=?,
+               source_event_id=?, source_provider=?, source_url=?,
+               source_version=?, identity_confidence=?, revision=?
+               WHERE event_id=?""",
+            (event.sport, event.competition, event.home_team_id,
+             event.home_team, event.away_team_id, event.away_team,
+             models.fmt_utc(event.scheduled_start_utc), event.status,
+             event.group_order, event.group_name, event.source_event_id,
+             event.source_provider, event.source_url, event.source_version,
+             new_conf, new_rev, event.event_id))
         return anomalies
 
     def get_event(self, event_id: str) -> Optional[Dict[str, Any]]:
@@ -245,6 +274,23 @@ class Store:
         Different published time for same tipster/event/market/selection
                              -> DUPLICATE_TIP anomaly (kept as its own tip).
         """
+        try:
+            stake = float(tip.stake_units)
+        except (TypeError, ValueError) as exc:
+            raise ValueError(f"stake must be numeric, got {tip.stake_units!r}") from exc
+        if not math.isfinite(stake) or stake <= 0:
+            raise ValueError(f"stake must be finite and > 0, got {tip.stake_units!r}")
+        if tip.odds_decimal is not None:
+            try:
+                odds = float(tip.odds_decimal)
+            except (TypeError, ValueError) as exc:
+                raise ValueError(
+                    f"odds must be numeric, got {tip.odds_decimal!r}"
+                ) from exc
+            if not math.isfinite(odds) or odds <= 1.0:
+                raise ValueError(
+                    f"odds must be finite and > 1.0, got {tip.odds_decimal!r}"
+                )
         dup = self._row(
             """SELECT * FROM tips WHERE tipster_id=? AND event_id=?
                AND market=? AND selection_key=?""",
@@ -326,16 +372,57 @@ class Store:
     # ------------------------------------------------------ odds snapshots
 
     def add_odds_snapshot(self, snap: OddsSnapshot) -> None:
+        try:
+            odds = float(snap.decimal_odds)
+        except (TypeError, ValueError) as exc:
+            raise ValueError(
+                f"decimal odds must be numeric, got {snap.decimal_odds!r}"
+            ) from exc
+        if not math.isfinite(odds) or odds <= 1.0:
+            raise ValueError(
+                f"decimal odds must be finite and > 1.0, got {snap.decimal_odds}"
+            )
+        existing = self._row(
+            "SELECT * FROM odds_snapshots WHERE snapshot_id=?", snap.snapshot_id
+        )
+        if existing is not None:
+            comparable = (
+                existing["event_id"], existing["observed_at_utc"],
+                existing["provider"], existing["market_key"],
+                existing["selection_key"], existing["decimal_odds"],
+                existing["source_event_id"], existing["timestamp_precision"],
+                existing["raw_row_hash"],
+            )
+            incoming = (
+                snap.event_id, models.fmt_utc(snap.observed_at_utc),
+                snap.provider, snap.market_key, snap.selection_key,
+                snap.decimal_odds, snap.source_event_id,
+                snap.timestamp_precision, snap.raw_row_hash,
+            )
+            if comparable != incoming:
+                self.add_anomaly(Anomaly(
+                    anomaly_id=models.stable_id(
+                        "an", ANOMALY_SOURCE_EDITED, "odds", snap.snapshot_id
+                    ),
+                    kind=ANOMALY_SOURCE_EDITED,
+                    entity_type="odds", entity_id=snap.snapshot_id,
+                    detected_at_utc=utcnow(),
+                    detail=("same odds snapshot id was re-imported with "
+                            "different immutable content; original retained"),
+                    source_urls=[snap.source_url or ""],
+                ))
+            return
         self.conn.execute(
             """INSERT OR IGNORE INTO odds_snapshots (snapshot_id, event_id,
                observed_at_utc, provider, market_key, selection_key,
-               decimal_odds, timestamp_precision, raw_row_hash, source_url,
-               notes) VALUES (?,?,?,?,?,?,?,?,?,?,?)""",
+               decimal_odds, source_event_id, timestamp_precision,
+               raw_row_hash, source_url, notes)
+               VALUES (?,?,?,?,?,?,?,?,?,?,?,?)""",
             (snap.snapshot_id, snap.event_id,
              models.fmt_utc(snap.observed_at_utc), snap.provider,
              snap.market_key, snap.selection_key, snap.decimal_odds,
-             snap.timestamp_precision, snap.raw_row_hash, snap.source_url,
-             snap.notes))
+             snap.source_event_id, snap.timestamp_precision,
+             snap.raw_row_hash, snap.source_url, snap.notes))
 
     def odds_snapshots(self, event_id: Optional[str] = None
                        ) -> List[Dict[str, Any]]:
@@ -360,7 +447,7 @@ class Store:
         row = self._row(
             """SELECT * FROM odds_snapshots
                WHERE event_id=? AND provider=? AND selection_key=?
-                 AND market_key=? AND observed_at_utc <= ?
+                 AND market_key=? AND observed_at_utc < ?
                ORDER BY observed_at_utc LIMIT 1""",
             event_id, provider, selection_key, market_key,
             models.fmt_utc(start))
@@ -371,6 +458,37 @@ class Store:
     def add_result(self, result: Result) -> List[str]:
         """Upsert per (event, provider); cross-provider conflict -> anomaly."""
         anomalies: List[str] = []
+        existing = self._row(
+            "SELECT * FROM results WHERE event_id=? AND provider=?",
+            result.event_id, result.provider,
+        )
+        if existing is not None:
+            previous_content = (
+                existing["raw_payload_hash"], existing["final_status"],
+                existing["officially_final_at_utc"], existing["home_goals"],
+                existing["away_goals"], existing["version"],
+            )
+            incoming_content = (
+                result.raw_payload_hash, result.final_status,
+                models.fmt_utc(result.officially_final_at_utc),
+                result.home_goals, result.away_goals, result.version,
+            )
+            if previous_content != incoming_content:
+                anomalies.append(self.add_anomaly(Anomaly(
+                    anomaly_id=models.stable_id(
+                        "an", ANOMALY_SOURCE_EDITED, "result",
+                        result.event_id, result.provider,
+                        result.raw_payload_hash or "missing",
+                    ),
+                    kind=ANOMALY_SOURCE_EDITED,
+                    entity_type="result", entity_id=result.event_id,
+                    detected_at_utc=utcnow(),
+                    detail=("result provider replaced an existing payload or "
+                            f"score: {existing['raw_payload_hash']} -> "
+                            f"{result.raw_payload_hash}; review before "
+                            "re-settlement"),
+                    source_urls=[result.source_url or ""],
+                )))
         self.conn.execute(
             """INSERT INTO results (result_id, event_id, provider,
                retrieved_at_utc, source_url, raw_payload_hash, final_status,

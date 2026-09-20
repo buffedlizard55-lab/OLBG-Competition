@@ -1,8 +1,10 @@
 # OLBG research notes (reverse engineering for review)
 
-Date of study: **2026-09-19** (manual browsing + text-render captures; no API,
-no automated collection — see `docs/LICENSING.md`). Captures are preserved
-under `data/raw/olbg_*.md` with provenance headers.
+Date of study: **2026-09-20** (manual review of the public tips index and
+terms pages; no OLBG API, no automated OLBG collection — see
+`docs/LICENSING.md`). The earlier 2026-09-19 captures are preserved under
+`data/raw/olbg_*.md`; the current page was re-checked for the sport-family
+inventory and URL shape, but no new page body is copied into the repository.
 
 ## What OLBG is
 
@@ -12,13 +14,27 @@ upcoming events; the site aggregates them into per-event consensus tables and
 ranks tipsters by displayed annual profit. Profits are *"calculated to a 10
 point stake"* per OLBG's own display.
 
-## Sports covered (as listed on olbg.com, 2026-09-19)
+## Sports covered (as listed on olbg.com, 2026-09-20)
 
-Football, Horse Racing, Rugby Union, American Football, Baseball,
-Motor Racing, Darts, Boxing, Greyhounds (+ specials). These are the sport
-families the coverage table on the site mirrors. OLBG URL sport segments
-observed: `Football`, `Rugby_Union`, `Boxing`, `Darts`, `Horse_Racing`,
-`Baseball`, `American_Football`, `Motor_Racing`, `Greyhounds`.
+The current public tips page says it covers 20+ sports and explicitly lists
+these 21 sport families: Horse Racing, Football, Tennis, Golf, American
+Football, Baseball, Basketball, Boxing, Cricket, Cycling, Darts, Gaelic
+Football, Greyhounds, Handball, Hurling, Ice Hockey, Motor Racing, Rugby
+Union, Rugby League, Snooker, and Volleyball.  This is a catalogue of what
+OLBG displays, not a claim that Northstar has a verified data path for each.
+
+Observed URL sport segments are `Horse_Racing`, `Football`, `Tennis`, `Golf`,
+`American_Football`, `Baseball`, `Basketball`, `Boxing`, `Cricket`, `Cycling`,
+`Darts`, `Gaelic_Football`, `Greyhounds`, `Handball`, `Hurling`, `Ice_Hockey`,
+`Motor_Racing`, `Rugby_Union`, `Rugby_League`, `Snooker`, and `Volleyball`.
+The page also links to Grand National and Cheltenham special sections; those
+are event groupings under horse racing, not additional sport families.
+
+Evidence for the inventory and page anatomy: the public page
+[OLBG Betting Tips](https://www.olbg.com/betting-tips), manually reviewed
+2026-09-20. Do not infer a sport, league, market, tipster identity, or result
+from a URL alone; preserve the captured page and source timestamp if a human
+imports it.
 
 ## URL / page structure (verified against live pages)
 
