@@ -191,8 +191,16 @@ def run_walk_forward(store: Store, events: Sequence[Dict[str, Any]],
     # Deterministic total order: same-start games (a whole hockey matchday
     # can share a puck-drop time) must not depend on input order - the
     # event_id tiebreak makes any shuffle of the input list equivalent.
-    ordered = sorted(events, key=lambda e: (e.get("group_order") or 0,
-                                            e["scheduled_start_utc"],
+    # Start-first (not group-first) because walk-forwards can now span
+    # several competitions in one rating pool (darts 2025-26 events): a
+    # group_order-first sort would process a November tournament's early
+    # rounds before a July tournament's final, leaving chronologically
+    # available ratings unregistered at read time (under-use, not leakage -
+    # TimeBoundedStore still filters by availability - but it distorts the
+    # pool). For single-competition pilots the two orders coincide because
+    # matchday group_order is chronological with start time.
+    ordered = sorted(events, key=lambda e: (e["scheduled_start_utc"],
+                                            e.get("group_order") or 0,
                                             e["event_id"]))
     if strategy_sport:
         ordered = [e for e in ordered if e.get("sport") == strategy_sport]

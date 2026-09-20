@@ -1,9 +1,12 @@
 """Darts Elo strategy (prediction-only; no permissioned odds path).
 
 Sport rules (from the PDC schema audit, docs/DARTS-AUDIT.md):
-- OpenLigaDB darts rows are player-vs-player; ``pointsTeam1/2`` are the
-  sets (or legs, per event format) won - a decisive count, never a draw at
-  full time;
+- OpenLigaDB darts rows are player-vs-player; ``pointsTeam1/2`` are a
+  decisive leg/set count - legs in the committed 2025 ProTour/EuroTour
+  events and the 2026 World Series Finals (audit-verified), **sets** in
+  World Championship events (e.g. PDCWM 2026: 7-1, 6-3 scorelines). The
+  model only compares the counts, so both encodings are valid inputs;
+  never a draw at full time;
 - there is no home/away advantage concept comparable to team sports: the
   listed-first player is a presentation order, so HOME_ADV = 0 (research
   prior, documented - not fitted);

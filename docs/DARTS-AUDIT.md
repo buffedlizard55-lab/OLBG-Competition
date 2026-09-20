@@ -1,104 +1,134 @@
 # Darts (PDC) schema audit — OpenLigaDB payloads
 
-Audit date: **2026-09-20**, performed on the three real committed capture
-payloads listed below (no synthetic fixtures were used for any finding).
-Every claim here is reproducible from the committed files and the URLs in
-the verification checklist at the end.
+Audit date: **2026-09-20** (two capture generations, 19:06Z and 19:33Z),
+performed on the real committed capture payloads listed below (no synthetic
+fixtures were used for any finding). Every claim is reproducible from the
+committed files and the URLs in the verification checklist at the end.
 
 ## 1. Why darts needs discovery (not a fixed shortcut)
 
 The repository originally documented `PDCWSDF/2024` as the darts pilot
-source. On 2026-09-20 that endpoint returned an **empty list** (`[]`) — the
-league exists but carries no matches. All automated darts ingest is
-therefore discovery-driven:
+source. On 2026-09-20 that endpoint returned an **empty list** (`[]`) —
+`PDCWSDF` turned out to be the *2026* World Series of Darts Finals league
+(leagueId 6009, created for this season; the 2026 season carries 31
+matches). All automated darts ingest is therefore discovery-driven:
 
 1. `GET /getavailableleagues` → keep leagues whose shortcut/name matches
-   `dart*`/`pdc*` (the darts heuristic in `northstar/capture.py`).
+   `dart*`/`pdc*` (29 darts leagues in the live index on 2026-09-20).
 2. `GET /getavailableseasons/{shortcut}` → **HTTP 404 for every darts
-   league observed** (8 candidates, all recorded in the capture log). This
-   is a real source behaviour, not a transient error: it reproduced on two
-   independent CI runs (35530789056, 35531161198).
+   league observed** (all 29+ candidates, recorded in the capture log).
+   This is a real source behaviour, not a transient error: it reproduced
+   across independent CI runs (35530789056, 35531161198, 35532480596).
 3. Fallback (implemented after observing the 404s): probe
    `GET /getmatchdata/{shortcut}/{season}` directly for the last three
    seasons. An empty list means "no data for that season"; matches mean the
-   season exists.
+   season exists. The probe also counts unfinished matches and splits them
+   into **future** (start after the probe instant) and **past**.
 
-Darts leagues present in the live league index on 2026-09-20 (names as
-returned by the source):
+### Capture priority (refined against two live findings)
 
-| shortcut | leagueName | leagueId |
-|---|---|---|
-| PDCMP | PDC World Matchplay 2025 | 4864 |
-| bsdo | Baltic Sea Darts Open 2025 | 4861 |
-| PDCPCF | Players Championship Finals 2025 | 4892 |
-| darts-wm-26 | Darts WM 2026 | 4893 |
-| PDCWM | PDC Darts-WM | 4894 |
-| PDCEDC | European Darts Championship 2025 | 4886 |
-| PDCWGP | (World Grand Prix — name per league index) | see log |
-| pdcfdt | (PDC Players Championship / FD T — name per league index) | see log |
+- **Upcoming-first:** leagues whose latest season carries *future*
+  unfinished matches are captured first — otherwise finished history
+  permanently crowds out the events the forward desk needs.
+- **Abandoned-league demotion:** `darts-wm-26` ("Darts WM 2026", leagueId
+  4893) was captured once and found to be an **abandoned duplicate** of the
+  complete `PDCWM` league: 64 rows for the same World Championship, of
+  which 12 finished rows match PDCWM rows **12/12 on teams+score** (9 also
+  on exact start time), while **52 unfinished rows have start times from
+  December 2025** — nine months stale. Its fixture was removed from
+  `data/fixtures/current/` (git history retains it; the capture log records
+  the episode); the discovery sort now demotes any league with
+  ≥ 10 past-unfinished rows (`ABANDONED_PAST_UNFINISHED`) below cleanly
+  entered leagues, so it is not re-captured. Covered by
+  `test_abandoned_league_with_stale_unfinished_rows_is_demoted`.
+- **Case-insensitive shortcut validation:** `getmatchdata/pdcfdt/2026`
+  answers with payload `leagueShortcut: "PDCFDT"` (observed live; a strict
+  comparison refused the payload and logged the refusal). Validation now
+  compares case-insensitively and records the payload's canonical spelling;
+  genuine league mismatches are still refused.
+- `max_leagues=4` (payloads are small: ≤ 127 matches).
 
-**Upcoming-first priority:** the league index lists finished 2025 events
-before `darts-wm-26`, so discovery sorts candidates by *unfinished matches
-in the latest season* (descending) before applying `max_leagues=4`. Without
-this, the December 2026 World Championship — the payload the forward desk
-actually needs — would be permanently crowded out by finished history.
-Covered by `test_upcoming_leagues_outrank_finished_history`.
+Captured on 2026-09-20 (all committed with `.meta.json` sha256 sidecars):
+`PDCMP/2025`, `bsdo/2025`, `PDCPCF/2025` (first run), then
+`PDCWSDF/2026`, `PDCWM/2026` (second run; `pdcfdt` refused on the case
+mismatch, fix landed after the run).
 
-## 2. The three committed payloads
+## 2. The committed payloads
 
-| fixture | event | matches | finished | rounds (groupOrderID) |
+| fixture | event | matches | finished | score unit |
 |---|---|---|---|---|
-| `data/fixtures/current/openligadb_pdcmp_2025.json` | PDC World Matchplay 2025 | 31 | 31 | 1. Runde(16), Achtelfinale(8), Viertelfinale(4), Halbfinale(2), Endspiel(1) |
-| `data/fixtures/current/openligadb_bsdo_2025.json` | Baltic Sea Darts Open 2025 | 47 | 47 | + 2. Runde(16) — six rounds |
-| `data/fixtures/current/openligadb_pdcpcf_2025.json` | Players Championship Finals 2025 | 63 | 63 | six rounds, 32-player draw |
+| `openligadb_pdcmp_2025.json` | PDC World Matchplay 2025 | 31 | 31 | legs |
+| `openligadb_bsdo_2025.json` | Baltic Sea Darts Open 2025 | 47 | 47 | legs |
+| `openligadb_pdcpcf_2025.json` | Players Championship Finals 2025 | 63 | 63 | legs |
+| `openligadb_pdcwm_2026.json` | PDC Darts-WM (World Championship, 2025-12-11 → 2026-01-03) | 127 | 127 | **sets** |
+| `openligadb_pdcwsdf_2026.json` | World Series of Darts Finals 2026 (2026-09-17 → 09-20) | 31 | 30 (+1 in play at capture) | legs |
 
-All rows: `leagueSeason=2025`, `matchIsFinished=true`, `location=null`,
-one `goals` array entry mirroring the final score (except matchID 79962,
-see §3.1).
+Common shape: `leagueSeason` constant per file, `location=null`, round
+groups (`1. Runde` … `Endspiel`) with strictly ordered `groupOrderID`,
+starts clustered in afternoon (11:00–15:30Z) and evening (17:00–21:00Z)
+sessions.
 
 ## 3. Schema findings (all from the real payloads)
 
 ### 3.1 Result encoding
-- Exactly one result entry per match in 140/141 rows:
+- One result entry per match in 436/438 rows:
   `resultTypeKind="After90Minutes"`, `resultName="Endergebnis"`,
-  `resultTypeID=2`. `pointsTeam1/2` are the **legs won** (e.g. World
-  Matchplay R1 best-of-19: Wade 10–3 Cullen; BSDO R1 best-of-11: 6–3;
-  PCF R1 best-of-11: Cross 2–6 Bialecki). Draws never occur.
-- **One irregular match — matchID 79962** (PCF 2025 Halbfinale,
-  Gerwyn Price v Luke Littler, 2025-11-23T19:15Z): *three* `After90Minutes`
-  entries with consecutive resultIDs (120595/96/97): `8-11`, `0-0`, `0-0`.
-  The single `goals` entry corroborates `8-11`. Handling per the data
-  contract (`docs/data-contract.md`): the first entry is stored, the match
-  is flagged `RESULT_KIND_INCONSISTENT` ("conflicting duplicate result
-  entries"), and flagged events are **excluded from walk-forward rating
-  updates, from accuracy grading, and held ungraded in forward grading**
-  until a human resolves the review item. Nothing is silently chosen.
-  Manual review: <https://api.openligadb.de/getmatchdata/79962> and the
-  official PDC results at <https://www.pdc.tv/>.
+  `resultTypeID=2`. `pointsTeam1/2` are a **decisive count** — legs in
+  ProTour/EuroTour/World-Series events (e.g. Wade 10–3 Cullen, best-of-19
+  legs), **sets** in World Championship events (e.g. 7-1, 6-3 scorelines in
+  PDCWM). The Elo model only compares the counts, so both encodings are
+  valid inputs; draws never occur.
+- **Two irregular matches — conflicting duplicate result entries** (same
+  pattern, consecutive resultIDs, one real entry plus stale `0-0`
+  duplicates):
+  1. **matchID 79962** — PDCPCF 2025 Halbfinale, Gerwyn Price v Luke
+     Littler, 2025-11-23T19:15Z: `8-11`, `0-0`, `0-0`
+     (resultIDs 120595/96/97); the single `goals` entry corroborates
+     `8-11`.
+  2. **matchID 80237** — PDCWM 2026, Luke Littler v Krzysztof Ratajski,
+     2026-01-01T19:15Z.
+  Handling per the data contract (`docs/data-contract.md`): the first entry
+  is stored, the match is flagged `RESULT_KIND_INCONSISTENT`, and flagged
+  events are **excluded from walk-forward rating updates, from accuracy
+  grading, and held ungraded in forward grading** until a human resolves
+  the review item. Nothing is silently chosen.
+  Manual review: <https://api.openligadb.de/getmatchdata/79962>,
+  <https://api.openligadb.de/getmatchdata/80237>, official PDC results at
+  <https://www.pdc.tv/>.
 
 ### 3.2 Entry-lag / availability
-`lastUpdateDateTime` − `matchDateTimeUTC` across the 141 rows:
+`lastUpdateDateTime` − `matchDateTimeUTC` across all finished rows:
 
 | event | min | median | max | same-day (<12 h) rows |
 |---|---|---|---|---|
-| PDCMP | 2.7 h | 3.0 h | 109.8 h | 28/31 (same-day max 10.46 h) |
-| BSDO | 2.1 h | 27.6 h | 54.5 h | 14/47 (weekend batch entry) |
-| PCF | 1.2 h | 1.7 h | 3.0 h | 63/63 |
+| PDCMP 2025 | 2.7 h | 3.0 h | 109.8 h | 28/31 (same-day max 10.46 h) |
+| BSDO 2025 | 2.1 h | 27.6 h | 54.5 h | 14/47 (weekend batch entry) |
+| PCF 2025 | 1.2 h | 1.7 h | 3.0 h | 63/63 |
+| PDCWM 2026 | 1.5 h | 2.2 h | 11.7 h | 127/127 (same-day max 11.73 h) |
+| WSDF 2026 | 2.5 h | 3.0 h | 9.3 h | 30/30 |
 
 Because entry behaviour mixes live per-match entry with multi-day batch
 entry, `lastUpdateDateTime` is unusable as the availability signal. The
 adapter uses a documented conservative construction:
 **availability = start + 12 h** (`INFERRED_GAME_DURATION["darts"]`), which
-covers every observed same-day entry (max 10.46 h) and actual match end
-(≤ ~4 h), while still releasing a round before the next day's first
+covers every observed same-day entry across all five events (max 11.73 h —
+the 2026 payloads confirmed the bound chosen from the 2025 three) and
+actual match end, while still releasing a round before the next day's first
 decision cutoff. This is an inference about when a desk *could have known*,
 not a claim about the source's timestamps — same convention as DEL hockey
 (+3 h), see `docs/STATUS.md`.
 
-### 3.3 Player identity (a real limitation, not fixed by guessing)
+### 3.3 In-play matches at capture time
+The WSDF 2026 **final (Ross Smith v Gerwyn Price, 2026-09-20T19:30Z) had
+already started** at the 19:33Z capture. Per the ingest contract it is
+recorded `postponed` (unfinished at/before `as_of` → review queue, never
+guessed) and resolves automatically to `finished` at the next capture.
+This is the pipeline meeting a genuinely live event for the first time —
+the flags worked as designed.
+
+### 3.4 Player identity (a real limitation, not fixed by guessing)
 Players are stored in `team1/team2` with `teamName` as the player name.
-Across the three events there are 79 distinct names; 40 appear in more than
-one event. **The same player can appear under different names**:
+**The same player appears under different names**:
 
 - `R. van Barneveld` (BSDO) vs `Raymond van Barneveld` — same person.
 - `D. van Duijvenbode` (BSDO) vs `Dirk van Duijvenbode` — same person.
@@ -110,45 +140,55 @@ one event. **The same player can appear under different names**:
 The Elo pool keys on exact `teamName`, so these splits fragment rating
 history. We deliberately do **not** auto-merge: identity resolution needs a
 curated, reviewed mapping (a future `data/aliases/darts.json`-style
-artifact), and merging on heuristics would violate the no-silent-correction
-contract. Effect today: slightly compressed rating gaps — which biases the
-desk toward *silence*, never toward false confidence.
+artifact, human-verified against official PDC player pages); merging on
+heuristics would violate the no-silent-correction contract. Effect today:
+compressed rating gaps — biasing the desk toward *silence*, never toward
+false confidence.
 
-### 3.4 Other checks
+### 3.5 Other checks
 - No walkover/retirement pattern found: zero finished rows with all-zero or
-  null scores other than the 79962 duplicates (§3.1).
-- `group.groupOrderID` is present and strictly ordered by round in all
-  three events — walk-forward ordering (round, then start, then event id)
-  is sound.
-- Timezone: all starts in `matchDateTimeUTC`; sessions cluster at 11:00–
-  13:00Z (afternoon) and 18:00–19:15Z (evening).
+  null scores other than the duplicate-entry rows (§3.1).
+- `group.groupOrderID` present and strictly round-ordered in every event.
+- Timezone: all starts in `matchDateTimeUTC`.
 
-## 4. Pilot result — darts-elo-v1 (pre-registered priors, no refit)
+## 4. Pilot result — darts-elo-v1 (pre-registered priors, never refitted)
 
 Strategy (priors stated in code *before* any grading, see
 `northstar/strategies/darts.py`): 2-way player Elo, K=24, initial 1500,
 HOME_ADV=0 (listed-first is presentation order in darts), selectivity
-MIN_PROB=0.60, decision cutoff start−30 min. Prediction-only: no
-permissioned darts odds path exists, so grading is accuracy/Brier, never
-PnL (never shown as zero).
+MIN_PROB=0.60, decision cutoff start−30 min, availability start+12h.
+Prediction-only: no permissioned darts odds path exists, so grading is
+accuracy/Brier, never PnL (never shown as zero).
 
-**Result on 141 finished matches: 0 selections, 0 graded.** Every
-prediction fell below the selectivity threshold; the maximum model
-probability observed across all 141 was **0.5510** (95th pct 0.5345), and
-the pool's highest rating by the end of PCF 2025 was ≈1556.
+Chronology of the honest result:
 
-Root cause is structural, not a coding fault: the pool is cold-started at
-the first captured event (July 2025) with no prior history, K=24 moves
-ratings slowly, and knockout fields pair similarly-rated qualifiers, so
-rating gaps never reached the ~71 points needed for a 0.60 favourite.
-The honest reading: **the desk stayed silent rather than force bets** —
-which is the pre-registered behaviour. We did not lower MIN_PROB or raise
-K after seeing the data; that would be fitting the pilot.
+1. **2025-only pool (141 matches: PDCMP/BSDO/PCF): 0 selections.** Every
+   prediction fell below the threshold; max observed model probability
+   **0.5510**. Root cause: cold-start pool (no history before July 2025),
+   K=24 moves ratings slowly, knockout fields pair similarly-rated
+   qualifiers. The desk stayed silent rather than force bets, and the
+   priors were **not** adjusted after seeing this.
+2. **Extended pool (298 finished matches, 2025-07 → 2026-09, five events):
+   21 selections, 21 graded, 16 hits = 76.2%, mean Brier 0.3922, 0 leak
+   violations.** The selections appeared exactly where the cold-start
+   explanation predicts — 1 in late PCF 2025 (Price v Bialecki, 2025-11-22,
+   first player with cross-event history meeting a debutant), 10 in the
+   World Championship (Dec 2025–Jan 2026), 10 in WSDF 2026 (Sep 2026) —
+   same priors, more data, no refit. Walk-forward ordering for the pooled
+   run is start-chronological across events (engine change documented in
+   `northstar/backtest.py`; identical ordering for single-competition
+   pilots).
 
-The forward desk (`darts-elo-v1` in the forward registry) activates when an
-upcoming darts event enters the 10-day issue horizon — realistically the
-PDC World Championship (`darts-wm-26`, December 2026), which discovery
-already ranks first once it carries unfinished matches.
+**Interpretation guard:** 76.2% on 21 predictions has an enormous binomial
+error bar (95% ≈ 55–90%); it demonstrates the pipeline end-to-end on real
+outcomes, **not** skill, and there is no PnL claim of any kind. The two
+disputed duplicate-entry matches (§3.1) are excluded from grading and from
+rating updates while they sit in the review queue.
+
+The forward desk (`darts-elo-v1` in the forward registry) issues calls when
+an upcoming darts event enters the 10-day horizon with a warm pool — the
+next World Championship (December 2026) is the realistic activation, and
+discovery ranks any league carrying future unfinished matches first.
 
 ## 5. Verification checklist (manual review links)
 
@@ -162,7 +202,13 @@ already ranks first once it carries unfinished matches.
   - <https://api.openligadb.de/getmatchdata/PDCMP/2025> — `ddd45869f59c827bac57076be4796673178b5b6d0ed9ff9d5de28de03c633517`
   - <https://api.openligadb.de/getmatchdata/bsdo/2025> — `f22027d138baf2d7776ac68b46758c3aae796f976fba4875fc33297f1a2ff08b`
   - <https://api.openligadb.de/getmatchdata/PDCPCF/2025> — `724ce36c64be66733387ef5024fc3c45e55dde68fa908867d82ce042f197c3f1`
-- The irregular match: <https://api.openligadb.de/getmatchdata/79962>
+  - <https://api.openligadb.de/getmatchdata/PDCWM/2026> — `a250b67aba7c2f98d8275b84e48aa343acaed162c1e4553d13e7a3261ea09e6a`
+  - <https://api.openligadb.de/getmatchdata/PDCWSDF/2026> — `9c8aec47b7a9f630c6aeada2bb86e482bde0c3015d69a2f890ef2473c965ca1f`
+- The irregular matches: <https://api.openligadb.de/getmatchdata/79962>,
+  <https://api.openligadb.de/getmatchdata/80237>
+- The abandoned duplicate (removed fixture, kept for review):
+  <https://api.openligadb.de/getmatchdata/darts-wm-26/2026> vs
+  <https://api.openligadb.de/getmatchdata/PDCWM/2026>
 - Capture runs (GitHub Actions, branch history):
   <https://github.com/buffedlizard55-lab/OLBG-Competition/actions/workflows/capture.yml>
 - Licence: OpenLigaDB data is ODbL — see `docs/LICENSING.md`.

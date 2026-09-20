@@ -144,9 +144,16 @@ HYPOTHESES: List[Dict[str, Any]] = [
         "data": "OpenLigaDB PDC captures (ODbL), schema-audited - no "
                 "permissioned odds",
         "test": "Walk-forward 2-way accuracy",
-        "description": "2-way player Elo on sets won (K=24, no venue "
-                       "adjustment - research priors); prediction-only "
-                       "until a permissioned darts odds path exists.",
+        "description": "2-way player Elo on the decisive leg/set count (K=24, "
+                       "no venue adjustment - research priors stated "
+                       "before grading); prediction-only until a "
+                       "permissioned darts odds path exists. Pilot "
+                       "2026-09-20: 0 selections on the cold 2025 pool "
+                       "(141 matches, max prob 0.551), then 21 graded "
+                       "(16 hits, 76.2%, Brier 0.392) on the extended "
+                       "298-match 2025-26 pool - same priors, no refit; "
+                       "huge error bar, no skill claim; see "
+                       "docs/DARTS-AUDIT.md.",
         "refs": [],
     },
     {

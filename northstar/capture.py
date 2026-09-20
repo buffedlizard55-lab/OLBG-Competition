@@ -87,30 +87,62 @@ def discover_leagues(fetch=openligadb.fetch_url) -> Dict[str, Any]:
     }
 
 
-def _probe_season_matches(fetch, shortcut: str, season: int) -> Optional[int]:
-    """Return {"matches": n, "unfinished": u} for a shortcut/season, or None.
+def _probe_season_matches(fetch, shortcut: str, season: int, now=None
+                          ) -> Optional[Dict[str, int]]:
+    """Return {"matches", "unfinished", "future_unfinished",
+    "past_unfinished"} for a shortcut/season, or None on failure.
 
     Darts leagues on OpenLigaDB 404 on getavailableseasons (observed live
     2026-09-20), so the season list is probed directly through
     getmatchdata: an empty list means "no data for that season", a 404
     means the shortcut itself is unknown.
+
+    The future/past split matters for capture priority: "Darts WM 2026"
+    (shortcut darts-wm-26) was found live carrying 52 *unfinished* rows
+    whose start times were 9 months old - an abandoned duplicate of the
+    complete PDCWM league, not upcoming fixtures. Only unfinished matches
+    starting after ``now`` are real forward-desk candidates.
     """
+    now = now or models.utcnow()
     url = f"{openligadb.API_BASE}/getmatchdata/{shortcut}/{season}"
     try:
         payload = json.loads(fetch(url))
     except Exception:  # noqa: BLE001 - probe failures are findings
         return None
-    if isinstance(payload, list):
-        unfinished = sum(1 for m in payload
-                         if isinstance(m, dict) and not m.get("matchIsFinished"))
-        return {"matches": len(payload), "unfinished": unfinished}
-    return None
+    if not isinstance(payload, list):
+        return None
+    unfinished = future = 0
+    for m in payload:
+        if not isinstance(m, dict) or m.get("matchIsFinished"):
+            continue
+        unfinished += 1
+        try:
+            start = models.parse_utc(m["matchDateTimeUTC"])
+        except Exception:  # noqa: BLE001 - undated rows are not "upcoming"
+            continue
+        if start > now:
+            future += 1
+    return {"matches": len(payload), "unfinished": unfinished,
+            "future_unfinished": future,
+            "past_unfinished": unfinished - future}
+
+
+ABANDONED_PAST_UNFINISHED = 10   # stale-row pattern threshold (see probe)
+
+
+def _record_probe_priority(row: Dict[str, Any], probe: Dict[str, int]) -> None:
+    """Copy the probe's unfinished-match breakdown onto a discovery row."""
+    row["unfinished_in_latest"] = probe["unfinished"]
+    row["future_unfinished_in_latest"] = probe["future_unfinished"]
+    row["past_unfinished_in_latest"] = probe["past_unfinished"]
+    row["abandoned_pattern"] = (probe["past_unfinished"]
+                                >= ABANDONED_PAST_UNFINISHED)
 
 
 def discover_darts_seasons(fetch=openligadb.fetch_url,
                            max_leagues: int = 4,
-                           this_year: Optional[int] = None
-                           ) -> List[Dict[str, Any]]:
+                           this_year: Optional[int] = None,
+                           now=None) -> List[Dict[str, Any]]:
     """For each discovered darts league, find seasons that carry data.
 
     Two-step discovery, everything recorded: getavailableseasons first; on
@@ -123,15 +155,19 @@ def discover_darts_seasons(fetch=openligadb.fetch_url,
              for l in report["darts_candidates"]}
     out: List[Dict[str, Any]] = []
     seen = set()
-    year = this_year or models.utcnow().year
+    now = now or models.utcnow()
+    year = this_year or now.year
     candidates = [l["leagueShortcut"] for l in report["darts_candidates"]]
     for extra in DARTS_SHORTCUT_CANDIDATES:
         if extra not in candidates:
             candidates.append(extra)   # probe documented-but-missing too
     for shortcut in candidates:
-        if not shortcut or shortcut in seen:
+        # Case-insensitive dedupe: the live league index carries both
+        # "pdcfdt" (leagueId 4878) and "PDCFDT" (6008), and capture writes
+        # lowercase fixture names - probing both would collide on one file.
+        if not shortcut or shortcut.lower() in seen:
             continue
-        seen.add(shortcut)
+        seen.add(shortcut.lower())
         row: Dict[str, Any] = {"leagueShortcut": shortcut,
                                "leagueName": names.get(shortcut)}
         time.sleep(MIN_REQUEST_GAP_S)
@@ -149,9 +185,9 @@ def discover_darts_seasons(fetch=openligadb.fetch_url,
             if row["latest_season"] is not None:
                 time.sleep(MIN_REQUEST_GAP_S)
                 probe = _probe_season_matches(fetch, shortcut,
-                                              row["latest_season"])
+                                              row["latest_season"], now=now)
                 if probe:
-                    row["unfinished_in_latest"] = probe["unfinished"]
+                    _record_probe_priority(row, probe)
         else:
             # Direct per-season probe (darts leagues 404 on the seasons
             # endpoint but answer getmatchdata - verified 2026-09-20).
@@ -159,7 +195,7 @@ def discover_darts_seasons(fetch=openligadb.fetch_url,
             for season in (year, year - 1, year - 2):
                 time.sleep(MIN_REQUEST_GAP_S)
                 probes[season] = _probe_season_matches(fetch, shortcut,
-                                                       season)
+                                                       season, now=now)
             row["season_probes"] = probes
             with_data = [s for s, p in probes.items() if p and p["matches"]]
             row["seasons"] = sorted(with_data)
@@ -167,17 +203,21 @@ def discover_darts_seasons(fetch=openligadb.fetch_url,
             if row["latest_season"] is not None:
                 probe = probes.get(row["latest_season"])
                 if probe:
-                    row["unfinished_in_latest"] = probe["unfinished"]
+                    _record_probe_priority(row, probe)
             if not with_data:
                 row["note"] = ("no data for the last three seasons "
                                "(or shortcut unknown)")
         out.append(row)
-    # Forward-test priority: a league whose latest season still carries
-    # *unfinished* matches (upcoming fixtures) must never be crowded out by
-    # all-finished historical events - the league index lists e.g. the
-    # completed 2025 PDC events before "Darts WM 2026" (leagueId 4893),
-    # which is exactly the payload the forward desk will need in December.
-    out.sort(key=lambda o: (-(o.get("unfinished_in_latest") or 0),
+    # Forward-test priority, refined against live data 2026-09-20:
+    # 1. leagues whose latest season carries *future* unfinished matches
+    #    (real upcoming fixtures) come first;
+    # 2. leagues showing the abandoned pattern (>= ABANDONED_PAST_UNFINISHED
+    #    unfinished rows whose starts are long past - e.g. darts-wm-26 with
+    #    52 stale rows duplicating the complete PDCWM league) are demoted
+    #    below cleanly-entered leagues;
+    # 3. then newest season first, stable within ties (league index order).
+    out.sort(key=lambda o: (-(o.get("future_unfinished_in_latest") or 0),
+                            1 if o.get("abandoned_pattern") else 0,
                             -(o.get("latest_season") or 0)))
     kept = 0
     for row in out:
@@ -229,11 +269,16 @@ def capture_season(shortcut: str, season: int, sport: str, out_dir: str,
                 row.update({"written": False,
                             "error": f"match row missing '{key}'"})
                 return row
-        if str(m.get("leagueShortcut")) != shortcut:
+        if str(m.get("leagueShortcut")).lower() != shortcut.lower():
+            # Observed live 2026-09-20: getmatchdata answers case-
+            # insensitively and the payload carries the canonical spelling
+            # ("pdcfdt" -> "PDCFDT"). Only a genuine league mismatch is a
+            # refusal; a case variant is recorded and accepted.
             row.update({"written": False,
                         "error": f"payload shortcut {m.get('leagueShortcut')}"
                                  f" != requested {shortcut}"})
             return row
+    row["payload_shortcut"] = payload[0].get("leagueShortcut")
     fixture_name = f"openligadb_{shortcut.lower()}_{season}.json"
     fixture_path = os.path.join(out_dir, fixture_name)
     os.makedirs(out_dir, exist_ok=True)

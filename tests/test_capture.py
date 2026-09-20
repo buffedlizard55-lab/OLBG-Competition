@@ -11,7 +11,7 @@ import json
 import pytest
 
 from northstar import capture
-from northstar.models import sha256_text
+from northstar.models import parse_utc, sha256_text
 
 
 def _match(mid=1, shortcut="bl1", finished=False, **over):
@@ -108,6 +108,19 @@ class TestCaptureSeason:
                                              [_match(1, shortcut="del")])}))
         assert row["written"] is False and "!=" in row["error"]
 
+    def test_shortcut_case_variant_accepted_and_recorded(self, tmp_path):
+        """Live finding 2026-09-20: getmatchdata answers case-insensitively
+        ("pdcfdt" -> payload leagueShortcut "PDCFDT"); a case variant is a
+        recording, not a refusal."""
+        url = capture.openligadb.league_url("pdcfdt", 2026)
+        row = capture.capture_season("pdcfdt", 2026, "darts", str(tmp_path),
+                                     fetch=fake_fetch(
+                                         {url: json.dumps(
+                                             [_match(1, shortcut="PDCFDT")])}))
+        assert row["written"] is True
+        assert row["payload_shortcut"] == "PDCFDT"
+        assert (tmp_path / "openligadb_pdcfdt_2026.json").exists()
+
 
 class TestDiscovery:
     def test_discover_leagues_flags_darts(self):
@@ -158,10 +171,14 @@ class TestDiscovery:
 
     def test_upcoming_leagues_outrank_finished_history(self):
         """Discovery must prefer a league whose latest season still has
-        unfinished matches (the forward desk's future payload, e.g. "Darts
-        WM 2026") over all-finished 2025 events earlier in the index."""
-        finished_match = {"matchIsFinished": True}
-        upcoming_match = {"matchIsFinished": False}
+        *future* unfinished matches (the forward desk's payload, e.g. a
+        starting World Championship) over all-finished events earlier in
+        the index."""
+        now = parse_utc("2026-09-20T19:30:00Z")
+        finished = _match(1, shortcut="OLDDART25", finished=True,
+                          matchDateTimeUTC="2025-07-11T11:00:00Z")
+        upcoming = _match(2, shortcut="WMDART26", finished=False,
+                          matchDateTimeUTC="2026-12-13T12:30:00Z")
         urls = {
             "https://api.openligadb.de/getavailableleagues": json.dumps([
                 {"leagueId": 1, "leagueShortcut": "OLDDART25",
@@ -169,28 +186,90 @@ class TestDiscovery:
                 {"leagueId": 2, "leagueShortcut": "WMDART26",
                  "leagueName": "Darts WM 2026"}]),
         }
-        for shortcut in ("OLDDART25", "WMDART26"):
+        for shortcut, body in (("OLDDART25", [finished] * 5),
+                               ("WMDART26", [upcoming] * 5)):
             urls[f"https://api.openligadb.de/getavailableseasons/{shortcut}"
                  ] = "[]"
-            body = [finished_match] * 5 if shortcut == "OLDDART25" \
-                else [upcoming_match] * 5
             urls[f"https://api.openligadb.de/getmatchdata/{shortcut}/2026"
                  ] = json.dumps(body)
             for season in (2025, 2024):
                 urls[f"https://api.openligadb.de/getmatchdata/{shortcut}/"
                      f"{season}"] = "[]"
         out = capture.discover_darts_seasons(fetch=fake_fetch(urls),
-                                             this_year=2026, max_leagues=1)
+                                             this_year=2026, max_leagues=1,
+                                             now=now)
         wm = next(o for o in out if o["leagueShortcut"] == "WMDART26")
         old = next(o for o in out if o["leagueShortcut"] == "OLDDART25")
         assert wm["unfinished_in_latest"] == 5
-        assert old.get("unfinished_in_latest") == 0
+        assert wm["future_unfinished_in_latest"] == 5
+        assert old.get("future_unfinished_in_latest") == 0
         assert not wm.get("trimmed")
         assert old.get("trimmed") is True
-        assert "max_leagues" in old.get("note", "")
-        # the kept league is the upcoming one
-        kept = [o for o in out if o.get("latest_season") and not o.get("trimmed")]
+        kept = [o for o in out
+                if o.get("latest_season") and not o.get("trimmed")]
         assert [o["leagueShortcut"] for o in kept] == ["WMDART26"]
+
+    def test_case_variant_shortcuts_are_deduplicated(self):
+        """Live index 2026-09-20 carries both 'pdcfdt' (4878) and 'PDCFDT'
+        (6008); fixtures are written lowercase, so only one may be probed."""
+        now = parse_utc("2026-09-20T19:30:00Z")
+        m = _match(5, shortcut="PDCFDT", finished=True,
+                   matchDateTimeUTC="2026-07-11T11:00:00Z")
+        urls = {
+            "https://api.openligadb.de/getavailableleagues": json.dumps([
+                {"leagueId": 6008, "leagueShortcut": "PDCFDT",
+                 "leagueName": "PDC Floorstuff Darts Trophy 2026"},
+                {"leagueId": 4878, "leagueShortcut": "pdcfdt",
+                 "leagueName": "PDC FDT 2026"}]),
+        }
+        for sc in ("PDCFDT", "pdcfdt"):
+            urls[f"https://api.openligadb.de/getavailableseasons/{sc}"] = "[]"
+            for season in (2026, 2025, 2024):
+                urls[f"https://api.openligadb.de/getmatchdata/{sc}/{season}"
+                     ] = json.dumps([m]) if season == 2026 else "[]"
+        out = capture.discover_darts_seasons(fetch=fake_fetch(urls),
+                                             this_year=2026, now=now)
+        rows = [o for o in out
+                if o["leagueShortcut"].lower() == "pdcfdt"]
+        assert len(rows) == 1
+        assert rows[0]["latest_season"] == 2026
+
+    def test_abandoned_league_with_stale_unfinished_rows_is_demoted(self):
+        """Live finding 2026-09-20: shortcut darts-wm-26 carried 52
+        unfinished rows whose starts were 9 months old - an abandoned
+        duplicate of the complete PDCWM league. Unfinished-but-past rows
+        must NOT outrank cleanly-entered leagues."""
+        now = parse_utc("2026-09-20T19:30:00Z")
+        stale = _match(3, shortcut="DEADDART", finished=False,
+                       matchDateTimeUTC="2025-12-13T12:30:00Z")
+        done = _match(4, shortcut="CLEANDART", finished=True,
+                      matchDateTimeUTC="2026-07-19T18:00:00Z")
+        urls = {
+            "https://api.openligadb.de/getavailableleagues": json.dumps([
+                {"leagueId": 1, "leagueShortcut": "DEADDART",
+                 "leagueName": "Abandoned Darts WM copy"},
+                {"leagueId": 2, "leagueShortcut": "CLEANDART",
+                 "leagueName": "Clean Darts Event 2026"}]),
+        }
+        for shortcut, body in (("DEADDART", [stale] * 12),
+                               ("CLEANDART", [done] * 5)):
+            urls[f"https://api.openligadb.de/getavailableseasons/{shortcut}"
+                 ] = "[]"
+            urls[f"https://api.openligadb.de/getmatchdata/{shortcut}/2026"
+                 ] = json.dumps(body)
+            for season in (2025, 2024):
+                urls[f"https://api.openligadb.de/getmatchdata/{shortcut}/"
+                     f"{season}"] = "[]"
+        out = capture.discover_darts_seasons(fetch=fake_fetch(urls),
+                                             this_year=2026, max_leagues=1,
+                                             now=now)
+        dead = next(o for o in out if o["leagueShortcut"] == "DEADDART")
+        clean = next(o for o in out if o["leagueShortcut"] == "CLEANDART")
+        assert dead["abandoned_pattern"] is True
+        assert dead["future_unfinished_in_latest"] == 0
+        assert not clean.get("abandoned_pattern")
+        assert not clean.get("trimmed")
+        assert dead.get("trimmed") is True
 
 
 
