@@ -30,25 +30,31 @@ const fmtDate = (iso) => {
 /* Status values: "Pilot-tested" entries are linked to a real backtest. */
 /* ------------------------------------------------------------------ */
 const hypothesisRegistry = [
-  { sport: "Football", name: "Elo rating + price discipline", status: "Pilot-tested", data: "Official fixtures/results · time-stamped odds", test: "Walk-forward 1X2", tested: "elo-edge-v1" },
+  { sport: "Football", name: "Elo rating + price discipline", status: "Pilot-tested", data: "Verified pilot fixtures/results · time-stamped odds", test: "Walk-forward 1X2", tested: "elo-edge-v1" },
   { sport: "Football", name: "Market favourite (baseline)", status: "Pilot-tested", data: "Same verified pilot odds", test: "Walk-forward 1X2", tested: "market-favourite-v1" },
   { sport: "Football", name: "Market longshot (baseline probe)", status: "Pilot-tested", data: "Same verified pilot odds", test: "Walk-forward 1X2", tested: "market-longshot-v1" },
   { sport: "Football", name: "Draw-No-Bet decisive form", status: "Pilot-tested", data: "Same verified pilot odds", test: "Walk-forward 2-way", tested: "draw-no-bet-v1" },
-  { sport: "Football", name: "Poisson goal totals", description: "Estimate home and away scoring rates from pre-match history and test totals without using information published after kick-off.", status: "Ready to source", data: "Official scores · line-up/time gate · odds", test: "Walk-forward totals" },
-  { sport: "Horse Racing", name: "Place probability by field size", description: "Test whether a calibrated place probability remains above the recorded price after separating race type, field size, going, and jurisdiction.", status: "Blocked", data: "Official result + runner/odds archive", test: "Jurisdiction-specific" },
-  { sport: "Tennis", name: "Surface-adjusted Elo", description: "Use player ratings split by surface and enforce a match-start cutoff before comparing the forecast with the captured price.", status: "Ready to source", data: "ATP/WTA/ITF results · odds", test: "Match-level Brier + ROI" },
-  { sport: "Basketball", name: "Rest and travel-adjusted rating", description: "Separate home advantage, rest days, and travel from team strength; keep overtime treatment explicit in settlement rules.", status: "Ready to source", data: "FIBA/NBA results · schedule · odds", test: "Spread / moneyline" },
-  { sport: "Baseball", name: "Starting pitcher and bullpen split", description: "Test pre-game pitcher, bullpen availability, and park effects without leaking post-lineup information into the forecast.", status: "Ready to source", data: "MLB results · lineups · odds", test: "Moneyline / totals" },
-  { sport: "American Football", name: "Efficiency differential with injury freshness", description: "Use official game outcomes and a dated injury state; hold out any game where the status was not available before the selection time.", status: "Blocked", data: "NFL/NCAA results · injury archive · odds", test: "Spread / total" },
-  { sport: "Cricket", name: "Venue and innings-state model", description: "Model format-specific run rates by venue and innings, with rain-reduced matches and abandoned games handled as explicit exclusions or voids.", status: "Ready to source", data: "ICC/competition results · scorecards", test: "Match / innings markets" },
-  { sport: "Golf", name: "Strokes-gained and course fit", description: "Test pre-tournament player form and course-fit features against a dated outright price; define ties and dead heats before running anything.", status: "Blocked", data: "Tour leaderboards · odds archive", test: "Outright / place" },
-  { sport: "Rugby Union", name: "Set-piece and territory rating", description: "Create separate union and league models; never pool their rules, scoring, or official result definitions.", status: "Ready to source", data: "World Rugby/RFL/NRL results", test: "Match / handicap" },
-  { sport: "Ice Hockey", name: "Goalie-adjusted expected goals", description: "Estimate shot quality and goalie availability before puck drop; separate shootout results from regulation settlement.", status: "Blocked", data: "IIHF/NHL results · lineups · odds", test: "Moneyline / totals" },
-  { sport: "Motor Racing", name: "Qualifying-to-finish delta", description: "Use only information available before the race start and define retirements, classified finish, and each-way places per series.", status: "Ready to source", data: "FIA/F1 results · qualifying · odds", test: "Finish / podium" },
-  { sport: "Darts", name: "Throw rate plus checkout profile", description: "Compare dated player performance rates while keeping format, leg distance, and event surface consistent.", status: "Ready to source", data: "PDC results · match format · odds", test: "Match / handicap" },
-  { sport: "Boxing / MMA", name: "Opponent-adjusted performance", description: "Keep boxing and MMA separate; use event-organizer results and freeze age, reach, record, and training-state fields at selection time.", status: "Blocked", data: "Organizer results · commission data · odds", test: "Fight winner / method" },
-  { sport: "Esports", name: "Map-pool strength with patch lock", description: "Treat game title, tournament, patch, best-of format, and map veto as mandatory identifiers; no cross-title pooling.", status: "Blocked", data: "Organizer results · patch history · odds", test: "Series / map" },
-  { sport: "Cycling / Athletics", name: "Course-fit performance delta", description: "Separate timed events from mass-start events and use governing-body results with event-specific classification rules.", status: "Blocked", data: "UCI/World Athletics results", test: "Outright / placement" },
+  { sport: "Football", name: "Poisson goal totals", description: "Estimate home and away scoring rates from pre-match history and test totals without information published after kick-off.", status: "Ready to source", data: "Verified scores · line-up/time gate · licensed odds", test: "Walk-forward totals" },
+  { sport: "Horse Racing", name: "Place probability by field size", description: "Calibrate place probability separately by race type, field size, going, jurisdiction and declared non-runners; define dead heats before testing.", status: "Blocked", data: "Organizer result · runner archive · licensed odds", test: "Jurisdiction-specific" },
+  { sport: "Tennis", name: "Surface-adjusted Elo", description: "Use player ratings split by surface and enforce a match-start cutoff before comparing the forecast with the captured price; define retirements.", status: "Blocked", data: "Governing-body/organizer results · licensed odds", test: "Match-level Brier + ROI" },
+  { sport: "Golf", name: "Strokes-gained and course fit", description: "Test pre-tournament player form and course-fit features against a dated outright price; define ties and dead heats before running anything.", status: "Blocked", data: "Tour organizer leaderboards · licensed odds", test: "Outright / place" },
+  { sport: "American Football", name: "Efficiency differential with injury freshness", description: "Use a dated injury state and explicit regulation/overtime settlement; hold out any input not available before selection.", status: "Blocked", data: "League results · dated injury archive · licensed odds", test: "Spread / total" },
+  { sport: "Baseball", name: "Starting pitcher and bullpen split", description: "Test pre-game pitcher, bullpen availability and park effects without leaking post-lineup information.", status: "Blocked", data: "League results · lineups · licensed odds", test: "Moneyline / totals" },
+  { sport: "Basketball", name: "Rest and travel-adjusted rating", description: "Separate home advantage, rest days, travel and overtime from team strength; settle regulation and overtime markets explicitly.", status: "Blocked", data: "League results · schedule · licensed odds", test: "Moneyline / spread" },
+  { sport: "Cricket", name: "Venue and innings-state model", description: "Model format-specific run rates by venue and innings; handle rain-reduced matches, declarations and abandoned games explicitly.", status: "Blocked", data: "Competition scorecards · format rules · licensed odds", test: "Match / innings markets" },
+  { sport: "Cycling", name: "Course-fit performance delta", description: "Separate time trials from mass-start events and use governing-body classifications with a pre-start feature cutoff.", status: "Blocked", data: "Organizer classifications · licensed odds", test: "Outright / placement" },
+  { sport: "Darts", name: "Throw rate plus checkout profile", description: "Compare dated player rates while keeping format, leg distance and event rules consistent; walkovers are not losses.", status: "Blocked", data: "Organizer results · format rules · licensed odds", test: "Match / handicap" },
+  { sport: "Gaelic Football", name: "Score-difference rating", description: "Keep Gaelic football separate from rugby; model competition, venue and scoring rules with postponed and replayed fixtures explicit.", status: "Blocked", data: "Competition organizer results · licensed odds", test: "Match / handicap" },
+  { sport: "Greyhounds", name: "Box/track pace profile", description: "Freeze trap, distance, going, field and non-runner state at selection time; define voids and photo-finish revisions.", status: "Blocked", data: "Track/organizer results · licensed odds", test: "Win / place" },
+  { sport: "Handball", name: "Possession and pace split", description: "Separate league and tournament rules, extra time and seven-metre shootouts before any model result is graded.", status: "Blocked", data: "Federation results · licensed odds", test: "Match / total" },
+  { sport: "Hurling", name: "Venue-adjusted scoring rate", description: "Use competition-specific scoring and replay rules; do not pool with Gaelic football or association football.", status: "Blocked", data: "Competition organizer results · licensed odds", test: "Match / handicap" },
+  { sport: "Ice Hockey", name: "Goalie-adjusted expected goals", description: "Estimate shot quality and goalie availability before puck drop; separate regulation, overtime and shootout settlement.", status: "Blocked", data: "Federation/league results · licensed odds", test: "Moneyline / totals" },
+  { sport: "Motor Racing", name: "Qualifying-to-finish delta", description: "Use only pre-race information and define retirements, classified finish, penalties, podium and each-way places per series.", status: "Blocked", data: "Series organizer results · licensed odds", test: "Finish / podium" },
+  { sport: "Rugby Union", name: "Set-piece and territory rating", description: "Keep union and league separate; model competition rules, extra time and abandoned matches explicitly.", status: "Blocked", data: "Union organizer results · licensed odds", test: "Match / handicap" },
+  { sport: "Rugby League", name: "Tackle/territory rating", description: "Do not pool rugby codes; define golden-point, abandoned and handicap rules before backtesting.", status: "Blocked", data: "League organizer results · licensed odds", test: "Match / handicap" },
+  { sport: "Snooker", name: "Frame-strength and break profile", description: "Separate match format, walkovers and frame handicaps; freeze ranking and recent-form features before the match.", status: "Blocked", data: "Tour organizer results · licensed odds", test: "Match / frame handicap" },
+  { sport: "Volleyball", name: "Set differential rating", description: "Keep best-of format, golden-set rules and walkovers explicit; never treat a missing set as a loss.", status: "Blocked", data: "Federation results · licensed odds", test: "Match / set handicap" },
+  { sport: "Boxing", name: "Opponent-adjusted performance", description: "Use event-organizer/commission results and freeze record, weight class and bout rules at selection time; keep MMA separate.", status: "Blocked", data: "Organizer results · licensed odds", test: "Fight winner / method" },
 ];
 
 let DATA = null;
@@ -179,7 +185,13 @@ function renderTipDesk() {
     (entrants[b.entrant] ??= { bets: [] }).bets.push(b);
   }
   const lb = {};
-  for (const e of DATA.leaderboard || []) lb[e.entrant_id] = e;
+  for (const e of DATA.leaderboard || []) {
+    lb[e.entrant_id] = e;
+    // Keep entrants with no settled/imported rows visible: the manually
+    // captured OLBG best-tipster profile is analysis context, not a blank
+    // cell that disappears from the separate tipster desk.
+    (entrants[e.entrant_id] ??= { bets: [] });
+  }
   const desk = [];
   for (const [id, group] of Object.entries(entrants)) {
     const meta = lb[id] || { name: id, kind: "unknown", description: "" };
@@ -202,7 +214,7 @@ function renderTipDesk() {
       </div>
       ${g.meta.description ? `<p class="panel-copy">${escapeHtml(g.meta.description)}</p>` : ""}
       <div class="source-table-wrap"><table class="source-table"><thead><tr><th>Event</th><th>Market</th><th>Selection</th><th>Odds</th><th>Status</th><th>Result</th></tr></thead><tbody>
-      ${g.bets.map(tipRow).join("")}
+      ${g.bets.length ? g.bets.map(tipRow).join("") : '<tr><td colspan="6"><em>No imported selections attached to this profile; displayed statistics remain external benchmark context.</em></td></tr>'}
       </tbody></table></div>
     </section>`).join("") :
     `<div class="empty-state"><div class="empty-icon">⌕</div><h3>No tips match</h3><p>Try a different kind filter or search term.</p></div>`;
@@ -320,6 +332,7 @@ function renderSources() {
         <span><strong>Permitted modes</strong> · ${escapeHtml(s.collection_modes.join(", "))}</span>
         <span><strong>Rate limit</strong> · ${escapeHtml(s.rate_limit)}</span>
         <span><strong>Verified</strong> · ${escapeHtml(s.verified_at)}</span>
+        ${s.requires_active_entitlement ? `<span><strong>Build state</strong> · licensed entitlement required; inactive in this public build</span>` : ""}
       </div>
       ${(s.caveats || []).length ? `<p class="panel-copy" style="margin-top:10px"><strong>Caveats:</strong> ${s.caveats.map(escapeHtml).join(" · ")}</p>` : ""}
       <p style="margin-top:10px">${(s.evidence_urls || []).map((u) =>

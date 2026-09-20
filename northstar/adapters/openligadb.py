@@ -1,4 +1,4 @@
-"""OpenLigaDB adapter - the one official-result path built in this pass.
+"""OpenLigaDB adapter - the open-licensed reference-result path.
 
 Why OpenLigaDB for the pilot:
 - data are published under ODbL 1.0 (open, share-alike) - a permissioned
@@ -61,7 +61,7 @@ def event_id_for(match: Dict) -> str:
 
 # Which resultTypeKind is the "final" for a sport. Football settles on
 # 90 minutes (cups: extra time/penalties are separate markets). Hockey has
-# no such split - the official result is the final score, so a finished
+# no such split - the source's final score is the settled score, so a finished
 # DEL/CHL match that went to extra time (or a shootout in some formats)
 # must be read from AfterExtraTime / AfterPenalties, not the regulation
 # draw. Darts: fall back through the list if a series is recorded under a

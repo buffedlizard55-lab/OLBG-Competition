@@ -12,7 +12,7 @@ This document is the boundary between a useful paper-trading experiment and an i
 
 | Contract section | Where it is enforced | State |
 | --- | --- | --- |
-| 1. Core entities | `northstar/models.py` (dataclasses), `northstar/db.py` (schema) | implemented |
+| 1. Core entities | `northstar/models.py` (dataclasses), `northstar/db.py` (schema) | implemented; odds retain provider event ids |
 | 2. Settlement arithmetic | `northstar/settlement.py::decimal_pnl` | implemented (3-way match market) |
 | 3. Verification gates (1–7) | `northstar/settlement.py::settle_tip` (`GateLog`) | implemented |
 | 4. Anomaly taxonomy | `northstar/models.py` constants, `northstar/db.py::add_anomaly` | implemented (adds `POLICY_VIOLATION`, `CONSENSUS_DRIFT`, `EVENT_CHANGED`) |
@@ -22,8 +22,11 @@ This document is the boundary between a useful paper-trading experiment and an i
 
 Not yet implemented (design-only): handicap/totals/each-way market rules,
 tennis/cricket/motor-racing/esports settlement, live multi-source identity
-matching beyond the football pilot, and a production tip collector (OLBG
-collection is deliberately manual-only — see `docs/LICENSING.md`).
+matching beyond the football pilot, an active organizer-authorized result
+feed, and a production tip collector (OLBG collection is deliberately
+manual-only — see `docs/LICENSING.md`). The Odds API historical connector is
+implemented but cannot run without a paid entitlement and explicit terms
+acknowledgement; no provider response is bundled.
 
 ## 1. Core entities
 
@@ -65,7 +68,12 @@ collection is deliberately manual-only — see `docs/LICENSING.md`).
 
 Store every observed price instead of overwriting it:
 
-- `tip_id`, `observed_at_utc`, `provider`, `market_key`, `selection_key`, `decimal_odds`.
+- `tip_id` (or `event_id` for a market board), `observed_at_utc`, `provider`,
+  `source_event_id`, `market_key`, `selection_key`, and `decimal_odds`.
+- For a licensed historical API, `observed_at_utc` is the provider's returned
+  snapshot timestamp, not the requested timestamp. Reject the row when that
+  timestamp is not strictly before the event start; retain the requested time
+  in provenance/notes for audit.
 - Reject zero, negative, non-finite, or unexplained format conversions.
 - Preserve the raw response and its hash.
 - A later price can be used for a separately named closing-line metric, never silently as the entry price.

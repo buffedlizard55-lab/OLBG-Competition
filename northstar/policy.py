@@ -30,6 +30,11 @@ class SourcePolicy:
     verified_at: str = ""              # date the licensing evidence was checked
     evidence_urls: List[str] = field(default_factory=list)
     caveats: List[str] = field(default_factory=list)
+    # A paid API plan or a separate written agreement is an entitlement, not
+    # a property of the public documentation.  Connectors use this flag to
+    # refuse accidental unauthorised use even when the endpoint is public.
+    requires_active_entitlement: bool = False
+    terms_version: str = ""
 
     def permits(self, mode: str) -> bool:
         return mode in self.collection_modes
@@ -42,11 +47,37 @@ class SourcePolicy:
                 f"License: {self.license_id}. See docs/LICENSING.md."
             )
 
+    def assert_entitled(self, *, api_key: str | None = None,
+                        entitlement_reference: str | None = None,
+                        terms_acknowledged: bool = False) -> None:
+        """Require a local record that a contractual entitlement exists.
+
+        A published API page can document an endpoint without granting this
+        project access to it.  The key is never stored in the repository; an
+        offline licensed import may instead pass a non-secret entitlement
+        reference, and the terms acknowledgement is explicit at the call site.
+        """
+        if not self.requires_active_entitlement:
+            return
+        if (not api_key or not str(api_key).strip()) and \
+                (not entitlement_reference or not str(entitlement_reference).strip()):
+            raise PolicyError(
+                f"source '{self.source_id}' requires an active licensed "
+                "account/API key or an entitlement reference; neither was supplied"
+            )
+        if not terms_acknowledged:
+            raise PolicyError(
+                f"source '{self.source_id}' requires explicit acceptance of "
+                f"its current terms ({self.terms_version or 'version not recorded'})"
+            )
+
 
 # Mode vocabulary
 MODE_AUTO_API = "automated_api"
-MODE_MANUAL_IMPORT = "manual_import"          # human downloads/places a file
-MODE_MANUAL_SNAPSHOT = "manual_snapshot"      # human-captured page review
+MODE_LICENSED_API = "licensed_api"             # active paid/contractual access
+MODE_LICENSED_IMPORT = "licensed_import"       # authorised export/import
+MODE_MANUAL_IMPORT = "manual_import"            # human downloads/places a file
+MODE_MANUAL_SNAPSHOT = "manual_snapshot"       # human-captured page review
 
 _POLICIES: Dict[str, SourcePolicy] = {}
 
@@ -95,6 +126,73 @@ _register(SourcePolicy(
         "ODbL share-alike: derived database files must carry ODbL attribution.",
         "Completed seasons are stated to no longer change; live seasons can.",
     ],
+))
+
+# --- The Odds API ---------------------------------------------------------------
+# Verified 2026-09-20 from the provider's published documentation and terms:
+# historical odds are a paid-plan endpoint; the current terms explicitly
+# permit storing the data and displaying it in a UI/analytical dashboard, but
+# prohibit raw-feed resale/redistribution.  This is therefore a *licensed*
+# path, not an open-data path: a local API key and an explicit terms
+# acknowledgement are required, and raw responses must never be committed to
+# the public site payload.
+_register(SourcePolicy(
+    source_id="the_odds_api",
+    display_name="The Odds API (licensed historical snapshots)",
+    license_id="provider-terms-paid-plan",
+    license_summary=(
+        "Paid-plan contractual access. Historical odds are available only on "
+        "paid usage plans. Current terms permit storage, UI display, research, "
+        "derived values and model training, but prohibit selling or "
+        "redistributing the raw data as a standalone feed."
+    ),
+    collection_modes=[MODE_LICENSED_API, MODE_LICENSED_IMPORT],
+    rate_limit="historical quota: 10 credits per region per market; plan-dependent",
+    verified_at="2026-09-20",
+    evidence_urls=[
+        "https://the-odds-api.com/liveapi/guides/v4/#get-historical-odds",
+        "https://the-odds-api.com/historical-odds-data/",
+        "https://the-odds-api.com/terms-and-conditions.html",
+    ],
+    caveats=[
+        "This repository has no provider account or API key; the connector is "
+        "implemented but inactive until the operator supplies both.",
+        "Raw response bodies and bulk odds exports are local-only and must not "
+        "be published through GitHub Pages or a public API.",
+        "The provider disclaims accuracy; event identity and official results "
+        "still require independent reconciliation.",
+        "Bookmaker coverage and historical availability vary by sport, market, "
+        "region and the date each feed was added.",
+    ],
+    requires_active_entitlement=True,
+    terms_version="2026-08-31",
+))
+
+# --- authorized organizer results ----------------------------------------------
+# This is a contract boundary rather than a claimed live feed.  A concrete
+# organizer can be attached only with a written permission reference and an
+# attestation that the export is authoritative for the named competition.
+_register(SourcePolicy(
+    source_id="official_organizer",
+    display_name="Competition-organizer result export (authorization-gated)",
+    license_id="written-permission-required",
+    license_summary=(
+        "No blanket licence. An organizer identity, written permission "
+        "reference/date, source URL and authority attestation are mandatory "
+        "before a result is treated as official."
+    ),
+    collection_modes=[MODE_LICENSED_IMPORT],
+    rate_limit="set by the organizer agreement",
+    verified_at="2026-09-20",
+    evidence_urls=[
+        "docs/LICENSING.md#official-result-boundary-and-adapter-contract",
+    ],
+    caveats=[
+        "No live organizer permission or feed is bundled in this repository.",
+        "Synthetic contract tests are not real official outcomes.",
+    ],
+    requires_active_entitlement=True,
+    terms_version="written-permission-record",
 ))
 
 # --- football-data.co.uk --------------------------------------------------------

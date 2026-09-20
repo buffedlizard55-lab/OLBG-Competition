@@ -88,6 +88,29 @@ class TestWalkForward:
         assert len(rep["leak_violations"]) == 1
         assert store.tips(tipster_id="bad-cutoff-v1") == []
 
+    def test_read_after_declared_cutoff_is_refused(self, store):
+        class FalseCutoff:
+            name = "false cutoff"
+            description = "reads a feature after the declared cutoff"
+            odds_provider = "market_avg"
+
+            def predict(self, event, tbs, start, market_odds=None,
+                        odds_observed_at=None):
+                tbs.last_result(event["home_team"],
+                                odds_observed_at + timedelta(minutes=1))
+                return {"cutoff_utc": odds_observed_at,
+                        "selection_key": "home", "selection_text": "home",
+                        "model": {}}
+
+        ev = mk_event(store, event_id="ev-read-cutoff")
+        for sel, odds in (("home", 2.0), ("draw", 3.0), ("away", 4.0)):
+            mk_odds(store, ev["event_id"], selection_key=sel, odds=odds,
+                    observed="2026-01-09T12:00:00Z")
+        mk_result(store, event_id=ev["event_id"])
+        rep = run_walk_forward(store, [ev], FalseCutoff(), "false-cutoff-v1")
+        assert rep["bets"] == []
+        assert len(rep["leak_violations"]) == 1
+
     def test_no_leak_violations_for_honest_strategies(self, store):
         mk_event(store, event_id="ev-l2")
         store.conn.execute(

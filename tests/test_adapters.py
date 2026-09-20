@@ -239,6 +239,15 @@ class TestOlbGParse:
         # The pilot capture: every card carries Today/Tomorrow HH:MM
         assert len(parsed) == len(cards)
 
+    def test_replay_uses_snapshot_header_for_relative_dates(self):
+        path = RAW + "/olbg_betting_tips_index_2026-09-19.md"
+        captured = olbg._captured_at_from_header(path)
+        assert captured == parse_utc("2026-09-19T00:00:00Z")
+        card = next(c for c in olbg.parse_index_snapshot(path)
+                     if c["time_label"].startswith("Today"))
+        start = olbg._parse_olbg_time_label(card["time_label"], captured)
+        assert start.date().isoformat() == "2026-09-19"
+
     def test_event_snapshot_parses_consensus_table(self):
         path = RAW + "/olbg_event_mancity_sunderland_2026-09-19.md"
         parsed = olbg.parse_event_snapshot(path)

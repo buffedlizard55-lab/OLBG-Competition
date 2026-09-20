@@ -164,6 +164,10 @@ class OddsSnapshot:
     market_key: str
     selection_key: str
     decimal_odds: float
+    # Provider-side event id is retained so a later replay can prove which
+    # external object was joined to the internal event.  It is not used as
+    # the internal identity because providers can change ids across feeds.
+    source_event_id: Optional[str] = None
     timestamp_precision: str = "exact"   # exact | window_close_inferred
     raw_row_hash: Optional[str] = None
     source_url: Optional[str] = None

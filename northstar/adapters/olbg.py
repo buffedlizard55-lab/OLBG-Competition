@@ -49,6 +49,32 @@ SPORT_MAP = {
 }
 
 
+_CAPTURED_DATE_RE = re.compile(
+    r"^\s*Captured:\s*(\d{4}-\d{2}-\d{2})(?:[T ]\d{2}:\d{2}:\d{2}Z)?",
+    re.MULTILINE,
+)
+
+
+def _captured_at_from_header(path: str) -> Optional[datetime]:
+    """Use the snapshot's own provenance date for relative labels.
+
+    Replaying a historical manual capture on a later day must not turn
+    ``Today`` into a different calendar date.  The header is provenance, not
+    a network observation, so the fallback remains explicit when it is absent.
+    """
+    try:
+        with open(path, "r", encoding="utf-8") as fh:
+            match = _CAPTURED_DATE_RE.search(fh.read(4000))
+    except OSError:
+        return None
+    if not match:
+        return None
+    try:
+        return models.parse_utc(match.group(1) + "T00:00:00Z")
+    except ValueError:
+        return None
+
+
 def _parse_olbg_time_label(label: str, captured_at: datetime
                            ) -> Optional[datetime]:
     """'Today 14:45' / 'Tomorrow 09:00' -> UTC kickoff (UK local time),
@@ -220,12 +246,14 @@ def ingest_snapshots(store: Store, raw_dir: str,
                      captured_at: Optional[datetime] = None) -> Dict:
     """Import manual OLBG snapshots into the store as *pending* imported
     tips and imported-tipster entrants. Never verified, never PnL."""
-    captured_at = captured_at or utcnow()
+    index_path = os.path.join(
+        raw_dir, "olbg_betting_tips_index_2026-09-19.md")
+    if captured_at is None:
+        captured_at = (_captured_at_from_header(index_path)
+                       or utcnow())
     stats = {"index_cards": 0, "event_tips": 0, "tipsters": 0,
              "anomalies": []}
 
-    index_path = os.path.join(
-        raw_dir, "olbg_betting_tips_index_2026-09-19.md")
     cards_by_event_id: Dict[str, Dict] = {}
     if os.path.exists(index_path):
         for card in parse_index_snapshot(index_path):

@@ -11,10 +11,12 @@ retrieval** on the dates shown; keep the evidence links for manual review.
 | Source | License / policy | Permitted collection modes | Rate limit | Verified |
 |---|---|---|---|---|
 | **OpenLigaDB** | Open Database License 1.0 (ODbL-1.0), share-alike | automated API · manual import · manual snapshot | 60 requests/min/IP | 2026-09-19 |
+| **The Odds API** | Paid-plan provider terms (not open data); storage/UI/research/derived values allowed, raw-feed redistribution prohibited | **licensed API/import only**, active entitlement required | historical endpoint: 10 credits per region per market | 2026-09-20 |
+| **Organizer result export** | Written permission/authority attestation required per competition; no blanket licence | **licensed import only**, authorization reference required | set by organizer agreement | 2026-09-20 |
 | **football-data.co.uk** | No public license. Private-individuals-only; **no automated bots/scrapers/AI** | manual import · manual snapshot (**no** automated) | n/a (no auto retrieval) | 2026-09-19 |
 | **OLBG (Invendium Ltd)** | Copyright reserved (ToU 9.1). Personal, non-commercial use only | **manual snapshot only** (no automated, no redistribution) | no bulk collection | 2026-09-19 |
 
-## OpenLigaDB — ODbL-1.0 (the one official-result path)
+## OpenLigaDB — ODbL-1.0 (the open-licensed result adapter)
 
 **Evidence links (verify manually):**
 - https://openligadb.de/ — front page: *"Die über diese API bereitgestellten
@@ -34,6 +36,32 @@ retrieval** on the dates shown; keep the evidence links for manual review.
 - Data are **community-entered**, not a DFL/governing-body feed. That is why
   the identity gate keeps events at `probable` until an *independent* source
   agrees (see `docs/data-contract.md`).
+
+## The Odds API — licensed historical odds path
+
+**Evidence links (verify manually):**
+
+- [Historical odds documentation](https://the-odds-api.com/liveapi/guides/v4/#get-historical-odds): the historical endpoint is paid-plan-only, returns the closest snapshot equal to or earlier than the requested timestamp, and charges 10 credits per region per market.
+- [Historical data page](https://the-odds-api.com/historical-odds-data/): featured historical snapshots are documented from 6 June 2020, with 10-minute intervals initially and 5-minute intervals from September 2022; actual availability varies by sport, bookmaker and market.
+- [Terms and Conditions](https://the-odds-api.com/terms-and-conditions.html), last updated 31 August 2026: the provider permits storing data indefinitely, displaying it in a UI/app, research/analytical dashboards, derived values and model training; it prohibits reselling/repackaging/redistributing the raw data as a standalone feed and requires API-key confidentiality.
+
+**What is confirmed / what is not:**
+
+- The published terms provide a permissioned product path for a subscribed user to use the data inside a value-adding research dashboard. They do **not** give this repository an account, a key, or a blanket right to publish raw odds.
+- `northstar/adapters/the_odds_api.py` implements the historical endpoint, decimal/American conversion, explicit provider-event joins, raw-payload hashes, and strict pre-start rejection. The network path requires `NORTHSTAR_ODDS_API_KEY` plus `NORTHSTAR_ODDS_API_TERMS_ACK=2026-08-31` (or explicit function arguments); an offline import additionally requires a non-secret entitlement reference and the same terms acknowledgement.
+- No key, provider response, or paid-plan data is committed here. Until the operator has an active account and confirms the intended deployment with the provider's terms, this source is **implemented but inactive**, not represented as verified pilot PnL.
+- The GitHub Pages build publishes computed aggregates and source links only; it must not publish raw API responses, bulk CSV exports, API keys, or an endpoint that acts as a raw data feed.
+
+## Official-result boundary and adapter contract
+
+`northstar/adapters/official_results.py` is an authorization-gated adapter for a
+competition-organizer export. It does not pretend that a community database or
+a generic sports API is an official governing-body source. A live official
+path requires a written permission record and an attested organizer feed; no
+such permission or feed is bundled in this repository. Until that exists, the
+pilot labels OpenLigaDB accurately as **ODbL community/reference results** and
+uses the independent football-data compilation only as a cross-check. The
+adapter's synthetic tests verify the contract without inventing real results.
 
 ## football-data.co.uk — private use, no bots (research-use flag)
 
@@ -56,8 +84,11 @@ retrieval** on the dates shown; keep the evidence links for manual review.
 - **Pinnacle columns are excluded**: the site states Pinnacle odds have been
   systematically out of date since 23/07/2025 and excludes them from market
   averages; we do the same.
-- **No redistribution**: derived data stays in this private research repo and
-  is excluded from the published site payload (only computed aggregates ship).
+- **No redistribution**: raw CSV rows and bulk source payloads stay in this
+  private research repo and are excluded from the published site payload. The
+  Pages payload contains only the project's computed pilot metrics, selected
+  audit fields and source links; this is not a licence to republish source
+  data.
 - **Residual legal risk**: this is a personal-research use, not a commercial
   product. Before any scale-up, commercial use, or training use, obtain
   explicit written permission or switch to a licensed provider (the site

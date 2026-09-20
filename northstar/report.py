@@ -2,7 +2,8 @@
 
 The JSON is the single source the static site renders. Every number in it
 comes from the store (paper settlements, anomalies) or from the policy
-registry - never from prose.
+registry - never from prose. Raw licensed-provider responses are never copied
+into this payload.
 """
 from __future__ import annotations
 
@@ -15,63 +16,60 @@ from .leaderboard import build_leaderboard, placed_bets, upcoming_bets
 from .policy import all_policies
 from . import models
 
-# Sport coverage: the honest per-sport status, mirroring the sports OLBG
-# lists (verified 2026-09-19 on the site's tips index and sports menu).
-# A sport is "pilot_verified" only when a permissioned results path AND a
-# permissioned odds path have been verified end-to-end with stored,
-# hash-checked evidence. "scope": "olbg" = listed on OLBG; "extra" =
-# candidate beyond the OLBG list.
+# The inventory is taken from the public OLBG betting-tips page manually
+# reviewed on 2026-09-20.  A row is not a claim of data coverage.  A sport is
+# ``pilot_verified`` only when a permissioned result path and a permissioned
+# odds path have both passed an end-to-end audit.  The two result-path rows
+# below have no odds path, so they cannot produce PnL.
 SPORT_COVERAGE = [
-    {"sport": "Football", "scope": "olbg",
-     "status": "pilot_verified",
-     "results_path": "OpenLigaDB (ODbL-1.0), Bundesliga 2024/25 pilot",
-     "odds_path": "football-data.co.uk D1 manual import (research-use flag)",
-     "note": "27-match hand-audited pilot (matchdays 1/10/20), 27/27 "
-             "dual-source result agreement. Full-season ingest runs in CI."},
-    {"sport": "Darts", "scope": "olbg",
-     "status": "results_path_available",
-     "results_path": "OpenLigaDB PDC endpoints (ODbL-1.0)",
-     "odds_path": "unverified",
-     "note": "Results path open-licensed; no permissioned odds source "
-             "verified yet -> no PnL. Next expansion candidate after "
-             "football scale-up."},
-    {"sport": "Horse Racing", "scope": "olbg", "status": "verification_blocked",
-     "results_path": "none verified", "odds_path": "none verified",
-     "note": "Not covered: no permissioned results or odds source "
-             "identified yet."},
-    {"sport": "Rugby Union", "scope": "olbg", "status": "verification_blocked",
-     "results_path": "none verified", "odds_path": "none verified",
-     "note": "Not covered: no permissioned results or odds source "
-             "identified yet."},
-    {"sport": "American Football", "scope": "olbg",
-     "status": "verification_blocked",
-     "results_path": "none verified", "odds_path": "none verified",
-     "note": "Not covered: no permissioned results or odds source "
-             "identified yet (CFL events observed on OLBG)."},
-    {"sport": "Baseball", "scope": "olbg", "status": "verification_blocked",
-     "results_path": "none verified", "odds_path": "none verified",
-     "note": "Not covered: no permissioned results or odds source "
-             "identified yet (MLB events observed on OLBG)."},
-    {"sport": "Motor Racing", "scope": "olbg", "status": "verification_blocked",
-     "results_path": "none verified", "odds_path": "none verified",
-     "note": "Not covered: no permissioned results or odds source "
-             "identified yet."},
-    {"sport": "Boxing", "scope": "olbg", "status": "verification_blocked",
-     "results_path": "none verified", "odds_path": "none verified",
-     "note": "Not covered: no permissioned results or odds source "
-             "identified yet."},
-    {"sport": "Greyhounds", "scope": "olbg", "status": "verification_blocked",
-     "results_path": "none verified", "odds_path": "none verified",
-     "note": "Not covered: no permissioned results or odds source "
-             "identified yet."},
-    {"sport": "Ice Hockey", "scope": "extra",
-     "status": "results_path_available",
-     "results_path": "OpenLigaDB del/del2/CHL endpoints (ODbL-1.0)",
-     "odds_path": "unverified",
-     "note": "NOT listed on OLBG (2026-09-19 capture); tracked as an extra "
-             "candidate because its results path is open-licensed. No "
-             "permissioned odds source verified yet -> no PnL."},
+    {
+        "sport": "Football", "scope": "olbg", "status": "pilot_verified",
+        "results_path": "OpenLigaDB (ODbL-1.0), Bundesliga 2024/25 pilot",
+        "odds_path": (
+            "football-data.co.uk manual pilot; The Odds API licensed connector "
+            "implemented but inactive"
+        ),
+        "note": (
+            "27-match hand-audited pilot (matchdays 1/10/20), 27/27 "
+            "dual-source result agreement. This is not an official DFL feed."
+        ),
+    },
+    {
+        "sport": "Darts", "scope": "olbg", "status": "results_path_available",
+        "results_path": "OpenLigaDB PDC endpoints (ODbL-1.0), path not yet pilot-verified",
+        "odds_path": "none verified",
+        "note": "Results-only path is not enough for PnL; keep blocked until an odds path and settlement rules pass.",
+    },
+    {
+        "sport": "Ice Hockey", "scope": "olbg", "status": "results_path_available",
+        "results_path": "OpenLigaDB DEL/DEL2/CHL endpoints (ODbL-1.0), path not yet pilot-verified",
+        "odds_path": "none verified",
+        "note": "Shootout/extra-time rules and a permissioned odds path are still missing.",
+    },
 ]
+
+# These are deliberately explicit rather than silently omitted.  The public
+# OLBG catalogue lists them, but this repo has not verified a result+odds+rule
+# path for them.  A future sport may be promoted only after the source and test
+# gates pass.
+for _sport in (
+    "Horse Racing", "Tennis", "Golf", "American Football", "Baseball",
+    "Basketball", "Boxing", "Cricket", "Cycling", "Gaelic Football",
+    "Greyhounds", "Handball", "Hurling", "Motor Racing", "Rugby Union",
+    "Rugby League", "Snooker", "Volleyball",
+):
+    SPORT_COVERAGE.append({
+        "sport": _sport,
+        "scope": "olbg",
+        "status": "verification_blocked",
+        "results_path": "none verified in this repository",
+        "odds_path": "none verified in this repository",
+        "note": (
+            "Listed by OLBG, but no permissioned result source, historical "
+            "odds source, identity join and sport-specific settlement test "
+            "has passed. No PnL or prediction is generated."
+        ),
+    })
 
 
 def build_site_data(store: Store, raw_dir: str,
@@ -79,10 +77,6 @@ def build_site_data(store: Store, raw_dir: str,
                     backtest_meta: Optional[Dict[str, Any]] = None,
                     out_path: Optional[str] = None) -> Dict[str, Any]:
     captures = store.captures()
-    by_source = {}
-    for c in captures:
-        by_source.setdefault(c["source_id"], []).append(c)
-
     leaderboard = build_leaderboard(store)
     placed = placed_bets(store)
     upcoming = upcoming_bets(store)
@@ -97,14 +91,17 @@ def build_site_data(store: Store, raw_dir: str,
             "snapshot_count": len(store.odds_snapshots()),
             "event_count": len(store.events()),
             "pilot": {
-                "competition": "1. Fu\u00dfball-Bundesliga 2024/2025",
+                "competition": "1. Fußball-Bundesliga 2024/2025",
                 "matchdays": [1, 10, 20],
                 "events": store.kv_get("pilot_events"),
                 "dual_source_agreement": store.kv_get(
                     "pilot_dual_source_agreement"),
-                "note": "27 hand-audited events; results OpenLigaDB (ODbL), "
-                        "odds football-data.co.uk manual import "
-                        "(research-use flag, no redistribution).",
+                "note": (
+                    "27 hand-audited events; results OpenLigaDB (ODbL), "
+                    "odds football-data.co.uk manual import "
+                    "(research-use flag, no redistribution). The licensed "
+                    "The Odds API connector is not active in this build."
+                ),
             },
         },
         "leaderboard": leaderboard,
@@ -130,6 +127,8 @@ def build_site_data(store: Store, raw_dir: str,
             "verified_at": p.verified_at,
             "evidence_urls": p.evidence_urls,
             "caveats": p.caveats,
+            "requires_active_entitlement": p.requires_active_entitlement,
+            "terms_version": p.terms_version,
         } for p in all_policies()],
         "coverage": SPORT_COVERAGE,
         "captures": captures,
