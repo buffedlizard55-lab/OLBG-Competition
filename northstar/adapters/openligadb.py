@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import json
 import urllib.request
+from datetime import timedelta
 from typing import Dict, List, Optional
 
 from .. import models
@@ -75,6 +76,30 @@ DEFAULT_FINAL_KIND_PRIORITY = [RESULT_KIND_AFTER_90,
                                RESULT_KIND_AFTER_EXTRA,
                                RESULT_KIND_AFTER_PENALTIES]
 
+# How the "available to the desk" timestamp is derived per sport. The
+# football pilot uses the source's lastUpdateDateTime (post-match data-entry
+# timestamps that sit between kickoff and settlement there). DEL community
+# rows were batch-edited at end of season (e.g. 2025-04-07 for September
+# games), which would wrongly erase all walk-forward history; instead the
+# result becomes visible a fixed INFERRED_GAME_DURATION after start. This is
+# an explicit conservative construction (a desk cannot know a game is final
+# before it ends), never a claim the source timestamps results at that
+# second. It is documented in docs/STATUS.md.
+INFERRED_GAME_DURATION = {
+    "ice_hockey": timedelta(hours=3),
+}
+
+
+def availability_for(sport: Optional[str], start_utc,
+                     source_version) -> "models.datetime":
+    """officially_final_at_utc per sport (see INFERRED_GAME_DURATION)."""
+    dur = INFERRED_GAME_DURATION.get(sport or "")
+    if dur is not None:
+        return start_utc + dur
+    if source_version and _is_iso(source_version):
+        return parse_utc(source_version)
+    return start_utc
+
 
 def parse_matchday(text: str, sport: Optional[str] = None) -> List[Dict]:
     """Parse an OpenLigaDB matchdata JSON payload into normalized match dicts.
@@ -100,6 +125,20 @@ def parse_matchday(text: str, sport: Optional[str] = None) -> List[Dict]:
             # Finished but no final result of a recognised kind recorded -
             # do not guess; keep the match without a final result.
             final = None
+        # Irregularity flag: OT/shootout entries are only possible after a
+        # *drawn* regulation. A decisive "after regulation" entry together
+        # with an OT/SO entry is a contradiction in the community-entered
+        # source. The priority final is still used, but the conflict is
+        # recorded for review instead of silently smoothed over.
+        kinds = {r.get("resultTypeKind") for r in m.get("matchResults", [])}
+        reg_entry = next((r for r in m.get("matchResults", [])
+                          if r.get("resultTypeKind") == RESULT_KIND_AFTER_90),
+                         None)
+        has_post_reg = bool({RESULT_KIND_AFTER_EXTRA,
+                             RESULT_KIND_AFTER_PENALTIES} & kinds)
+        kind_inconsistent = bool(
+            reg_entry is not None and has_post_reg
+            and reg_entry.get("pointsTeam1") != reg_entry.get("pointsTeam2"))
         out.append({
             "match_id": m["matchID"],
             "league_shortcut": m.get("leagueShortcut"),
@@ -116,6 +155,7 @@ def parse_matchday(text: str, sport: Optional[str] = None) -> List[Dict]:
             "home_goals": final["pointsTeam1"] if final else None,
             "away_goals": final["pointsTeam2"] if final else None,
             "final_kind": final["resultTypeKind"] if final else None,
+            "kind_inconsistent": kind_inconsistent,
             "source_version": m.get("lastUpdateDateTime"),
             "raw_match": m,
         })
@@ -135,12 +175,41 @@ def ingest_matchday(store: Store, text: str,
     policy.assert_permitted(MODE_AUTO_API)  # documents the mode even offline
     matches = parse_matchday(text, sport=sport)
     stats = {"events": 0, "results": 0, "anomalies": 0}
+    # Source-metadata repair: a match row with leagueSeason null (seen live
+    # on del/2024 matchday 40, matchID 76412) would otherwise leak "None"
+    # into ids and URLs. Normalise to the *modal* season of unambiguous rows
+    # in the same payload and flag the repair for review - never silently.
+    seasons = {}
     for m in matches:
+        if m["league_season"] is not None and m["league_shortcut"]:
+            key = m["league_shortcut"]
+            seasons[key] = seasons.get(key, {})
+            seasons[key][m["league_season"]] = \
+                seasons[key].get(m["league_season"], 0) + 1
+    modal_season = {k: max(v, key=v.get) for k, v in seasons.items()}
+    for m in matches:
+        season = m["league_season"]
+        if season is None:
+            season = modal_season.get(m["league_shortcut"], "unknown")
         eid = event_id_for({"leagueShortcut": m["league_shortcut"],
-                            "leagueSeason": m["league_season"],
+                            "leagueSeason": season,
                             "matchID": m["match_id"]})
         url = f"{API_BASE}/getmatchdata/{m['league_shortcut']}/" \
-              f"{m['league_season']}/{m['match_id']}"
+              f"{season}/{m['match_id']}"
+        if m["league_season"] is None:
+            aid = stable_id("an", models.ANOMALY_MISSING_METADATA, eid)
+            if not store.anomaly_exists(aid):
+                stats["anomalies"] += 1
+            store.add_anomaly(models.Anomaly(
+                anomaly_id=aid,
+                kind=models.ANOMALY_MISSING_METADATA,
+                entity_type="event", entity_id=eid,
+                detected_at_utc=models.utcnow(),
+                detail=(f"source left leagueSeason null for matchID "
+                        f"{m['match_id']} ({m['league_name']}); normalised "
+                        f"to {season} from the payload's unambiguous rows "
+                        "and flagged for manual review"),
+                source_urls=[url]))
         if m["finished"]:
             status = EVENT_STATUS_FINISHED
         else:
@@ -167,9 +236,8 @@ def ingest_matchday(store: Store, text: str,
         stats["anomalies"] += len(anomalies)
         stats["events"] += 1
         if m["finished"] and m["home_goals"] is not None:
-            final_at = (m["source_version"] and
-                        parse_utc(m["source_version"])
-                        if _is_iso(m["source_version"]) else m["start_utc"])
+            final_at = availability_for(sport, m["start_utc"],
+                                        m["source_version"])
             result = Result(
                 result_id=stable_id("res", PROVIDER_ID, eid,
                                     m["source_version"] or "v0"),
@@ -189,6 +257,25 @@ def ingest_matchday(store: Store, text: str,
             )
             stats["anomalies"] += len(store.add_result(result))
             stats["results"] += 1
+        if m.get("kind_inconsistent"):
+            aid = stable_id("an", models.ANOMALY_RESULT_KIND_INCONSISTENT,
+                            eid)
+            if not store.anomaly_exists(aid):
+                stats["anomalies"] += 1
+            store.add_anomaly(models.Anomaly(
+                anomaly_id=aid,
+                kind=models.ANOMALY_RESULT_KIND_INCONSISTENT,
+                entity_type="result", entity_id=eid,
+                detected_at_utc=models.utcnow(),
+                detail=("decisive 'after regulation' entry coexists with an "
+                        "overtime/shootout entry (impossible layering in "
+                        f"community-entered source; matchID={m['match_id']}). "
+                        "Final read via hockey priority AfterPenalties > "
+                        "AfterExtraTime > After90Minutes; flagged for manual "
+                        "review, outcome kept "
+                        f"{m['home_goals']}-{m['away_goals']} "
+                        f"({m['final_kind']})"),
+                source_urls=[url]))
     store.commit()
     return stats
 

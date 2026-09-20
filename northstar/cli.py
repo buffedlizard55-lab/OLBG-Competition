@@ -24,10 +24,15 @@ from . import models
 from .adapters import football_data, olbg, openligadb
 from .backtest import run_walk_forward
 from .db import Store
+from .evaluation import prediction_accuracy
 from .leaderboard import build_leaderboard
 from .predictor import render_prediction
+from .policy import MODE_AUTO_API
 from .report import build_site_data
-from .strategies import FOOTBALL_STRATEGIES, build
+from .strategies import (
+    FOOTBALL_STRATEGIES, HOCKEY_STRATEGIES, PREDICTION_ONLY_STRATEGIES,
+    build,
+)
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 FIXTURES = os.path.join(ROOT, "data", "fixtures")
@@ -36,6 +41,7 @@ DB_PATH = os.path.join(ROOT, "data", "northstar.db")
 SITE_OUT = os.path.join(ROOT, "site-data", "site.json")
 
 CAPTURE_DATE = "2026-09-19"
+HOCKEY_CAPTURE_DATE = "2026-09-20"
 
 
 def _sha256_file(path: str) -> str:
@@ -87,18 +93,56 @@ def ingest_pilot(store: Store) -> Dict[str, Any]:
     return stats
 
 
+def ingest_hockey_pilot(store: Store) -> Dict[str, Any]:
+    """DEL 2024/25 matchdays 1/20/40 (OpenLigaDB, ODbL-1.0).
+
+    Single-source results: identity stays 'probable' (no independent
+    cross-check exists for DEL in this repo), so hockey never produces
+    verified PnL - only predictions graded on accuracy.
+    """
+    stats: Dict[str, Any] = {"events": 0, "results": 0, "anomalies": 0}
+    for name in ("openligadb_del_2024_sd1.json",
+                 "openligadb_del_2024_sd20.json",
+                 "openligadb_del_2024_sd40.json"):
+        path = os.path.join(FIXTURES, name)
+        text = _read(path)
+        store.register_capture(
+            "cap-" + name, "openligadb",
+            os.path.relpath(path, ROOT), _sha256_file(path),
+            models.parse_utc(HOCKEY_CAPTURE_DATE + "T00:00:00Z"),
+            MODE_AUTO_API,
+            "DEL 2024/25 matchday payload fetched via permitted automated "
+            "API (ODbL-1.0) on 2026-09-20, chunk-assembled with strict JSON "
+            "validation (scripts/assemble_fixture.py)")
+        out = openligadb.ingest_matchday(store, text, verify_identity=True,
+                                         sport="ice_hockey")
+        stats["events"] += out["events"]
+        stats["results"] += out["results"]
+        stats["anomalies"] += out["anomalies"]
+    return stats
+
+
 def ingest_olbg(store: Store) -> Dict[str, Any]:
     return olbg.ingest_snapshots(store, RAW)
 
 
 def run_backtests(store: Store) -> Dict[str, Any]:
-    events = [e for e in store.events()
-              if e["status"] == "finished"]
+    finished = [e for e in store.events() if e["status"] == "finished"]
+    football_events = [e for e in finished if e["sport"] == "football"]
+    hockey_events = [e for e in finished if e["sport"] == "ice_hockey"]
     reports: Dict[str, Any] = {}
     for sid in FOOTBALL_STRATEGIES:
         strategy = build(sid)
-        reports[sid] = run_walk_forward(store, events, strategy, sid,
-                                        label="pilot")
+        strategy.sport = "football"
+        reports[sid] = run_walk_forward(store, football_events, strategy,
+                                        sid, label="pilot")
+    for sid in HOCKEY_STRATEGIES:
+        strategy = build(sid)
+        reports[sid] = run_walk_forward(store, hockey_events, strategy, sid,
+                                        label="hockey-pilot",
+                                        allow_no_odds=True)
+        reports[sid]["evaluation"] = prediction_accuracy(
+            store, reports[sid]["bets"], sport="ice_hockey")
     store.commit()
     return reports
 
@@ -275,6 +319,10 @@ def main(argv: List[str] = None) -> int:
     store.kv_set("pilot_dual_source_agreement",
                  f"{stats['cross_checked_agree']}/"
                  f"{stats['cross_checked']}")
+    hockey_stats = ingest_hockey_pilot(store)
+    store.kv_set("hockey_pilot_events", str(hockey_stats["events"]))
+    store.kv_set("hockey_pilot_source_anomalies",
+                 str(hockey_stats["anomalies"]))
     olbg_stats = ingest_olbg(store)
     reports = run_backtests(store)
     predictions = _pick_predictions(store, reports)
@@ -286,9 +334,39 @@ def main(argv: List[str] = None) -> int:
         settled = [b for b in entries if b["outcome_action"] in
                    ("settled", "already_settled", "review")]
         m = entrant_metrics(store, sid)
+        if sid in PREDICTION_ONLY_STRATEGIES:
+            evaln = rep.get("evaluation")
+            backtest_meta[sid] = {
+                "label": rep["label"],
+                "sport": "ice_hockey",
+                "pnl_available": False,
+                "bets": len(entries),
+                "settled": len(settled),
+                "predictions": len([
+                    b for b in entries
+                    if b["outcome_action"] == "prediction_only"]),
+                "skipped": len(rep["skipped"]),
+                "leak_violations": rep["leak_violations"],
+                "profit_units": None,
+                "turnover_units": None,
+                "roi": None,
+                "strike_rate": None,
+                "max_drawdown_units": None,
+                "verification_state": "review",
+                "profit_ci95": None,
+                "accuracy": evaln,
+                "sample_warning": (
+                    "Prediction-only pilot: DEL has no permissioned odds "
+                    "path, so profit is unavailable (never shown as zero). "
+                    f"{evaln['n_graded'] if evaln else 0} graded predictions "
+                    "is far too few to claim skill."),
+            }
+            continue
         ci = bootstrap_ci(m["pnl_sequence"]) if m["pnl_sequence"] else None
         backtest_meta[sid] = {
             "label": rep["label"],
+            "sport": "football",
+            "pnl_available": True,
             "bets": len(entries),
             "settled": len(settled),
             "skipped": len(rep["skipped"]),
@@ -315,6 +393,15 @@ def main(argv: List[str] = None) -> int:
           f"odds_snapshots={stats['odds_snapshots']}")
     print(f"  dual-source agreement="
           f"{stats['cross_checked_agree']}/{stats['cross_checked']}")
+    print(f"  hockey events={hockey_stats['events']} "
+          f"results={hockey_stats['results']} "
+          f"source anomalies={hockey_stats['anomalies']} (single-source, "
+          f"identity probable)")
+    hockey_acc = backtest_meta.get("hockey-elo-v1", {}).get("accuracy") or {}
+    print(f"  hockey predictions: graded={hockey_acc.get('n_graded')} "
+          f"accuracy={hockey_acc.get('accuracy')} "
+          f"mean_brier={hockey_acc.get('mean_brier')} (no PnL: no "
+          f"permissioned odds path)")
     print(f"  olbg snapshots: cards={olbg_stats['index_cards']} "
           f"event_tips={olbg_stats['event_tips']} "
           f"tipsters={olbg_stats['tipsters']}")

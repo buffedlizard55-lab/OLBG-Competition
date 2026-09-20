@@ -41,10 +41,16 @@ SPORT_COVERAGE = [
         "note": "Results-only path is not enough for PnL; keep blocked until an odds path and settlement rules pass.",
     },
     {
-        "sport": "Ice Hockey", "scope": "olbg", "status": "results_path_available",
-        "results_path": "OpenLigaDB DEL/DEL2/CHL endpoints (ODbL-1.0), path not yet pilot-verified",
-        "odds_path": "none verified",
-        "note": "Shootout/extra-time rules and a permissioned odds path are still missing.",
+        "sport": "Ice Hockey", "scope": "olbg", "status": "results_pilot",
+        "results_path": (
+            "OpenLigaDB DEL 2024/25 pilot, 21 events (matchdays 1/20/40), "
+            "ODbL-1.0; single source, identity stays 'probable'"),
+        "odds_path": "none verified - no permissioned DEL odds in this repo",
+        "note": (
+            "End-to-end result ingest with OT/shootout-aware finals: 3 OT "
+            "games, 1 shootout, 4 source-data irregularities flagged for "
+            "review. Predictions are graded on accuracy/Brier only - PnL is "
+            "unavailable, not zero."),
     },
 ]
 
@@ -103,6 +109,22 @@ def build_site_data(store: Store, raw_dir: str,
                     "The Odds API connector is not active in this build."
                 ),
             },
+            "hockey": {
+                "competition": "DEL Eishockey 2024/2025",
+                "matchdays": [1, 20, 40],
+                "events": store.kv_get("hockey_pilot_events"),
+                "source_anomalies": store.kv_get(
+                    "hockey_pilot_source_anomalies"),
+                "note": (
+                    "Single-source pilot (OpenLigaDB, ODbL-1.0): identity "
+                    "stays 'probable' - no independent DEL cross-check "
+                    "exists in this repo. Results availability is inferred "
+                    "as start+3h because the source batch-edited results at "
+                    "end of season; documented in docs/STATUS.md. No "
+                    "permissioned odds path - predictions only, graded on "
+                    "accuracy/Brier; PnL unavailable (not zero)."
+                ),
+            },
         },
         "leaderboard": leaderboard,
         "bets": {
@@ -132,6 +154,7 @@ def build_site_data(store: Store, raw_dir: str,
         } for p in all_policies()],
         "coverage": SPORT_COVERAGE,
         "captures": captures,
+        "entrants": store.entrants(),
     }
     if out_path:
         os.makedirs(os.path.dirname(os.path.abspath(out_path)), exist_ok=True)

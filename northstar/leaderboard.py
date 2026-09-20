@@ -13,7 +13,7 @@ from typing import Any, Dict, List, Optional
 from .db import Store
 from .models import (
     TIP_STATUS_DISPUTED, TIP_STATUS_LOST, TIP_STATUS_PENDING,
-    TIP_STATUS_VOID, TIP_STATUS_WON,
+    TIP_STATUS_UNSETTLEABLE, TIP_STATUS_VOID, TIP_STATUS_WON,
 )
 
 
@@ -99,6 +99,15 @@ def build_leaderboard(store: Store) -> List[Dict[str, Any]]:
     rows = []
     for e in entrants:
         m = entrant_metrics(store, e["entrant_id"])
+        entrant_tips = store.tips(tipster_id=e["entrant_id"])
+        if (m["settled_bets"] == 0 and entrant_tips and all(
+                t["status"] == TIP_STATUS_UNSETTLEABLE
+                for t in entrant_tips)):
+            # Prediction-only desk (e.g. a sport without a permissioned odds
+            # path). Showing a 0.00 profit row would imply a settled zero;
+            # the desk belongs to the accuracy section, not the PnL
+            # competition table.
+            continue
         rows.append({
             "entrant_id": e["entrant_id"],
             "name": e["name"],
@@ -138,6 +147,7 @@ def placed_bets(store: Store,
             "entrant": tip["tipster_id"],
             "event_id": tip["event_id"],
             "event": event_label,
+            "sport": event.get("sport"),
             "event_start_utc": event.get("scheduled_start_utc"),
             "market": tip["market"],
             "selection": tip["selection"],

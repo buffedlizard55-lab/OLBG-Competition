@@ -114,7 +114,7 @@ _register(SourcePolicy(
     ),
     collection_modes=[MODE_AUTO_API, MODE_MANUAL_IMPORT, MODE_MANUAL_SNAPSHOT],
     rate_limit="60 requests/minute/IP (stated on API front page)",
-    verified_at="2026-09-19",
+    verified_at="2026-09-20 (re-confirmed verbatim)",
     evidence_urls=[
         "https://openligadb.de/",
         "https://api.openligadb.de/",
@@ -218,7 +218,7 @@ _register(SourcePolicy(
     ),
     collection_modes=[MODE_MANUAL_IMPORT, MODE_MANUAL_SNAPSHOT],
     rate_limit="n/a - automated retrieval is disallowed by source policy",
-    verified_at="2026-09-19",
+    verified_at="2026-09-20 (re-confirmed verbatim)",
     evidence_urls=[
         "https://www.football-data.co.uk/data.php",
         "https://www.football-data.co.uk/matches.php",
@@ -261,7 +261,7 @@ _register(SourcePolicy(
     ),
     collection_modes=[MODE_MANUAL_SNAPSHOT],
     rate_limit="no bulk collection - manual snapshots for review only",
-    verified_at="2026-09-19",
+    verified_at="2026-09-20 (re-confirmed verbatim)",
     evidence_urls=[
         "https://www.olbg.com/use",
         "https://www.olbg.com/robots.txt",

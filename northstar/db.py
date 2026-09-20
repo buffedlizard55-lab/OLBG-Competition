@@ -607,6 +607,10 @@ class Store:
              anomaly.status, anomaly.resolution))
         return anomaly.anomaly_id
 
+    def anomaly_exists(self, anomaly_id: str) -> bool:
+        return self._row("SELECT 1 FROM anomalies WHERE anomaly_id=?",
+                         anomaly_id) is not None
+
     def anomalies(self, status: Optional[str] = None
                   ) -> List[Dict[str, Any]]:
         if status:

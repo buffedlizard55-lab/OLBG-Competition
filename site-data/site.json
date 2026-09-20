@@ -1,7 +1,73 @@
 {
   "anomalies": {
-    "open": 0,
-    "queue": []
+    "open": 5,
+    "queue": [
+      {
+        "anomaly_id": "an-763e7e78dbbcdd279e10",
+        "detail": "decisive 'after regulation' entry coexists with an overtime/shootout entry (impossible layering in community-entered source; matchID=76100). Final read via hockey priority AfterPenalties > AfterExtraTime > After90Minutes; flagged for manual review, outcome kept 3-2 (AfterExtraTime)",
+        "detected_at_utc": "2026-09-20T02:54:08Z",
+        "entity_id": "ev-ff0008b0c9aa899d4755",
+        "entity_type": "result",
+        "kind": "RESULT_KIND_INCONSISTENT",
+        "resolution": null,
+        "source_urls": [
+          "https://api.openligadb.de/getmatchdata/del/2024/76100"
+        ],
+        "status": "open"
+      },
+      {
+        "anomaly_id": "an-8590725575f24e03dba3",
+        "detail": "decisive 'after regulation' entry coexists with an overtime/shootout entry (impossible layering in community-entered source; matchID=76273). Final read via hockey priority AfterPenalties > AfterExtraTime > After90Minutes; flagged for manual review, outcome kept 2-1 (AfterExtraTime)",
+        "detected_at_utc": "2026-09-20T02:54:08Z",
+        "entity_id": "ev-c1a1db0ea682db60d797",
+        "entity_type": "result",
+        "kind": "RESULT_KIND_INCONSISTENT",
+        "resolution": null,
+        "source_urls": [
+          "https://api.openligadb.de/getmatchdata/del/2024/76273"
+        ],
+        "status": "open"
+      },
+      {
+        "anomaly_id": "an-23d18a627ed1aea5b092",
+        "detail": "decisive 'after regulation' entry coexists with an overtime/shootout entry (impossible layering in community-entered source; matchID=76409). Final read via hockey priority AfterPenalties > AfterExtraTime > After90Minutes; flagged for manual review, outcome kept 1-2 (AfterExtraTime)",
+        "detected_at_utc": "2026-09-20T02:54:08Z",
+        "entity_id": "ev-78dfc67268398c894ed5",
+        "entity_type": "result",
+        "kind": "RESULT_KIND_INCONSISTENT",
+        "resolution": null,
+        "source_urls": [
+          "https://api.openligadb.de/getmatchdata/del/2024/76409"
+        ],
+        "status": "open"
+      },
+      {
+        "anomaly_id": "an-28ab36176a0a1f02e8c8",
+        "detail": "source left leagueSeason null for matchID 76412 (DEL Eishockey 2024/2025); normalised to 2024 from the payload's unambiguous rows and flagged for manual review",
+        "detected_at_utc": "2026-09-20T02:54:08Z",
+        "entity_id": "ev-3f32836fac8ddfb0bb12",
+        "entity_type": "event",
+        "kind": "MISSING_METADATA",
+        "resolution": null,
+        "source_urls": [
+          "https://api.openligadb.de/getmatchdata/del/2024/76412"
+        ],
+        "status": "open"
+      },
+      {
+        "anomaly_id": "an-6f494ddd324692776bd3",
+        "detail": "decisive 'after regulation' entry coexists with an overtime/shootout entry (impossible layering in community-entered source; matchID=76414). Final read via hockey priority AfterPenalties > AfterExtraTime > After90Minutes; flagged for manual review, outcome kept 5-6 (AfterPenalties)",
+        "detected_at_utc": "2026-09-20T02:54:08Z",
+        "entity_id": "ev-8358bbded1593cbd6ea0",
+        "entity_type": "result",
+        "kind": "RESULT_KIND_INCONSISTENT",
+        "resolution": null,
+        "source_urls": [
+          "https://api.openligadb.de/getmatchdata/del/2024/76414"
+        ],
+        "status": "open"
+      }
+    ]
   },
   "backtest": {
     "draw-no-bet-v1": {
@@ -9,15 +75,17 @@
       "label": "pilot",
       "leak_violations": [],
       "max_drawdown_units": 1.0,
+      "pnl_available": true,
       "profit_ci95": {
-        "hi": 0.19708333333333336,
-        "lo": -0.6645833333333332
+        "hi": 0.22083333333333335,
+        "lo": -0.665
       },
       "profit_units": -6.2,
       "roi": -0.258333,
       "sample_warning": "Only 24 settled bets - far too few to distinguish skill from luck; see docs/STATUS.md",
       "settled": 24,
       "skipped": 3,
+      "sport": "football",
       "strike_rate": 0.375,
       "turnover_units": 24.0,
       "verification_state": "verified"
@@ -27,6 +95,7 @@
       "label": "pilot",
       "leak_violations": [],
       "max_drawdown_units": 1.0,
+      "pnl_available": true,
       "profit_ci95": {
         "hi": 0.58,
         "lo": -1.0
@@ -36,24 +105,242 @@
       "sample_warning": "Only 11 settled bets - far too few to distinguish skill from luck; see docs/STATUS.md",
       "settled": 11,
       "skipped": 16,
+      "sport": "football",
       "strike_rate": 0.181818,
       "turnover_units": 11.0,
       "verification_state": "verified"
+    },
+    "hockey-elo-v1": {
+      "accuracy": {
+        "accuracy": 0.692308,
+        "by_matchday": {
+          "1": {
+            "accuracy": 0.714286,
+            "hits": 5,
+            "n": 7
+          },
+          "20": {
+            "accuracy": 0.8,
+            "hits": 4,
+            "n": 5
+          },
+          "40": {
+            "accuracy": 0.0,
+            "hits": 0,
+            "n": 1
+          }
+        },
+        "graded": [
+          {
+            "actual": "home",
+            "brier": 0.4046412436270728,
+            "event_id": "ev-ff0008b0c9aa899d4755",
+            "group_order": 1,
+            "hit": true,
+            "result_kind": "AfterExtraTime",
+            "selection": "home",
+            "single_source_providers": [
+              "openligadb"
+            ],
+            "start_utc": "2024-09-19T17:30:00Z"
+          },
+          {
+            "actual": "home",
+            "brier": 0.4046412436270728,
+            "event_id": "ev-24e79a67c8289ad2571d",
+            "group_order": 1,
+            "hit": true,
+            "result_kind": "After90Minutes",
+            "selection": "home",
+            "single_source_providers": [
+              "openligadb"
+            ],
+            "start_utc": "2024-09-20T17:30:00Z"
+          },
+          {
+            "actual": "home",
+            "brier": 0.4046412436270728,
+            "event_id": "ev-7597b414148e086d1a6c",
+            "group_order": 1,
+            "hit": true,
+            "result_kind": "After90Minutes",
+            "selection": "home",
+            "single_source_providers": [
+              "openligadb"
+            ],
+            "start_utc": "2024-09-20T17:30:00Z"
+          },
+          {
+            "actual": "home",
+            "brier": 0.4046412436270728,
+            "event_id": "ev-b18c667e9847e58a08d9",
+            "group_order": 1,
+            "hit": true,
+            "result_kind": "After90Minutes",
+            "selection": "home",
+            "single_source_providers": [
+              "openligadb"
+            ],
+            "start_utc": "2024-09-20T17:30:00Z"
+          },
+          {
+            "actual": "away",
+            "brier": 0.6054386566412208,
+            "event_id": "ev-e4795555119a6efad9db",
+            "group_order": 1,
+            "hit": false,
+            "result_kind": "After90Minutes",
+            "selection": "home",
+            "single_source_providers": [
+              "openligadb"
+            ],
+            "start_utc": "2024-09-20T17:30:00Z"
+          },
+          {
+            "actual": "home",
+            "brier": 0.4046412436270728,
+            "event_id": "ev-f36a8d4230032c2f002a",
+            "group_order": 1,
+            "hit": true,
+            "result_kind": "After90Minutes",
+            "selection": "home",
+            "single_source_providers": [
+              "openligadb"
+            ],
+            "start_utc": "2024-09-20T17:30:00Z"
+          },
+          {
+            "actual": "away",
+            "brier": 0.6054386566412208,
+            "event_id": "ev-f39fb0d6742fc8bf41a3",
+            "group_order": 1,
+            "hit": false,
+            "result_kind": "After90Minutes",
+            "selection": "home",
+            "single_source_providers": [
+              "openligadb"
+            ],
+            "start_utc": "2024-09-20T17:30:00Z"
+          },
+          {
+            "actual": "home",
+            "brier": 0.32765639390099804,
+            "event_id": "ev-5d85ecba21e65f480597",
+            "group_order": 20,
+            "hit": true,
+            "result_kind": "After90Minutes",
+            "selection": "home",
+            "single_source_providers": [
+              "openligadb"
+            ],
+            "start_utc": "2024-11-26T18:30:00Z"
+          },
+          {
+            "actual": "home",
+            "brier": 0.4046412436270728,
+            "event_id": "ev-eb26dff17a1b907cecbf",
+            "group_order": 20,
+            "hit": true,
+            "result_kind": "After90Minutes",
+            "selection": "home",
+            "single_source_providers": [
+              "openligadb"
+            ],
+            "start_utc": "2024-11-26T18:30:00Z"
+          },
+          {
+            "actual": "home",
+            "brier": 0.4046412436270728,
+            "event_id": "ev-c1a1db0ea682db60d797",
+            "group_order": 20,
+            "hit": true,
+            "result_kind": "AfterExtraTime",
+            "selection": "home",
+            "single_source_providers": [
+              "openligadb"
+            ],
+            "start_utc": "2024-11-27T17:00:00Z"
+          },
+          {
+            "actual": "home",
+            "brier": 0.32765639390099804,
+            "event_id": "ev-bf16dd5a6bac8dcbec48",
+            "group_order": 20,
+            "hit": true,
+            "result_kind": "After90Minutes",
+            "selection": "home",
+            "single_source_providers": [
+              "openligadb"
+            ],
+            "start_utc": "2024-11-27T18:30:00Z"
+          },
+          {
+            "actual": "away",
+            "brier": 0.6980409249996993,
+            "event_id": "ev-c00bc1a5fc5bc1f06a9e",
+            "group_order": 20,
+            "hit": false,
+            "result_kind": "After90Minutes",
+            "selection": "home",
+            "single_source_providers": [
+              "openligadb"
+            ],
+            "start_utc": "2024-11-27T18:30:00Z"
+          },
+          {
+            "actual": "away",
+            "brier": 0.7565434350081359,
+            "event_id": "ev-3f32836fac8ddfb0bb12",
+            "group_order": 40,
+            "hit": false,
+            "result_kind": "After90Minutes",
+            "selection": "home",
+            "single_source_providers": [
+              "openligadb"
+            ],
+            "start_utc": "2025-01-26T15:30:00Z"
+          }
+        ],
+        "hits": 9,
+        "mean_brier": 0.473328,
+        "n_graded": 13,
+        "note": "Hit rate and Brier score against stored single-source results (identity 'probable' until an independent cross-check is attached). Not PnL: no entry price exists for this sport, so profit cannot be computed and is shown as unavailable, never as zero.",
+        "sport": "ice_hockey",
+        "ungraded": []
+      },
+      "bets": 13,
+      "label": "hockey-pilot",
+      "leak_violations": [],
+      "max_drawdown_units": null,
+      "pnl_available": false,
+      "predictions": 13,
+      "profit_ci95": null,
+      "profit_units": null,
+      "roi": null,
+      "sample_warning": "Prediction-only pilot: DEL has no permissioned odds path, so profit is unavailable (never shown as zero). 13 graded predictions is far too few to claim skill.",
+      "settled": 0,
+      "skipped": 8,
+      "sport": "ice_hockey",
+      "strike_rate": null,
+      "turnover_units": null,
+      "verification_state": "review"
     },
     "market-favourite-v1": {
       "bets": 27,
       "label": "pilot",
       "leak_violations": [],
       "max_drawdown_units": 1.0,
+      "pnl_available": true,
       "profit_ci95": {
-        "hi": 0.1666666666666667,
-        "lo": -0.5111111111111112
+        "hi": 0.15592592592592597,
+        "lo": -0.5266666666666666
       },
       "profit_units": -5.08,
       "roi": -0.188148,
       "sample_warning": "Only 27 settled bets - far too few to distinguish skill from luck; see docs/STATUS.md",
       "settled": 27,
       "skipped": 0,
+      "sport": "football",
       "strike_rate": 0.481481,
       "turnover_units": 27.0,
       "verification_state": "verified"
@@ -63,8 +350,9 @@
       "label": "pilot",
       "leak_violations": [],
       "max_drawdown_units": 1.0,
+      "pnl_available": true,
       "profit_ci95": {
-        "hi": 0.2985185185185185,
+        "hi": 0.2922222222222222,
         "lo": -0.8129629629629629
       },
       "profit_units": -7.88,
@@ -72,6 +360,7 @@
       "sample_warning": "Only 27 settled bets - far too few to distinguish skill from luck; see docs/STATUS.md",
       "settled": 27,
       "skipped": 0,
+      "sport": "football",
       "strike_rate": 0.185185,
       "turnover_units": 27.0,
       "verification_state": "verified"
@@ -97,6 +386,7 @@
           "verification_state": "verified"
         },
         "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72214",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "lost",
         "tip_id": "bt-tip-42e7c164411d59c7fcd5"
@@ -119,6 +409,7 @@
           "verification_state": "verified"
         },
         "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72214",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "lost",
         "tip_id": "bt-tip-e74185722df505d0f696"
@@ -141,6 +432,7 @@
           "verification_state": "verified"
         },
         "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72214",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "won",
         "tip_id": "bt-tip-e43beea9fb6adee6cdaa"
@@ -163,6 +455,7 @@
           "verification_state": "verified"
         },
         "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72214",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "lost",
         "tip_id": "bt-tip-fdcabe9915f28cc2c879"
@@ -185,31 +478,10 @@
           "verification_state": "verified"
         },
         "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72215",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "won",
         "tip_id": "bt-tip-add14a0e104807cd6723"
-      },
-      {
-        "cutoff_at_utc": "2024-08-23T16:00:00Z",
-        "entrant": "draw-no-bet-v1",
-        "event": "TSG Hoffenheim v Holstein Kiel",
-        "event_id": "ev-c2157e59f45724ecc81e",
-        "event_start_utc": "2024-08-24T13:30:00Z",
-        "market": "match_winner_3way",
-        "notes": "settled vs openligadb",
-        "odds": 1.65,
-        "odds_source": "market_avg",
-        "pnl_units": 0.65,
-        "published_at_utc": "2024-08-23T16:00:00Z",
-        "selection": "DNB home",
-        "settlement": {
-          "outcome": "won",
-          "verification_state": "verified"
-        },
-        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72217",
-        "stake_units": 1.0,
-        "status": "won",
-        "tip_id": "bt-tip-58d5412d948f26ecb021"
       },
       {
         "cutoff_at_utc": "2024-08-23T16:00:00Z",
@@ -229,31 +501,10 @@
           "verification_state": "verified"
         },
         "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72218",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "won",
         "tip_id": "bt-tip-e67c938c3a96ef9c91a4"
-      },
-      {
-        "cutoff_at_utc": "2024-08-23T16:00:00Z",
-        "entrant": "draw-no-bet-v1",
-        "event": "FC Augsburg v SV Werder Bremen",
-        "event_id": "ev-c9bd07dd83af7cd1f52a",
-        "event_start_utc": "2024-08-24T13:30:00Z",
-        "market": "match_winner_3way",
-        "notes": "settled vs openligadb",
-        "odds": 2.28,
-        "odds_source": "market_avg",
-        "pnl_units": -1.0,
-        "published_at_utc": "2024-08-23T16:00:00Z",
-        "selection": "DNB home",
-        "settlement": {
-          "outcome": "lost",
-          "verification_state": "verified"
-        },
-        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72219",
-        "stake_units": 1.0,
-        "status": "lost",
-        "tip_id": "bt-tip-464ec9aae9f6cb0701fe"
       },
       {
         "cutoff_at_utc": "2024-08-23T16:00:00Z",
@@ -273,9 +524,56 @@
           "verification_state": "verified"
         },
         "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72221",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "lost",
         "tip_id": "bt-tip-9cc88b02f0512d7a3b86"
+      },
+      {
+        "cutoff_at_utc": "2024-08-23T16:00:00Z",
+        "entrant": "draw-no-bet-v1",
+        "event": "TSG Hoffenheim v Holstein Kiel",
+        "event_id": "ev-c2157e59f45724ecc81e",
+        "event_start_utc": "2024-08-24T13:30:00Z",
+        "market": "match_winner_3way",
+        "notes": "settled vs openligadb",
+        "odds": 1.65,
+        "odds_source": "market_avg",
+        "pnl_units": 0.65,
+        "published_at_utc": "2024-08-23T16:00:00Z",
+        "selection": "DNB home",
+        "settlement": {
+          "outcome": "won",
+          "verification_state": "verified"
+        },
+        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72217",
+        "sport": "football",
+        "stake_units": 1.0,
+        "status": "won",
+        "tip_id": "bt-tip-58d5412d948f26ecb021"
+      },
+      {
+        "cutoff_at_utc": "2024-08-23T16:00:00Z",
+        "entrant": "draw-no-bet-v1",
+        "event": "FC Augsburg v SV Werder Bremen",
+        "event_id": "ev-c9bd07dd83af7cd1f52a",
+        "event_start_utc": "2024-08-24T13:30:00Z",
+        "market": "match_winner_3way",
+        "notes": "settled vs openligadb",
+        "odds": 2.28,
+        "odds_source": "market_avg",
+        "pnl_units": -1.0,
+        "published_at_utc": "2024-08-23T16:00:00Z",
+        "selection": "DNB home",
+        "settlement": {
+          "outcome": "lost",
+          "verification_state": "verified"
+        },
+        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72219",
+        "sport": "football",
+        "stake_units": 1.0,
+        "status": "lost",
+        "tip_id": "bt-tip-464ec9aae9f6cb0701fe"
       },
       {
         "cutoff_at_utc": "2024-08-23T16:00:00Z",
@@ -295,6 +593,7 @@
           "verification_state": "verified"
         },
         "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72218",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "won",
         "tip_id": "bt-tip-63b2502383c8991c706a"
@@ -317,31 +616,10 @@
           "verification_state": "verified"
         },
         "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72215",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "won",
         "tip_id": "bt-tip-360fecba46fa8be27528"
-      },
-      {
-        "cutoff_at_utc": "2024-08-23T16:00:00Z",
-        "entrant": "market-favourite-v1",
-        "event": "TSG Hoffenheim v Holstein Kiel",
-        "event_id": "ev-c2157e59f45724ecc81e",
-        "event_start_utc": "2024-08-24T13:30:00Z",
-        "market": "match_winner_3way",
-        "notes": "settled vs openligadb",
-        "odds": 1.65,
-        "odds_source": "market_avg",
-        "pnl_units": 0.65,
-        "published_at_utc": "2024-08-23T16:00:00Z",
-        "selection": "home",
-        "settlement": {
-          "outcome": "won",
-          "verification_state": "verified"
-        },
-        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72217",
-        "stake_units": 1.0,
-        "status": "won",
-        "tip_id": "bt-tip-1101c961f7c29238ec2a"
       },
       {
         "cutoff_at_utc": "2024-08-23T16:00:00Z",
@@ -361,31 +639,10 @@
           "verification_state": "verified"
         },
         "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72218",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "lost",
         "tip_id": "bt-tip-df29052384c53ecfb267"
-      },
-      {
-        "cutoff_at_utc": "2024-08-23T16:00:00Z",
-        "entrant": "market-favourite-v1",
-        "event": "FC Augsburg v SV Werder Bremen",
-        "event_id": "ev-c9bd07dd83af7cd1f52a",
-        "event_start_utc": "2024-08-24T13:30:00Z",
-        "market": "match_winner_3way",
-        "notes": "settled vs openligadb",
-        "odds": 2.28,
-        "odds_source": "market_avg",
-        "pnl_units": -1.0,
-        "published_at_utc": "2024-08-23T16:00:00Z",
-        "selection": "home",
-        "settlement": {
-          "outcome": "lost",
-          "verification_state": "verified"
-        },
-        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72219",
-        "stake_units": 1.0,
-        "status": "lost",
-        "tip_id": "bt-tip-78211ba1c5efcddb35e8"
       },
       {
         "cutoff_at_utc": "2024-08-23T16:00:00Z",
@@ -405,9 +662,56 @@
           "verification_state": "verified"
         },
         "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72221",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "lost",
         "tip_id": "bt-tip-37a50247dab8db6e2378"
+      },
+      {
+        "cutoff_at_utc": "2024-08-23T16:00:00Z",
+        "entrant": "market-favourite-v1",
+        "event": "TSG Hoffenheim v Holstein Kiel",
+        "event_id": "ev-c2157e59f45724ecc81e",
+        "event_start_utc": "2024-08-24T13:30:00Z",
+        "market": "match_winner_3way",
+        "notes": "settled vs openligadb",
+        "odds": 1.65,
+        "odds_source": "market_avg",
+        "pnl_units": 0.65,
+        "published_at_utc": "2024-08-23T16:00:00Z",
+        "selection": "home",
+        "settlement": {
+          "outcome": "won",
+          "verification_state": "verified"
+        },
+        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72217",
+        "sport": "football",
+        "stake_units": 1.0,
+        "status": "won",
+        "tip_id": "bt-tip-1101c961f7c29238ec2a"
+      },
+      {
+        "cutoff_at_utc": "2024-08-23T16:00:00Z",
+        "entrant": "market-favourite-v1",
+        "event": "FC Augsburg v SV Werder Bremen",
+        "event_id": "ev-c9bd07dd83af7cd1f52a",
+        "event_start_utc": "2024-08-24T13:30:00Z",
+        "market": "match_winner_3way",
+        "notes": "settled vs openligadb",
+        "odds": 2.28,
+        "odds_source": "market_avg",
+        "pnl_units": -1.0,
+        "published_at_utc": "2024-08-23T16:00:00Z",
+        "selection": "home",
+        "settlement": {
+          "outcome": "lost",
+          "verification_state": "verified"
+        },
+        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72219",
+        "sport": "football",
+        "stake_units": 1.0,
+        "status": "lost",
+        "tip_id": "bt-tip-78211ba1c5efcddb35e8"
       },
       {
         "cutoff_at_utc": "2024-08-23T16:00:00Z",
@@ -427,31 +731,10 @@
           "verification_state": "verified"
         },
         "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72215",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "lost",
         "tip_id": "bt-tip-6dc99b751bc8e5621993"
-      },
-      {
-        "cutoff_at_utc": "2024-08-23T16:00:00Z",
-        "entrant": "market-longshot-v1",
-        "event": "TSG Hoffenheim v Holstein Kiel",
-        "event_id": "ev-c2157e59f45724ecc81e",
-        "event_start_utc": "2024-08-24T13:30:00Z",
-        "market": "match_winner_3way",
-        "notes": "settled vs openligadb",
-        "odds": 4.85,
-        "odds_source": "market_avg",
-        "pnl_units": -1.0,
-        "published_at_utc": "2024-08-23T16:00:00Z",
-        "selection": "away",
-        "settlement": {
-          "outcome": "lost",
-          "verification_state": "verified"
-        },
-        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72217",
-        "stake_units": 1.0,
-        "status": "lost",
-        "tip_id": "bt-tip-30bb9cc2de42433bef94"
       },
       {
         "cutoff_at_utc": "2024-08-23T16:00:00Z",
@@ -471,31 +754,10 @@
           "verification_state": "verified"
         },
         "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72218",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "won",
         "tip_id": "bt-tip-17a91868191e21cd94b6"
-      },
-      {
-        "cutoff_at_utc": "2024-08-23T16:00:00Z",
-        "entrant": "market-longshot-v1",
-        "event": "FC Augsburg v SV Werder Bremen",
-        "event_id": "ev-c9bd07dd83af7cd1f52a",
-        "event_start_utc": "2024-08-24T13:30:00Z",
-        "market": "match_winner_3way",
-        "notes": "settled vs openligadb",
-        "odds": 3.07,
-        "odds_source": "market_avg",
-        "pnl_units": -1.0,
-        "published_at_utc": "2024-08-23T16:00:00Z",
-        "selection": "away",
-        "settlement": {
-          "outcome": "lost",
-          "verification_state": "verified"
-        },
-        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72219",
-        "stake_units": 1.0,
-        "status": "lost",
-        "tip_id": "bt-tip-f2dcb81036d52483d505"
       },
       {
         "cutoff_at_utc": "2024-08-23T16:00:00Z",
@@ -515,9 +777,56 @@
           "verification_state": "verified"
         },
         "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72221",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "lost",
         "tip_id": "bt-tip-0333c37732a60f6f692c"
+      },
+      {
+        "cutoff_at_utc": "2024-08-23T16:00:00Z",
+        "entrant": "market-longshot-v1",
+        "event": "TSG Hoffenheim v Holstein Kiel",
+        "event_id": "ev-c2157e59f45724ecc81e",
+        "event_start_utc": "2024-08-24T13:30:00Z",
+        "market": "match_winner_3way",
+        "notes": "settled vs openligadb",
+        "odds": 4.85,
+        "odds_source": "market_avg",
+        "pnl_units": -1.0,
+        "published_at_utc": "2024-08-23T16:00:00Z",
+        "selection": "away",
+        "settlement": {
+          "outcome": "lost",
+          "verification_state": "verified"
+        },
+        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72217",
+        "sport": "football",
+        "stake_units": 1.0,
+        "status": "lost",
+        "tip_id": "bt-tip-30bb9cc2de42433bef94"
+      },
+      {
+        "cutoff_at_utc": "2024-08-23T16:00:00Z",
+        "entrant": "market-longshot-v1",
+        "event": "FC Augsburg v SV Werder Bremen",
+        "event_id": "ev-c9bd07dd83af7cd1f52a",
+        "event_start_utc": "2024-08-24T13:30:00Z",
+        "market": "match_winner_3way",
+        "notes": "settled vs openligadb",
+        "odds": 3.07,
+        "odds_source": "market_avg",
+        "pnl_units": -1.0,
+        "published_at_utc": "2024-08-23T16:00:00Z",
+        "selection": "away",
+        "settlement": {
+          "outcome": "lost",
+          "verification_state": "verified"
+        },
+        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72219",
+        "sport": "football",
+        "stake_units": 1.0,
+        "status": "lost",
+        "tip_id": "bt-tip-f2dcb81036d52483d505"
       },
       {
         "cutoff_at_utc": "2024-08-23T16:00:00Z",
@@ -537,6 +846,7 @@
           "verification_state": "verified"
         },
         "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72216",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "won",
         "tip_id": "bt-tip-f39ccbfbaa838a2d94ad"
@@ -559,6 +869,7 @@
           "verification_state": "verified"
         },
         "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72216",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "won",
         "tip_id": "bt-tip-4c4cbdac6ccbb7f3ab43"
@@ -581,6 +892,7 @@
           "verification_state": "verified"
         },
         "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72216",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "lost",
         "tip_id": "bt-tip-7a2b6a01ff613203c7ed"
@@ -603,6 +915,7 @@
           "verification_state": "verified"
         },
         "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72220",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "lost",
         "tip_id": "bt-tip-99d0a69149328c55b10c"
@@ -625,6 +938,7 @@
           "verification_state": "verified"
         },
         "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72220",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "lost",
         "tip_id": "bt-tip-ff84c1720c999197b929"
@@ -647,6 +961,7 @@
           "verification_state": "verified"
         },
         "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72220",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "won",
         "tip_id": "bt-tip-4a30284827c51b5ea2a9"
@@ -669,6 +984,7 @@
           "verification_state": "verified"
         },
         "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72220",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "lost",
         "tip_id": "bt-tip-c5241ae03c59de8aa872"
@@ -691,6 +1007,7 @@
           "verification_state": "verified"
         },
         "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72222",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "lost",
         "tip_id": "bt-tip-494c050f8f4a0ea7f079"
@@ -713,6 +1030,7 @@
           "verification_state": "verified"
         },
         "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72222",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "lost",
         "tip_id": "bt-tip-83d75d06339ba934ec28"
@@ -735,9 +1053,150 @@
           "verification_state": "verified"
         },
         "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72222",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "won",
         "tip_id": "bt-tip-5a31e91af91a714cf621"
+      },
+      {
+        "cutoff_at_utc": "2024-09-19T17:00:00Z",
+        "entrant": "hockey-elo-v1",
+        "event": "Augsburger Panther v ERC Ingolstadt",
+        "event_id": "ev-ff0008b0c9aa899d4755",
+        "event_start_utc": "2024-09-19T17:30:00Z",
+        "market": "match_winner_3way",
+        "notes": "prediction-only walk-forward hockey-pilot: no permissioned odds path for this sport; PnL not computable and not zero",
+        "odds": null,
+        "odds_source": null,
+        "pnl_units": null,
+        "published_at_utc": "2024-09-19T17:00:00Z",
+        "selection": "Augsburger Panther",
+        "settlement": null,
+        "source_url": "https://api.openligadb.de/getmatchdata/del/2024/76100",
+        "sport": "ice_hockey",
+        "stake_units": 1.0,
+        "status": "unsettleable",
+        "tip_id": "bt-tip-4373ce6ab8638f2fe1b9"
+      },
+      {
+        "cutoff_at_utc": "2024-09-20T17:00:00Z",
+        "entrant": "hockey-elo-v1",
+        "event": "Straubing Tigers v Düsseldorfer EG",
+        "event_id": "ev-24e79a67c8289ad2571d",
+        "event_start_utc": "2024-09-20T17:30:00Z",
+        "market": "match_winner_3way",
+        "notes": "prediction-only walk-forward hockey-pilot: no permissioned odds path for this sport; PnL not computable and not zero",
+        "odds": null,
+        "odds_source": null,
+        "pnl_units": null,
+        "published_at_utc": "2024-09-20T17:00:00Z",
+        "selection": "Straubing Tigers",
+        "settlement": null,
+        "source_url": "https://api.openligadb.de/getmatchdata/del/2024/76106",
+        "sport": "ice_hockey",
+        "stake_units": 1.0,
+        "status": "unsettleable",
+        "tip_id": "bt-tip-dab50f1f5b9a2b5d7a8b"
+      },
+      {
+        "cutoff_at_utc": "2024-09-20T17:00:00Z",
+        "entrant": "hockey-elo-v1",
+        "event": "Adler Mannheim v Schwenninger Wild Wings",
+        "event_id": "ev-7597b414148e086d1a6c",
+        "event_start_utc": "2024-09-20T17:30:00Z",
+        "market": "match_winner_3way",
+        "notes": "prediction-only walk-forward hockey-pilot: no permissioned odds path for this sport; PnL not computable and not zero",
+        "odds": null,
+        "odds_source": null,
+        "pnl_units": null,
+        "published_at_utc": "2024-09-20T17:00:00Z",
+        "selection": "Adler Mannheim",
+        "settlement": null,
+        "source_url": "https://api.openligadb.de/getmatchdata/del/2024/76103",
+        "sport": "ice_hockey",
+        "stake_units": 1.0,
+        "status": "unsettleable",
+        "tip_id": "bt-tip-ff13407d6ad1cf966a59"
+      },
+      {
+        "cutoff_at_utc": "2024-09-20T17:00:00Z",
+        "entrant": "hockey-elo-v1",
+        "event": "Pinguins Bremerhaven v Grizzlys Wolfsburg",
+        "event_id": "ev-b18c667e9847e58a08d9",
+        "event_start_utc": "2024-09-20T17:30:00Z",
+        "market": "match_winner_3way",
+        "notes": "prediction-only walk-forward hockey-pilot: no permissioned odds path for this sport; PnL not computable and not zero",
+        "odds": null,
+        "odds_source": null,
+        "pnl_units": null,
+        "published_at_utc": "2024-09-20T17:00:00Z",
+        "selection": "Pinguins Bremerhaven",
+        "settlement": null,
+        "source_url": "https://api.openligadb.de/getmatchdata/del/2024/76104",
+        "sport": "ice_hockey",
+        "stake_units": 1.0,
+        "status": "unsettleable",
+        "tip_id": "bt-tip-abb82194dd1c6e4680b8"
+      },
+      {
+        "cutoff_at_utc": "2024-09-20T17:00:00Z",
+        "entrant": "hockey-elo-v1",
+        "event": "Iserlohn Roosters v Red Bull München",
+        "event_id": "ev-e4795555119a6efad9db",
+        "event_start_utc": "2024-09-20T17:30:00Z",
+        "market": "match_winner_3way",
+        "notes": "prediction-only walk-forward hockey-pilot: no permissioned odds path for this sport; PnL not computable and not zero",
+        "odds": null,
+        "odds_source": null,
+        "pnl_units": null,
+        "published_at_utc": "2024-09-20T17:00:00Z",
+        "selection": "Iserlohn Roosters",
+        "settlement": null,
+        "source_url": "https://api.openligadb.de/getmatchdata/del/2024/76105",
+        "sport": "ice_hockey",
+        "stake_units": 1.0,
+        "status": "unsettleable",
+        "tip_id": "bt-tip-60cb44cdcb13ca068f5f"
+      },
+      {
+        "cutoff_at_utc": "2024-09-20T17:00:00Z",
+        "entrant": "hockey-elo-v1",
+        "event": "Löwen Frankfurt v Nürnberg Ice Tigers",
+        "event_id": "ev-f36a8d4230032c2f002a",
+        "event_start_utc": "2024-09-20T17:30:00Z",
+        "market": "match_winner_3way",
+        "notes": "prediction-only walk-forward hockey-pilot: no permissioned odds path for this sport; PnL not computable and not zero",
+        "odds": null,
+        "odds_source": null,
+        "pnl_units": null,
+        "published_at_utc": "2024-09-20T17:00:00Z",
+        "selection": "Löwen Frankfurt",
+        "settlement": null,
+        "source_url": "https://api.openligadb.de/getmatchdata/del/2024/76102",
+        "sport": "ice_hockey",
+        "stake_units": 1.0,
+        "status": "unsettleable",
+        "tip_id": "bt-tip-f5893702a7c258c52ef1"
+      },
+      {
+        "cutoff_at_utc": "2024-09-20T17:00:00Z",
+        "entrant": "hockey-elo-v1",
+        "event": "Kölner Haie v Eisbären Berlin",
+        "event_id": "ev-f39fb0d6742fc8bf41a3",
+        "event_start_utc": "2024-09-20T17:30:00Z",
+        "market": "match_winner_3way",
+        "notes": "prediction-only walk-forward hockey-pilot: no permissioned odds path for this sport; PnL not computable and not zero",
+        "odds": null,
+        "odds_source": null,
+        "pnl_units": null,
+        "published_at_utc": "2024-09-20T17:00:00Z",
+        "selection": "Kölner Haie",
+        "settlement": null,
+        "source_url": "https://api.openligadb.de/getmatchdata/del/2024/76101",
+        "sport": "ice_hockey",
+        "stake_units": 1.0,
+        "status": "unsettleable",
+        "tip_id": "bt-tip-dfc354c63d2c463034d0"
       },
       {
         "cutoff_at_utc": "2024-11-08T17:00:00Z",
@@ -757,6 +1216,7 @@
           "verification_state": "verified"
         },
         "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72301",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "lost",
         "tip_id": "bt-tip-2fe5fe976140a8020263"
@@ -779,6 +1239,7 @@
           "verification_state": "verified"
         },
         "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72301",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "lost",
         "tip_id": "bt-tip-ef5af1854fb109996f95"
@@ -801,6 +1262,7 @@
           "verification_state": "verified"
         },
         "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72301",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "lost",
         "tip_id": "bt-tip-d32e6386939b01667e17"
@@ -823,9 +1285,33 @@
           "verification_state": "verified"
         },
         "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72301",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "lost",
         "tip_id": "bt-tip-01bb0feb45e2c2848b7a"
+      },
+      {
+        "cutoff_at_utc": "2024-11-08T17:00:00Z",
+        "entrant": "draw-no-bet-v1",
+        "event": "1. FSV Mainz 05 v Borussia Dortmund",
+        "event_id": "ev-28879f1f624827bd95c5",
+        "event_start_utc": "2024-11-09T14:30:00Z",
+        "market": "match_winner_3way",
+        "notes": "settled vs openligadb",
+        "odds": 3.46,
+        "odds_source": "market_avg",
+        "pnl_units": 2.46,
+        "published_at_utc": "2024-11-08T17:00:00Z",
+        "selection": "DNB home",
+        "settlement": {
+          "outcome": "won",
+          "verification_state": "verified"
+        },
+        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72300",
+        "sport": "football",
+        "stake_units": 1.0,
+        "status": "won",
+        "tip_id": "bt-tip-268bb709456a89204087"
       },
       {
         "cutoff_at_utc": "2024-11-08T17:00:00Z",
@@ -845,34 +1331,13 @@
           "verification_state": "verified"
         },
         "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72298",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "won",
         "tip_id": "bt-tip-1dc8fa68bb57a2847471"
       },
       {
         "cutoff_at_utc": "2024-11-08T17:00:00Z",
-        "entrant": "draw-no-bet-v1",
-        "event": "1. FSV Mainz 05 v Borussia Dortmund",
-        "event_id": "ev-28879f1f624827bd95c5",
-        "event_start_utc": "2024-11-09T14:30:00Z",
-        "market": "match_winner_3way",
-        "notes": "settled vs openligadb",
-        "odds": 3.46,
-        "odds_source": "market_avg",
-        "pnl_units": 2.46,
-        "published_at_utc": "2024-11-08T17:00:00Z",
-        "selection": "DNB home",
-        "settlement": {
-          "outcome": "won",
-          "verification_state": "verified"
-        },
-        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72300",
-        "stake_units": 1.0,
-        "status": "won",
-        "tip_id": "bt-tip-268bb709456a89204087"
-      },
-      {
-        "cutoff_at_utc": "2024-11-08T17:00:00Z",
         "entrant": "elo-edge-v1",
         "event": "1. FSV Mainz 05 v Borussia Dortmund",
         "event_id": "ev-28879f1f624827bd95c5",
@@ -889,31 +1354,10 @@
           "verification_state": "verified"
         },
         "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72300",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "won",
         "tip_id": "bt-tip-02d07c12d053f5efbb5f"
-      },
-      {
-        "cutoff_at_utc": "2024-11-08T17:00:00Z",
-        "entrant": "elo-edge-v1",
-        "event": "VfL Bochum v Bayer 04 Leverkusen",
-        "event_id": "ev-d465430efda5d7112775",
-        "event_start_utc": "2024-11-09T14:30:00Z",
-        "market": "match_winner_3way",
-        "notes": "settled vs openligadb",
-        "odds": 10.15,
-        "odds_source": "market_avg",
-        "pnl_units": -1.0,
-        "published_at_utc": "2024-11-08T17:00:00Z",
-        "selection": "home",
-        "settlement": {
-          "outcome": "lost",
-          "verification_state": "verified"
-        },
-        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72302",
-        "stake_units": 1.0,
-        "status": "lost",
-        "tip_id": "bt-tip-2e2a26023e451cb04397"
       },
       {
         "cutoff_at_utc": "2024-11-08T17:00:00Z",
@@ -933,31 +1377,33 @@
           "verification_state": "verified"
         },
         "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72303",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "lost",
         "tip_id": "bt-tip-479ad9ed7aabb33acd76"
       },
       {
         "cutoff_at_utc": "2024-11-08T17:00:00Z",
-        "entrant": "market-favourite-v1",
-        "event": "SV Werder Bremen v Holstein Kiel",
-        "event_id": "ev-2b5aceef36ea4f25bc2f",
+        "entrant": "elo-edge-v1",
+        "event": "VfL Bochum v Bayer 04 Leverkusen",
+        "event_id": "ev-d465430efda5d7112775",
         "event_start_utc": "2024-11-09T14:30:00Z",
         "market": "match_winner_3way",
         "notes": "settled vs openligadb",
-        "odds": 1.64,
+        "odds": 10.15,
         "odds_source": "market_avg",
-        "pnl_units": 0.64,
+        "pnl_units": -1.0,
         "published_at_utc": "2024-11-08T17:00:00Z",
         "selection": "home",
         "settlement": {
-          "outcome": "won",
+          "outcome": "lost",
           "verification_state": "verified"
         },
-        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72298",
+        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72302",
+        "sport": "football",
         "stake_units": 1.0,
-        "status": "won",
-        "tip_id": "bt-tip-31ba8e577cc3ab1d0c24"
+        "status": "lost",
+        "tip_id": "bt-tip-2e2a26023e451cb04397"
       },
       {
         "cutoff_at_utc": "2024-11-08T17:00:00Z",
@@ -977,6 +1423,7 @@
           "verification_state": "verified"
         },
         "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72300",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "lost",
         "tip_id": "bt-tip-04e01edb7af07310cc79"
@@ -984,24 +1431,25 @@
       {
         "cutoff_at_utc": "2024-11-08T17:00:00Z",
         "entrant": "market-favourite-v1",
-        "event": "VfL Bochum v Bayer 04 Leverkusen",
-        "event_id": "ev-d465430efda5d7112775",
+        "event": "SV Werder Bremen v Holstein Kiel",
+        "event_id": "ev-2b5aceef36ea4f25bc2f",
         "event_start_utc": "2024-11-09T14:30:00Z",
         "market": "match_winner_3way",
         "notes": "settled vs openligadb",
-        "odds": 1.26,
+        "odds": 1.64,
         "odds_source": "market_avg",
-        "pnl_units": -1.0,
+        "pnl_units": 0.64,
         "published_at_utc": "2024-11-08T17:00:00Z",
-        "selection": "away",
+        "selection": "home",
         "settlement": {
-          "outcome": "lost",
+          "outcome": "won",
           "verification_state": "verified"
         },
-        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72302",
+        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72298",
+        "sport": "football",
         "stake_units": 1.0,
-        "status": "lost",
-        "tip_id": "bt-tip-21bf282182fad6c5467c"
+        "status": "won",
+        "tip_id": "bt-tip-31ba8e577cc3ab1d0c24"
       },
       {
         "cutoff_at_utc": "2024-11-08T17:00:00Z",
@@ -1021,19 +1469,20 @@
           "verification_state": "verified"
         },
         "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72303",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "won",
         "tip_id": "bt-tip-7188966ce7c515d46e30"
       },
       {
         "cutoff_at_utc": "2024-11-08T17:00:00Z",
-        "entrant": "market-longshot-v1",
-        "event": "SV Werder Bremen v Holstein Kiel",
-        "event_id": "ev-2b5aceef36ea4f25bc2f",
+        "entrant": "market-favourite-v1",
+        "event": "VfL Bochum v Bayer 04 Leverkusen",
+        "event_id": "ev-d465430efda5d7112775",
         "event_start_utc": "2024-11-09T14:30:00Z",
         "market": "match_winner_3way",
         "notes": "settled vs openligadb",
-        "odds": 4.93,
+        "odds": 1.26,
         "odds_source": "market_avg",
         "pnl_units": -1.0,
         "published_at_utc": "2024-11-08T17:00:00Z",
@@ -1042,10 +1491,11 @@
           "outcome": "lost",
           "verification_state": "verified"
         },
-        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72298",
+        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72302",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "lost",
-        "tip_id": "bt-tip-6842af3ad9841e572929"
+        "tip_id": "bt-tip-21bf282182fad6c5467c"
       },
       {
         "cutoff_at_utc": "2024-11-08T17:00:00Z",
@@ -1065,6 +1515,7 @@
           "verification_state": "verified"
         },
         "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72300",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "won",
         "tip_id": "bt-tip-7b114614312907134fdf"
@@ -1072,24 +1523,25 @@
       {
         "cutoff_at_utc": "2024-11-08T17:00:00Z",
         "entrant": "market-longshot-v1",
-        "event": "VfL Bochum v Bayer 04 Leverkusen",
-        "event_id": "ev-d465430efda5d7112775",
+        "event": "SV Werder Bremen v Holstein Kiel",
+        "event_id": "ev-2b5aceef36ea4f25bc2f",
         "event_start_utc": "2024-11-09T14:30:00Z",
         "market": "match_winner_3way",
         "notes": "settled vs openligadb",
-        "odds": 10.15,
+        "odds": 4.93,
         "odds_source": "market_avg",
         "pnl_units": -1.0,
         "published_at_utc": "2024-11-08T17:00:00Z",
-        "selection": "home",
+        "selection": "away",
         "settlement": {
           "outcome": "lost",
           "verification_state": "verified"
         },
-        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72302",
+        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72298",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "lost",
-        "tip_id": "bt-tip-74de16f570a12ccc0fd2"
+        "tip_id": "bt-tip-6842af3ad9841e572929"
       },
       {
         "cutoff_at_utc": "2024-11-08T17:00:00Z",
@@ -1109,9 +1561,33 @@
           "verification_state": "verified"
         },
         "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72303",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "lost",
         "tip_id": "bt-tip-f1d7b8e7e2496b1f3288"
+      },
+      {
+        "cutoff_at_utc": "2024-11-08T17:00:00Z",
+        "entrant": "market-longshot-v1",
+        "event": "VfL Bochum v Bayer 04 Leverkusen",
+        "event_id": "ev-d465430efda5d7112775",
+        "event_start_utc": "2024-11-09T14:30:00Z",
+        "market": "match_winner_3way",
+        "notes": "settled vs openligadb",
+        "odds": 10.15,
+        "odds_source": "market_avg",
+        "pnl_units": -1.0,
+        "published_at_utc": "2024-11-08T17:00:00Z",
+        "selection": "home",
+        "settlement": {
+          "outcome": "lost",
+          "verification_state": "verified"
+        },
+        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72302",
+        "sport": "football",
+        "stake_units": 1.0,
+        "status": "lost",
+        "tip_id": "bt-tip-74de16f570a12ccc0fd2"
       },
       {
         "cutoff_at_utc": "2024-11-08T17:00:00Z",
@@ -1131,6 +1607,7 @@
           "verification_state": "verified"
         },
         "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72296",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "lost",
         "tip_id": "bt-tip-dc41789c6a12fa924e55"
@@ -1153,6 +1630,7 @@
           "verification_state": "verified"
         },
         "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72296",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "lost",
         "tip_id": "bt-tip-87947bad5d9e69d9087e"
@@ -1175,6 +1653,7 @@
           "verification_state": "verified"
         },
         "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72296",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "lost",
         "tip_id": "bt-tip-321613e1e891fba69bac"
@@ -1197,6 +1676,7 @@
           "verification_state": "verified"
         },
         "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72299",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "lost",
         "tip_id": "bt-tip-0862bd8dc227c208e7c8"
@@ -1219,6 +1699,7 @@
           "verification_state": "verified"
         },
         "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72299",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "lost",
         "tip_id": "bt-tip-0a15e6e5e6eadcfb60db"
@@ -1241,6 +1722,7 @@
           "verification_state": "verified"
         },
         "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72299",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "lost",
         "tip_id": "bt-tip-fd1531f079ba4451aa49"
@@ -1263,6 +1745,7 @@
           "verification_state": "verified"
         },
         "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72295",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "lost",
         "tip_id": "bt-tip-355253b74cef5af2241d"
@@ -1285,6 +1768,7 @@
           "verification_state": "verified"
         },
         "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72295",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "lost",
         "tip_id": "bt-tip-c5b84a00c3667468d3e8"
@@ -1307,6 +1791,7 @@
           "verification_state": "verified"
         },
         "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72295",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "won",
         "tip_id": "bt-tip-bd96b97f746f6a9c8e3e"
@@ -1329,6 +1814,7 @@
           "verification_state": "verified"
         },
         "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72297",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "lost",
         "tip_id": "bt-tip-10af132cd7cff4d5eeb1"
@@ -1351,6 +1837,7 @@
           "verification_state": "verified"
         },
         "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72297",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "lost",
         "tip_id": "bt-tip-c4f78bcf2ac018dfca0d"
@@ -1373,6 +1860,7 @@
           "verification_state": "verified"
         },
         "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72297",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "won",
         "tip_id": "bt-tip-a1657db47ddb221e5d4e"
@@ -1395,9 +1883,130 @@
           "verification_state": "verified"
         },
         "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72297",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "lost",
         "tip_id": "bt-tip-7610eb2641a04499c6e8"
+      },
+      {
+        "cutoff_at_utc": "2024-11-26T18:00:00Z",
+        "entrant": "hockey-elo-v1",
+        "event": "Red Bull München v Schwenninger Wild Wings",
+        "event_id": "ev-5d85ecba21e65f480597",
+        "event_start_utc": "2024-11-26T18:30:00Z",
+        "market": "match_winner_3way",
+        "notes": "prediction-only walk-forward hockey-pilot: no permissioned odds path for this sport; PnL not computable and not zero",
+        "odds": null,
+        "odds_source": null,
+        "pnl_units": null,
+        "published_at_utc": "2024-11-26T18:00:00Z",
+        "selection": "Red Bull München",
+        "settlement": null,
+        "source_url": "https://api.openligadb.de/getmatchdata/del/2024/76272",
+        "sport": "ice_hockey",
+        "stake_units": 1.0,
+        "status": "unsettleable",
+        "tip_id": "bt-tip-b1defcad3679337a478d"
+      },
+      {
+        "cutoff_at_utc": "2024-11-26T18:00:00Z",
+        "entrant": "hockey-elo-v1",
+        "event": "Löwen Frankfurt v Augsburger Panther",
+        "event_id": "ev-eb26dff17a1b907cecbf",
+        "event_start_utc": "2024-11-26T18:30:00Z",
+        "market": "match_winner_3way",
+        "notes": "prediction-only walk-forward hockey-pilot: no permissioned odds path for this sport; PnL not computable and not zero",
+        "odds": null,
+        "odds_source": null,
+        "pnl_units": null,
+        "published_at_utc": "2024-11-26T18:00:00Z",
+        "selection": "Löwen Frankfurt",
+        "settlement": null,
+        "source_url": "https://api.openligadb.de/getmatchdata/del/2024/76270",
+        "sport": "ice_hockey",
+        "stake_units": 1.0,
+        "status": "unsettleable",
+        "tip_id": "bt-tip-d29d36fe6b8848c0ea41"
+      },
+      {
+        "cutoff_at_utc": "2024-11-27T16:30:00Z",
+        "entrant": "hockey-elo-v1",
+        "event": "Grizzlys Wolfsburg v Düsseldorfer EG",
+        "event_id": "ev-c1a1db0ea682db60d797",
+        "event_start_utc": "2024-11-27T17:00:00Z",
+        "market": "match_winner_3way",
+        "notes": "prediction-only walk-forward hockey-pilot: no permissioned odds path for this sport; PnL not computable and not zero",
+        "odds": null,
+        "odds_source": null,
+        "pnl_units": null,
+        "published_at_utc": "2024-11-27T16:30:00Z",
+        "selection": "Grizzlys Wolfsburg",
+        "settlement": null,
+        "source_url": "https://api.openligadb.de/getmatchdata/del/2024/76273",
+        "sport": "ice_hockey",
+        "stake_units": 1.0,
+        "status": "unsettleable",
+        "tip_id": "bt-tip-1588c729a01b43f23563"
+      },
+      {
+        "cutoff_at_utc": "2024-11-27T18:00:00Z",
+        "entrant": "hockey-elo-v1",
+        "event": "Adler Mannheim v Iserlohn Roosters",
+        "event_id": "ev-bf16dd5a6bac8dcbec48",
+        "event_start_utc": "2024-11-27T18:30:00Z",
+        "market": "match_winner_3way",
+        "notes": "prediction-only walk-forward hockey-pilot: no permissioned odds path for this sport; PnL not computable and not zero",
+        "odds": null,
+        "odds_source": null,
+        "pnl_units": null,
+        "published_at_utc": "2024-11-27T18:00:00Z",
+        "selection": "Adler Mannheim",
+        "settlement": null,
+        "source_url": "https://api.openligadb.de/getmatchdata/del/2024/76274",
+        "sport": "ice_hockey",
+        "stake_units": 1.0,
+        "status": "unsettleable",
+        "tip_id": "bt-tip-c3c5c27c60280a1d5871"
+      },
+      {
+        "cutoff_at_utc": "2024-11-27T18:00:00Z",
+        "entrant": "hockey-elo-v1",
+        "event": "Straubing Tigers v ERC Ingolstadt",
+        "event_id": "ev-c00bc1a5fc5bc1f06a9e",
+        "event_start_utc": "2024-11-27T18:30:00Z",
+        "market": "match_winner_3way",
+        "notes": "prediction-only walk-forward hockey-pilot: no permissioned odds path for this sport; PnL not computable and not zero",
+        "odds": null,
+        "odds_source": null,
+        "pnl_units": null,
+        "published_at_utc": "2024-11-27T18:00:00Z",
+        "selection": "Straubing Tigers",
+        "settlement": null,
+        "source_url": "https://api.openligadb.de/getmatchdata/del/2024/76275",
+        "sport": "ice_hockey",
+        "stake_units": 1.0,
+        "status": "unsettleable",
+        "tip_id": "bt-tip-8d649ecd6db5ef8d1221"
+      },
+      {
+        "cutoff_at_utc": "2025-01-26T15:00:00Z",
+        "entrant": "hockey-elo-v1",
+        "event": "Löwen Frankfurt v Kölner Haie",
+        "event_id": "ev-3f32836fac8ddfb0bb12",
+        "event_start_utc": "2025-01-26T15:30:00Z",
+        "market": "match_winner_3way",
+        "notes": "prediction-only walk-forward hockey-pilot: no permissioned odds path for this sport; PnL not computable and not zero",
+        "odds": null,
+        "odds_source": null,
+        "pnl_units": null,
+        "published_at_utc": "2025-01-26T15:00:00Z",
+        "selection": "Löwen Frankfurt",
+        "settlement": null,
+        "source_url": "https://api.openligadb.de/getmatchdata/del/2024/76412",
+        "sport": "ice_hockey",
+        "stake_units": 1.0,
+        "status": "unsettleable",
+        "tip_id": "bt-tip-1a82a9f9a59e646ae5d1"
       },
       {
         "cutoff_at_utc": "2025-01-31T17:00:00Z",
@@ -1417,6 +2026,7 @@
           "verification_state": "verified"
         },
         "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72390",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "won",
         "tip_id": "bt-tip-e3ffc4cc75a8b712a57a"
@@ -1439,6 +2049,7 @@
           "verification_state": "verified"
         },
         "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72390",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "won",
         "tip_id": "bt-tip-fc85a78307bd546f1704"
@@ -1461,6 +2072,7 @@
           "verification_state": "verified"
         },
         "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72390",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "lost",
         "tip_id": "bt-tip-cb2018498a65d4569c68"
@@ -1483,31 +2095,10 @@
           "verification_state": "verified"
         },
         "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72386",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "lost",
         "tip_id": "bt-tip-aa232b36a597206499b8"
-      },
-      {
-        "cutoff_at_utc": "2025-01-31T17:00:00Z",
-        "entrant": "draw-no-bet-v1",
-        "event": "FC Bayern München v Holstein Kiel",
-        "event_id": "ev-f846c0b18638ea034321",
-        "event_start_utc": "2025-02-01T14:30:00Z",
-        "market": "match_winner_3way",
-        "notes": "settled vs openligadb",
-        "odds": 1.05,
-        "odds_source": "market_avg",
-        "pnl_units": 0.05,
-        "published_at_utc": "2025-01-31T17:00:00Z",
-        "selection": "DNB home",
-        "settlement": {
-          "outcome": "won",
-          "verification_state": "verified"
-        },
-        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72387",
-        "stake_units": 1.0,
-        "status": "won",
-        "tip_id": "bt-tip-1915ebae8578955a4915"
       },
       {
         "cutoff_at_utc": "2025-01-31T17:00:00Z",
@@ -1527,6 +2118,7 @@
           "verification_state": "verified"
         },
         "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72389",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "lost",
         "tip_id": "bt-tip-eee34a4f97a3a230c689"
@@ -1549,31 +2141,33 @@
           "verification_state": "verified"
         },
         "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72393",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "lost",
         "tip_id": "bt-tip-f7a1f9aee2c5627601dc"
       },
       {
         "cutoff_at_utc": "2025-01-31T17:00:00Z",
-        "entrant": "elo-edge-v1",
-        "event": "1. FC Heidenheim 1846 v Borussia Dortmund",
-        "event_id": "ev-ba96ae250c0bf922269f",
+        "entrant": "draw-no-bet-v1",
+        "event": "FC Bayern München v Holstein Kiel",
+        "event_id": "ev-f846c0b18638ea034321",
         "event_start_utc": "2025-02-01T14:30:00Z",
         "market": "match_winner_3way",
         "notes": "settled vs openligadb",
-        "odds": 4.3,
+        "odds": 1.05,
         "odds_source": "market_avg",
-        "pnl_units": -1.0,
+        "pnl_units": 0.05,
         "published_at_utc": "2025-01-31T17:00:00Z",
-        "selection": "home",
+        "selection": "DNB home",
         "settlement": {
-          "outcome": "lost",
+          "outcome": "won",
           "verification_state": "verified"
         },
-        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72389",
+        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72387",
+        "sport": "football",
         "stake_units": 1.0,
-        "status": "lost",
-        "tip_id": "bt-tip-a426430c5495d0e9c593"
+        "status": "won",
+        "tip_id": "bt-tip-1915ebae8578955a4915"
       },
       {
         "cutoff_at_utc": "2025-01-31T17:00:00Z",
@@ -1593,9 +2187,33 @@
           "verification_state": "verified"
         },
         "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72392",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "lost",
         "tip_id": "bt-tip-566f2ff1e28ff8e8ad6f"
+      },
+      {
+        "cutoff_at_utc": "2025-01-31T17:00:00Z",
+        "entrant": "elo-edge-v1",
+        "event": "1. FC Heidenheim 1846 v Borussia Dortmund",
+        "event_id": "ev-ba96ae250c0bf922269f",
+        "event_start_utc": "2025-02-01T14:30:00Z",
+        "market": "match_winner_3way",
+        "notes": "settled vs openligadb",
+        "odds": 4.3,
+        "odds_source": "market_avg",
+        "pnl_units": -1.0,
+        "published_at_utc": "2025-01-31T17:00:00Z",
+        "selection": "home",
+        "settlement": {
+          "outcome": "lost",
+          "verification_state": "verified"
+        },
+        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72389",
+        "sport": "football",
+        "stake_units": 1.0,
+        "status": "lost",
+        "tip_id": "bt-tip-a426430c5495d0e9c593"
       },
       {
         "cutoff_at_utc": "2025-01-31T17:00:00Z",
@@ -1615,53 +2233,10 @@
           "verification_state": "verified"
         },
         "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72386",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "lost",
         "tip_id": "bt-tip-17a1d2d88488e3168a7a"
-      },
-      {
-        "cutoff_at_utc": "2025-01-31T17:00:00Z",
-        "entrant": "market-favourite-v1",
-        "event": "FC Bayern München v Holstein Kiel",
-        "event_id": "ev-f846c0b18638ea034321",
-        "event_start_utc": "2025-02-01T14:30:00Z",
-        "market": "match_winner_3way",
-        "notes": "settled vs openligadb",
-        "odds": 1.05,
-        "odds_source": "market_avg",
-        "pnl_units": 0.05,
-        "published_at_utc": "2025-01-31T17:00:00Z",
-        "selection": "home",
-        "settlement": {
-          "outcome": "won",
-          "verification_state": "verified"
-        },
-        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72387",
-        "stake_units": 1.0,
-        "status": "won",
-        "tip_id": "bt-tip-6950b3e91234fcf99a50"
-      },
-      {
-        "cutoff_at_utc": "2025-01-31T17:00:00Z",
-        "entrant": "market-favourite-v1",
-        "event": "1. FC Heidenheim 1846 v Borussia Dortmund",
-        "event_id": "ev-ba96ae250c0bf922269f",
-        "event_start_utc": "2025-02-01T14:30:00Z",
-        "market": "match_winner_3way",
-        "notes": "settled vs openligadb",
-        "odds": 1.76,
-        "odds_source": "market_avg",
-        "pnl_units": 0.76,
-        "published_at_utc": "2025-01-31T17:00:00Z",
-        "selection": "away",
-        "settlement": {
-          "outcome": "won",
-          "verification_state": "verified"
-        },
-        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72389",
-        "stake_units": 1.0,
-        "status": "won",
-        "tip_id": "bt-tip-7871b528286aabd4c8c4"
       },
       {
         "cutoff_at_utc": "2025-01-31T17:00:00Z",
@@ -1681,9 +2256,33 @@
           "verification_state": "verified"
         },
         "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72392",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "won",
         "tip_id": "bt-tip-67a9bd631ae2c8ee533c"
+      },
+      {
+        "cutoff_at_utc": "2025-01-31T17:00:00Z",
+        "entrant": "market-favourite-v1",
+        "event": "1. FC Heidenheim 1846 v Borussia Dortmund",
+        "event_id": "ev-ba96ae250c0bf922269f",
+        "event_start_utc": "2025-02-01T14:30:00Z",
+        "market": "match_winner_3way",
+        "notes": "settled vs openligadb",
+        "odds": 1.76,
+        "odds_source": "market_avg",
+        "pnl_units": 0.76,
+        "published_at_utc": "2025-01-31T17:00:00Z",
+        "selection": "away",
+        "settlement": {
+          "outcome": "won",
+          "verification_state": "verified"
+        },
+        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72389",
+        "sport": "football",
+        "stake_units": 1.0,
+        "status": "won",
+        "tip_id": "bt-tip-7871b528286aabd4c8c4"
       },
       {
         "cutoff_at_utc": "2025-01-31T17:00:00Z",
@@ -1703,9 +2302,33 @@
           "verification_state": "verified"
         },
         "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72393",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "lost",
         "tip_id": "bt-tip-e495ce254b4a27a8ac46"
+      },
+      {
+        "cutoff_at_utc": "2025-01-31T17:00:00Z",
+        "entrant": "market-favourite-v1",
+        "event": "FC Bayern München v Holstein Kiel",
+        "event_id": "ev-f846c0b18638ea034321",
+        "event_start_utc": "2025-02-01T14:30:00Z",
+        "market": "match_winner_3way",
+        "notes": "settled vs openligadb",
+        "odds": 1.05,
+        "odds_source": "market_avg",
+        "pnl_units": 0.05,
+        "published_at_utc": "2025-01-31T17:00:00Z",
+        "selection": "home",
+        "settlement": {
+          "outcome": "won",
+          "verification_state": "verified"
+        },
+        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72387",
+        "sport": "football",
+        "stake_units": 1.0,
+        "status": "won",
+        "tip_id": "bt-tip-6950b3e91234fcf99a50"
       },
       {
         "cutoff_at_utc": "2025-01-31T17:00:00Z",
@@ -1725,53 +2348,10 @@
           "verification_state": "verified"
         },
         "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72386",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "won",
         "tip_id": "bt-tip-69bc7a468bd5607a82cf"
-      },
-      {
-        "cutoff_at_utc": "2025-01-31T17:00:00Z",
-        "entrant": "market-longshot-v1",
-        "event": "FC Bayern München v Holstein Kiel",
-        "event_id": "ev-f846c0b18638ea034321",
-        "event_start_utc": "2025-02-01T14:30:00Z",
-        "market": "match_winner_3way",
-        "notes": "settled vs openligadb",
-        "odds": 38.04,
-        "odds_source": "market_avg",
-        "pnl_units": -1.0,
-        "published_at_utc": "2025-01-31T17:00:00Z",
-        "selection": "away",
-        "settlement": {
-          "outcome": "lost",
-          "verification_state": "verified"
-        },
-        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72387",
-        "stake_units": 1.0,
-        "status": "lost",
-        "tip_id": "bt-tip-3dbe8db50dec415957bb"
-      },
-      {
-        "cutoff_at_utc": "2025-01-31T17:00:00Z",
-        "entrant": "market-longshot-v1",
-        "event": "1. FC Heidenheim 1846 v Borussia Dortmund",
-        "event_id": "ev-ba96ae250c0bf922269f",
-        "event_start_utc": "2025-02-01T14:30:00Z",
-        "market": "match_winner_3way",
-        "notes": "settled vs openligadb",
-        "odds": 4.3,
-        "odds_source": "market_avg",
-        "pnl_units": -1.0,
-        "published_at_utc": "2025-01-31T17:00:00Z",
-        "selection": "home",
-        "settlement": {
-          "outcome": "lost",
-          "verification_state": "verified"
-        },
-        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72389",
-        "stake_units": 1.0,
-        "status": "lost",
-        "tip_id": "bt-tip-7e553462ffa71f7c7a93"
       },
       {
         "cutoff_at_utc": "2025-01-31T17:00:00Z",
@@ -1791,9 +2371,33 @@
           "verification_state": "verified"
         },
         "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72392",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "lost",
         "tip_id": "bt-tip-79e36f1b2943b2d70406"
+      },
+      {
+        "cutoff_at_utc": "2025-01-31T17:00:00Z",
+        "entrant": "market-longshot-v1",
+        "event": "1. FC Heidenheim 1846 v Borussia Dortmund",
+        "event_id": "ev-ba96ae250c0bf922269f",
+        "event_start_utc": "2025-02-01T14:30:00Z",
+        "market": "match_winner_3way",
+        "notes": "settled vs openligadb",
+        "odds": 4.3,
+        "odds_source": "market_avg",
+        "pnl_units": -1.0,
+        "published_at_utc": "2025-01-31T17:00:00Z",
+        "selection": "home",
+        "settlement": {
+          "outcome": "lost",
+          "verification_state": "verified"
+        },
+        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72389",
+        "sport": "football",
+        "stake_units": 1.0,
+        "status": "lost",
+        "tip_id": "bt-tip-7e553462ffa71f7c7a93"
       },
       {
         "cutoff_at_utc": "2025-01-31T17:00:00Z",
@@ -1813,9 +2417,33 @@
           "verification_state": "verified"
         },
         "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72393",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "lost",
         "tip_id": "bt-tip-b7814705c064c66a0980"
+      },
+      {
+        "cutoff_at_utc": "2025-01-31T17:00:00Z",
+        "entrant": "market-longshot-v1",
+        "event": "FC Bayern München v Holstein Kiel",
+        "event_id": "ev-f846c0b18638ea034321",
+        "event_start_utc": "2025-02-01T14:30:00Z",
+        "market": "match_winner_3way",
+        "notes": "settled vs openligadb",
+        "odds": 38.04,
+        "odds_source": "market_avg",
+        "pnl_units": -1.0,
+        "published_at_utc": "2025-01-31T17:00:00Z",
+        "selection": "away",
+        "settlement": {
+          "outcome": "lost",
+          "verification_state": "verified"
+        },
+        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72387",
+        "sport": "football",
+        "stake_units": 1.0,
+        "status": "lost",
+        "tip_id": "bt-tip-3dbe8db50dec415957bb"
       },
       {
         "cutoff_at_utc": "2025-01-31T17:00:00Z",
@@ -1835,6 +2463,7 @@
           "verification_state": "verified"
         },
         "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72391",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "lost",
         "tip_id": "bt-tip-2f8afa0e9a5dd3ab643d"
@@ -1857,6 +2486,7 @@
           "verification_state": "verified"
         },
         "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72391",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "lost",
         "tip_id": "bt-tip-6876e7c6610cc168a84c"
@@ -1879,6 +2509,7 @@
           "verification_state": "verified"
         },
         "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72391",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "lost",
         "tip_id": "bt-tip-e8b81561788b8e22a150"
@@ -1901,6 +2532,7 @@
           "verification_state": "verified"
         },
         "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72391",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "lost",
         "tip_id": "bt-tip-3a3245338aea2ac3a823"
@@ -1923,6 +2555,7 @@
           "verification_state": "verified"
         },
         "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72388",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "lost",
         "tip_id": "bt-tip-04f8bd50dd99aee659d6"
@@ -1945,6 +2578,7 @@
           "verification_state": "verified"
         },
         "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72388",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "lost",
         "tip_id": "bt-tip-3330dc9a1017ed4dec89"
@@ -1967,6 +2601,7 @@
           "verification_state": "verified"
         },
         "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72388",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "lost",
         "tip_id": "bt-tip-1f574bd29ba796c33384"
@@ -1989,6 +2624,7 @@
           "verification_state": "verified"
         },
         "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72385",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "won",
         "tip_id": "bt-tip-d24ae3c913cbb60f253f"
@@ -2011,6 +2647,7 @@
           "verification_state": "verified"
         },
         "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72385",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "won",
         "tip_id": "bt-tip-efe701c17eb1738ecb53"
@@ -2033,6 +2670,7 @@
           "verification_state": "verified"
         },
         "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72385",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "lost",
         "tip_id": "bt-tip-6b760c4c36c84c07ec10"
@@ -2052,6 +2690,7 @@
         "selection": "Lazio",
         "settlement": null,
         "source_url": "https://www.olbg.com/betting-tips/Football/European_Competitions/Italy_Serie_A/Venezia_v_Lazio/1?event_id=2039716",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "pending",
         "tip_id": "tip-olbg-53a0df1ca57c79febc72"
@@ -2071,6 +2710,7 @@
         "selection": "Draw",
         "settlement": null,
         "source_url": "https://www.olbg.com/betting-tips/Boxing/All_Boxing/All_Events/Kieron_Conway_v_Mark_Jeffers/16?event_id=144008",
+        "sport": "boxing",
         "stake_units": 1.0,
         "status": "pending",
         "tip_id": "tip-olbg-8d7e3bc806462198512d"
@@ -2090,6 +2730,7 @@
         "selection": "Barcelona",
         "settlement": null,
         "source_url": "https://www.olbg.com/betting-tips/Football/European_Competitions/Spain_Primera_Liga/Sevilla_v_Barcelona/1?event_id=2040420",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "pending",
         "tip_id": "tip-olbg-720b538d06e22b0063b0"
@@ -2109,6 +2750,7 @@
         "selection": "Over 2.50",
         "settlement": null,
         "source_url": "https://www.olbg.com/betting-tips/Football/European_Competitions/Spain_Primera_Liga/Sevilla_v_Barcelona/1?event_id=2040420",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "pending",
         "tip_id": "tip-olbg-21267d26753012bea7ed"
@@ -2128,6 +2770,7 @@
         "selection": "Barcelona & Yes",
         "settlement": null,
         "source_url": "https://www.olbg.com/betting-tips/Football/European_Competitions/Spain_Primera_Liga/Sevilla_v_Barcelona/1?event_id=2040420",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "pending",
         "tip_id": "tip-olbg-50e6171b0cbfdcbdc5ed"
@@ -2147,6 +2790,7 @@
         "selection": "Toulouse",
         "settlement": null,
         "source_url": "https://www.olbg.com/betting-tips/Rugby_Union/All_Rugby_Union/All_Events/Vannes_v_Toulouse/9?event_id=609429",
+        "sport": "rugby_union",
         "stake_units": 1.0,
         "status": "pending",
         "tip_id": "tip-olbg-74a11ada908236d538f3"
@@ -2166,6 +2810,7 @@
         "selection": "Sporting",
         "settlement": null,
         "source_url": "https://www.olbg.com/betting-tips/Football/European_Competitions/Portugal_Primeira_Liga/Sporting_v_FC_Arouca/1?event_id=2040776",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "pending",
         "tip_id": "tip-olbg-6266958af73f1933e078"
@@ -2185,6 +2830,7 @@
         "selection": "Luke Littler",
         "settlement": null,
         "source_url": "https://www.olbg.com/betting-tips/Darts/All_Darts/All_Events/Luke_Littler_vs_Nathan_Aspinall/15?event_id=31646",
+        "sport": "darts",
         "stake_units": 1.0,
         "status": "pending",
         "tip_id": "tip-olbg-cfb98e77c307d09829a1"
@@ -2204,6 +2850,7 @@
         "selection": "Man City",
         "settlement": null,
         "source_url": "https://www.olbg.com/betting-tips/Football/UK/England_Premier_League/Man_City_v_Sunderland/1?event_id=2039511",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "pending",
         "tip_id": "tip-olbg-c75a181e92879191beff"
@@ -2223,6 +2870,7 @@
         "selection": "Leeds",
         "settlement": null,
         "source_url": "https://www.olbg.com/betting-tips/Football/UK/England_Premier_League/Leeds_v_Crystal_Palace/1?event_id=2039505",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "pending",
         "tip_id": "tip-olbg-cfe22f13677bacc97038"
@@ -2242,6 +2890,7 @@
         "selection": "Liverpool",
         "settlement": null,
         "source_url": "https://www.olbg.com/betting-tips/Football/UK/England_Premier_League/Bournemouth_v_Liverpool/1?event_id=2039509",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "pending",
         "tip_id": "tip-olbg-781acc35f3e50285e299"
@@ -2261,6 +2910,7 @@
         "selection": "Man City",
         "settlement": null,
         "source_url": "https://www.olbg.com/betting-tips/Football/UK/England_Premier_League/Man_City_v_Sunderland/1?event_id=2039511",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "pending",
         "tip_id": "tip-olbg-ev-2309ddcaf1ab348ded9e"
@@ -2280,12 +2930,13 @@
         "selection": "Man Utd",
         "settlement": null,
         "source_url": "https://www.olbg.com/betting-tips/Football/UK/England_Premier_League/Fulham_v_Man_Utd/1?event_id=2039510",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "pending",
         "tip_id": "tip-olbg-0e5767b0ffa214ae422e"
       }
     ],
-    "total_placed": 102,
+    "total_placed": 115,
     "total_upcoming": 13,
     "upcoming": [
       {
@@ -2303,6 +2954,7 @@
         "selection": "Lazio",
         "settlement": null,
         "source_url": "https://www.olbg.com/betting-tips/Football/European_Competitions/Italy_Serie_A/Venezia_v_Lazio/1?event_id=2039716",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "pending",
         "tip_id": "tip-olbg-53a0df1ca57c79febc72"
@@ -2322,6 +2974,7 @@
         "selection": "Draw",
         "settlement": null,
         "source_url": "https://www.olbg.com/betting-tips/Boxing/All_Boxing/All_Events/Kieron_Conway_v_Mark_Jeffers/16?event_id=144008",
+        "sport": "boxing",
         "stake_units": 1.0,
         "status": "pending",
         "tip_id": "tip-olbg-8d7e3bc806462198512d"
@@ -2341,6 +2994,7 @@
         "selection": "Barcelona",
         "settlement": null,
         "source_url": "https://www.olbg.com/betting-tips/Football/European_Competitions/Spain_Primera_Liga/Sevilla_v_Barcelona/1?event_id=2040420",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "pending",
         "tip_id": "tip-olbg-720b538d06e22b0063b0"
@@ -2360,6 +3014,7 @@
         "selection": "Over 2.50",
         "settlement": null,
         "source_url": "https://www.olbg.com/betting-tips/Football/European_Competitions/Spain_Primera_Liga/Sevilla_v_Barcelona/1?event_id=2040420",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "pending",
         "tip_id": "tip-olbg-21267d26753012bea7ed"
@@ -2379,6 +3034,7 @@
         "selection": "Barcelona & Yes",
         "settlement": null,
         "source_url": "https://www.olbg.com/betting-tips/Football/European_Competitions/Spain_Primera_Liga/Sevilla_v_Barcelona/1?event_id=2040420",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "pending",
         "tip_id": "tip-olbg-50e6171b0cbfdcbdc5ed"
@@ -2398,6 +3054,7 @@
         "selection": "Toulouse",
         "settlement": null,
         "source_url": "https://www.olbg.com/betting-tips/Rugby_Union/All_Rugby_Union/All_Events/Vannes_v_Toulouse/9?event_id=609429",
+        "sport": "rugby_union",
         "stake_units": 1.0,
         "status": "pending",
         "tip_id": "tip-olbg-74a11ada908236d538f3"
@@ -2417,6 +3074,7 @@
         "selection": "Sporting",
         "settlement": null,
         "source_url": "https://www.olbg.com/betting-tips/Football/European_Competitions/Portugal_Primeira_Liga/Sporting_v_FC_Arouca/1?event_id=2040776",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "pending",
         "tip_id": "tip-olbg-6266958af73f1933e078"
@@ -2436,6 +3094,7 @@
         "selection": "Luke Littler",
         "settlement": null,
         "source_url": "https://www.olbg.com/betting-tips/Darts/All_Darts/All_Events/Luke_Littler_vs_Nathan_Aspinall/15?event_id=31646",
+        "sport": "darts",
         "stake_units": 1.0,
         "status": "pending",
         "tip_id": "tip-olbg-cfb98e77c307d09829a1"
@@ -2455,6 +3114,7 @@
         "selection": "Man City",
         "settlement": null,
         "source_url": "https://www.olbg.com/betting-tips/Football/UK/England_Premier_League/Man_City_v_Sunderland/1?event_id=2039511",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "pending",
         "tip_id": "tip-olbg-c75a181e92879191beff"
@@ -2474,6 +3134,7 @@
         "selection": "Leeds",
         "settlement": null,
         "source_url": "https://www.olbg.com/betting-tips/Football/UK/England_Premier_League/Leeds_v_Crystal_Palace/1?event_id=2039505",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "pending",
         "tip_id": "tip-olbg-cfe22f13677bacc97038"
@@ -2493,6 +3154,7 @@
         "selection": "Liverpool",
         "settlement": null,
         "source_url": "https://www.olbg.com/betting-tips/Football/UK/England_Premier_League/Bournemouth_v_Liverpool/1?event_id=2039509",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "pending",
         "tip_id": "tip-olbg-781acc35f3e50285e299"
@@ -2512,6 +3174,7 @@
         "selection": "Man City",
         "settlement": null,
         "source_url": "https://www.olbg.com/betting-tips/Football/UK/England_Premier_League/Man_City_v_Sunderland/1?event_id=2039511",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "pending",
         "tip_id": "tip-olbg-ev-2309ddcaf1ab348ded9e"
@@ -2531,6 +3194,7 @@
         "selection": "Man Utd",
         "settlement": null,
         "source_url": "https://www.olbg.com/betting-tips/Football/UK/England_Premier_League/Fulham_v_Man_Utd/1?event_id=2039510",
+        "sport": "football",
         "stake_units": 1.0,
         "status": "pending",
         "tip_id": "tip-olbg-0e5767b0ffa214ae422e"
@@ -2573,6 +3237,33 @@
       "path": "data/fixtures/football_data_d1_2425_pilot.csv",
       "sha256": "30f2ebdb7a507902fef24559f678151397494640c7404888200e6e55a332622a",
       "source_id": "football_data"
+    },
+    {
+      "capture_id": "cap-openligadb_del_2024_sd1.json",
+      "capture_mode": "automated_api",
+      "captured_at_utc": "2026-09-20T00:00:00Z",
+      "note": "DEL 2024/25 matchday payload fetched via permitted automated API (ODbL-1.0) on 2026-09-20, chunk-assembled with strict JSON validation (scripts/assemble_fixture.py)",
+      "path": "data/fixtures/openligadb_del_2024_sd1.json",
+      "sha256": "598f14c195a4b10c7d6f02df70a67b85941cafbc0b5430ea4f3562e53b3eeeb4",
+      "source_id": "openligadb"
+    },
+    {
+      "capture_id": "cap-openligadb_del_2024_sd20.json",
+      "capture_mode": "automated_api",
+      "captured_at_utc": "2026-09-20T00:00:00Z",
+      "note": "DEL 2024/25 matchday payload fetched via permitted automated API (ODbL-1.0) on 2026-09-20, chunk-assembled with strict JSON validation (scripts/assemble_fixture.py)",
+      "path": "data/fixtures/openligadb_del_2024_sd20.json",
+      "sha256": "706f6cede8f0988439b93ef57689880e4f98c7d9d35d305390da17af6422395c",
+      "source_id": "openligadb"
+    },
+    {
+      "capture_id": "cap-openligadb_del_2024_sd40.json",
+      "capture_mode": "automated_api",
+      "captured_at_utc": "2026-09-20T00:00:00Z",
+      "note": "DEL 2024/25 matchday payload fetched via permitted automated API (ODbL-1.0) on 2026-09-20, chunk-assembled with strict JSON validation (scripts/assemble_fixture.py)",
+      "path": "data/fixtures/openligadb_del_2024_sd40.json",
+      "sha256": "97c3d2ae9933dda8bee8e9915662d1263475fe01e3857204a0242875cf64c656",
+      "source_id": "openligadb"
     }
   ],
   "coverage": [
@@ -2593,12 +3284,12 @@
       "status": "results_path_available"
     },
     {
-      "note": "Shootout/extra-time rules and a permissioned odds path are still missing.",
-      "odds_path": "none verified",
-      "results_path": "OpenLigaDB DEL/DEL2/CHL endpoints (ODbL-1.0), path not yet pilot-verified",
+      "note": "End-to-end result ingest with OT/shootout-aware finals: 3 OT games, 1 shootout, 4 source-data irregularities flagged for review. Predictions are graded on accuracy/Brier only - PnL is unavailable, not zero.",
+      "odds_path": "none verified - no permissioned DEL odds in this repo",
+      "results_path": "OpenLigaDB DEL 2024/25 pilot, 21 events (matchdays 1/20/40), ODbL-1.0; single source, identity stays 'probable'",
       "scope": "olbg",
       "sport": "Ice Hockey",
-      "status": "results_path_available"
+      "status": "results_pilot"
     },
     {
       "note": "Listed by OLBG, but no permissioned result source, historical odds source, identity join and sport-specific settlement test has passed. No PnL or prediction is generated.",
@@ -2745,6 +3436,44 @@
       "status": "verification_blocked"
     }
   ],
+  "entrants": [
+    {
+      "description": "Anonymous 'Best Tipster' from manual snapshot 2026-09-19: annual profit 263, strike rate 59%. Displayed stats are OLBG self-reported (10-point stake basis) and unverified.",
+      "entrant_id": "olbg-best-tipster-mancity-sunderland",
+      "kind": "imported_tipster",
+      "name": "OLBG best tipster (Man City v Sunderland)"
+    },
+    {
+      "description": "Always backs the margin-removed market favourite (highest implied probability). Baseline reference, not a claimed edge.",
+      "entrant_id": "market-favourite-v1",
+      "kind": "strategy",
+      "name": "Market favourite (baseline)"
+    },
+    {
+      "description": "Always backs the margin-removed least-favoured team outcome (min of home/away implied probabilities; draw excluded). Tests the favourite-longshot bias on the pilot sample.",
+      "entrant_id": "market-longshot-v1",
+      "kind": "strategy",
+      "name": "Market longshot probe (baseline)"
+    },
+    {
+      "description": "Elo ratings (K=40, home adv 60); backs the model-argmax when edge over the margin-removed market >= 3%. No edge -> no bet.",
+      "entrant_id": "elo-edge-v1",
+      "kind": "strategy",
+      "name": "Elo value edge"
+    },
+    {
+      "description": "Elo-based: back the 2-way leader when p_draw < 0.30 and max(p_home,p_away) >= 0.55; a draw loses (DNB rule).",
+      "entrant_id": "draw-no-bet-v1",
+      "kind": "strategy",
+      "name": "Draw-No-Bet decisive"
+    },
+    {
+      "description": "2-way Elo incl. OT/SO (K=32, home adv 35 Elo pts, research priors); backs the model favourite when win prob >= 55%. Prediction-only: DEL has no permissioned odds path in this build, so graded on accuracy, not PnL.",
+      "entrant_id": "hockey-elo-v1",
+      "kind": "strategy",
+      "name": "Hockey Elo favourite (no-market pilot)"
+    }
+  ],
   "leaderboard": [
     {
       "description": "Anonymous 'Best Tipster' from manual snapshot 2026-09-19: annual profit 263, strike rate 59%. Displayed stats are OLBG self-reported (10-point stake basis) and unverified.",
@@ -2848,8 +3577,19 @@
     }
   ],
   "meta": {
-    "built_utc": "2026-09-20T02:02:26Z",
-    "event_count": 37,
+    "built_utc": "2026-09-20T02:54:08Z",
+    "event_count": 58,
+    "hockey": {
+      "competition": "DEL Eishockey 2024/2025",
+      "events": "21",
+      "matchdays": [
+        1,
+        20,
+        40
+      ],
+      "note": "Single-source pilot (OpenLigaDB, ODbL-1.0): identity stays 'probable' - no independent DEL cross-check exists in this repo. Results availability is inferred as start+3h because the source batch-edited results at end of season; documented in docs/STATUS.md. No permissioned odds path - predictions only, graded on accuracy/Brier; PnL unavailable (not zero).",
+      "source_anomalies": "5"
+    },
     "paper_trading": true,
     "pilot": {
       "competition": "1. Fußball-Bundesliga 2024/2025",
@@ -2941,7 +3681,7 @@
       "requires_active_entitlement": false,
       "source_id": "openligadb",
       "terms_version": "",
-      "verified_at": "2026-09-19"
+      "verified_at": "2026-09-20 (re-confirmed verbatim)"
     },
     {
       "caveats": [
@@ -3011,7 +3751,7 @@
       "requires_active_entitlement": false,
       "source_id": "football_data",
       "terms_version": "",
-      "verified_at": "2026-09-19"
+      "verified_at": "2026-09-20 (re-confirmed verbatim)"
     },
     {
       "caveats": [
@@ -3034,7 +3774,7 @@
       "requires_active_entitlement": false,
       "source_id": "olbg",
       "terms_version": "",
-      "verified_at": "2026-09-19"
+      "verified_at": "2026-09-20 (re-confirmed verbatim)"
     }
   ]
 }

@@ -77,3 +77,7 @@ button { cursor: pointer; }
 .source-table a, .panel-copy a, .tip-card a:not(.tip-source) { color: var(--blue); text-decoration: underline; text-underline-offset: 2px; }
 .source-table a:hover, .panel-copy a:hover { color: var(--green); }
 .source-table td { vertical-align: top; }
+
+/* prediction-only desk chips (accuracy per matchday) */
+.metric-chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.metric-chip { padding: 4px 6px; border-radius: 4px; color: #8fa9b2; background: rgba(126,203,255,.07); font-family: "DM Mono", monospace; font-size: 8px; }

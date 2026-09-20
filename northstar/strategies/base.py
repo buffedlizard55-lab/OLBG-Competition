@@ -40,7 +40,10 @@ def no_bet(cutoff_utc: Optional[datetime],
 class Strategy:
     name: str
     description: str
-    odds_provider: str = "market_avg"
+    odds_provider: Optional[str] = "market_avg"
+    # Sport this strategy is responsible for (`None` = any). The walk-forward
+    # engine only feeds the strategy events of its own sport.
+    sport: Optional[str] = None
 
     def predict(self, event: Dict[str, Any], tbs: "TimeBoundedStore",
                 start: datetime,

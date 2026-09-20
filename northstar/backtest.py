@@ -22,7 +22,8 @@ from . import models
 from .db import Store
 from .models import (
     EVENT_STATUS_FINISHED, MARKET_MATCH_WINNER_3WAY,
-    TIP_STATUS_OPEN, Tip, parse_utc, stable_id, utcnow,
+    TIP_STATUS_OPEN, TIP_STATUS_UNSETTLEABLE, Tip,
+    parse_utc, stable_id, utcnow,
 )
 from .settlement import settle_tip
 
@@ -152,15 +153,30 @@ class BacktestResult:
 def run_walk_forward(store: Store, events: Sequence[Dict[str, Any]],
                      strategy: "Strategy", strategy_id: str,
                      stake: float = 1.0,
-                     label: str = "") -> Dict[str, Any]:
+                     label: str = "",
+                     allow_no_odds: bool = False) -> Dict[str, Any]:
     """Run a strategy walk-forward over finished events.
 
     ``events``: stored event dicts (scheduled_start_utc string) that are all
     finished. The strategy sees a TimeBoundedStore and must only read
     features at its declared cutoff.
+
+    ``allow_no_odds``: when True (review-state sports without a permissioned
+    odds path), decisions with a selection are stored as ``unsettleable``
+    prediction-only tips instead of being skipped for a missing entry price.
+    They are NEVER settled and NEVER contribute to PnL; grading happens via
+    ``northstar.evaluation.prediction_accuracy``. When False, a decision
+    without a stored pre-cutoff price is skipped exactly as before.
     """
+    strategy_sport = getattr(strategy, "sport", None)
+    # Deterministic total order: same-start games (a whole hockey matchday
+    # can share a puck-drop time) must not depend on input order - the
+    # event_id tiebreak makes any shuffle of the input list equivalent.
     ordered = sorted(events, key=lambda e: (e.get("group_order") or 0,
-                                            e["scheduled_start_utc"]))
+                                            e["scheduled_start_utc"],
+                                            e["event_id"]))
+    if strategy_sport:
+        ordered = [e for e in ordered if e.get("sport") == strategy_sport]
     tbs = TimeBoundedStore()
     for e in ordered:
         tbs.register_event(e)
@@ -261,10 +277,11 @@ def run_walk_forward(store: Store, events: Sequence[Dict[str, Any]],
         # the desk actually saw) - never a later 'better' price.
         odds = None
         provider = None
-        if decision["selection_key"]:
-            provider_key = decision.get(
-                "odds_provider", getattr(strategy, "odds_provider", "market_avg")
-            )
+        prediction_only = False
+        provider_key = decision.get(
+            "odds_provider", getattr(strategy, "odds_provider", "market_avg")
+        )
+        if provider_key:
             snaps = [s for s in store.odds_snapshots(e["event_id"])
                      if s["provider"] == provider_key
                      and s["selection_key"] == decision["selection_key"]
@@ -273,6 +290,8 @@ def run_walk_forward(store: Store, events: Sequence[Dict[str, Any]],
                 snap = min(snaps, key=lambda s: s["observed_at_utc"])
                 odds = snap["decimal_odds"]
                 provider = snap["provider"]
+            elif allow_no_odds:
+                prediction_only = True
             else:
                 # No price stored for this selection/cutoff: we cannot settle
                 # a bet that never had an observable entry price.
@@ -280,6 +299,14 @@ def run_walk_forward(store: Store, events: Sequence[Dict[str, Any]],
                                        "reason": "no pre-cutoff odds",
                                        "selection": decision["selection_key"]})
                 continue
+        elif allow_no_odds:
+            prediction_only = True
+        else:
+            result.skipped.append({"event_id": e["event_id"],
+                                   "reason": "strategy declares no odds "
+                                             "provider and none is permitted",
+                                   "selection": decision["selection_key"]})
+            continue
 
         tip_id = stable_id("bt-tip", strategy_id, e["event_id"])
         tip = Tip(
@@ -299,8 +326,12 @@ def run_walk_forward(store: Store, events: Sequence[Dict[str, Any]],
             stake_units=stake,
             source_url=e.get("source_url"),
             raw_payload_hash=None,
-            status=TIP_STATUS_OPEN,
-            notes=f"walk-forward backtest {label}".strip(),
+            status=(TIP_STATUS_UNSETTLEABLE if prediction_only
+                    else TIP_STATUS_OPEN),
+            notes=((f"prediction-only walk-forward {label}: no permissioned "
+                    "odds path for this sport; PnL not computable and not "
+                    "zero").strip() if prediction_only
+                   else f"walk-forward backtest {label}".strip()),
         )
         add = store.add_tip(tip)
         if not add["created"]:
@@ -314,7 +345,10 @@ def run_walk_forward(store: Store, events: Sequence[Dict[str, Any]],
             "model": decision.get("model", {}),
             "strategy": strategy_id,
         }
-        outcome = settle_tip(store, tip_id)
+        if prediction_only:
+            outcome = {"action": "prediction_only", "settlement_id": None}
+        else:
+            outcome = settle_tip(store, tip_id)
         result.bets.append({**decision_log,
                             "outcome_action": outcome["action"],
                             "settlement_id": outcome.get("settlement_id")})

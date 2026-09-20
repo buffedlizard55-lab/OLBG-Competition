@@ -141,6 +141,19 @@ Create an anomaly instead of guessing when any of these occur:
 - `MARKET_RULE_UNKNOWN`
 - `TIP_EDITED_AFTER_CUTOFF`
 - `JURISDICTION_NOT_COVERED`
+- `POLICY_VIOLATION`
+- `CONSENSUS_DRIFT`
+- `EVENT_CHANGED`
+- `RESULT_KIND_INCONSISTENT` — one source reports two mutually impossible
+  result layers for the same event (e.g. a decisive "after regulation"
+  entry coexisting with an overtime/shootout entry in DEL community rows).
+  The priority rule still yields the standard final read, but the conflict
+  is kept open for manual review with evidence URLs instead of being
+  smoothed over.
+- `MISSING_METADATA` — the source omitted a metadata field another row of
+  the same payload carries (e.g. DEL matchID 76412 `leagueSeason: null`).
+  If a conservative repair from unambiguous peers is applied, the exact
+  inference is recorded here; the raw payload keeps the null.
 
 The review queue should expose the raw links, timestamps, hashes, parser version, and an explanation. It should not provide a silent “force settle” path.
 

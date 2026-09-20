@@ -8,13 +8,16 @@ gates, and backtests sport-specific strategies **walk-forward with strict
 time cutoffs** — all on data whose licensing is documented and whose hashes
 are checked.
 
-> **Honesty status (2026-09-20):** the pipeline is implemented and
-> verified on a **27-match football pilot** (Bundesliga 1 2024/25, matchdays
-> 1/10/20) with **27/27 dual-source result agreement**. Four strategies were
-> backtested on those real cross-checked outcomes; **all four are negative on this
-> tiny sample** (best: −4.04 units, ROI −36.7%, 95% CI includes 0). Nothing
-> here claims an edge, and no number on the site exists that the pipeline did
-> not compute from hash-checked fixtures. Read
+> **Honesty status (2026-09-20):** the pipeline is verified on a **27-match
+> football pilot** (Bundesliga 1 2024/25) with **27/27 dual-source result
+> agreement**; four strategies are **all negative** on that tiny sample
+> (best: −4.04 units, ROI −36.7%, CI includes 0). Sport #2 is now live:
+> a **21-event ice hockey pilot** (DEL 2024/25 matchdays 1/20/40) on the same
+> ODbL source, with OT/shootout-aware finals, **5 real source irregularities
+> flagged**, and predictions graded **only on accuracy (9/13 = 69.2%, Brier
+> 0.473) — hockey PnL is unavailable (no permissioned odds path), and shown
+> as unavailable, never as zero.** Every licensing claim was re-confirmed
+> verbatim against the live sources today. Read
 > [`docs/STATUS.md`](docs/STATUS.md) for limitations and remaining work.
 
 ## What is built (this pass)
@@ -53,11 +56,22 @@ are checked.
 - **Four football strategies** (level 1.0 units): market favourite, market
   longshot probe, Elo value edge (K=40, home adv 60, 3% edge threshold),
   Draw-No-Bet decisive — all negative on the pilot; results shown as-is.
-- **126 automated tests** (offline, `python -m pytest`) covering the
+- **144 automated tests** (offline, `python -m pytest`) covering the
   required matrix: postponements, voids, duplicate tips, time leakage,
   disputed results, settlement arithmetic — plus adapter parsing of the
   real fixtures, the 27/27 cross-check, policy gates, leaderboard math,
-  and walk-forward invariants.
+  walk-forward invariants (including same-start ordering), and the hockey
+  pilot guarantees below.
+- **Sport #2: ice hockey (DEL 2024/25)** through the verified ODbL
+  OpenLigaDB result path: 21 events, OT/shootout-aware final selection,
+  results become available at start+3h (inferred; the source batch-edited
+  results at end of season — documented), one strategy
+  (`hockey-elo-v1`: 2-way Elo, K=32, home advantage 35, research priors)
+  producing **predictions only** — recorded as `unsettleable`, graded on
+  accuracy/Brier by `northstar/evaluation.py`, never settled, and kept off
+  the PnL leaderboard by design. Five real irregularities in the community
+  source were flagged instead of smoothed over (4 impossible
+  regulation+OT/SO result layerings, 1 null-season schema deviation).
 - **GitHub Pages site** (`index.html`, `app.js`, `styles.css`) rendering
   `site-data/site.json`: competition leaderboard (verified-profit ranking,
   review-state demotion), **per-tipster tip desk**, **full review of all
@@ -75,7 +89,7 @@ are checked.
 ```bash
 python3 -m venv .venv && .venv/bin/pip install pytest
 
-python -m pytest                      # 126 tests, offline
+python -m pytest                      # 144 tests, offline
 python -m northstar.cli run-pipeline --fresh   # rebuild store + site data
 python -m northstar.cli verify              # fixture hashes + 27/27 agreement
 node scripts/site-smoke.mjs            # (optional) site render smoke test
@@ -86,18 +100,18 @@ python3 -m http.server 4173 --bind 0.0.0.0   # then open http://localhost:4173
 The site is a static build using relative assets and is designed for GitHub
 Pages; external source links open in a new tab for manual review.
 
-## The pilot, in one table
+## The pilots, in one table
 
-| Item | Value | Evidence |
+| Item | Football (Bundesliga 1 2024/25) | Ice hockey (DEL 2024/25) |
 |---|---|---|
-| Competition | 1. Fußball-Bundesliga 2024/25 | [`data/fixtures/openligadb_bl1_2024_sd{1,10,20}.json`](data/fixtures/) |
-| Matches | 27 (matchdays 1, 10, 20) | sha256-verified by `verify` |
-| Results source | OpenLigaDB (ODbL-1.0, community-entered) | [api.openligadb.de](https://api.openligadb.de/) |
-| Odds source | football-data.co.uk D1 manual import (research-use flag); The Odds API connector ready but inactive | [football-data.co.uk/data.php](https://www.football-data.co.uk/data.php) · [The Odds API historical docs](https://the-odds-api.com/historical-odds-data/) |
-| Cross-check | **27/27 FT results agree**, UK-time join exact-minute | `run-pipeline` output |
-| Odds snapshots | 405 (5 providers × 3 selections × 27), pre-start, window-close inferred | `site-data/site.json` |
-| Backtest | 4 strategies, 11–27 bets each, all negative, CIs include 0 | site → Strategy lab |
-| Policy | OpenLigaDB automated OK · football-data manual only · OLBG manual only | `docs/LICENSING.md` |
+| Fixtures | 27 matches (matchdays 1/10/20) | 21 matches (matchdays 1/20/40) |
+| Fixture files | [`openligadb_bl1_2024_sd{1,10,20}.json`](data/fixtures/) | [`openligadb_del_2024_sd{1,20,40}.json`](data/fixtures/) |
+| Results source | OpenLigaDB (ODbL-1.0) | OpenLigaDB (ODbL-1.0) |
+| Identity | **verified** (27/27 dual-source agreement vs football-data) | `probable` (single source; no independent DEL cross-check) |
+| Odds path | football-data.co.uk manual pilot; The Odds API connector inactive | **none verified** → prediction-only |
+| Engine output | 405 odds snapshots · 4 strategies · real settled PnL | 13 predictions · accuracy **9/13 (69.2%)** · Brier 0.473 · **PnL unavailable (not zero)** |
+| Regularity | 0 open anomalies | **5 flagged source irregularities** (review queue) |
+| Backtest | all four football strategies negative, CIs include 0 | no odds → no PnL by construction |
 
 Anchors: 72214 M'gladbach 2-3 Leverkusen (23/08/24, B365 5.25/4.5/1.55);
 72300 Mainz 3-1 Dortmund (09/11/24, 3.5/3.6/2.0); 72387 Bayern 4-3 Kiel
@@ -147,24 +161,32 @@ Full protocol: [`docs/data-contract.md`](docs/data-contract.md).
 
 ```
 northstar/            package: models, db, policy, settlement, backtest,
-                      leaderboard, predictor, report, timeutil, cli,
-                      adapters/{openligadb,official_results,the_odds_api,
-                      football_data,olbg}, strategies/
-tests/                126 offline tests (pytest)
-data/fixtures/        committed pilot fixtures (sha256-verified)
+                      evaluation, leaderboard, predictor, report, timeutil,
+                      cli, adapters/{openligadb,official_results,
+                      the_odds_api,football_data,olbg},
+                      strategies/{market,elo,draw,hockey}
+tests/                144 offline tests (pytest)
+data/fixtures/        committed pilot fixtures: football-bl1 + hockey-del
+                      (sha256-verified)
 data/raw/             manual OLBG snapshots (provenance headers)
 site-data/site.json   generated site payload (rebuilt by the pipeline)
 index.html app.js styles.css   GitHub Pages site
 docs/                 LICENSING, OLBG-RESEARCH, STATUS, data-contract
 .github/workflows/    ci.yml, pages.yml, ingest.yml
 scripts/site-smoke.mjs          Node render smoke test
+scripts/assemble_fixture.py     strict chunk-assembly + validation used to
+                                commit the DEL fixtures (see capture notes)
 ```
 
 ## Data provenance and licenses
 
-- `data/fixtures/openligadb_*.json` — OpenLigaDB payloads, **ODbL-1.0**,
+- `data/fixtures/openligadb_bl1_*.json` — OpenLigaDB payloads, **ODbL-1.0**,
   attribution retained; fetched 2026-09-19 from
   [api.openligadb.de](https://api.openligadb.de/) (60 req/min, no key).
+- `data/fixtures/openligadb_del_*.json` — OpenLigaDB DEL payloads,
+  **ODbL-1.0**, attribution retained; fetched 2026-09-20 from
+  [api.openligadb.de](https://api.openligadb.de/) (permitted automated API),
+  chunk-assembled and JSON-validated by `scripts/assemble_fixture.py`.
 - `data/fixtures/football_data_d1_2425_pilot.csv` — 27-row human-captured
   excerpt of [mmz4281/2425/D1.csv](https://www.football-data.co.uk/germanym.php)
   (Bundesliga 1 = `D1` for 2020/21+). **Private research use only** per the
@@ -177,6 +199,9 @@ scripts/site-smoke.mjs          Node render smoke test
 
 Full list in [`docs/STATUS.md`](docs/STATUS.md): start the forward test on a
 fixed capture cadence; scale odds via human manual import (or a licensed
-provider); expand sport-by-sport (hockey & darts next — results paths are
-open-licensed, odds unverified); add more markets; correct for multiple
-comparisons; harden identity with a third source.
+provider); continue sport-by-sport (darts next — its PDC result schema
+still needs a walkover/format audit; the 18 `verification_blocked` sports
+need a permissioned results path first); give hockey an independent
+cross-check and a permissioned odds path before it ever shows PnL; add
+more markets; correct for multiple comparisons; harden identity with a
+third source.

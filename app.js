@@ -48,6 +48,7 @@ const hypothesisRegistry = [
   { sport: "Greyhounds", name: "Box/track pace profile", description: "Freeze trap, distance, going, field and non-runner state at selection time; define voids and photo-finish revisions.", status: "Blocked", data: "Track/organizer results · licensed odds", test: "Win / place" },
   { sport: "Handball", name: "Possession and pace split", description: "Separate league and tournament rules, extra time and seven-metre shootouts before any model result is graded.", status: "Blocked", data: "Federation results · licensed odds", test: "Match / total" },
   { sport: "Hurling", name: "Venue-adjusted scoring rate", description: "Use competition-specific scoring and replay rules; do not pool with Gaelic football or association football.", status: "Blocked", data: "Competition organizer results · licensed odds", test: "Match / handicap" },
+  { sport: "Ice Hockey", name: "Hockey Elo favourite (no-market pilot)", description: "2-way Elo (final incl. OT/shootout) used as a no-price baseline; predictions only - graded on accuracy/Brier because no permissioned DEL odds path exists.", status: "Pilot-tested", data: "OpenLigaDB DEL pilot fixtures/results (ODbL) · no permissioned odds", test: "Walk-forward 2-way accuracy", tested: "hockey-elo-v1" },
   { sport: "Ice Hockey", name: "Goalie-adjusted expected goals", description: "Estimate shot quality and goalie availability before puck drop; separate regulation, overtime and shootout settlement.", status: "Blocked", data: "Federation/league results · licensed odds", test: "Moneyline / totals" },
   { sport: "Motor Racing", name: "Qualifying-to-finish delta", description: "Use only pre-race information and define retirements, classified finish, penalties, podium and each-way places per series.", status: "Blocked", data: "Series organizer results · licensed odds", test: "Finish / podium" },
   { sport: "Rugby Union", name: "Set-piece and territory rating", description: "Keep union and league separate; model competition rules, extra time and abandoned matches explicitly.", status: "Blocked", data: "Union organizer results · licensed odds", test: "Match / handicap" },
@@ -85,7 +86,11 @@ function renderOverview() {
   $("m-coverage-sub").textContent = `${verified} pilot-verified · ${open} results-path ready`;
   $("pilot-note").textContent =
     (p.note || "") +
-    ` Competition: ${p.competition || "—"}, matchdays ${(p.matchdays || []).join("/")}.`;
+    ` Competition: ${p.competition || "—"}, matchdays ${(p.matchdays || []).join("/")}.` +
+    (DATA.meta.hockey ? ` Ice hockey pilot: ${DATA.meta.hockey.competition}, ` +
+      `matchdays ${(DATA.meta.hockey.matchdays || []).join("/")}, ` +
+      `${DATA.meta.hockey.events ?? "—"} events, ` +
+      `${DATA.meta.hockey.source_anomalies ?? "—"} flagged source irregularities. ${DATA.meta.hockey.note || ""}` : "");
 
   // leaderboard preview
   const rows = (DATA.leaderboard || []).slice(0, 5).map((r) => `
@@ -192,9 +197,17 @@ function renderTipDesk() {
     // cell that disappears from the separate tipster desk.
     (entrants[e.entrant_id] ??= { bets: [] });
   }
+  // Entrant registry (includes prediction-only desks like DEL hockey that
+  // are intentionally absent from the PnL leaderboard).
+  const registry = {};
+  for (const e of DATA.entrants || []) {
+    registry[e.entrant_id] = e;
+    (entrants[e.entrant_id] ??= { bets: [] });
+  }
   const desk = [];
   for (const [id, group] of Object.entries(entrants)) {
-    const meta = lb[id] || { name: id, kind: "unknown", description: "" };
+    const meta = lb[id] || registry[id] ||
+      { name: id, kind: "unknown", description: "" };
     if (kind !== "All kinds" && meta.kind !== kind) continue;
     const hay = (id + " " + meta.name + " " +
       group.bets.map((b) => `${b.event} ${b.market} ${b.selection}`).join(" ")).toLowerCase();
@@ -220,6 +233,20 @@ function renderTipDesk() {
     `<div class="empty-state"><div class="empty-icon">⌕</div><h3>No tips match</h3><p>Try a different kind filter or search term.</p></div>`;
 }
 
+// Honest display helpers: "unsettleable" needs an explanation in every
+// table where it appears, and the internal 3-way market constant reads
+// wrongly for a 2-way hockey decision (final includes OT/shootout).
+const STATUS_TITLES = {
+  unsettleable:
+    "prediction-only: no permissioned entry price exists for this sport, " +
+    "so the tip can never be settled and is never counted in profit tables",
+};
+const statusCell = (s) =>
+  `<span${STATUS_TITLES[s] ? ` title="${STATUS_TITLES[s]}"` : ""}>${escapeHtml(s)}</span>`;
+const marketLabel = (b) =>
+  (b.sport === "ice_hockey" && b.market === "match_winner_3way")
+    ? "match winner (incl. OT/SO)" : b.market;
+
 function tipRow(b) {
   const settled = b.settlement
     ? `${b.settlement.outcome} · ${b.settlement.verification_state}`
@@ -227,10 +254,10 @@ function tipRow(b) {
   return `<tr>
     <td>${escapeHtml(b.event)}<br /><small style="opacity:.7">${fmtDate(b.event_start_utc)} UTC</small>
       ${b.source_url ? `<br /><a href="${escapeHtml(b.source_url)}" target="_blank" rel="noreferrer">source ↗</a>` : ""}</td>
-    <td>${escapeHtml(b.market)}</td>
+    <td>${escapeHtml(marketLabel(b))}</td>
     <td><strong>${escapeHtml(b.selection)}</strong></td>
     <td>${b.odds === null ? "—" : b.odds}</td>
-    <td>${escapeHtml(b.status)}</td>
+    <td>${statusCell(b.status)}</td>
     <td>${escapeHtml(settled)}${b.pnl_units !== null ? `<br /><small>${fmtUnits(b.pnl_units)} u</small>` : ""}</td>
   </tr>`;
 }
@@ -249,9 +276,9 @@ function renderBets() {
       <td>${escapeHtml(b.event)}<br /><small style="opacity:.7">${fmtDate(b.event_start_utc)} UTC</small>
         ${b.source_url ? `<br /><a href="${escapeHtml(b.source_url)}" target="_blank" rel="noreferrer">source ↗</a>` : ""}</td>
       <td>${escapeHtml(b.entrant)}</td>
-      <td>${escapeHtml(b.market)} · <strong>${escapeHtml(b.selection)}</strong></td>
+      <td>${escapeHtml(marketLabel(b))} · <strong>${escapeHtml(b.selection)}</strong></td>
       <td>${b.odds === null ? "—" : b.odds}</td>
-      <td>${escapeHtml(b.status)}</td>
+      <td>${statusCell(b.status)}</td>
       <td>${b.pnl_units === null ? "—" : fmtUnits(b.pnl_units)}</td>
       <td>${b.settlement ? `${b.settlement.outcome} · ${b.settlement.verification_state}` : "—"}</td>
     </tr>`).join("") || emptyRow(7);
@@ -261,7 +288,7 @@ function renderBets() {
       <td>${escapeHtml(b.event)}</td>
       <td>${fmtDate(b.event_start_utc)}</td>
       <td>${escapeHtml(b.entrant)}</td>
-      <td>${escapeHtml(b.market)} · <strong>${escapeHtml(b.selection)}</strong></td>
+      <td>${escapeHtml(marketLabel(b))} · <strong>${escapeHtml(b.selection)}</strong></td>
       <td>${b.odds === null ? "—" : b.odds}</td>
       <td><small>${escapeHtml(b.notes || "")}</small></td>
     </tr>`).join("") || emptyRow(6);
@@ -271,6 +298,8 @@ function renderBets() {
     (DATA.bets.total_placed ?? 0) + (DATA.bets.total_upcoming ?? 0);
 }
 
+const SPORT_LABELS = { football: "Football", ice_hockey: "Ice Hockey" };
+
 function renderStrategies() {
   const tested = DATA.backtest || {};
   const n = Object.keys(tested).length;
@@ -279,23 +308,39 @@ function renderStrategies() {
     (t) => (t.leak_violations || []).length === 0);
   $("strategy-topline").innerHTML = `
     <div class="strategy-stat"><strong>${n}</strong><span>strategies pilot-tested</span></div>
-    <div class="strategy-stat"><strong>${totalBets}</strong><span>walk-forward bets placed</span></div>
+    <div class="strategy-stat"><strong>${totalBets}</strong><span>walk-forward decisions placed</span></div>
     <div class="strategy-stat ${cleanLeaks ? "" : "warning"}"><strong>${cleanLeaks ? "0" : "!"}</strong><span>time-leakage violations</span></div>
     <div class="strategy-stat"><strong>0</strong><span>forward-test PnL (live)</span></div>`;
 
   $("backtest-grid").innerHTML = Object.entries(tested).map(([sid, t]) => {
     const hyp = hypothesisRegistry.find((h) => h.tested === sid);
-    const ci = t.profit_ci95
-      ? `[${t.profit_ci95.lo.toFixed(2)}, ${t.profit_ci95.hi.toFixed(2)}]` : "—";
+    const sportLabel = SPORT_LABELS[t.sport] || t.sport || "Football";
+    let metaHtml;
+    if (t.pnl_available === false) {
+      const acc = t.accuracy || {};
+      const matchdays = Object.entries(acc.by_matchday || {})
+        .sort(([a], [b]) => Number(a) - Number(b))
+        .map(([md, d]) => `<span class="metric-chip">MD ${md}: ${d.hits}/${d.n} (${fmtPct(d.accuracy)})</span>`)
+        .join(" ");
+      metaHtml = `
+        <span><strong>Predictions</strong> · ${t.predictions} placed · ${acc.n_graded ?? 0} graded · ${t.skipped} skipped</span>
+        <span><strong>Accuracy</strong> · ${acc.hits ?? "—"}/${acc.n_graded ?? "—"} = ${fmtPct(acc.accuracy)} · <strong>Mean Brier</strong> · ${acc.mean_brier ?? "—"}</span>
+        <span><strong>PnL</strong> · <em>unavailable</em> — no permissioned odds path for this sport (not zero, not a loss)</span>
+        ${matchdays ? `<span class="metric-chips">${matchdays}</span>` : ""}`;
+    } else {
+      const ci = t.profit_ci95
+        ? `[${t.profit_ci95.lo.toFixed(2)}, ${t.profit_ci95.hi.toFixed(2)}]` : "—";
+      metaHtml = `
+        <span><strong>Bets</strong> · ${t.bets} placed · ${t.settled} settled · ${t.skipped} skipped</span>
+        <span><strong>Profit</strong> · ${fmtUnits(t.profit_units)} u (ROI ${fmtPct(t.roi)}, strike ${fmtPct(t.strike_rate)})</span>
+        <span><strong>95% CI</strong> · ${ci} u</span>`;
+    }
     return `<article class="strategy-card" data-strategy-status="${escapeHtml(hyp?.status || "Pilot-tested")}">
-      <div class="strategy-card-top"><span class="strategy-sport">Football</span>
+      <div class="strategy-card-top"><span class="strategy-sport">${escapeHtml(sportLabel)}</span>
         <span class="strategy-state">${stateBadge(t.verification_state)}</span></div>
       <h3>${escapeHtml(hyp?.name || sid)}</h3>
       <p>${escapeHtml(hyp?.description || sid)}</p>
-      <div class="strategy-meta">
-        <span><strong>Bets</strong> · ${t.bets} placed · ${t.settled} settled · ${t.skipped} skipped</span>
-        <span><strong>Profit</strong> · ${fmtUnits(t.profit_units)} u (ROI ${fmtPct(t.roi)}, strike ${fmtPct(t.strike_rate)})</span>
-        <span><strong>95% CI</strong> · ${ci} u</span>
+      <div class="strategy-meta">${metaHtml}
       </div>
       ${t.sample_warning ? `<span class="tip-flag">⚑ ${escapeHtml(t.sample_warning)}</span>` : ""}
     </article>`;
@@ -341,6 +386,7 @@ function renderSources() {
 
   const covStyle = {
     pilot_verified: "green",
+    results_pilot: "ready",
     results_path_available: "ready",
     verification_blocked: "blocked",
   };
