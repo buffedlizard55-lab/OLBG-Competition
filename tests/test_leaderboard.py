@@ -77,6 +77,18 @@ class TestMetrics:
         assert m["max_drawdown_units"] == pytest.approx(3.0)
         assert m["profit_units"] == pytest.approx(0.0)
 
+    def test_max_drawdown_is_cumulative_not_single_bet(self):
+        """A two-loss run draws down 2 units even though the worst single
+        leg is only 1 unit. Guards the peak-to-trough definition (the
+        sequence [+1, +1, -3, +1] cannot distinguish the two because its
+        worst single leg equals its true drawdown)."""
+        from northstar.leaderboard import _max_drawdown
+        assert _max_drawdown([-1.0, -1.0, 5.0]) == pytest.approx(2.0)
+        assert _max_drawdown([3.0, -2.0, -2.0, 5.0]) == pytest.approx(4.0)
+        # single bet equal to its own drawdown from the start
+        assert _max_drawdown([-2.0]) == pytest.approx(2.0)
+        assert _max_drawdown([]) == pytest.approx(0.0)
+
     def test_strike_rate_ignores_voids(self, store):
         mk_event(store, event_id="ev-wv",
                  status=models.EVENT_STATUS_CANCELLED)

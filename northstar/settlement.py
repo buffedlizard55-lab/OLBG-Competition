@@ -85,7 +85,11 @@ def implied_probabilities(odds: List[float]) -> List[float]:
 
 
 def match_outcome_3way(selection_key: str, home_goals: int,
-                       away_goals: str | int) -> str:
+                       away_goals: int) -> str:
+    """Grade a 3-way selection against a full-time score.
+
+    Both scores must be non-negative ints (bools are refused: bool is an
+    int subclass in Python, and a True/False score is a data bug)."""
     if selection_key not in ("home", "draw", "away"):
         raise ValueError(f"unknown 3-way selection: {selection_key}")
     if (isinstance(home_goals, bool) or isinstance(away_goals, bool)

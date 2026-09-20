@@ -18,12 +18,19 @@ from .models import (
 
 
 def _max_drawdown(pnl_sequence: List[float]) -> float:
+    """Peak-to-trough drawdown of the *cumulative* PnL curve, in units.
+
+    Note: this is not the worst single bet - a run of losses that never
+    recovers has a larger drawdown than its worst single leg (tested).
+    """
+    cumulative = 0.0
     peak = 0.0
-    best = 0.0
+    max_dd = 0.0
     for pnl in pnl_sequence:
-        peak = max(peak, peak + pnl)
-        best = min(best, peak + pnl - peak)
-    return round(-best, 10)
+        cumulative += pnl
+        peak = max(peak, cumulative)
+        max_dd = max(max_dd, peak - cumulative)
+    return round(max_dd, 10)
 
 
 def entrant_metrics(store: Store, entrant_id: str) -> Dict[str, Any]:
