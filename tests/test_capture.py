@@ -209,6 +209,44 @@ class TestDiscovery:
                 if o.get("latest_season") and not o.get("trimmed")]
         assert [o["leagueShortcut"] for o in kept] == ["WMDART26"]
 
+    def test_awaiting_refresh_league_outranks_finished_history(self):
+        """Live finding 2026-09-20 (second capture): the WSDF final was in
+        play, so its start was already past at probe time - a league with a
+        few recent unfinished rows must still outrank fully-finished
+        leagues, or the stale on-disk fixture freezes the result forever."""
+        now = parse_utc("2026-09-20T20:05:00Z")
+        inplay = _match(6, shortcut="LIVEDART", finished=False,
+                        matchDateTimeUTC="2026-09-20T19:30:00Z")
+        done = _match(7, shortcut="DONEDART", finished=True,
+                      matchDateTimeUTC="2026-02-01T18:00:00Z")
+        urls = {
+            "https://api.openligadb.de/getavailableleagues": json.dumps([
+                # finished league FIRST in index order - priority must
+                # still pick the awaiting-refresh one
+                {"leagueId": 1, "leagueShortcut": "DONEDART",
+                 "leagueName": "Finished Darts Masters 2026"},
+                {"leagueId": 2, "leagueShortcut": "LIVEDART",
+                 "leagueName": "Live Darts Finals 2026"}]),
+        }
+        for shortcut, body in (("DONEDART", [done] * 5),
+                               ("LIVEDART", [inplay])):
+            urls[f"https://api.openligadb.de/getavailableseasons/{shortcut}"
+                 ] = "[]"
+            urls[f"https://api.openligadb.de/getmatchdata/{shortcut}/2026"
+                 ] = json.dumps(body)
+            for season in (2025, 2024):
+                urls[f"https://api.openligadb.de/getmatchdata/{shortcut}/"
+                     f"{season}"] = "[]"
+        out = capture.discover_darts_seasons(fetch=fake_fetch(urls),
+                                             this_year=2026, max_leagues=1,
+                                             now=now)
+        live = next(o for o in out if o["leagueShortcut"] == "LIVEDART")
+        done_row = next(o for o in out if o["leagueShortcut"] == "DONEDART")
+        assert live["future_unfinished_in_latest"] == 0
+        assert not live.get("abandoned_pattern")
+        assert not live.get("trimmed")
+        assert done_row.get("trimmed") is True
+
     def test_case_variant_shortcuts_are_deduplicated(self):
         """Live index 2026-09-20 carries both 'pdcfdt' (4878) and 'PDCFDT'
         (6008); fixtures are written lowercase, so only one may be probed."""

@@ -32,14 +32,15 @@ Licensing claims were re-fetched and re-confirmed verbatim (see the
   this agreement.
 - **Live current-season captures (real data, committed)**:
   `data/fixtures/current/` now carries CI-captured 2026/27 payloads —
-  Bundesliga (306 matches), DEL (364 matches), and five PDC darts events
-  2025–26 (298 finished matches: World Matchplay, Baltic Sea Darts Open and
+  Bundesliga (306 matches), DEL (364 matches), and eight PDC darts events
+  2025–26 (423 finished matches: World Matchplay, Baltic Sea Darts Open and
   Players Championship Finals 2025; the complete World Championship
-  2025/26; the World Series of Darts Finals 2026 captured **while its final
-  was in play**) — each with a `.meta.json` sha256 sidecar and a
+  2025/26; World Masters, Czech Darts Open and Flanders Darts Trophy 2026;
+  the World Series of Darts Finals 2026 captured **while its final was in
+  play**) — each with a `.meta.json` sha256 sidecar and a
   `capture-log.json` documenting every probe/404/refusal. Captured by
   `.github/workflows/capture.yml` (Mondays 06:30 UTC + scoped push
-  trigger), committed by the workflow bot. 1027 events in the store after
+  trigger), committed by the workflow bot. 1152 events in the store after
   ingest; current-season groups raise 2 review items (the darts duplicate
   conflict below, and the in-play WSDF final held `postponed` until the
   next capture resolves it). An abandoned duplicate darts league
@@ -113,10 +114,12 @@ Licensing claims were re-fetched and re-confirmed verbatim (see the
   player-name identity splits. `darts-elo-v1` (pre-registered priors K=24,
   MIN_PROB=0.60) produced **0 selections on the cold 2025 pool (141
   matches, max probability 0.551)** — the desk stayed silent rather than
-  force bets — and on the extended **298-match 2025–26 pool: 21
-  selections, 16 hits = 76.2%, mean Brier 0.3922, 0 leak violations**.
-  Same priors throughout; nothing refitted after seeing data; 21 graded
-  predictions prove the path, not an edge.
+  force bets — and on the **full 423-match 2025–26 pool (eight events, as
+  captured 2026-09-20): 48 selections, 39 hits = 81.25%, mean Brier
+  0.3489, 0 leak violations**. Same priors throughout; nothing refitted
+  after seeing data; 48 graded predictions with no market baseline prove
+  the path, not an edge. Numbers re-grade at every capture — the site is
+  the live view.
 - **Forward test is LIVE** (`docs/FORWARD-TEST.md`): 9 frozen
   `hockey-elo-v1` calls on real DEL games 2026-09-22 → 09-27 issued from
   the committed capture into the append-only ledger; football desk dormant
@@ -147,7 +150,7 @@ Licensing claims were re-fetched and re-confirmed verbatim (see the
 ## Hard limitations (do not mistake for bugs)
 
 1. **Sample size.** 27 football matches / 3–27 bets per strategy, 21
-   hockey events (11 graded predictions), 298 darts matches (21 graded
+   hockey events (11 graded predictions), 423 darts matches (48 graded
    predictions). No number here can
    separate skill from luck; every site card carries the warning. This is
    the single biggest limitation.
@@ -195,11 +198,12 @@ Licensing claims were re-fetched and re-confirmed verbatim (see the
     documented, never a claim about the source's true availability. For
     batch-entered rows the inference is optimistic relative to the API's
     own edit time — a known, bounded caveat of walk-forward ordering.
-12. **11 graded hockey predictions, 21 graded darts predictions and 9
-    forward calls are not evidence of skill.** 63.6% on 11 picks and 76.2%
-    on 21 picks have huge binomial error bars (the darts 95% interval
-    spans ≈ 55–90%); the forward ledger has graded nothing yet. No
-    hockey/darts number may be quoted as profitability.
+12. **11 graded hockey predictions, 48 graded darts predictions and 9
+    forward calls are not evidence of skill.** 63.6% on 11 picks and
+    81.25% on 48 picks have large binomial error bars (darts 95% ≈
+    68–90%), darts favourites win often, and there is no market baseline;
+    the forward ledger has graded nothing yet. No hockey/darts number may
+    be quoted as profitability.
 13. **Darts player identity splits.** The same player appears under
     different names across events (`R. van Barneveld`/`Raymond van
     Barneveld`, `Mickey/Michael Mansell`); the Elo pool keys on exact

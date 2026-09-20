@@ -14,14 +14,14 @@ are checked.
 > **seven strategies are all negative** on that tiny sample (best ROI
 > −16.3% on 3 bets; Holm-adjusted p = 1.0 for every one). Sport #2 is
 > **ice hockey** (DEL 2024/25 pilot, 21 events) and sport #3 is **darts**
-> (five real PDC events 2025–26, 298 finished matches — schema audit in
+> (eight real PDC events 2025–26, 423 finished matches — schema audit in
 > [`docs/DARTS-AUDIT.md`](docs/DARTS-AUDIT.md)); both are
 > **prediction-only**: hockey grades **7/11 = 63.6% (Brier 0.474)**; the
 > darts desk stayed silent on the cold 2025 pool (**0 selections in 141
 > matches**, max probability 0.551 vs its pre-registered 0.60 threshold)
-> and graded **16/21 = 76.2% (Brier 0.392)** once the 2025–26 pool warmed
-> — same priors throughout, nothing refitted, huge error bars, no skill or
-> PnL claim. **The forward test is LIVE**:
+> and graded **39/48 = 81.25% (Brier 0.349)** once the 2025–26 pool warmed
+> — same priors throughout, nothing refitted, large error bars and no
+> market baseline, so no skill or PnL claim. **The forward test is LIVE**:
 > CI-captured real 2026/27 fixtures are committed under
 > `data/fixtures/current/`, and **9 frozen hockey calls (DEL, Sep 22–27)**
 > sit in the append-only ledger (`docs/FORWARD-TEST.md`). Hockey/darts PnL
@@ -92,15 +92,16 @@ are checked.
   flagged instead of smoothed over (4 impossible regulation+OT/SO result
   layerings, 1 null-season schema deviation, 2 darts matches with
   conflicting duplicate result entries — `docs/DARTS-AUDIT.md` §3.1).
-- **Sport #3: darts (PDC)** — schema-audited on five real committed events
-  2025–26 (World Matchplay, Baltic Sea Darts Open, Players Championship
-  Finals 2025; the complete World Championship 2025/26; the World Series
-  Finals 2026 captured while its final was in play). `darts-elo-v1`
+- **Sport #3: darts (PDC)** — schema-audited on eight real committed
+  events 2025–26 (World Matchplay, Baltic Sea Darts Open, Players
+  Championship Finals 2025; the complete World Championship 2025/26; World
+  Masters, Czech Darts Open, Flanders Darts Trophy and World Series Finals
+  2026 — the last captured while its final was in play). `darts-elo-v1`
   (pre-registered priors K=24, HOME_ADV=0, MIN_PROB=0.60) made **0
   selections on the cold 2025 pool** (141 matches, max probability 0.551 —
-  silence over forced bets), then **21 selections / 16 hits = 76.2%
-  (Brier 0.392, 0 leaks)** on the extended 298-match pool — same priors,
-  no refit. Findings (leg/set encodings, entry-lag stats → start+12h
+  silence over forced bets), then **48 selections / 39 hits = 81.25%
+  (Brier 0.349, 0 leaks)** on the full 423-match pool — same priors, no
+  refit, large error bars, no market baseline, no skill claim. Findings (leg/set encodings, entry-lag stats → start+12h
   availability, player-name identity splits, an abandoned duplicate league)
   are documented in [`docs/DARTS-AUDIT.md`](docs/DARTS-AUDIT.md).
 - **Live current-season capture + forward test**: `.github/workflows/
@@ -150,12 +151,12 @@ Pages; external source links open in a new tab for manual review.
 
 | Item | Football (Bundesliga 1 2024/25) | Ice hockey (DEL 2024/25) | Darts (PDC 2025) |
 |---|---|---|---|
-| Fixtures | 27 matches (matchdays 1/10/20) | 21 matches (matchdays 1/20/40) | 298 finished matches (5 events 2025–26: PDCMP, BSDO, PDCPCF, PDCWM, PDCWSDF) |
-| Fixture files | [`openligadb_bl1_2024_sd{1,10,20}.json`](data/fixtures/) | [`openligadb_del_2024_sd{1,20,40}.json`](data/fixtures/) | [`openligadb_{pdcmp,bsdo,pdcpcf}_2025.json`, `openligadb_{pdcwm,pdcwsdf}_2026.json`](data/fixtures/current/) (CI-captured) |
+| Fixtures | 27 matches (matchdays 1/10/20) | 21 matches (matchdays 1/20/40) | 423 finished matches (8 events 2025–26: PDCMP, BSDO, PDCPCF, PDCWM, PDCWOMA, PDCCDO, PDCFDT, PDCWSDF) |
+| Fixture files | [`openligadb_bl1_2024_sd{1,10,20}.json`](data/fixtures/) | [`openligadb_del_2024_sd{1,20,40}.json`](data/fixtures/) | [`openligadb_*_{2025,2026}.json`](data/fixtures/current/) — 8 CI-captured PDC events |
 | Results source | OpenLigaDB (ODbL-1.0) | OpenLigaDB (ODbL-1.0) | OpenLigaDB (ODbL-1.0), discovery-driven |
 | Identity | **verified** (27/27 dual-source agreement vs football-data) | `probable` (single source; no independent DEL cross-check) | `probable` (single source; audit in `docs/DARTS-AUDIT.md`) |
 | Odds path | football-data.co.uk manual pilot; The Odds API connector inactive | **none verified** → prediction-only | **none** → prediction-only |
-| Engine output | 405 odds snapshots · 7 strategies · real settled PnL | 11 graded predictions · accuracy **7/11 (63.6%)** · Brier 0.4737 · **PnL unavailable (not zero)** | cold 2025 pool: **0 selections in 141** (max prob 0.551 < 0.60 — silence, no refit); extended 2025–26 pool: **16/21 = 76.2%**, Brier 0.392 · **PnL unavailable (not zero)** |
+| Engine output | 405 odds snapshots · 7 strategies · real settled PnL | 11 graded predictions · accuracy **7/11 (63.6%)** · Brier 0.4737 · **PnL unavailable (not zero)** | cold 2025 pool: **0 selections in 141** (max prob 0.551 < 0.60 — silence, no refit); full 2025–26 pool: **39/48 = 81.25%**, Brier 0.349 · **PnL unavailable (not zero)** |
 | Regularity | 0 open anomalies | **5 flagged source irregularities** (review queue) | **2 flagged** (conflicting duplicate results, matchIDs 79962 + 80237) + 1 abandoned duplicate league excluded |
 | Backtest | all seven strategies negative, CIs include 0, Holm-adjusted p = 1.0 | no odds → no PnL by construction | no odds → no PnL by construction |
 | Forward desk | dormant by design (MD5 starts 2026-10-09, outside 10-day horizon) | **LIVE: 9 frozen calls, DEL Sep 22–27** | first live event met in play (WSDF final → review queue, next capture resolves); activates for the next World Championship (Dec 2026) |

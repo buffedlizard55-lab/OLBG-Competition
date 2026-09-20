@@ -67,7 +67,7 @@ of skill (`docs/STATUS.md` #12); the forward test is what will speak.
 
 | id | research question | prior | rule | result |
 |---|---|---|---|---|
-| `darts-elo-v1` | Does a player-level Elo select winners in PDC knockouts? | individual-sport Elo conventions; HOME_ADV=0 (listed-first is presentation order); K=24, MIN_PROB=0.60 — priors stated before grading | 2-way player Elo on the decisive leg/set count; select when prob ≥ 0.60; availability start+12h (audit-derived) | **Cold 2025 pool (141 matches): 0 selections** — max observed probability 0.551; the desk stayed silent rather than force bets. **Extended 2025–26 pool (298 matches, five events): 21 selections, 16 hits = 76.2%, Brier 0.3922, 0 leaks** — same priors, no refit; huge error bar, no skill or PnL claim. Full audit: `docs/DARTS-AUDIT.md`. |
+| `darts-elo-v1` | Does a player-level Elo select winners in PDC knockouts? | individual-sport Elo conventions; HOME_ADV=0 (listed-first is presentation order); K=24, MIN_PROB=0.60 — priors stated before grading | 2-way player Elo on the decisive leg/set count; select when prob ≥ 0.60; availability start+12h (audit-derived) | **Cold 2025 pool (141 matches): 0 selections** — max observed probability 0.551; the desk stayed silent rather than force bets. **Full pool as captured 2026-09-20 (423 matches, eight events): 48 selections, 39 hits = 81.25%, Brier 0.3489, 0 leaks** — same priors, no refit; large error bar (95% ≈ 68–90%) and no market baseline, so no skill or PnL claim. Full audit: `docs/DARTS-AUDIT.md`. |
 
 Known darts limitations found by the audit: player-name identity splits
 (`R. van Barneveld` vs `Raymond van Barneveld`, `Mickey/Michael Mansell`)

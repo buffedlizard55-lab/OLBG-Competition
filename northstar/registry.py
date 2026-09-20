@@ -149,11 +149,11 @@ HYPOTHESES: List[Dict[str, Any]] = [
                        "before grading); prediction-only until a "
                        "permissioned darts odds path exists. Pilot "
                        "2026-09-20: 0 selections on the cold 2025 pool "
-                       "(141 matches, max prob 0.551), then 21 graded "
-                       "(16 hits, 76.2%, Brier 0.392) on the extended "
-                       "298-match 2025-26 pool - same priors, no refit; "
-                       "huge error bar, no skill claim; see "
-                       "docs/DARTS-AUDIT.md.",
+                       "(141 matches, max prob 0.551), then 48 graded "
+                       "(39 hits, 81.25%, Brier 0.349) on the full "
+                       "423-match 2025-26 pool - same priors, no refit; "
+                       "large error bar, no market baseline, no skill "
+                       "claim; see docs/DARTS-AUDIT.md.",
         "refs": [],
     },
     {

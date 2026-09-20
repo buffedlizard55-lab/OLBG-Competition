@@ -215,10 +215,20 @@ def discover_darts_seasons(fetch=openligadb.fetch_url,
     #    unfinished rows whose starts are long past - e.g. darts-wm-26 with
     #    52 stale rows duplicating the complete PDCWM league) are demoted
     #    below cleanly-entered leagues;
-    # 3. then newest season first, stable within ties (league index order).
-    out.sort(key=lambda o: (-(o.get("future_unfinished_in_latest") or 0),
-                            1 if o.get("abandoned_pattern") else 0,
-                            -(o.get("latest_season") or 0)))
+    # 3. leagues with a small number of recent unfinished rows are
+    #    *awaiting refresh* (e.g. the WSDF 2026 final, in play at capture
+    #    time) and outrank fully-finished leagues - a stale on-disk
+    #    fixture would otherwise freeze an unresolved result forever;
+    # 4. then newest season first, stable within ties (league index order).
+    def _priority(o: Dict[str, Any]):
+        abandoned = bool(o.get("abandoned_pattern"))
+        awaiting = (not abandoned
+                    and (o.get("unfinished_in_latest") or 0) > 0)
+        return (-(o.get("future_unfinished_in_latest") or 0),
+                1 if abandoned else 0,
+                0 if awaiting else 1,
+                -(o.get("latest_season") or 0))
+    out.sort(key=_priority)
     kept = 0
     for row in out:
         if row.get("latest_season") is None:
