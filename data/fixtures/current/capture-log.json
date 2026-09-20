@@ -4,6 +4,39 @@
       "abandoned_pattern": false,
       "future_unfinished_in_latest": 0,
       "latest_season": 2026,
+      "leagueName": "World Series of Darts Finals 2026",
+      "leagueShortcut": "PDCWSDF",
+      "past_unfinished_in_latest": 1,
+      "season_probes": {
+        "2024": {
+          "future_unfinished": 0,
+          "matches": 0,
+          "past_unfinished": 0,
+          "unfinished": 0
+        },
+        "2025": {
+          "future_unfinished": 0,
+          "matches": 0,
+          "past_unfinished": 0,
+          "unfinished": 0
+        },
+        "2026": {
+          "future_unfinished": 0,
+          "matches": 31,
+          "past_unfinished": 1,
+          "unfinished": 1
+        }
+      },
+      "seasons": [
+        2026
+      ],
+      "seasons_endpoint_error": "HTTPError: HTTP Error 404: Not Found",
+      "unfinished_in_latest": 1
+    },
+    {
+      "abandoned_pattern": false,
+      "future_unfinished_in_latest": 0,
+      "latest_season": 2026,
       "leagueName": "PDC Darts-WM",
       "leagueShortcut": "PDCWM",
       "past_unfinished_in_latest": 0,
@@ -107,6 +140,7 @@
       "latest_season": 2026,
       "leagueName": "PDC World Masters 2026",
       "leagueShortcut": "PDCWOMA",
+      "note": "beyond max_leagues=4 after upcoming-first priority sort",
       "past_unfinished_in_latest": 0,
       "season_probes": {
         "2024": {
@@ -132,6 +166,7 @@
         2026
       ],
       "seasons_endpoint_error": "HTTPError: HTTP Error 404: Not Found",
+      "trimmed": true,
       "unfinished_in_latest": 0
     },
     {
@@ -588,41 +623,6 @@
       "seasons_endpoint_error": "HTTPError: HTTP Error 404: Not Found",
       "trimmed": true,
       "unfinished_in_latest": 0
-    },
-    {
-      "abandoned_pattern": false,
-      "future_unfinished_in_latest": 0,
-      "latest_season": 2026,
-      "leagueName": "World Series of Darts Finals 2026",
-      "leagueShortcut": "PDCWSDF",
-      "note": "beyond max_leagues=4 after upcoming-first priority sort",
-      "past_unfinished_in_latest": 1,
-      "season_probes": {
-        "2024": {
-          "future_unfinished": 0,
-          "matches": 0,
-          "past_unfinished": 0,
-          "unfinished": 0
-        },
-        "2025": {
-          "future_unfinished": 0,
-          "matches": 0,
-          "past_unfinished": 0,
-          "unfinished": 0
-        },
-        "2026": {
-          "future_unfinished": 0,
-          "matches": 31,
-          "past_unfinished": 1,
-          "unfinished": 1
-        }
-      },
-      "seasons": [
-        2026
-      ],
-      "seasons_endpoint_error": "HTTPError: HTTP Error 404: Not Found",
-      "trimmed": true,
-      "unfinished_in_latest": 1
     },
     {
       "abandoned_pattern": false,
@@ -1173,12 +1173,12 @@
     }
   ],
   "errors": [],
-  "finished_utc": "2026-09-20T19:55:08Z",
+  "finished_utc": "2026-09-20T20:09:00Z",
   "season": 2026,
-  "started_utc": "2026-09-20T19:51:55Z",
+  "started_utc": "2026-09-20T20:05:35Z",
   "targets": [
     {
-      "captured_at_utc": "2026-09-20T19:51:56Z",
+      "captured_at_utc": "2026-09-20T20:05:36Z",
       "finished": 36,
       "fixture": "/home/runner/work/OLBG-Competition/OLBG-Competition/data/fixtures/current/openligadb_bl1_2026.json",
       "league_name": "1. Fußball-Bundesliga 2026/2027",
@@ -1192,7 +1192,7 @@
       "written": true
     },
     {
-      "captured_at_utc": "2026-09-20T19:51:58Z",
+      "captured_at_utc": "2026-09-20T20:05:39Z",
       "finished": 14,
       "fixture": "/home/runner/work/OLBG-Competition/OLBG-Competition/data/fixtures/current/openligadb_del_2026.json",
       "league_name": "DEL 2026/2027",
@@ -1206,7 +1206,21 @@
       "written": true
     },
     {
-      "captured_at_utc": "2026-09-20T19:55:01Z",
+      "captured_at_utc": "2026-09-20T20:08:53Z",
+      "finished": 30,
+      "fixture": "/home/runner/work/OLBG-Competition/OLBG-Competition/data/fixtures/current/openligadb_pdcwsdf_2026.json",
+      "league_name": "World Series of Darts Finals 2026",
+      "matches": 31,
+      "payload_shortcut": "PDCWSDF",
+      "season": 2026,
+      "sha256": "41f05e4797daab2b4cfb7b4522133680f1a44a7ddad942921f90477cec779dba",
+      "shortcut": "PDCWSDF",
+      "sport": "darts",
+      "url": "https://api.openligadb.de/getmatchdata/PDCWSDF/2026",
+      "written": true
+    },
+    {
+      "captured_at_utc": "2026-09-20T20:08:55Z",
       "finished": 127,
       "fixture": "/home/runner/work/OLBG-Competition/OLBG-Competition/data/fixtures/current/openligadb_pdcwm_2026.json",
       "league_name": "PDC Darts-WM",
@@ -1220,7 +1234,7 @@
       "written": true
     },
     {
-      "captured_at_utc": "2026-09-20T19:55:03Z",
+      "captured_at_utc": "2026-09-20T20:08:57Z",
       "finished": 47,
       "fixture": "/home/runner/work/OLBG-Competition/OLBG-Competition/data/fixtures/current/openligadb_pdcfdt_2026.json",
       "league_name": "Flanders Darts Trophy 2026",
@@ -1234,7 +1248,7 @@
       "written": true
     },
     {
-      "captured_at_utc": "2026-09-20T19:55:05Z",
+      "captured_at_utc": "2026-09-20T20:08:59Z",
       "finished": 47,
       "fixture": "/home/runner/work/OLBG-Competition/OLBG-Competition/data/fixtures/current/openligadb_pdccdo_2026.json",
       "league_name": "Czech Darts Open 2026",
@@ -1245,20 +1259,6 @@
       "shortcut": "pdccdo",
       "sport": "darts",
       "url": "https://api.openligadb.de/getmatchdata/pdccdo/2026",
-      "written": true
-    },
-    {
-      "captured_at_utc": "2026-09-20T19:55:07Z",
-      "finished": 31,
-      "fixture": "/home/runner/work/OLBG-Competition/OLBG-Competition/data/fixtures/current/openligadb_pdcwoma_2026.json",
-      "league_name": "PDC World Masters 2026",
-      "matches": 31,
-      "payload_shortcut": "PDCWOMA",
-      "season": 2026,
-      "sha256": "7e3b06073fdc4b71f231ec8bc6650e6f2ac55ad29d198f1e6305e51690985b40",
-      "shortcut": "PDCWOMA",
-      "sport": "darts",
-      "url": "https://api.openligadb.de/getmatchdata/PDCWOMA/2026",
       "written": true
     }
   ]
