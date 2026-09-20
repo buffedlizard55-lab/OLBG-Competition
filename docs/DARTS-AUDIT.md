@@ -142,8 +142,12 @@ The WSDF 2026 **final (Ross Smith v Gerwyn Price, 2026-09-20T19:30Z) had
 already started** at the 19:33Z capture. Per the ingest contract it is
 recorded `postponed` (unfinished at/before `as_of` → review queue, never
 guessed) and resolves automatically to `finished` at the next capture.
-This is the pipeline meeting a genuinely live event for the first time —
-the flags worked as designed.
+The 22:05Z same-evening re-capture (awaiting-refresh priority, §1) caught
+the source **mid-entry**: a `7-5` score row was present but
+`matchIsFinished` was still `false` — the contract kept the match ungraded
+and `postponed` rather than trusting an unflagged score. This is the
+pipeline meeting a genuinely live event for the first time — the flags
+worked as designed; the Monday capture resolves it.
 
 ### 3.4 Player identity (a real limitation, not fixed by guessing)
 Players are stored in `team1/team2` with `teamName` as the player name.
