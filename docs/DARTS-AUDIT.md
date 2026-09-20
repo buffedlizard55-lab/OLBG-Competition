@@ -85,7 +85,7 @@ sessions.
 ## 3. Schema findings (all from the real payloads)
 
 ### 3.1 Result encoding
-- One result entry per match in 436/438 rows:
+- One result entry per match in 422/424 rows:
   `resultTypeKind="After90Minutes"`, `resultName="Endergebnis"`,
   `resultTypeID=2`. `pointsTeam1/2` are a **decisive count** — legs in
   ProTour/EuroTour/World-Series events (e.g. Wade 10–3 Cullen, best-of-19
@@ -99,8 +99,10 @@ sessions.
      Littler, 2025-11-23T19:15Z: `8-11`, `0-0`, `0-0`
      (resultIDs 120595/96/97); the single `goals` entry corroborates
      `8-11`.
-  2. **matchID 80237** — PDCWM 2026, Luke Littler v Krzysztof Ratajski,
-     2026-01-01T19:15Z.
+  2. **matchID 80237** — PDCWM 2026 Viertelfinale, Luke Littler v
+     Krzysztof Ratajski, 2026-01-01T19:15Z: four entries — `5-0` (sets;
+     corroborated by the single `goals` row) plus three stale `0-0`
+     duplicates (consecutive resultIDs 121750–53).
   Handling per the data contract (`docs/data-contract.md`): the first entry
   is stored, the match is flagged `RESULT_KIND_INCONSISTENT`, and flagged
   events are **excluded from walk-forward rating updates, from accuracy
