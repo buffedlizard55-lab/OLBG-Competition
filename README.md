@@ -56,7 +56,7 @@ are checked.
 - **Four football strategies** (level 1.0 units): market favourite, market
   longshot probe, Elo value edge (K=40, home adv 60, 3% edge threshold),
   Draw-No-Bet decisive — all negative on the pilot; results shown as-is.
-- **142 automated tests** (offline, `python -m pytest`) covering the
+- **144 automated tests** (offline, `python -m pytest`) covering the
   required matrix: postponements, voids, duplicate tips, time leakage,
   disputed results, settlement arithmetic — plus adapter parsing of the
   real fixtures, the 27/27 cross-check, policy gates, leaderboard math,
@@ -89,7 +89,7 @@ are checked.
 ```bash
 python3 -m venv .venv && .venv/bin/pip install pytest
 
-python -m pytest                      # 142 tests, offline
+python -m pytest                      # 144 tests, offline
 python -m northstar.cli run-pipeline --fresh   # rebuild store + site data
 python -m northstar.cli verify              # fixture hashes + 27/27 agreement
 node scripts/site-smoke.mjs            # (optional) site render smoke test
@@ -165,7 +165,7 @@ northstar/            package: models, db, policy, settlement, backtest,
                       cli, adapters/{openligadb,official_results,
                       the_odds_api,football_data,olbg},
                       strategies/{market,elo,draw,hockey}
-tests/                142 offline tests (pytest)
+tests/                144 offline tests (pytest)
 data/fixtures/        committed pilot fixtures: football-bl1 + hockey-del
                       (sha256-verified)
 data/raw/             manual OLBG snapshots (provenance headers)

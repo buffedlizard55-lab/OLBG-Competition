@@ -233,6 +233,20 @@ function renderTipDesk() {
     `<div class="empty-state"><div class="empty-icon">⌕</div><h3>No tips match</h3><p>Try a different kind filter or search term.</p></div>`;
 }
 
+// Honest display helpers: "unsettleable" needs an explanation in every
+// table where it appears, and the internal 3-way market constant reads
+// wrongly for a 2-way hockey decision (final includes OT/shootout).
+const STATUS_TITLES = {
+  unsettleable:
+    "prediction-only: no permissioned entry price exists for this sport, " +
+    "so the tip can never be settled and is never counted in profit tables",
+};
+const statusCell = (s) =>
+  `<span${STATUS_TITLES[s] ? ` title="${STATUS_TITLES[s]}"` : ""}>${escapeHtml(s)}</span>`;
+const marketLabel = (b) =>
+  (b.sport === "ice_hockey" && b.market === "match_winner_3way")
+    ? "match winner (incl. OT/SO)" : b.market;
+
 function tipRow(b) {
   const settled = b.settlement
     ? `${b.settlement.outcome} · ${b.settlement.verification_state}`
@@ -240,10 +254,10 @@ function tipRow(b) {
   return `<tr>
     <td>${escapeHtml(b.event)}<br /><small style="opacity:.7">${fmtDate(b.event_start_utc)} UTC</small>
       ${b.source_url ? `<br /><a href="${escapeHtml(b.source_url)}" target="_blank" rel="noreferrer">source ↗</a>` : ""}</td>
-    <td>${escapeHtml(b.market)}</td>
+    <td>${escapeHtml(marketLabel(b))}</td>
     <td><strong>${escapeHtml(b.selection)}</strong></td>
     <td>${b.odds === null ? "—" : b.odds}</td>
-    <td>${escapeHtml(b.status)}</td>
+    <td>${statusCell(b.status)}</td>
     <td>${escapeHtml(settled)}${b.pnl_units !== null ? `<br /><small>${fmtUnits(b.pnl_units)} u</small>` : ""}</td>
   </tr>`;
 }
@@ -262,9 +276,9 @@ function renderBets() {
       <td>${escapeHtml(b.event)}<br /><small style="opacity:.7">${fmtDate(b.event_start_utc)} UTC</small>
         ${b.source_url ? `<br /><a href="${escapeHtml(b.source_url)}" target="_blank" rel="noreferrer">source ↗</a>` : ""}</td>
       <td>${escapeHtml(b.entrant)}</td>
-      <td>${escapeHtml(b.market)} · <strong>${escapeHtml(b.selection)}</strong></td>
+      <td>${escapeHtml(marketLabel(b))} · <strong>${escapeHtml(b.selection)}</strong></td>
       <td>${b.odds === null ? "—" : b.odds}</td>
-      <td>${escapeHtml(b.status)}</td>
+      <td>${statusCell(b.status)}</td>
       <td>${b.pnl_units === null ? "—" : fmtUnits(b.pnl_units)}</td>
       <td>${b.settlement ? `${b.settlement.outcome} · ${b.settlement.verification_state}` : "—"}</td>
     </tr>`).join("") || emptyRow(7);
@@ -274,7 +288,7 @@ function renderBets() {
       <td>${escapeHtml(b.event)}</td>
       <td>${fmtDate(b.event_start_utc)}</td>
       <td>${escapeHtml(b.entrant)}</td>
-      <td>${escapeHtml(b.market)} · <strong>${escapeHtml(b.selection)}</strong></td>
+      <td>${escapeHtml(marketLabel(b))} · <strong>${escapeHtml(b.selection)}</strong></td>
       <td>${b.odds === null ? "—" : b.odds}</td>
       <td><small>${escapeHtml(b.notes || "")}</small></td>
     </tr>`).join("") || emptyRow(6);

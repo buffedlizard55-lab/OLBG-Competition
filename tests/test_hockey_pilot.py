@@ -292,3 +292,42 @@ def test_synthetic_accuracy_exact_numbers(store):
 def test_hockey_ingest_does_not_touch_football_tables(hockey_store):
     assert all(e["sport"] == "ice_hockey" for e in hockey_store.events())
     assert hockey_store.odds_snapshots() == []
+
+
+# ------------------------- pass-2 review fixes: export/display integrity
+
+
+def test_placed_bets_export_carries_sport_and_unsettleable_status(store):
+    # Pass-2 find: placed-bet rows joined the tip without the event sport,
+    # so the UI could not label a hockey row Ice Hockey or render its
+    # 2-way market correctly. Regression guard: the export must carry it.
+    from conftest import mk_event, mk_tip
+    from northstar import models
+    from northstar.leaderboard import placed_bets, upcoming_bets
+    mk_event(store, event_id="ev-hk-1", sport="ice_hockey",
+             competition="DEL Eishockey 2024/2025",
+             start="2026-01-15T18:00:00Z",
+             home="Adler Mannheim", away="Kölner Haie")
+    mk_tip(store, tip_id="tip-hk-1", event_id="ev-hk-1",
+           selection_key="home", odds=None,
+           status=models.TIP_STATUS_UNSETTLEABLE)
+    rows = placed_bets(store)
+    assert len(rows) == 1
+    row = rows[0]
+    assert row["sport"] == "ice_hockey"
+    assert row["status"] == "unsettleable"
+    assert row["odds"] is None
+    assert row["pnl_units"] is None
+    assert row["settlement"] is None
+    # An unsettleable prediction is not "upcoming" and not open: it sits
+    # only in the full placed list with its honest status.
+    assert upcoming_bets(store) == []
+
+
+def test_football_placed_rows_keep_their_sport(store):
+    from conftest import mk_event, mk_tip
+    from northstar.leaderboard import placed_bets
+    mk_event(store, event_id="ev-fb-1", sport="football")
+    mk_tip(store, tip_id="tip-fb-1", event_id="ev-fb-1", odds=2.5)
+    rows = placed_bets(store)
+    assert rows[0]["sport"] == "football"

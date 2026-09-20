@@ -85,8 +85,12 @@ the "Re-verified 2026-09-20" note in `docs/LICENSING.md`).
   tie-breaks same-start events by `event_id`; a full hockey matchday can
   share a puck-drop time, and input order changed the evaluation order
   before the fix (football results on the pilot are unchanged — the pilot
-  times were unambiguous).
-- **Automated tests: 142 passing** covering the user-specified matrix —
+  times were unambiguous). A second review sweep fixed three display
+  integrity gaps: bet-export rows now carry the event sport (hockey rows
+  were `null`), hockey rows render the 2-way market as "match winner
+  (incl. OT/SO)" instead of the football 3-way constant's name, and every
+  `unsettleable` status cell now explains itself on hover.
+- **Automated tests: 144 passing** covering the user-specified matrix —
   postponements, voids, duplicate tips, time leakage, disputed results,
   settlement arithmetic — plus adapter parsing of the real fixtures, the
   27/27 cross-check, policy gates, leaderboard math, and walk-forward
@@ -206,7 +210,7 @@ the "Re-verified 2026-09-20" note in `docs/LICENSING.md`).
 
 ```bash
 python -m venv .venv && .venv/bin/pip install pytest
-python -m pytest                     # 142 tests, offline
+python -m pytest                     # 144 tests, offline
 python -m northstar.cli run-pipeline --fresh   # rebuild store + site-data/site.json
 python -m northstar.cli verify               # re-check fixture hashes + 27/27
 ```
