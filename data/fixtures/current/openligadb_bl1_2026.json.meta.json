@@ -1,15 +1,15 @@
 {
-  "captured_at_utc": "2026-09-20T19:05:42Z",
+  "captured_at_utc": "2026-09-20T19:30:00Z",
   "collection_mode": "automated_api",
   "fixture": "openligadb_bl1_2026.json",
   "league_name": "1. Fußball-Bundesliga 2026/2027",
   "league_season": 2026,
   "league_shortcut": "bl1",
   "license_id": "odbl-1.0",
-  "n_finished": 35,
+  "n_finished": 36,
   "n_matches": 306,
   "note": "whole-season payload fetched via the permitted automated API (ODbL-1.0); canonical compact JSON, unmodified content",
-  "sha256": "c8f2433017efd21eca54d2cac21ba1d9afc9a85437e7f5c8483ac871435852dc",
+  "sha256": "67d34d8e749b84fbc7730fb43ab300567e14ad627e4ed2fd08a3b3d03455f6a3",
   "source_id": "openligadb",
   "sport": "football",
   "url": "https://api.openligadb.de/getmatchdata/bl1/2026"

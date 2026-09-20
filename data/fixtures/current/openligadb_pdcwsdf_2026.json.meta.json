@@ -1,0 +1,16 @@
+{
+  "captured_at_utc": "2026-09-20T19:33:51Z",
+  "collection_mode": "automated_api",
+  "fixture": "openligadb_pdcwsdf_2026.json",
+  "league_name": "World Series of Darts Finals 2026",
+  "league_season": 2026,
+  "league_shortcut": "PDCWSDF",
+  "license_id": "odbl-1.0",
+  "n_finished": 30,
+  "n_matches": 31,
+  "note": "whole-season payload fetched via the permitted automated API (ODbL-1.0); canonical compact JSON, unmodified content",
+  "sha256": "9c8aec47b7a9f630c6aeada2bb86e482bde0c3015d69a2f890ef2473c965ca1f",
+  "source_id": "openligadb",
+  "sport": "darts",
+  "url": "https://api.openligadb.de/getmatchdata/PDCWSDF/2026"
+}

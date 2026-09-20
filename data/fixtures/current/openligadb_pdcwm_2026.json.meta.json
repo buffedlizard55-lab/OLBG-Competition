@@ -1,0 +1,16 @@
+{
+  "captured_at_utc": "2026-09-20T19:33:53Z",
+  "collection_mode": "automated_api",
+  "fixture": "openligadb_pdcwm_2026.json",
+  "league_name": "PDC Darts-WM",
+  "league_season": 2026,
+  "league_shortcut": "PDCWM",
+  "license_id": "odbl-1.0",
+  "n_finished": 127,
+  "n_matches": 127,
+  "note": "whole-season payload fetched via the permitted automated API (ODbL-1.0); canonical compact JSON, unmodified content",
+  "sha256": "a250b67aba7c2f98d8275b84e48aa343acaed162c1e4553d13e7a3261ea09e6a",
+  "source_id": "openligadb",
+  "sport": "darts",
+  "url": "https://api.openligadb.de/getmatchdata/PDCWM/2026"
+}
