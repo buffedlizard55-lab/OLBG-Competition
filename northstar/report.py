@@ -31,14 +31,10 @@ SPORT_COVERAGE = [
         ),
         "note": (
             "27-match hand-audited pilot (matchdays 1/10/20), 27/27 "
-            "dual-source result agreement. This is not an official DFL feed."
+            "dual-source result agreement. Forward-test desk live on the "
+            "current season (prediction-only: no permissioned odds path "
+            "for 2026/27). This is not an official DFL feed."
         ),
-    },
-    {
-        "sport": "Darts", "scope": "olbg", "status": "results_path_available",
-        "results_path": "OpenLigaDB PDC endpoints (ODbL-1.0), path not yet pilot-verified",
-        "odds_path": "none verified",
-        "note": "Results-only path is not enough for PnL; keep blocked until an odds path and settlement rules pass.",
     },
     {
         "sport": "Ice Hockey", "scope": "olbg", "status": "results_pilot",
@@ -54,17 +50,32 @@ SPORT_COVERAGE = [
     },
 ]
 
+# Darts coverage is built dynamically (see build_coverage): the row is
+# promoted from results_path_available to results_pilot only when a
+# schema-audited darts pilot has actually been ingested into the store.
+DARTS_COVERAGE_PENDING = {
+    "sport": "Darts", "scope": "olbg", "status": "results_path_available",
+    "results_path": ("OpenLigaDB PDC endpoints (ODbL-1.0); discovery probe "
+                     "2026-09-20 found the previously documented "
+                     "PDCWSDF/2024 pair returns an empty list - capture is "
+                     "discovery-driven (CI capture-log)"),
+    "odds_path": "none verified",
+    "note": ("Results-only path is not enough for PnL; keep blocked until "
+             "an odds path and settlement rules pass."),
+}
+
 # These are deliberately explicit rather than silently omitted.  The public
 # OLBG catalogue lists them, but this repo has not verified a result+odds+rule
 # path for them.  A future sport may be promoted only after the source and test
 # gates pass.
+BLOCKED_SPORT_COVERAGE = []
 for _sport in (
     "Horse Racing", "Tennis", "Golf", "American Football", "Baseball",
     "Basketball", "Boxing", "Cricket", "Cycling", "Gaelic Football",
     "Greyhounds", "Handball", "Hurling", "Motor Racing", "Rugby Union",
     "Rugby League", "Snooker", "Volleyball",
 ):
-    SPORT_COVERAGE.append({
+    BLOCKED_SPORT_COVERAGE.append({
         "sport": _sport,
         "scope": "olbg",
         "status": "verification_blocked",
@@ -78,10 +89,45 @@ for _sport in (
     })
 
 
+def build_coverage(store: Store) -> List[Dict[str, Any]]:
+    """Sport coverage rows, with Darts promoted only on real pilot data.
+
+    The promotion rule is evidence-based: darts events (schema-audited
+    pilot fixtures) must exist in the store; otherwise the row stays
+    ``results_path_available`` with the discovery findings.
+    """
+    darts_events = [e for e in store.events() if e["sport"] == "darts"]
+    darts_finished = [e for e in darts_events
+                      if e["status"] == "finished"]
+    if darts_events:
+        darts_row = {
+            "sport": "Darts", "scope": "olbg",
+            "status": ("results_pilot" if darts_finished
+                       else "results_path_available"),
+            "results_path": (
+                f"OpenLigaDB PDC capture (ODbL-1.0), {len(darts_events)} "
+                f"events ({len(darts_finished)} finished), schema-audited "
+                "per docs/DARTS-AUDIT.md; single source, identity "
+                "'probable'"),
+            "odds_path": "none verified - no permissioned darts odds path",
+            "note": (
+                "Prediction-only pilot: graded on accuracy/Brier; PnL is "
+                "unavailable (not zero) until an odds path passes the "
+                "licensing gates."),
+        }
+    else:
+        darts_row = dict(DARTS_COVERAGE_PENDING)
+    return [SPORT_COVERAGE[0], darts_row, SPORT_COVERAGE[1]] + \
+        BLOCKED_SPORT_COVERAGE
+
+
 def build_site_data(store: Store, raw_dir: str,
                     predictions: Optional[List[Dict[str, Any]]] = None,
                     backtest_meta: Optional[Dict[str, Any]] = None,
-                    out_path: Optional[str] = None) -> Dict[str, Any]:
+                    out_path: Optional[str] = None,
+                    forward_report: Optional[Dict[str, Any]] = None,
+                    registry: Optional[Dict[str, Any]] = None
+                    ) -> Dict[str, Any]:
     captures = store.captures()
     leaderboard = build_leaderboard(store)
     placed = placed_bets(store)
@@ -139,6 +185,15 @@ def build_site_data(store: Store, raw_dir: str,
         },
         "predictions": predictions or [],
         "backtest": backtest_meta or {},
+        "forward": forward_report or {
+            "state": "awaiting_first_capture",
+            "note": ("No current-season capture is committed yet. The CI "
+                     "capture workflow (capture.yml) fetches the permitted "
+                     "OpenLigaDB current-season payloads and issues the "
+                     "first forward-test predictions into the append-only "
+                     "ledger."),
+        },
+        "registry": registry or {},
         "sources": [{
             "source_id": p.source_id,
             "display_name": p.display_name,
@@ -152,7 +207,7 @@ def build_site_data(store: Store, raw_dir: str,
             "requires_active_entitlement": p.requires_active_entitlement,
             "terms_version": p.terms_version,
         } for p in all_policies()],
-        "coverage": SPORT_COVERAGE,
+        "coverage": build_coverage(store),
         "captures": captures,
         "entrants": store.entrants(),
     }

@@ -27,7 +27,7 @@ class DrawNoBet(Strategy):
         self.two_way_min = two_way_min
 
     def predict(self, event, tbs, start, market_odds=None,
-                odds_observed_at=None) -> Dict[str, Any]:
+                odds_observed_at=None, as_of=None) -> Dict[str, Any]:
         if odds_observed_at is None or not market_odds:
             return no_bet(odds_observed_at,
                           {"reason": "no pre-start market price"})

@@ -209,16 +209,33 @@ class Store:
                  event.identity_confidence))
             return anomalies
 
-        # A substantive change is status/teams/start. A source_version
-        # change alone is a re-capture of the same event - provenance is
-        # updated without an anomaly (captures table keeps the hashes).
-        changed = (
-            existing["status"] != event.status
-            or existing["home_team"] != event.home_team
+        # A substantive change is an identity change (teams/start) or an
+        # *irregular* status change.  Normal fixture lifecycle transitions
+        # (scheduled/postponed -> finished/cancelled/abandoned, and the
+        # reinstatement of a cancelled fixture) are how a live season
+        # capture evolves week to week - they are provenance, not
+        # anomalies.  A source_version change alone is a re-capture of the
+        # same event.  Regressions (finished -> scheduled), terminal-state
+        # flips (finished -> postponed) and any team/start edit remain
+        # flagged EVENT_CHANGED with a revision bump.
+        lifecycle_ok = {
+            ("scheduled", "finished"), ("scheduled", "postponed"),
+            ("scheduled", "cancelled"), ("scheduled", "abandoned"),
+            ("postponed", "scheduled"), ("postponed", "finished"),
+            ("postponed", "cancelled"), ("postponed", "abandoned"),
+            ("cancelled", "scheduled"), ("abandoned", "scheduled"),
+        }
+        identity_changed = (
+            existing["home_team"] != event.home_team
             or existing["away_team"] != event.away_team
             or existing["scheduled_start_utc"]
             != models.fmt_utc(event.scheduled_start_utc)
         )
+        status_changed = existing["status"] != event.status
+        irregular_status = (status_changed
+                            and (existing["status"], event.status)
+                            not in lifecycle_ok)
+        changed = identity_changed or irregular_status
         if changed:
             anomalies.append(self.add_anomaly(Anomaly(
                 anomaly_id=models.stable_id("an", ANOMALY_EVENT_CHANGED,

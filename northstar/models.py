@@ -19,6 +19,10 @@ SPORT_ICE_HOCKEY = "ice_hockey"
 SPORT_DARTS = "darts"
 
 MARKET_MATCH_WINNER_3WAY = "match_winner_3way"
+# 2-way match winner (no draw outcome possible: hockey incl. OT/SO, darts).
+# Prediction-only desks use it; the settlement engine has no rule set for it
+# yet (settlement would flag MARKET_RULE_UNKNOWN), which is intentional.
+MARKET_MATCH_WINNER_2WAY = "match_winner_2way"
 
 EVENT_STATUS_SCHEDULED = "scheduled"
 EVENT_STATUS_LIVE = "live"

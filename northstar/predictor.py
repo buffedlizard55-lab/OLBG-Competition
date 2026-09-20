@@ -99,3 +99,53 @@ def render_prediction(event: Dict[str, Any],
                 if selection else f"{home} v {away}: No call")
     return {"headline": headline, "body": body, "evidence_ok": ok,
             "source_links": source_links or []}
+
+
+def render_forward_prediction(entry: Dict[str, Any],
+                              source_links: Optional[List[str]] = None,
+                              ) -> Dict[str, Any]:
+    """Tipster-style rendering of a frozen forward-test ledger entry.
+
+    Forward desks have *no* market price (no permissioned odds path for the
+    current season), so the renderer must never imply one: it states the
+    model trail, the cutoff, and that grading is accuracy-only.  Evidence
+    discipline is identical to ``render_prediction``: without ratings and a
+    full model probability trail it refuses (``evidence_ok`` False).
+    """
+    model = entry.get("model") or {}
+    probs = model.get("model_prob") or {}
+    ratings = model.get("ratings") or {}
+    home, away = entry.get("home_team"), entry.get("away_team")
+    selection = entry.get("selection")
+    if not home or not away or not selection:
+        return {"headline": "No call",
+                "body": "Forward entry is missing verified identity or a "
+                        "recorded selection - refusing to render it.",
+                "evidence_ok": False, "source_links": source_links or []}
+    if not all(k in probs for k in ("home", "draw", "away")) or \
+            ratings.get("home") is None or ratings.get("away") is None:
+        return {"headline": f"{home} v {away}: No call",
+                "body": "Forward entry lacks a complete model trail "
+                        "(ratings + probabilities) - refusing to write a "
+                        "tip without it.",
+                "evidence_ok": False, "source_links": source_links or []}
+
+    picked = entry.get("selection_key")
+    picked_name = home if picked == "home" else (
+        away if picked == "away" else "the draw")
+    bits = [
+        f"We make {home} {_pct(probs['home'])}, the draw "
+        f"{_pct(probs['draw'])} and {away} {_pct(probs['away'])} on our "
+        f"published model (ratings {ratings['home']:.0f} v "
+        f"{ratings['away']:.0f}).",
+        f"That points to {picked_name}, and we are on record with it from "
+        f"{entry.get('cutoff_utc', 'the recorded cutoff')} - before "
+        f"kick-off, frozen in the forward-test ledger.",
+        "No market price is recorded for this fixture (no permissioned odds "
+        "path), so this call is graded on accuracy only - there is no "
+        "profit claim attached to it, in either direction.",
+    ]
+    body = " ".join(bits) + " Paper trading only - not betting advice."
+    headline = f"{home} v {away}: {str(selection).upper()}"
+    return {"headline": headline, "body": body, "evidence_ok": True,
+            "source_links": source_links or []}

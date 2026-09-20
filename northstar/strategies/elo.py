@@ -19,9 +19,10 @@ under-rates them."
 """
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Any, Dict, Optional
 
+from ..models import SPORT_FOOTBALL, fmt_utc
 from .base import Strategy, market_implied, no_bet
 
 INITIAL = 1500.0
@@ -57,7 +58,7 @@ class EloEdge(Strategy):
         return rh, ra
 
     def predict(self, event, tbs, start, market_odds=None,
-                odds_observed_at=None) -> Dict[str, Any]:
+                odds_observed_at=None, as_of=None) -> Dict[str, Any]:
         if odds_observed_at is None or not market_odds:
             return no_bet(odds_observed_at,
                           {"reason": "no pre-start market price"})
@@ -95,15 +96,90 @@ class EloEdge(Strategy):
 
     def ratings_after(self, event, home_goals, away_goals, tbs,
                       final_at) -> Dict[str, float]:
-        rh, ra = self._ratings_at(tbs, event, final_at)
-        e_home = _expected_home(rh, ra)
-        if home_goals > away_goals:
-            s = 1.0
-        elif home_goals < away_goals:
-            s = 0.0
-        else:
-            s = 0.5
-        new_rh = rh + K * (s - e_home)
-        new_ra = ra + K * ((1 - s) - (1 - e_home))
-        return {event["home_team"]: new_rh,
-                event["away_team"]: new_ra}
+        return elo_update(event, home_goals, away_goals, tbs, final_at)
+
+
+def elo_update(event, home_goals, away_goals, tbs,
+               final_at) -> Dict[str, float]:
+    """Shared football Elo update (K, HOME_ADV as above).
+
+    Reads each side's latest released rating at ``final_at`` and applies the
+    standard Elo delta.  Used by every football strategy that carries
+    ratings, so they cannot drift apart.
+    """
+    rh = tbs.team_rating(event["home_team"], final_at) or INITIAL
+    ra = tbs.team_rating(event["away_team"], final_at) or INITIAL
+    e_home = _expected_home(rh, ra)
+    if home_goals > away_goals:
+        s = 1.0
+    elif home_goals < away_goals:
+        s = 0.0
+    else:
+        s = 0.5
+    return {event["home_team"]: rh + K * (s - e_home),
+            event["away_team"]: ra + K * ((1 - s) - (1 - e_home))}
+
+
+def elo_three_way(rh: float, ra: float) -> Dict[str, float]:
+    """Shared 3-way mapping of the 2-way Elo expectation (documented
+    heuristic, identical for every football Elo strategy)."""
+    e_home = _expected_home(rh, ra)
+    p_draw = _draw_rate(rh + HOME_ADV, ra)
+    return {"home": e_home * (1 - p_draw),
+            "draw": p_draw,
+            "away": (1.0 - e_home) * (1 - p_draw)}
+
+
+class EloFavourite3Way(Strategy):
+    """No-market football model (forward-test desk).
+
+    The current season has *no permissioned odds path* in this repo
+    (football-data.co.uk may not be fetched automatically and no licensed
+    provider key exists), so the forward desk cannot bet a price.  This
+    strategy therefore issues predictions only: it backs the 3-way model
+    argmax when that probability clears ``min_prob`` and is graded on
+    accuracy/Brier exactly like the hockey desk - never on PnL.
+    """
+
+    MIN_PROB = 0.45
+    DECISION_LAG = timedelta(minutes=30)
+
+    def __init__(self, min_prob: float = MIN_PROB):
+        super().__init__(
+            name="Football Elo favourite (no-market forward desk)",
+            description=(f"3-way Elo (K={K:.0f}, home adv {HOME_ADV:.0f}, "
+                         "documented draw mapping); selects the model "
+                         f"argmax when p >= {min_prob:.0%}. Prediction-only "
+                         "forward desk: no permissioned odds path exists for "
+                         "the current season, so graded on accuracy, never "
+                         "on PnL."),
+            odds_provider=None,
+            sport=SPORT_FOOTBALL)
+        self.min_prob = min_prob
+
+    def predict(self, event, tbs, start, market_odds=None,
+                odds_observed_at=None, as_of=None) -> Dict[str, Any]:
+        # Forward mode: the decision instant is the capture time ``as_of``
+        # (features can only be read there - a future pre-start lag would
+        # claim inputs the desk did not have when it issued the ledger).
+        at = as_of if as_of is not None else start - self.DECISION_LAG
+        if at >= start:
+            return no_bet(at if at < start else start - self.DECISION_LAG,
+                          {"reason": "decision time not before start"})
+        rh = tbs.team_rating(event["home_team"], at) or INITIAL
+        ra = tbs.team_rating(event["away_team"], at) or INITIAL
+        model = elo_three_way(rh, ra)
+        trail = {"model_prob": model,
+                 "ratings": {"home": round(rh, 1), "away": round(ra, 1)},
+                 "decision_time": fmt_utc(at),
+                 "odds": "none (no permissioned odds path)"}
+        best = max(model, key=model.get)
+        if model[best] < self.min_prob:
+            return no_bet(at, {**trail, "reason": "below selectivity "
+                                                 "threshold"})
+        return {"cutoff_utc": at, "selection_key": best,
+                "selection_text": best, "model": trail}
+
+    def ratings_after(self, event, home_goals, away_goals, tbs,
+                      final_at) -> Dict[str, float]:
+        return elo_update(event, home_goals, away_goals, tbs, final_at)

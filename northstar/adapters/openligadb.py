@@ -23,7 +23,8 @@ from typing import Dict, List, Optional
 from .. import models
 from ..db import Store
 from ..models import (
-    EVENT_STATUS_FINISHED, EVENT_STATUS_POSTPONED, Event, Result,
+    EVENT_STATUS_FINISHED, EVENT_STATUS_POSTPONED, EVENT_STATUS_SCHEDULED,
+    Event, Result,
     RESULT_KIND_AFTER_90, RESULT_KIND_AFTER_EXTRA,
     RESULT_KIND_AFTER_PENALTIES, SPORT_FOOTBALL,
     parse_utc, sha256_text, stable_id,
@@ -42,16 +43,27 @@ def league_url(league_shortcut: str, league_season: int,
             f"{group_order}")
 
 
+def fetch_url(url: str) -> str:
+    """Generic policy-gated GET against the OpenLigaDB API base.
+
+    Refuses any URL outside ``api.openligadb.de`` (the only endpoint the
+    registered policy covers) and any run when the automated-API mode is
+    not permitted.  Used by CI capture (network) and injectable in tests.
+    """
+    get_policy("openligadb").assert_permitted(MODE_AUTO_API)
+    if not url.startswith(API_BASE + "/"):
+        raise PolicyError(f"refusing non-OpenLigaDB URL: {url}")
+    req = urllib.request.Request(url, headers={"User-Agent":
+                                               "NorthstarLab/0.3 (paper-trading research)"})
+    with urllib.request.urlopen(req, timeout=60) as resp:
+        return resp.read().decode("utf-8")
+
+
 def fetch_matchdata(league_shortcut: str, league_season: int,
                     group_order: Optional[int] = None) -> str:
     """Live fetch (used in CI / environments with network). Refuses to run
     unless the source policy permits automated API collection."""
-    get_policy("openligadb").assert_permitted(MODE_AUTO_API)
-    url = league_url(league_shortcut, league_season, group_order)
-    req = urllib.request.Request(url, headers={"User-Agent":
-                                               "NorthstarLab/0.2 (paper-trading research)"})
-    with urllib.request.urlopen(req, timeout=60) as resp:
-        return resp.read().decode("utf-8")
+    return fetch_url(league_url(league_shortcut, league_season, group_order))
 
 
 def event_id_for(match: Dict) -> str:
@@ -87,6 +99,10 @@ DEFAULT_FINAL_KIND_PRIORITY = [RESULT_KIND_AFTER_90,
 # second. It is documented in docs/STATUS.md.
 INFERRED_GAME_DURATION = {
     "ice_hockey": timedelta(hours=3),
+    # Darts: an evening session's individual match can start late and run
+    # long; +4h is a conservative availability bound for walk-forward
+    # rating release (same documented construction as hockey).
+    "darts": timedelta(hours=4),
 }
 
 
@@ -164,17 +180,26 @@ def parse_matchday(text: str, sport: Optional[str] = None) -> List[Dict]:
 
 def ingest_matchday(store: Store, text: str,
                     verify_identity: bool = True,
-                    sport: Optional[str] = SPORT_FOOTBALL) -> Dict:
+                    sport: Optional[str] = SPORT_FOOTBALL,
+                    as_of=None) -> Dict:
     """Ingest one matchday payload: events + primary results.
 
     ``verify_identity``: when True, events start at ``probable`` identity
     confidence; the cross-check step (ingest_pilot in the pipeline) upgrades
     to ``verified`` once an independent source agrees.
+
+    ``as_of`` (aware datetime, optional): the capture instant. Unfinished
+    matches whose scheduled start is *after* ``as_of`` are ``scheduled``
+    (upcoming fixtures, forward-test candidates); unfinished matches at or
+    before ``as_of`` are unresolved -> ``postponed`` (review queue), the
+    pre-existing behaviour which remains the default when ``as_of`` is None.
     """
     policy = get_policy("openligadb")
     policy.assert_permitted(MODE_AUTO_API)  # documents the mode even offline
+    if as_of is not None and as_of.tzinfo is None:
+        raise ValueError("as_of must be a timezone-aware datetime")
     matches = parse_matchday(text, sport=sport)
-    stats = {"events": 0, "results": 0, "anomalies": 0}
+    stats = {"events": 0, "results": 0, "anomalies": 0, "event_ids": []}
     # Source-metadata repair: a match row with leagueSeason null (seen live
     # on del/2024 matchday 40, matchID 76412) would otherwise leak "None"
     # into ids and URLs. Normalise to the *modal* season of unambiguous rows
@@ -212,6 +237,8 @@ def ingest_matchday(store: Store, text: str,
                 source_urls=[url]))
         if m["finished"]:
             status = EVENT_STATUS_FINISHED
+        elif as_of is not None and m["start_utc"] > as_of:
+            status = EVENT_STATUS_SCHEDULED  # genuine upcoming fixture
         else:
             status = EVENT_STATUS_POSTPONED  # unresolved state; review queue
         event = Event(
@@ -235,6 +262,7 @@ def ingest_matchday(store: Store, text: str,
         anomalies = store.upsert_event(event)
         stats["anomalies"] += len(anomalies)
         stats["events"] += 1
+        stats["event_ids"].append(eid)
         if m["finished"] and m["home_goals"] is not None:
             final_at = availability_for(sport, m["start_utc"],
                                         m["source_version"])

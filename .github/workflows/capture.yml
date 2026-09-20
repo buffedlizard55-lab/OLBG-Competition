@@ -1,0 +1,65 @@
+name: Current-season capture + forward ledger (OpenLigaDB)
+
+# The recurring forward-test cadence that does NOT need OLBG (whose ToS
+# forbids automation): OpenLigaDB's license permits automated API
+# collection (ODbL-1.0, 60 req/min).  Every Monday this workflow
+#   1. fetches whole current-season payloads (bl1, del) + discovers the
+#      darts leagues that actually carry data (no hardcoded assumptions -
+#      the 2026-09-20 probe found PDCWSDF/2024 empty),
+#   2. rebuilds the store, issues any NEW forward-test predictions into
+#      the append-only ledger (frozen at capture time, pre-start cutoffs),
+#      and grades existing ones against freshly finished results,
+#   3. re-runs the test suite and fixture verification, and only then
+#   4. commits the refreshed captures + ledger + site data.
+# A push to main re-triggers pages.yml, so the site follows automatically.
+
+on:
+  schedule:
+    - cron: "30 6 * * 1"   # Mondays 06:30 UTC
+  workflow_dispatch:
+  # Bootstrap/cadence trigger: code changes re-run the capture.  Scoped by
+  # paths so the bot's own data commits (fixtures/ledger/site) never
+  # re-trigger this workflow (no commit loops).
+  push:
+    paths:
+      - "northstar/**"
+      - ".github/workflows/capture.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: capture-forward
+  cancel-in-progress: false
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install test dependencies
+        run: python -m pip install --upgrade pip pytest
+      - name: Capture current-season fixtures (permitted automated API)
+        run: python -m northstar.cli capture-current --out data/fixtures/current
+      - name: Rebuild store + forward ledger + site data (offline replay)
+        run: python -m northstar.cli run-pipeline --fresh
+      - name: Re-verify fixture integrity
+        run: python -m northstar.cli verify
+      - name: Test suite must stay green before committing
+        run: python -m pytest -q
+      - name: Commit refreshed captures (if changed)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/fixtures/current data/forward/ledger.json site-data/site.json
+          if git diff --cached --quiet; then
+            echo "No capture changes this run."
+          else
+            git commit -m "chore(capture): refresh current-season fixtures + forward ledger ($(date -u +%Y-%m-%d))"
+            git push
+          fi

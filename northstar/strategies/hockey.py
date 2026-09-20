@@ -47,11 +47,18 @@ class HockeyElo(Strategy):
         self.min_prob = min_prob
 
     def predict(self, event, tbs, start, market_odds=None,
-                odds_observed_at=None) -> Dict[str, Any]:
-        # Hockey has no market input here: the decision moment is a fixed
-        # pre-start lag, and every rating read happens at that moment (the
-        # TimeBoundedStore raises if a feature would only exist later).
-        at = start - DECISION_LAG
+                odds_observed_at=None, as_of=None) -> Dict[str, Any]:
+        # Hockey has no market input here: in backtest mode the decision
+        # moment is a fixed pre-start lag, and every rating read happens at
+        # that moment (the TimeBoundedStore raises if a feature would only
+        # exist later).  In forward mode (as_of set by the forward-test
+        # engine) the decision instant is the capture time instead - the
+        # desk cannot claim inputs it will only see at a future pre-start
+        # lag when the prediction was issued earlier.
+        at = as_of if as_of is not None else start - DECISION_LAG
+        if at >= start:
+            return no_bet(start - DECISION_LAG,
+                          {"reason": "decision time not before start"})
         rh = tbs.team_rating(event["home_team"], at) or INITIAL
         ra = tbs.team_rating(event["away_team"], at) or INITIAL
         e_home = _expected_home(rh, ra)

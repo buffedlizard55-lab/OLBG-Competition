@@ -48,7 +48,8 @@ class Strategy:
     def predict(self, event: Dict[str, Any], tbs: "TimeBoundedStore",
                 start: datetime,
                 market_odds: Optional[Dict[str, Optional[float]]] = None,
-                odds_observed_at: Optional[datetime] = None
+                odds_observed_at: Optional[datetime] = None,
+                as_of: Optional[datetime] = None
                 ) -> Dict[str, Any]:
         """Return {"cutoff_utc", "selection_key" (home|draw|away|"none"),
         "selection_text", "model": {...}}.
@@ -59,6 +60,11 @@ class Strategy:
         - ``cutoff_utc`` is the latest time any used input (features and
           entry price) became available, strictly before ``start``;
         - reading the future raises TimeLeakageError from the store.
+
+        ``as_of`` is set by the forward-test engine only: the decision is
+        issued at that instant (fixture capture time), so a no-market
+        strategy must read features at ``as_of`` (never at a future
+        pre-start lag) and declare ``cutoff_utc == as_of``.
         """
         raise NotImplementedError
 
