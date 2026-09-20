@@ -197,6 +197,13 @@ def run_walk_forward(store: Store, events: Sequence[Dict[str, Any]],
     if strategy_sport:
         ordered = [e for e in ordered if e.get("sport") == strategy_sport]
     tbs = TimeBoundedStore()
+    # Data contract: an event whose result is under review
+    # (RESULT_KIND_INCONSISTENT - impossible layering or conflicting
+    # duplicate entries) must neither update ratings nor be graded on;
+    # the review queue owns its verdict, and a silent first-entry read
+    # would launder a disputed source row into the model.
+    flagged = {a["entity_id"] for a in store.anomalies(status="open")
+               if a["kind"] == models.ANOMALY_RESULT_KIND_INCONSISTENT}
     for e in ordered:
         tbs.register_event(e)
 
@@ -207,6 +214,12 @@ def run_walk_forward(store: Store, events: Sequence[Dict[str, Any]],
     for e in ordered:
         start = parse_utc(e["scheduled_start_utc"])
         if e["status"] != EVENT_STATUS_FINISHED:
+            continue
+        if e["event_id"] in flagged:
+            result.skipped.append({
+                "event_id": e["event_id"],
+                "reason": "result flagged for review "
+                          "(RESULT_KIND_INCONSISTENT)"})
             continue
         results = [r for r in store.results(e["event_id"])
                    if r["final_status"] == "finished"]

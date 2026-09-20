@@ -292,12 +292,24 @@ def grade_forward(store: Store, ledger: Dict[str, Any],
     awaiting: List[Dict[str, Any]] = []
     overdue: List[Dict[str, Any]] = []
     rows: List[Dict[str, Any]] = []
+    # Results under review (RESULT_KIND_INCONSISTENT) are held ungraded
+    # until the review queue resolves them - never graded on a silent
+    # first-entry read of a disputed source row.
+    flagged = {a["entity_id"] for a in store.anomalies(status="open")
+               if a["kind"] == models.ANOMALY_RESULT_KIND_INCONSISTENT}
     for entry in ledger["issued"]:
         eid = entry["event_id"]
         event = store.get_event(eid) or {}
         results = [r for r in store.results(eid)
                    if r["final_status"] == "finished"]
         row = {**entry, "status": "awaiting_result"}
+        if eid in flagged:
+            row["note"] = ("result flagged for review "
+                           "(RESULT_KIND_INCONSISTENT) - held ungraded "
+                           "until the review queue resolves it")
+            awaiting.append(row)
+            rows.append(row)
+            continue
         scores = {(r["home_goals"], r["away_goals"]) for r in results}
         if results and len(scores) == 1 and None not in next(iter(scores)):
             hg, ag = next(iter(scores))

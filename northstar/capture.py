@@ -88,7 +88,7 @@ def discover_leagues(fetch=openligadb.fetch_url) -> Dict[str, Any]:
 
 
 def _probe_season_matches(fetch, shortcut: str, season: int) -> Optional[int]:
-    """Return the match count for a shortcut/season, or None on failure.
+    """Return {"matches": n, "unfinished": u} for a shortcut/season, or None.
 
     Darts leagues on OpenLigaDB 404 on getavailableseasons (observed live
     2026-09-20), so the season list is probed directly through
@@ -101,12 +101,14 @@ def _probe_season_matches(fetch, shortcut: str, season: int) -> Optional[int]:
     except Exception:  # noqa: BLE001 - probe failures are findings
         return None
     if isinstance(payload, list):
-        return len(payload)
+        unfinished = sum(1 for m in payload
+                         if isinstance(m, dict) and not m.get("matchIsFinished"))
+        return {"matches": len(payload), "unfinished": unfinished}
     return None
 
 
 def discover_darts_seasons(fetch=openligadb.fetch_url,
-                           max_leagues: int = 3,
+                           max_leagues: int = 4,
                            this_year: Optional[int] = None
                            ) -> List[Dict[str, Any]]:
     """For each discovered darts league, find seasons that carry data.
@@ -144,6 +146,12 @@ def discover_darts_seasons(fetch=openligadb.fetch_url,
                       if str(s.get("leagueSeason", "")).isdigit()]
             row["seasons"] = [s.get("leagueSeason") for s in seasons]
             row["latest_season"] = max(digits) if digits else None
+            if row["latest_season"] is not None:
+                time.sleep(MIN_REQUEST_GAP_S)
+                probe = _probe_season_matches(fetch, shortcut,
+                                              row["latest_season"])
+                if probe:
+                    row["unfinished_in_latest"] = probe["unfinished"]
         else:
             # Direct per-season probe (darts leagues 404 on the seasons
             # endpoint but answer getmatchdata - verified 2026-09-20).
@@ -153,15 +161,35 @@ def discover_darts_seasons(fetch=openligadb.fetch_url,
                 probes[season] = _probe_season_matches(fetch, shortcut,
                                                        season)
             row["season_probes"] = probes
-            with_data = [s for s, n in probes.items() if n]
+            with_data = [s for s, p in probes.items() if p and p["matches"]]
             row["seasons"] = sorted(with_data)
             row["latest_season"] = max(with_data) if with_data else None
+            if row["latest_season"] is not None:
+                probe = probes.get(row["latest_season"])
+                if probe:
+                    row["unfinished_in_latest"] = probe["unfinished"]
             if not with_data:
                 row["note"] = ("no data for the last three seasons "
                                "(or shortcut unknown)")
         out.append(row)
-        if len([o for o in out if o.get("latest_season")]) >= max_leagues:
-            break
+    # Forward-test priority: a league whose latest season still carries
+    # *unfinished* matches (upcoming fixtures) must never be crowded out by
+    # all-finished historical events - the league index lists e.g. the
+    # completed 2025 PDC events before "Darts WM 2026" (leagueId 4893),
+    # which is exactly the payload the forward desk will need in December.
+    out.sort(key=lambda o: (-(o.get("unfinished_in_latest") or 0),
+                            -(o.get("latest_season") or 0)))
+    kept = 0
+    for row in out:
+        if row.get("latest_season") is None:
+            continue
+        if kept >= max_leagues:
+            row["trimmed"] = True
+            row["note"] = ((row.get("note") + "; " if row.get("note") else "")
+                           + f"beyond max_leagues={max_leagues} after "
+                             "upcoming-first priority sort")
+        else:
+            kept += 1
     return out
 
 
@@ -272,7 +300,7 @@ def capture_current(out_dir: str, season: int = 2026,
         log["darts_discovery"] = darts
         for d in darts:
             latest = d.get("latest_season")
-            if d.get("seasons") and latest:
+            if d.get("seasons") and latest and not d.get("trimmed"):
                 row = capture_season(d["leagueShortcut"], int(latest),
                                      "darts", out_dir, fetch=fetch)
                 log["targets"].append(row)

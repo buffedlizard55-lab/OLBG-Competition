@@ -156,6 +156,43 @@ class TestDiscovery:
                                for o in empties)
         assert all(o.get("season_probes") for o in empties)
 
+    def test_upcoming_leagues_outrank_finished_history(self):
+        """Discovery must prefer a league whose latest season still has
+        unfinished matches (the forward desk's future payload, e.g. "Darts
+        WM 2026") over all-finished 2025 events earlier in the index."""
+        finished_match = {"matchIsFinished": True}
+        upcoming_match = {"matchIsFinished": False}
+        urls = {
+            "https://api.openligadb.de/getavailableleagues": json.dumps([
+                {"leagueId": 1, "leagueShortcut": "OLDDART25",
+                 "leagueName": "Some Finished Darts Event 2025"},
+                {"leagueId": 2, "leagueShortcut": "WMDART26",
+                 "leagueName": "Darts WM 2026"}]),
+        }
+        for shortcut in ("OLDDART25", "WMDART26"):
+            urls[f"https://api.openligadb.de/getavailableseasons/{shortcut}"
+                 ] = "[]"
+            body = [finished_match] * 5 if shortcut == "OLDDART25" \
+                else [upcoming_match] * 5
+            urls[f"https://api.openligadb.de/getmatchdata/{shortcut}/2026"
+                 ] = json.dumps(body)
+            for season in (2025, 2024):
+                urls[f"https://api.openligadb.de/getmatchdata/{shortcut}/"
+                     f"{season}"] = "[]"
+        out = capture.discover_darts_seasons(fetch=fake_fetch(urls),
+                                             this_year=2026, max_leagues=1)
+        wm = next(o for o in out if o["leagueShortcut"] == "WMDART26")
+        old = next(o for o in out if o["leagueShortcut"] == "OLDDART25")
+        assert wm["unfinished_in_latest"] == 5
+        assert old.get("unfinished_in_latest") == 0
+        assert not wm.get("trimmed")
+        assert old.get("trimmed") is True
+        assert "max_leagues" in old.get("note", "")
+        # the kept league is the upcoming one
+        kept = [o for o in out if o.get("latest_season") and not o.get("trimmed")]
+        assert [o["leagueShortcut"] for o in kept] == ["WMDART26"]
+
+
 
 class TestLoadCurrentFixtures:
     def _write(self, tmp_path, name, payload, meta):
