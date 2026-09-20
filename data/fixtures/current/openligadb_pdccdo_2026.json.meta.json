@@ -1,0 +1,16 @@
+{
+  "captured_at_utc": "2026-09-20T19:55:05Z",
+  "collection_mode": "automated_api",
+  "fixture": "openligadb_pdccdo_2026.json",
+  "league_name": "Czech Darts Open 2026",
+  "league_season": 2026,
+  "league_shortcut": "pdccdo",
+  "license_id": "odbl-1.0",
+  "n_finished": 47,
+  "n_matches": 47,
+  "note": "whole-season payload fetched via the permitted automated API (ODbL-1.0); canonical compact JSON, unmodified content",
+  "sha256": "36f420bc4630436d60254939bce6f7414bef86284e59e24e81c545f3fa7a8731",
+  "source_id": "openligadb",
+  "sport": "darts",
+  "url": "https://api.openligadb.de/getmatchdata/pdccdo/2026"
+}

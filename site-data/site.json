@@ -5,7 +5,7 @@
       {
         "anomaly_id": "an-763e7e78dbbcdd279e10",
         "detail": "decisive 'after regulation' entry coexists with an overtime/shootout entry (impossible layering in community-entered source; matchID=76100). Final read via hockey priority AfterPenalties > AfterExtraTime > After90Minutes; flagged for manual review, outcome kept 3-2 (AfterExtraTime)",
-        "detected_at_utc": "2026-09-20T19:51:22Z",
+        "detected_at_utc": "2026-09-20T19:55:08Z",
         "entity_id": "ev-ff0008b0c9aa899d4755",
         "entity_type": "result",
         "kind": "RESULT_KIND_INCONSISTENT",
@@ -18,7 +18,7 @@
       {
         "anomaly_id": "an-8590725575f24e03dba3",
         "detail": "decisive 'after regulation' entry coexists with an overtime/shootout entry (impossible layering in community-entered source; matchID=76273). Final read via hockey priority AfterPenalties > AfterExtraTime > After90Minutes; flagged for manual review, outcome kept 2-1 (AfterExtraTime)",
-        "detected_at_utc": "2026-09-20T19:51:22Z",
+        "detected_at_utc": "2026-09-20T19:55:08Z",
         "entity_id": "ev-c1a1db0ea682db60d797",
         "entity_type": "result",
         "kind": "RESULT_KIND_INCONSISTENT",
@@ -31,7 +31,7 @@
       {
         "anomaly_id": "an-23d18a627ed1aea5b092",
         "detail": "decisive 'after regulation' entry coexists with an overtime/shootout entry (impossible layering in community-entered source; matchID=76409). Final read via hockey priority AfterPenalties > AfterExtraTime > After90Minutes; flagged for manual review, outcome kept 1-2 (AfterExtraTime)",
-        "detected_at_utc": "2026-09-20T19:51:22Z",
+        "detected_at_utc": "2026-09-20T19:55:08Z",
         "entity_id": "ev-78dfc67268398c894ed5",
         "entity_type": "result",
         "kind": "RESULT_KIND_INCONSISTENT",
@@ -44,7 +44,7 @@
       {
         "anomaly_id": "an-28ab36176a0a1f02e8c8",
         "detail": "source left leagueSeason null for matchID 76412 (DEL Eishockey 2024/2025); normalised to 2024 from the payload's unambiguous rows and flagged for manual review",
-        "detected_at_utc": "2026-09-20T19:51:22Z",
+        "detected_at_utc": "2026-09-20T19:55:08Z",
         "entity_id": "ev-3f32836fac8ddfb0bb12",
         "entity_type": "event",
         "kind": "MISSING_METADATA",
@@ -57,7 +57,7 @@
       {
         "anomaly_id": "an-6f494ddd324692776bd3",
         "detail": "decisive 'after regulation' entry coexists with an overtime/shootout entry (impossible layering in community-entered source; matchID=76414). Final read via hockey priority AfterPenalties > AfterExtraTime > After90Minutes; flagged for manual review, outcome kept 5-6 (AfterPenalties)",
-        "detected_at_utc": "2026-09-20T19:51:22Z",
+        "detected_at_utc": "2026-09-20T19:55:08Z",
         "entity_id": "ev-8358bbded1593cbd6ea0",
         "entity_type": "result",
         "kind": "RESULT_KIND_INCONSISTENT",
@@ -70,7 +70,7 @@
       {
         "anomaly_id": "an-870a7d10688c5d15dd0d",
         "detail": "the same result kind appears more than once with conflicting scores (audit 2026-09-20, e.g. PDCPCF 2025 matchID=79962: one real entry plus stale 0-0 duplicates with consecutive resultIDs). The first entry is kept but NOT trusted silently: flagged for manual review against the official source, outcome kept 8-11 (After90Minutes)",
-        "detected_at_utc": "2026-09-20T19:51:22Z",
+        "detected_at_utc": "2026-09-20T19:55:08Z",
         "entity_id": "ev-bcdcfe1fb3d7753beee8",
         "entity_type": "result",
         "kind": "RESULT_KIND_INCONSISTENT",
@@ -83,7 +83,7 @@
       {
         "anomaly_id": "an-0bf555cbbc1c9d39b727",
         "detail": "the same result kind appears more than once with conflicting scores (audit 2026-09-20, e.g. PDCPCF 2025 matchID=80237: one real entry plus stale 0-0 duplicates with consecutive resultIDs). The first entry is kept but NOT trusted silently: flagged for manual review against the official source, outcome kept 5-0 (After90Minutes)",
-        "detected_at_utc": "2026-09-20T19:51:22Z",
+        "detected_at_utc": "2026-09-20T19:55:08Z",
         "entity_id": "ev-d614a2e17776ef1cb0fa",
         "entity_type": "result",
         "kind": "RESULT_KIND_INCONSISTENT",
@@ -98,32 +98,37 @@
   "backtest": {
     "darts-elo-v1": {
       "accuracy": {
-        "accuracy": 0.761905,
+        "accuracy": 0.8125,
         "by_matchday": {
           "1": {
             "accuracy": 1.0,
-            "hits": 6,
-            "n": 6
+            "hits": 10,
+            "n": 10
           },
           "2": {
-            "accuracy": 0.714286,
-            "hits": 5,
-            "n": 7
+            "accuracy": 0.722222,
+            "hits": 13,
+            "n": 18
           },
           "3": {
-            "accuracy": 0.5,
-            "hits": 2,
-            "n": 4
+            "accuracy": 0.666667,
+            "hits": 6,
+            "n": 9
           },
           "4": {
-            "accuracy": 0.5,
-            "hits": 1,
-            "n": 2
+            "accuracy": 1.0,
+            "hits": 3,
+            "n": 3
+          },
+          "5": {
+            "accuracy": 0.75,
+            "hits": 3,
+            "n": 4
           },
           "6": {
             "accuracy": 1.0,
-            "hits": 1,
-            "n": 1
+            "hits": 3,
+            "n": 3
           },
           "7": {
             "accuracy": 1.0,
@@ -277,7 +282,358 @@
           },
           {
             "actual": "home",
-            "brier": 0.2817311932835293,
+            "brier": 0.3140207322881256,
+            "event_id": "ev-0f3abf9ff1568d0815db",
+            "group_order": 1,
+            "hit": true,
+            "result_kind": "After90Minutes",
+            "selection": "home",
+            "single_source_providers": [
+              "openligadb"
+            ],
+            "start_utc": "2026-01-29T19:45:00Z"
+          },
+          {
+            "actual": "home",
+            "brier": 0.291674869566908,
+            "event_id": "ev-aba8f9ed4bd0ca257acc",
+            "group_order": 1,
+            "hit": true,
+            "result_kind": "After90Minutes",
+            "selection": "home",
+            "single_source_providers": [
+              "openligadb"
+            ],
+            "start_utc": "2026-01-29T22:45:00Z"
+          },
+          {
+            "actual": "home",
+            "brier": 0.12984587615039225,
+            "event_id": "ev-869499032299771708fb",
+            "group_order": 1,
+            "hit": true,
+            "result_kind": "After90Minutes",
+            "selection": "home",
+            "single_source_providers": [
+              "openligadb"
+            ],
+            "start_utc": "2026-01-30T21:45:00Z"
+          },
+          {
+            "actual": "home",
+            "brier": 0.14094079010704222,
+            "event_id": "ev-cbdbd56a13f2ff8a0719",
+            "group_order": 2,
+            "hit": true,
+            "result_kind": "After90Minutes",
+            "selection": "home",
+            "single_source_providers": [
+              "openligadb"
+            ],
+            "start_utc": "2026-01-31T20:45:00Z"
+          },
+          {
+            "actual": "home",
+            "brier": 0.27609228105324896,
+            "event_id": "ev-d7c621071c7631dab81d",
+            "group_order": 3,
+            "hit": true,
+            "result_kind": "After90Minutes",
+            "selection": "home",
+            "single_source_providers": [
+              "openligadb"
+            ],
+            "start_utc": "2026-02-01T14:00:00Z"
+          },
+          {
+            "actual": "home",
+            "brier": 0.2107178623154484,
+            "event_id": "ev-6163a458465dbd5c518b",
+            "group_order": 5,
+            "hit": true,
+            "result_kind": "After90Minutes",
+            "selection": "home",
+            "single_source_providers": [
+              "openligadb"
+            ],
+            "start_utc": "2026-02-01T21:00:00Z"
+          },
+          {
+            "actual": "away",
+            "brier": 0.7989032029086072,
+            "event_id": "ev-5500fd11803d09183d5a",
+            "group_order": 2,
+            "hit": false,
+            "result_kind": "After90Minutes",
+            "selection": "home",
+            "single_source_providers": [
+              "openligadb"
+            ],
+            "start_utc": "2026-09-05T12:25:00Z"
+          },
+          {
+            "actual": "home",
+            "brier": 0.239082129649678,
+            "event_id": "ev-f3431ac5fceb14b7af4e",
+            "group_order": 2,
+            "hit": true,
+            "result_kind": "After90Minutes",
+            "selection": "home",
+            "single_source_providers": [
+              "openligadb"
+            ],
+            "start_utc": "2026-09-05T17:00:00Z"
+          },
+          {
+            "actual": "home",
+            "brier": 0.2510198565042225,
+            "event_id": "ev-199bddb4a54f8840667d",
+            "group_order": 2,
+            "hit": true,
+            "result_kind": "After90Minutes",
+            "selection": "home",
+            "single_source_providers": [
+              "openligadb"
+            ],
+            "start_utc": "2026-09-05T18:00:00Z"
+          },
+          {
+            "actual": "home",
+            "brier": 0.12461655869535533,
+            "event_id": "ev-d48149fc49995c75139a",
+            "group_order": 2,
+            "hit": true,
+            "result_kind": "After90Minutes",
+            "selection": "home",
+            "single_source_providers": [
+              "openligadb"
+            ],
+            "start_utc": "2026-09-05T18:25:00Z"
+          },
+          {
+            "actual": "home",
+            "brier": 0.2935046594003497,
+            "event_id": "ev-e1f51ca1ea01a293d75e",
+            "group_order": 2,
+            "hit": true,
+            "result_kind": "After90Minutes",
+            "selection": "home",
+            "single_source_providers": [
+              "openligadb"
+            ],
+            "start_utc": "2026-09-05T19:50:00Z"
+          },
+          {
+            "actual": "home",
+            "brier": 0.19841373147684715,
+            "event_id": "ev-64be186ef388b227140c",
+            "group_order": 3,
+            "hit": true,
+            "result_kind": "After90Minutes",
+            "selection": "home",
+            "single_source_providers": [
+              "openligadb"
+            ],
+            "start_utc": "2026-09-06T11:00:00Z"
+          },
+          {
+            "actual": "away",
+            "brier": 0.8249605984020507,
+            "event_id": "ev-94d6ab16a2843c36338a",
+            "group_order": 3,
+            "hit": false,
+            "result_kind": "After90Minutes",
+            "selection": "home",
+            "single_source_providers": [
+              "openligadb"
+            ],
+            "start_utc": "2026-09-06T11:30:00Z"
+          },
+          {
+            "actual": "home",
+            "brier": 0.2070310409167725,
+            "event_id": "ev-3ec0fe22760ef8df005e",
+            "group_order": 3,
+            "hit": true,
+            "result_kind": "After90Minutes",
+            "selection": "home",
+            "single_source_providers": [
+              "openligadb"
+            ],
+            "start_utc": "2026-09-06T14:30:00Z"
+          },
+          {
+            "actual": "home",
+            "brier": 0.20595630222285785,
+            "event_id": "ev-3966fd98391d55c0a127",
+            "group_order": 4,
+            "hit": true,
+            "result_kind": "After90Minutes",
+            "selection": "home",
+            "single_source_providers": [
+              "openligadb"
+            ],
+            "start_utc": "2026-09-06T17:00:00Z"
+          },
+          {
+            "actual": "away",
+            "brier": 0.15720322404168913,
+            "event_id": "ev-fa58c9658cc2fd184c07",
+            "group_order": 4,
+            "hit": true,
+            "result_kind": "After90Minutes",
+            "selection": "away",
+            "single_source_providers": [
+              "openligadb"
+            ],
+            "start_utc": "2026-09-06T18:30:00Z"
+          },
+          {
+            "actual": "away",
+            "brier": 0.13065686366133902,
+            "event_id": "ev-b09b0fb92b8714bb7a3f",
+            "group_order": 5,
+            "hit": true,
+            "result_kind": "After90Minutes",
+            "selection": "away",
+            "single_source_providers": [
+              "openligadb"
+            ],
+            "start_utc": "2026-09-06T19:30:00Z"
+          },
+          {
+            "actual": "away",
+            "brier": 0.2014557489734122,
+            "event_id": "ev-2be38046027f47bcbe01",
+            "group_order": 6,
+            "hit": true,
+            "result_kind": "After90Minutes",
+            "selection": "away",
+            "single_source_providers": [
+              "openligadb"
+            ],
+            "start_utc": "2026-09-06T20:15:00Z"
+          },
+          {
+            "actual": "away",
+            "brier": 0.7321721017232665,
+            "event_id": "ev-829cd1d049d592b7b6f0",
+            "group_order": 2,
+            "hit": false,
+            "result_kind": "After90Minutes",
+            "selection": "home",
+            "single_source_providers": [
+              "openligadb"
+            ],
+            "start_utc": "2026-09-12T17:00:00Z"
+          },
+          {
+            "actual": "home",
+            "brier": 0.20440824789896544,
+            "event_id": "ev-bb115db369912389eb63",
+            "group_order": 2,
+            "hit": true,
+            "result_kind": "After90Minutes",
+            "selection": "home",
+            "single_source_providers": [
+              "openligadb"
+            ],
+            "start_utc": "2026-09-12T17:30:00Z"
+          },
+          {
+            "actual": "home",
+            "brier": 0.3183998351167627,
+            "event_id": "ev-3fc7186f199545f28ee4",
+            "group_order": 2,
+            "hit": true,
+            "result_kind": "After90Minutes",
+            "selection": "home",
+            "single_source_providers": [
+              "openligadb"
+            ],
+            "start_utc": "2026-09-12T18:30:00Z"
+          },
+          {
+            "actual": "away",
+            "brier": 0.8908903904366355,
+            "event_id": "ev-eec76f9af27af58e4f9f",
+            "group_order": 3,
+            "hit": false,
+            "result_kind": "After90Minutes",
+            "selection": "home",
+            "single_source_providers": [
+              "openligadb"
+            ],
+            "start_utc": "2026-09-13T12:30:00Z"
+          },
+          {
+            "actual": "home",
+            "brier": 0.3051443110619765,
+            "event_id": "ev-a0e6445ae5b5709f781f",
+            "group_order": 3,
+            "hit": true,
+            "result_kind": "After90Minutes",
+            "selection": "home",
+            "single_source_providers": [
+              "openligadb"
+            ],
+            "start_utc": "2026-09-13T13:00:00Z"
+          },
+          {
+            "actual": "away",
+            "brier": 0.7419553362642637,
+            "event_id": "ev-3048c99063db9e0d7122",
+            "group_order": 5,
+            "hit": false,
+            "result_kind": "After90Minutes",
+            "selection": "home",
+            "single_source_providers": [
+              "openligadb"
+            ],
+            "start_utc": "2026-09-13T19:00:00Z"
+          },
+          {
+            "actual": "home",
+            "brier": 0.3065038434937747,
+            "event_id": "ev-76fc87f4ef86c67459eb",
+            "group_order": 5,
+            "hit": true,
+            "result_kind": "After90Minutes",
+            "selection": "home",
+            "single_source_providers": [
+              "openligadb"
+            ],
+            "start_utc": "2026-09-13T19:30:00Z"
+          },
+          {
+            "actual": "away",
+            "brier": 0.317276749302439,
+            "event_id": "ev-9c06932e6b6fd4d32554",
+            "group_order": 6,
+            "hit": true,
+            "result_kind": "After90Minutes",
+            "selection": "away",
+            "single_source_providers": [
+              "openligadb"
+            ],
+            "start_utc": "2026-09-13T20:30:00Z"
+          },
+          {
+            "actual": "home",
+            "brier": 0.2977043146612094,
+            "event_id": "ev-05eb5ac80f4756fd5c53",
+            "group_order": 1,
+            "hit": true,
+            "result_kind": "After90Minutes",
+            "selection": "home",
+            "single_source_providers": [
+              "openligadb"
+            ],
+            "start_utc": "2026-09-17T19:30:00Z"
+          },
+          {
+            "actual": "home",
+            "brier": 0.2589433005465421,
             "event_id": "ev-2aca6c1093e8f9f33b04",
             "group_order": 1,
             "hit": true,
@@ -290,7 +646,7 @@
           },
           {
             "actual": "home",
-            "brier": 0.26035569603957964,
+            "brier": 0.22000941969534152,
             "event_id": "ev-537b2ac641722682d942",
             "group_order": 1,
             "hit": true,
@@ -303,7 +659,7 @@
           },
           {
             "actual": "home",
-            "brier": 0.1876323039492978,
+            "brier": 0.13901492756538555,
             "event_id": "ev-7269ac3ac59cc8438989",
             "group_order": 1,
             "hit": true,
@@ -316,7 +672,7 @@
           },
           {
             "actual": "home",
-            "brier": 0.31740503943683507,
+            "brier": 0.24135718984126028,
             "event_id": "ev-f6da7a85e36ea0ae5781",
             "group_order": 2,
             "hit": true,
@@ -328,8 +684,21 @@
             "start_utc": "2026-09-19T13:00:00Z"
           },
           {
+            "actual": "away",
+            "brier": 0.9310494792059439,
+            "event_id": "ev-1795b1b2ffc4ad34b370",
+            "group_order": 2,
+            "hit": false,
+            "result_kind": "After90Minutes",
+            "selection": "home",
+            "single_source_providers": [
+              "openligadb"
+            ],
+            "start_utc": "2026-09-19T14:00:00Z"
+          },
+          {
             "actual": "home",
-            "brier": 0.2668130188463355,
+            "brier": 0.22880599552767988,
             "event_id": "ev-b9cca57e0bccf1f0ddea",
             "group_order": 2,
             "hit": true,
@@ -342,7 +711,20 @@
           },
           {
             "actual": "home",
-            "brier": 0.23881342952352266,
+            "brier": 0.20090911968005193,
+            "event_id": "ev-70ce8613496bf3541c63",
+            "group_order": 2,
+            "hit": true,
+            "result_kind": "After90Minutes",
+            "selection": "home",
+            "single_source_providers": [
+              "openligadb"
+            ],
+            "start_utc": "2026-09-19T19:00:00Z"
+          },
+          {
+            "actual": "home",
+            "brier": 0.12745887391791322,
             "event_id": "ev-11c5f6345af80114475c",
             "group_order": 2,
             "hit": true,
@@ -354,21 +736,8 @@
             "start_utc": "2026-09-19T20:00:00Z"
           },
           {
-            "actual": "home",
-            "brier": 0.7523335916716652,
-            "event_id": "ev-e02c30e38a95e8ae731e",
-            "group_order": 3,
-            "hit": false,
-            "result_kind": "After90Minutes",
-            "selection": "away",
-            "single_source_providers": [
-              "openligadb"
-            ],
-            "start_utc": "2026-09-20T11:15:00Z"
-          },
-          {
             "actual": "away",
-            "brier": 0.30303434158138826,
+            "brier": 0.21605404737490647,
             "event_id": "ev-f99e3f25e3872be14be2",
             "group_order": 3,
             "hit": true,
@@ -381,7 +750,7 @@
           },
           {
             "actual": "away",
-            "brier": 0.8308049106240579,
+            "brier": 1.0516106706851627,
             "event_id": "ev-48b574412d0c94c3c111",
             "group_order": 3,
             "hit": false,
@@ -391,40 +760,27 @@
               "openligadb"
             ],
             "start_utc": "2026-09-20T14:15:00Z"
-          },
-          {
-            "actual": "home",
-            "brier": 0.7764987422458957,
-            "event_id": "ev-b775f0610c27f52c18a2",
-            "group_order": 4,
-            "hit": false,
-            "result_kind": "After90Minutes",
-            "selection": "away",
-            "single_source_providers": [
-              "openligadb"
-            ],
-            "start_utc": "2026-09-20T17:00:00Z"
           }
         ],
-        "hits": 16,
-        "mean_brier": 0.392184,
-        "n_graded": 21,
+        "hits": 39,
+        "mean_brier": 0.348879,
+        "n_graded": 48,
         "note": "Hit rate and Brier score against stored single-source results (identity 'probable' until an independent cross-check is attached). Not PnL: no entry price exists for this sport, so profit cannot be computed and is shown as unavailable, never as zero.",
         "sport": "darts",
         "ungraded": []
       },
-      "bets": 21,
+      "bets": 48,
       "label": "darts-pilot",
       "leak_violations": [],
       "max_drawdown_units": null,
       "pnl_available": false,
-      "predictions": 21,
+      "predictions": 48,
       "profit_ci95": null,
       "profit_units": null,
       "roi": null,
-      "sample_warning": "Prediction-only pilot: PDC darts has no permissioned odds path, so profit is unavailable (never shown as zero). 21 graded predictions is far too few to claim skill.",
+      "sample_warning": "Prediction-only pilot: PDC darts has no permissioned odds path, so profit is unavailable (never shown as zero). 48 graded predictions is far too few to claim skill.",
       "settled": 0,
-      "skipped": 277,
+      "skipped": 375,
       "sport": "darts",
       "strike_rate": null,
       "turnover_units": null,
@@ -3761,6 +4117,546 @@
         "tip_id": "bt-tip-0c58f3e58365e2e7d21e"
       },
       {
+        "cutoff_at_utc": "2026-01-29T19:15:00Z",
+        "entrant": "darts-elo-v1",
+        "event": "Gary Anderson v Niels Zonneveld",
+        "event_id": "ev-0f3abf9ff1568d0815db",
+        "event_start_utc": "2026-01-29T19:45:00Z",
+        "market": "match_winner_3way",
+        "notes": "prediction-only walk-forward darts-pilot: no permissioned odds path for this sport; PnL not computable and not zero",
+        "odds": null,
+        "odds_source": null,
+        "pnl_units": null,
+        "published_at_utc": "2026-01-29T19:15:00Z",
+        "selection": "Gary Anderson",
+        "settlement": null,
+        "source_url": "https://api.openligadb.de/getmatchdata/PDCWOMA/2026/80969",
+        "sport": "darts",
+        "stake_units": 1.0,
+        "status": "unsettleable",
+        "tip_id": "bt-tip-eef118666719a0d21957"
+      },
+      {
+        "cutoff_at_utc": "2026-01-29T22:15:00Z",
+        "entrant": "darts-elo-v1",
+        "event": "Gian van Veen v Ryan Joyce",
+        "event_id": "ev-aba8f9ed4bd0ca257acc",
+        "event_start_utc": "2026-01-29T22:45:00Z",
+        "market": "match_winner_3way",
+        "notes": "prediction-only walk-forward darts-pilot: no permissioned odds path for this sport; PnL not computable and not zero",
+        "odds": null,
+        "odds_source": null,
+        "pnl_units": null,
+        "published_at_utc": "2026-01-29T22:15:00Z",
+        "selection": "Gian van Veen",
+        "settlement": null,
+        "source_url": "https://api.openligadb.de/getmatchdata/PDCWOMA/2026/80967",
+        "sport": "darts",
+        "stake_units": 1.0,
+        "status": "unsettleable",
+        "tip_id": "bt-tip-0f1bec97a75d2a866bee"
+      },
+      {
+        "cutoff_at_utc": "2026-01-30T21:15:00Z",
+        "entrant": "darts-elo-v1",
+        "event": "Luke Littler v Mike De Decker",
+        "event_id": "ev-869499032299771708fb",
+        "event_start_utc": "2026-01-30T21:45:00Z",
+        "market": "match_winner_3way",
+        "notes": "prediction-only walk-forward darts-pilot: no permissioned odds path for this sport; PnL not computable and not zero",
+        "odds": null,
+        "odds_source": null,
+        "pnl_units": null,
+        "published_at_utc": "2026-01-30T21:15:00Z",
+        "selection": "Luke Littler",
+        "settlement": null,
+        "source_url": "https://api.openligadb.de/getmatchdata/PDCWOMA/2026/80971",
+        "sport": "darts",
+        "stake_units": 1.0,
+        "status": "unsettleable",
+        "tip_id": "bt-tip-88fdf67193f44c68dcbb"
+      },
+      {
+        "cutoff_at_utc": "2026-01-31T20:15:00Z",
+        "entrant": "darts-elo-v1",
+        "event": "Luke Littler v Ross Smith",
+        "event_id": "ev-cbdbd56a13f2ff8a0719",
+        "event_start_utc": "2026-01-31T20:45:00Z",
+        "market": "match_winner_3way",
+        "notes": "prediction-only walk-forward darts-pilot: no permissioned odds path for this sport; PnL not computable and not zero",
+        "odds": null,
+        "odds_source": null,
+        "pnl_units": null,
+        "published_at_utc": "2026-01-31T20:15:00Z",
+        "selection": "Luke Littler",
+        "settlement": null,
+        "source_url": "https://api.openligadb.de/getmatchdata/PDCWOMA/2026/81046",
+        "sport": "darts",
+        "stake_units": 1.0,
+        "status": "unsettleable",
+        "tip_id": "bt-tip-bd6056cdbc24b62d45c3"
+      },
+      {
+        "cutoff_at_utc": "2026-02-01T13:30:00Z",
+        "entrant": "darts-elo-v1",
+        "event": "Luke Littler v Josh Rock",
+        "event_id": "ev-d7c621071c7631dab81d",
+        "event_start_utc": "2026-02-01T14:00:00Z",
+        "market": "match_winner_3way",
+        "notes": "prediction-only walk-forward darts-pilot: no permissioned odds path for this sport; PnL not computable and not zero",
+        "odds": null,
+        "odds_source": null,
+        "pnl_units": null,
+        "published_at_utc": "2026-02-01T13:30:00Z",
+        "selection": "Luke Littler",
+        "settlement": null,
+        "source_url": "https://api.openligadb.de/getmatchdata/PDCWOMA/2026/81049",
+        "sport": "darts",
+        "stake_units": 1.0,
+        "status": "unsettleable",
+        "tip_id": "bt-tip-78e0155368819735d585"
+      },
+      {
+        "cutoff_at_utc": "2026-02-01T20:30:00Z",
+        "entrant": "darts-elo-v1",
+        "event": "Luke Littler v Luke Humphries",
+        "event_id": "ev-6163a458465dbd5c518b",
+        "event_start_utc": "2026-02-01T21:00:00Z",
+        "market": "match_winner_3way",
+        "notes": "prediction-only walk-forward darts-pilot: no permissioned odds path for this sport; PnL not computable and not zero",
+        "odds": null,
+        "odds_source": null,
+        "pnl_units": null,
+        "published_at_utc": "2026-02-01T20:30:00Z",
+        "selection": "Luke Littler",
+        "settlement": null,
+        "source_url": "https://api.openligadb.de/getmatchdata/PDCWOMA/2026/81054",
+        "sport": "darts",
+        "stake_units": 1.0,
+        "status": "unsettleable",
+        "tip_id": "bt-tip-d290b0761faf7540c8be"
+      },
+      {
+        "cutoff_at_utc": "2026-09-05T11:55:00Z",
+        "entrant": "darts-elo-v1",
+        "event": "Gary Anderson v Cameron Menzies",
+        "event_id": "ev-5500fd11803d09183d5a",
+        "event_start_utc": "2026-09-05T12:25:00Z",
+        "market": "match_winner_3way",
+        "notes": "prediction-only walk-forward darts-pilot: no permissioned odds path for this sport; PnL not computable and not zero",
+        "odds": null,
+        "odds_source": null,
+        "pnl_units": null,
+        "published_at_utc": "2026-09-05T11:55:00Z",
+        "selection": "Gary Anderson",
+        "settlement": null,
+        "source_url": "https://api.openligadb.de/getmatchdata/PDCCDO/2026/87578",
+        "sport": "darts",
+        "stake_units": 1.0,
+        "status": "unsettleable",
+        "tip_id": "bt-tip-d03f53198b8b535a5d21"
+      },
+      {
+        "cutoff_at_utc": "2026-09-05T16:30:00Z",
+        "entrant": "darts-elo-v1",
+        "event": "Gian van Veen v Jeffrey de Graaf",
+        "event_id": "ev-f3431ac5fceb14b7af4e",
+        "event_start_utc": "2026-09-05T17:00:00Z",
+        "market": "match_winner_3way",
+        "notes": "prediction-only walk-forward darts-pilot: no permissioned odds path for this sport; PnL not computable and not zero",
+        "odds": null,
+        "odds_source": null,
+        "pnl_units": null,
+        "published_at_utc": "2026-09-05T16:30:00Z",
+        "selection": "Gian van Veen",
+        "settlement": null,
+        "source_url": "https://api.openligadb.de/getmatchdata/PDCCDO/2026/87592",
+        "sport": "darts",
+        "stake_units": 1.0,
+        "status": "unsettleable",
+        "tip_id": "bt-tip-1b549999873f4a4dc985"
+      },
+      {
+        "cutoff_at_utc": "2026-09-05T17:30:00Z",
+        "entrant": "darts-elo-v1",
+        "event": "Gerwyn Price v Callan Rydz",
+        "event_id": "ev-199bddb4a54f8840667d",
+        "event_start_utc": "2026-09-05T18:00:00Z",
+        "market": "match_winner_3way",
+        "notes": "prediction-only walk-forward darts-pilot: no permissioned odds path for this sport; PnL not computable and not zero",
+        "odds": null,
+        "odds_source": null,
+        "pnl_units": null,
+        "published_at_utc": "2026-09-05T17:30:00Z",
+        "selection": "Gerwyn Price",
+        "settlement": null,
+        "source_url": "https://api.openligadb.de/getmatchdata/PDCCDO/2026/87583",
+        "sport": "darts",
+        "stake_units": 1.0,
+        "status": "unsettleable",
+        "tip_id": "bt-tip-12c75a1e8deb9e2402d1"
+      },
+      {
+        "cutoff_at_utc": "2026-09-05T17:55:00Z",
+        "entrant": "darts-elo-v1",
+        "event": "Luke Littler v Niko Springer",
+        "event_id": "ev-d48149fc49995c75139a",
+        "event_start_utc": "2026-09-05T18:25:00Z",
+        "market": "match_winner_3way",
+        "notes": "prediction-only walk-forward darts-pilot: no permissioned odds path for this sport; PnL not computable and not zero",
+        "odds": null,
+        "odds_source": null,
+        "pnl_units": null,
+        "published_at_utc": "2026-09-05T17:55:00Z",
+        "selection": "Luke Littler",
+        "settlement": null,
+        "source_url": "https://api.openligadb.de/getmatchdata/PDCCDO/2026/87581",
+        "sport": "darts",
+        "stake_units": 1.0,
+        "status": "unsettleable",
+        "tip_id": "bt-tip-96913906725fb1a2c05c"
+      },
+      {
+        "cutoff_at_utc": "2026-09-05T19:20:00Z",
+        "entrant": "darts-elo-v1",
+        "event": "Josh Rock v Ryan Joyce",
+        "event_id": "ev-e1f51ca1ea01a293d75e",
+        "event_start_utc": "2026-09-05T19:50:00Z",
+        "market": "match_winner_3way",
+        "notes": "prediction-only walk-forward darts-pilot: no permissioned odds path for this sport; PnL not computable and not zero",
+        "odds": null,
+        "odds_source": null,
+        "pnl_units": null,
+        "published_at_utc": "2026-09-05T19:20:00Z",
+        "selection": "Josh Rock",
+        "settlement": null,
+        "source_url": "https://api.openligadb.de/getmatchdata/PDCCDO/2026/87582",
+        "sport": "darts",
+        "stake_units": 1.0,
+        "status": "unsettleable",
+        "tip_id": "bt-tip-0aa83e0255a00f05af2f"
+      },
+      {
+        "cutoff_at_utc": "2026-09-06T10:30:00Z",
+        "entrant": "darts-elo-v1",
+        "event": "Gerwyn Price v Cameron Menzies",
+        "event_id": "ev-64be186ef388b227140c",
+        "event_start_utc": "2026-09-06T11:00:00Z",
+        "market": "match_winner_3way",
+        "notes": "prediction-only walk-forward darts-pilot: no permissioned odds path for this sport; PnL not computable and not zero",
+        "odds": null,
+        "odds_source": null,
+        "pnl_units": null,
+        "published_at_utc": "2026-09-06T10:30:00Z",
+        "selection": "Gerwyn Price",
+        "settlement": null,
+        "source_url": "https://api.openligadb.de/getmatchdata/PDCCDO/2026/87636",
+        "sport": "darts",
+        "stake_units": 1.0,
+        "status": "unsettleable",
+        "tip_id": "bt-tip-c3f5bd0ba79166a7fb60"
+      },
+      {
+        "cutoff_at_utc": "2026-09-06T11:00:00Z",
+        "entrant": "darts-elo-v1",
+        "event": "Gian van Veen v Ross Smith",
+        "event_id": "ev-94d6ab16a2843c36338a",
+        "event_start_utc": "2026-09-06T11:30:00Z",
+        "market": "match_winner_3way",
+        "notes": "prediction-only walk-forward darts-pilot: no permissioned odds path for this sport; PnL not computable and not zero",
+        "odds": null,
+        "odds_source": null,
+        "pnl_units": null,
+        "published_at_utc": "2026-09-06T11:00:00Z",
+        "selection": "Gian van Veen",
+        "settlement": null,
+        "source_url": "https://api.openligadb.de/getmatchdata/PDCCDO/2026/87634",
+        "sport": "darts",
+        "stake_units": 1.0,
+        "status": "unsettleable",
+        "tip_id": "bt-tip-c9bc53a155ef5659199d"
+      },
+      {
+        "cutoff_at_utc": "2026-09-06T14:00:00Z",
+        "entrant": "darts-elo-v1",
+        "event": "Luke Littler v Krzysztof Ratajski",
+        "event_id": "ev-3ec0fe22760ef8df005e",
+        "event_start_utc": "2026-09-06T14:30:00Z",
+        "market": "match_winner_3way",
+        "notes": "prediction-only walk-forward darts-pilot: no permissioned odds path for this sport; PnL not computable and not zero",
+        "odds": null,
+        "odds_source": null,
+        "pnl_units": null,
+        "published_at_utc": "2026-09-06T14:00:00Z",
+        "selection": "Luke Littler",
+        "settlement": null,
+        "source_url": "https://api.openligadb.de/getmatchdata/PDCCDO/2026/87637",
+        "sport": "darts",
+        "stake_units": 1.0,
+        "status": "unsettleable",
+        "tip_id": "bt-tip-116b6766c97151ce76dc"
+      },
+      {
+        "cutoff_at_utc": "2026-09-06T16:30:00Z",
+        "entrant": "darts-elo-v1",
+        "event": "Gerwyn Price v Ross Smith",
+        "event_id": "ev-3966fd98391d55c0a127",
+        "event_start_utc": "2026-09-06T17:00:00Z",
+        "market": "match_winner_3way",
+        "notes": "prediction-only walk-forward darts-pilot: no permissioned odds path for this sport; PnL not computable and not zero",
+        "odds": null,
+        "odds_source": null,
+        "pnl_units": null,
+        "published_at_utc": "2026-09-06T16:30:00Z",
+        "selection": "Gerwyn Price",
+        "settlement": null,
+        "source_url": "https://api.openligadb.de/getmatchdata/PDCCDO/2026/87642",
+        "sport": "darts",
+        "stake_units": 1.0,
+        "status": "unsettleable",
+        "tip_id": "bt-tip-dd3892b517b194fd0463"
+      },
+      {
+        "cutoff_at_utc": "2026-09-06T18:00:00Z",
+        "entrant": "darts-elo-v1",
+        "event": "Danny Noppert v Luke Littler",
+        "event_id": "ev-fa58c9658cc2fd184c07",
+        "event_start_utc": "2026-09-06T18:30:00Z",
+        "market": "match_winner_3way",
+        "notes": "prediction-only walk-forward darts-pilot: no permissioned odds path for this sport; PnL not computable and not zero",
+        "odds": null,
+        "odds_source": null,
+        "pnl_units": null,
+        "published_at_utc": "2026-09-06T18:00:00Z",
+        "selection": "Luke Littler",
+        "settlement": null,
+        "source_url": "https://api.openligadb.de/getmatchdata/PDCCDO/2026/87645",
+        "sport": "darts",
+        "stake_units": 1.0,
+        "status": "unsettleable",
+        "tip_id": "bt-tip-19f8b2216ca38c19c349"
+      },
+      {
+        "cutoff_at_utc": "2026-09-06T19:00:00Z",
+        "entrant": "darts-elo-v1",
+        "event": "Michael van Gerwen v Luke Littler",
+        "event_id": "ev-b09b0fb92b8714bb7a3f",
+        "event_start_utc": "2026-09-06T19:30:00Z",
+        "market": "match_winner_3way",
+        "notes": "prediction-only walk-forward darts-pilot: no permissioned odds path for this sport; PnL not computable and not zero",
+        "odds": null,
+        "odds_source": null,
+        "pnl_units": null,
+        "published_at_utc": "2026-09-06T19:00:00Z",
+        "selection": "Luke Littler",
+        "settlement": null,
+        "source_url": "https://api.openligadb.de/getmatchdata/PDCCDO/2026/87647",
+        "sport": "darts",
+        "stake_units": 1.0,
+        "status": "unsettleable",
+        "tip_id": "bt-tip-04a03927cdd97f661bc0"
+      },
+      {
+        "cutoff_at_utc": "2026-09-06T19:45:00Z",
+        "entrant": "darts-elo-v1",
+        "event": "Luke Humphries v Luke Littler",
+        "event_id": "ev-2be38046027f47bcbe01",
+        "event_start_utc": "2026-09-06T20:15:00Z",
+        "market": "match_winner_3way",
+        "notes": "prediction-only walk-forward darts-pilot: no permissioned odds path for this sport; PnL not computable and not zero",
+        "odds": null,
+        "odds_source": null,
+        "pnl_units": null,
+        "published_at_utc": "2026-09-06T19:45:00Z",
+        "selection": "Luke Littler",
+        "settlement": null,
+        "source_url": "https://api.openligadb.de/getmatchdata/PDCCDO/2026/87648",
+        "sport": "darts",
+        "stake_units": 1.0,
+        "status": "unsettleable",
+        "tip_id": "bt-tip-fc9495991ccc48c2504d"
+      },
+      {
+        "cutoff_at_utc": "2026-09-12T16:30:00Z",
+        "entrant": "darts-elo-v1",
+        "event": "Josh Rock v Ryan Joyce",
+        "event_id": "ev-829cd1d049d592b7b6f0",
+        "event_start_utc": "2026-09-12T17:00:00Z",
+        "market": "match_winner_3way",
+        "notes": "prediction-only walk-forward darts-pilot: no permissioned odds path for this sport; PnL not computable and not zero",
+        "odds": null,
+        "odds_source": null,
+        "pnl_units": null,
+        "published_at_utc": "2026-09-12T16:30:00Z",
+        "selection": "Josh Rock",
+        "settlement": null,
+        "source_url": "https://api.openligadb.de/getmatchdata/PDCFDT/2026/87672",
+        "sport": "darts",
+        "stake_units": 1.0,
+        "status": "unsettleable",
+        "tip_id": "bt-tip-89325bf9b62c679e3314"
+      },
+      {
+        "cutoff_at_utc": "2026-09-12T17:00:00Z",
+        "entrant": "darts-elo-v1",
+        "event": "Gerwyn Price v Bradley Brooks",
+        "event_id": "ev-bb115db369912389eb63",
+        "event_start_utc": "2026-09-12T17:30:00Z",
+        "market": "match_winner_3way",
+        "notes": "prediction-only walk-forward darts-pilot: no permissioned odds path for this sport; PnL not computable and not zero",
+        "odds": null,
+        "odds_source": null,
+        "pnl_units": null,
+        "published_at_utc": "2026-09-12T17:00:00Z",
+        "selection": "Gerwyn Price",
+        "settlement": null,
+        "source_url": "https://api.openligadb.de/getmatchdata/PDCFDT/2026/87673",
+        "sport": "darts",
+        "stake_units": 1.0,
+        "status": "unsettleable",
+        "tip_id": "bt-tip-4d7ce9cb2f4b2396839a"
+      },
+      {
+        "cutoff_at_utc": "2026-09-12T18:00:00Z",
+        "entrant": "darts-elo-v1",
+        "event": "Gian van Veen v Gabriel Clemens",
+        "event_id": "ev-3fc7186f199545f28ee4",
+        "event_start_utc": "2026-09-12T18:30:00Z",
+        "market": "match_winner_3way",
+        "notes": "prediction-only walk-forward darts-pilot: no permissioned odds path for this sport; PnL not computable and not zero",
+        "odds": null,
+        "odds_source": null,
+        "pnl_units": null,
+        "published_at_utc": "2026-09-12T18:00:00Z",
+        "selection": "Gian van Veen",
+        "settlement": null,
+        "source_url": "https://api.openligadb.de/getmatchdata/PDCFDT/2026/87677",
+        "sport": "darts",
+        "stake_units": 1.0,
+        "status": "unsettleable",
+        "tip_id": "bt-tip-82df234845585e64b778"
+      },
+      {
+        "cutoff_at_utc": "2026-09-13T12:00:00Z",
+        "entrant": "darts-elo-v1",
+        "event": "Gerwyn Price v Ross Smith",
+        "event_id": "ev-eec76f9af27af58e4f9f",
+        "event_start_utc": "2026-09-13T12:30:00Z",
+        "market": "match_winner_3way",
+        "notes": "prediction-only walk-forward darts-pilot: no permissioned odds path for this sport; PnL not computable and not zero",
+        "odds": null,
+        "odds_source": null,
+        "pnl_units": null,
+        "published_at_utc": "2026-09-13T12:00:00Z",
+        "selection": "Gerwyn Price",
+        "settlement": null,
+        "source_url": "https://api.openligadb.de/getmatchdata/PDCFDT/2026/87714",
+        "sport": "darts",
+        "stake_units": 1.0,
+        "status": "unsettleable",
+        "tip_id": "bt-tip-94ec5ecb677361b8c634"
+      },
+      {
+        "cutoff_at_utc": "2026-09-13T12:30:00Z",
+        "entrant": "darts-elo-v1",
+        "event": "James Wade v Rob Cross",
+        "event_id": "ev-a0e6445ae5b5709f781f",
+        "event_start_utc": "2026-09-13T13:00:00Z",
+        "market": "match_winner_3way",
+        "notes": "prediction-only walk-forward darts-pilot: no permissioned odds path for this sport; PnL not computable and not zero",
+        "odds": null,
+        "odds_source": null,
+        "pnl_units": null,
+        "published_at_utc": "2026-09-13T12:30:00Z",
+        "selection": "James Wade",
+        "settlement": null,
+        "source_url": "https://api.openligadb.de/getmatchdata/PDCFDT/2026/87715",
+        "sport": "darts",
+        "stake_units": 1.0,
+        "status": "unsettleable",
+        "tip_id": "bt-tip-f0dcd23abf707e28e45b"
+      },
+      {
+        "cutoff_at_utc": "2026-09-13T18:30:00Z",
+        "entrant": "darts-elo-v1",
+        "event": "Gian van Veen v Ross Smith",
+        "event_id": "ev-3048c99063db9e0d7122",
+        "event_start_utc": "2026-09-13T19:00:00Z",
+        "market": "match_winner_3way",
+        "notes": "prediction-only walk-forward darts-pilot: no permissioned odds path for this sport; PnL not computable and not zero",
+        "odds": null,
+        "odds_source": null,
+        "pnl_units": null,
+        "published_at_utc": "2026-09-13T18:30:00Z",
+        "selection": "Gian van Veen",
+        "settlement": null,
+        "source_url": "https://api.openligadb.de/getmatchdata/PDCFDT/2026/87724",
+        "sport": "darts",
+        "stake_units": 1.0,
+        "status": "unsettleable",
+        "tip_id": "bt-tip-d849a58854763f3b2e00"
+      },
+      {
+        "cutoff_at_utc": "2026-09-13T19:00:00Z",
+        "entrant": "darts-elo-v1",
+        "event": "James Wade v Damon Heta",
+        "event_id": "ev-76fc87f4ef86c67459eb",
+        "event_start_utc": "2026-09-13T19:30:00Z",
+        "market": "match_winner_3way",
+        "notes": "prediction-only walk-forward darts-pilot: no permissioned odds path for this sport; PnL not computable and not zero",
+        "odds": null,
+        "odds_source": null,
+        "pnl_units": null,
+        "published_at_utc": "2026-09-13T19:00:00Z",
+        "selection": "James Wade",
+        "settlement": null,
+        "source_url": "https://api.openligadb.de/getmatchdata/PDCFDT/2026/87725",
+        "sport": "darts",
+        "stake_units": 1.0,
+        "status": "unsettleable",
+        "tip_id": "bt-tip-3e5687c299c511db7b3a"
+      },
+      {
+        "cutoff_at_utc": "2026-09-13T20:00:00Z",
+        "entrant": "darts-elo-v1",
+        "event": "Ross Smith v James Wade",
+        "event_id": "ev-9c06932e6b6fd4d32554",
+        "event_start_utc": "2026-09-13T20:30:00Z",
+        "market": "match_winner_3way",
+        "notes": "prediction-only walk-forward darts-pilot: no permissioned odds path for this sport; PnL not computable and not zero",
+        "odds": null,
+        "odds_source": null,
+        "pnl_units": null,
+        "published_at_utc": "2026-09-13T20:00:00Z",
+        "selection": "James Wade",
+        "settlement": null,
+        "source_url": "https://api.openligadb.de/getmatchdata/PDCFDT/2026/87726",
+        "sport": "darts",
+        "stake_units": 1.0,
+        "status": "unsettleable",
+        "tip_id": "bt-tip-3a0494bc653ac1ca2155"
+      },
+      {
+        "cutoff_at_utc": "2026-09-17T19:00:00Z",
+        "entrant": "darts-elo-v1",
+        "event": "Luke Humphries v Jermaine Wattimena",
+        "event_id": "ev-05eb5ac80f4756fd5c53",
+        "event_start_utc": "2026-09-17T19:30:00Z",
+        "market": "match_winner_3way",
+        "notes": "prediction-only walk-forward darts-pilot: no permissioned odds path for this sport; PnL not computable and not zero",
+        "odds": null,
+        "odds_source": null,
+        "pnl_units": null,
+        "published_at_utc": "2026-09-17T19:00:00Z",
+        "selection": "Luke Humphries",
+        "settlement": null,
+        "source_url": "https://api.openligadb.de/getmatchdata/PDCWSDF/2026/87732",
+        "sport": "darts",
+        "stake_units": 1.0,
+        "status": "unsettleable",
+        "tip_id": "bt-tip-363021e250c0c4e88d86"
+      },
+      {
         "cutoff_at_utc": "2026-09-18T18:30:00Z",
         "entrant": "darts-elo-v1",
         "event": "James Wade v Damon Heta",
@@ -3859,6 +4755,26 @@
         "stake_units": 1.0,
         "status": "pending",
         "tip_id": "tip-olbg-53a0df1ca57c79febc72"
+      },
+      {
+        "cutoff_at_utc": "2026-09-19T13:30:00Z",
+        "entrant": "darts-elo-v1",
+        "event": "Luke Humphries v Dirk van Duijvenbode",
+        "event_id": "ev-1795b1b2ffc4ad34b370",
+        "event_start_utc": "2026-09-19T14:00:00Z",
+        "market": "match_winner_3way",
+        "notes": "prediction-only walk-forward darts-pilot: no permissioned odds path for this sport; PnL not computable and not zero",
+        "odds": null,
+        "odds_source": null,
+        "pnl_units": null,
+        "published_at_utc": "2026-09-19T13:30:00Z",
+        "selection": "Luke Humphries",
+        "settlement": null,
+        "source_url": "https://api.openligadb.de/getmatchdata/PDCWSDF/2026/87906",
+        "sport": "darts",
+        "stake_units": 1.0,
+        "status": "unsettleable",
+        "tip_id": "bt-tip-9cedc97d39fafa9cd745"
       },
       {
         "cutoff_at_utc": "2026-09-19T00:00:00Z",
@@ -4021,6 +4937,26 @@
         "tip_id": "bt-tip-3d4310f6c6f77e90bf76"
       },
       {
+        "cutoff_at_utc": "2026-09-19T18:30:00Z",
+        "entrant": "darts-elo-v1",
+        "event": "James Wade v Wessel Nijman",
+        "event_id": "ev-70ce8613496bf3541c63",
+        "event_start_utc": "2026-09-19T19:00:00Z",
+        "market": "match_winner_3way",
+        "notes": "prediction-only walk-forward darts-pilot: no permissioned odds path for this sport; PnL not computable and not zero",
+        "odds": null,
+        "odds_source": null,
+        "pnl_units": null,
+        "published_at_utc": "2026-09-19T18:30:00Z",
+        "selection": "James Wade",
+        "settlement": null,
+        "source_url": "https://api.openligadb.de/getmatchdata/PDCWSDF/2026/87907",
+        "sport": "darts",
+        "stake_units": 1.0,
+        "status": "unsettleable",
+        "tip_id": "bt-tip-f07daaa0109c62cb2745"
+      },
+      {
         "cutoff_at_utc": "2026-09-19T19:30:00Z",
         "entrant": "darts-elo-v1",
         "event": "Luke Littler v Nathan Aspinall",
@@ -4141,26 +5077,6 @@
         "tip_id": "tip-olbg-0e5767b0ffa214ae422e"
       },
       {
-        "cutoff_at_utc": "2026-09-20T10:45:00Z",
-        "entrant": "darts-elo-v1",
-        "event": "Ross Smith v Josh Rock",
-        "event_id": "ev-e02c30e38a95e8ae731e",
-        "event_start_utc": "2026-09-20T11:15:00Z",
-        "market": "match_winner_3way",
-        "notes": "prediction-only walk-forward darts-pilot: no permissioned odds path for this sport; PnL not computable and not zero",
-        "odds": null,
-        "odds_source": null,
-        "pnl_units": null,
-        "published_at_utc": "2026-09-20T10:45:00Z",
-        "selection": "Josh Rock",
-        "settlement": null,
-        "source_url": "https://api.openligadb.de/getmatchdata/PDCWSDF/2026/87911",
-        "sport": "darts",
-        "stake_units": 1.0,
-        "status": "unsettleable",
-        "tip_id": "bt-tip-4c86b8f59126db76288b"
-      },
-      {
         "cutoff_at_utc": "2026-09-20T11:45:00Z",
         "entrant": "darts-elo-v1",
         "event": "Dirk van Duijvenbode v Gian van Veen",
@@ -4199,26 +5115,6 @@
         "stake_units": 1.0,
         "status": "unsettleable",
         "tip_id": "bt-tip-b49808290916098ed8bb"
-      },
-      {
-        "cutoff_at_utc": "2026-09-20T16:30:00Z",
-        "entrant": "darts-elo-v1",
-        "event": "Ross Smith v Gian van Veen",
-        "event_id": "ev-b775f0610c27f52c18a2",
-        "event_start_utc": "2026-09-20T17:00:00Z",
-        "market": "match_winner_3way",
-        "notes": "prediction-only walk-forward darts-pilot: no permissioned odds path for this sport; PnL not computable and not zero",
-        "odds": null,
-        "odds_source": null,
-        "pnl_units": null,
-        "published_at_utc": "2026-09-20T16:30:00Z",
-        "selection": "Gian van Veen",
-        "settlement": null,
-        "source_url": "https://api.openligadb.de/getmatchdata/PDCWSDF/2026/87915",
-        "sport": "darts",
-        "stake_units": 1.0,
-        "status": "unsettleable",
-        "tip_id": "bt-tip-07892daddccd09eeda2e"
       },
       {
         "cutoff_at_utc": "2026-09-20T18:59:15Z",
@@ -4401,7 +5297,7 @@
         "tip_id": "fwd-tip-ee976044daea7aa92aba"
       }
     ],
-    "total_placed": 164,
+    "total_placed": 191,
     "total_upcoming": 22,
     "upcoming": [
       {
@@ -4913,8 +5809,8 @@
     {
       "capture_id": "cap-openligadb_bl1_2026.json",
       "capture_mode": "automated_api",
-      "captured_at_utc": "2026-09-20T19:30:00Z",
-      "note": "1. Fußball-Bundesliga 2026/2027 whole-season payload captured 2026-09-20T19:30:00Z via permitted automated API (ODbL-1.0); sha256 67d34d8e749b84fb...",
+      "captured_at_utc": "2026-09-20T19:51:56Z",
+      "note": "1. Fußball-Bundesliga 2026/2027 whole-season payload captured 2026-09-20T19:51:56Z via permitted automated API (ODbL-1.0); sha256 67d34d8e749b84fb...",
       "path": "data/fixtures/current/openligadb_bl1_2026.json",
       "sha256": "67d34d8e749b84fbc7730fb43ab300567e14ad627e4ed2fd08a3b3d03455f6a3",
       "source_id": "openligadb"
@@ -4931,10 +5827,28 @@
     {
       "capture_id": "cap-openligadb_del_2026.json",
       "capture_mode": "automated_api",
-      "captured_at_utc": "2026-09-20T19:30:03Z",
-      "note": "DEL 2026/2027 whole-season payload captured 2026-09-20T19:30:03Z via permitted automated API (ODbL-1.0); sha256 4967e86efbbaf2ba...",
+      "captured_at_utc": "2026-09-20T19:51:58Z",
+      "note": "DEL 2026/2027 whole-season payload captured 2026-09-20T19:51:58Z via permitted automated API (ODbL-1.0); sha256 4967e86efbbaf2ba...",
       "path": "data/fixtures/current/openligadb_del_2026.json",
       "sha256": "4967e86efbbaf2ba9ca5f86aa4d34d5810432c6e9bd31708d6ffd1b06e494cd9",
+      "source_id": "openligadb"
+    },
+    {
+      "capture_id": "cap-openligadb_pdccdo_2026.json",
+      "capture_mode": "automated_api",
+      "captured_at_utc": "2026-09-20T19:55:05Z",
+      "note": "Czech Darts Open 2026 whole-season payload captured 2026-09-20T19:55:05Z via permitted automated API (ODbL-1.0); sha256 36f420bc4630436d...",
+      "path": "data/fixtures/current/openligadb_pdccdo_2026.json",
+      "sha256": "36f420bc4630436d60254939bce6f7414bef86284e59e24e81c545f3fa7a8731",
+      "source_id": "openligadb"
+    },
+    {
+      "capture_id": "cap-openligadb_pdcfdt_2026.json",
+      "capture_mode": "automated_api",
+      "captured_at_utc": "2026-09-20T19:55:03Z",
+      "note": "Flanders Darts Trophy 2026 whole-season payload captured 2026-09-20T19:55:03Z via permitted automated API (ODbL-1.0); sha256 e75dcb5535d20a12...",
+      "path": "data/fixtures/current/openligadb_pdcfdt_2026.json",
+      "sha256": "e75dcb5535d20a12b4f98bc5a0ab3099f4b8877ace5cdf912a5aac2888c273d9",
       "source_id": "openligadb"
     },
     {
@@ -4958,10 +5872,19 @@
     {
       "capture_id": "cap-openligadb_pdcwm_2026.json",
       "capture_mode": "automated_api",
-      "captured_at_utc": "2026-09-20T19:33:53Z",
-      "note": "PDC Darts-WM whole-season payload captured 2026-09-20T19:33:53Z via permitted automated API (ODbL-1.0); sha256 a250b67aba7c2f98...",
+      "captured_at_utc": "2026-09-20T19:55:01Z",
+      "note": "PDC Darts-WM whole-season payload captured 2026-09-20T19:55:01Z via permitted automated API (ODbL-1.0); sha256 a250b67aba7c2f98...",
       "path": "data/fixtures/current/openligadb_pdcwm_2026.json",
       "sha256": "a250b67aba7c2f98d8275b84e48aa343acaed162c1e4553d13e7a3261ea09e6a",
+      "source_id": "openligadb"
+    },
+    {
+      "capture_id": "cap-openligadb_pdcwoma_2026.json",
+      "capture_mode": "automated_api",
+      "captured_at_utc": "2026-09-20T19:55:07Z",
+      "note": "PDC World Masters 2026 whole-season payload captured 2026-09-20T19:55:07Z via permitted automated API (ODbL-1.0); sha256 7e3b06073fdc4b71...",
+      "path": "data/fixtures/current/openligadb_pdcwoma_2026.json",
+      "sha256": "7e3b06073fdc4b71f231ec8bc6650e6f2ac55ad29d198f1e6305e51690985b40",
       "source_id": "openligadb"
     },
     {
@@ -4986,7 +5909,7 @@
     {
       "note": "Prediction-only pilot: graded on accuracy/Brier; PnL is unavailable (not zero) until an odds path passes the licensing gates.",
       "odds_path": "none verified - no permissioned darts odds path",
-      "results_path": "OpenLigaDB PDC capture (ODbL-1.0), 300 events (298 finished), schema-audited per docs/DARTS-AUDIT.md; single source, identity 'probable'",
+      "results_path": "OpenLigaDB PDC capture (ODbL-1.0), 425 events (423 finished), schema-audited per docs/DARTS-AUDIT.md; single source, identity 'probable'",
       "scope": "olbg",
       "sport": "Darts",
       "status": "results_pilot"
@@ -5643,6 +6566,24 @@
       },
       {
         "already_ledgered": 0,
+        "fixture": "data/fixtures/current/openligadb_pdccdo_2026.json",
+        "issued": 0,
+        "leak_violations": [],
+        "out_of_horizon": 0,
+        "skipped": [],
+        "sport": "darts"
+      },
+      {
+        "already_ledgered": 0,
+        "fixture": "data/fixtures/current/openligadb_pdcfdt_2026.json",
+        "issued": 0,
+        "leak_violations": [],
+        "out_of_horizon": 0,
+        "skipped": [],
+        "sport": "darts"
+      },
+      {
+        "already_ledgered": 0,
         "fixture": "data/fixtures/current/openligadb_pdcmp_2025.json",
         "issued": 0,
         "leak_violations": [],
@@ -5670,6 +6611,15 @@
       },
       {
         "already_ledgered": 0,
+        "fixture": "data/fixtures/current/openligadb_pdcwoma_2026.json",
+        "issued": 0,
+        "leak_violations": [],
+        "out_of_horizon": 0,
+        "skipped": [],
+        "sport": "darts"
+      },
+      {
+        "already_ledgered": 0,
         "fixture": "data/fixtures/current/openligadb_pdcwsdf_2026.json",
         "issued": 0,
         "leak_violations": [],
@@ -5678,7 +6628,7 @@
         "sport": "darts"
       }
     ],
-    "latest_capture_utc": "2026-09-20T19:33:53Z",
+    "latest_capture_utc": "2026-09-20T19:55:07Z",
     "leak_violations": [],
     "model_version": "nr-forward-2026-09-20.1",
     "n_awaiting": 9,
@@ -6358,8 +7308,8 @@
     }
   ],
   "meta": {
-    "built_utc": "2026-09-20T19:51:22Z",
-    "event_count": 1027,
+    "built_utc": "2026-09-20T19:55:08Z",
+    "event_count": 1152,
     "hockey": {
       "competition": "DEL Eishockey 2024/2025",
       "events": "21",

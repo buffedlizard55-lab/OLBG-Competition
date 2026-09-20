@@ -1,0 +1,16 @@
+{
+  "captured_at_utc": "2026-09-20T19:55:03Z",
+  "collection_mode": "automated_api",
+  "fixture": "openligadb_pdcfdt_2026.json",
+  "league_name": "Flanders Darts Trophy 2026",
+  "league_season": 2026,
+  "league_shortcut": "pdcfdt",
+  "license_id": "odbl-1.0",
+  "n_finished": 47,
+  "n_matches": 47,
+  "note": "whole-season payload fetched via the permitted automated API (ODbL-1.0); canonical compact JSON, unmodified content",
+  "sha256": "e75dcb5535d20a12b4f98bc5a0ab3099f4b8877ace5cdf912a5aac2888c273d9",
+  "source_id": "openligadb",
+  "sport": "darts",
+  "url": "https://api.openligadb.de/getmatchdata/pdcfdt/2026"
+}
