@@ -31,6 +31,8 @@
           <button class="nav-item" data-view="tips" type="button"><span class="nav-icon">◎</span> Tip desk</button>
           <button class="nav-item" data-view="bets" type="button"><span class="nav-icon">▤</span> Bets <span class="nav-count accent" id="nav-count-bets">0</span></button>
           <button class="nav-item" data-view="strategies" type="button"><span class="nav-icon">⌁</span> Strategy lab</button>
+          <button class="nav-item" data-view="forward" type="button"><span class="nav-icon">⏱</span> Forward test <span class="nav-count accent" id="nav-count-forward">0</span></button>
+          <button class="nav-item" data-view="integrity" type="button"><span class="nav-icon">⚑</span> Integrity</button>
           <button class="nav-item" data-view="sources" type="button"><span class="nav-icon">⌘</span> Source registry</button>
           <p class="nav-label second">Read first</p>
           <a class="nav-item nav-link" href="README.md"><span class="nav-icon">▤</span> Project brief <span class="external">↗</span></a>
@@ -147,6 +149,33 @@
             <div class="section-heading" style="margin-top:28px"><div><p class="eyebrow">Hypothesis registry</p><h2>Designed, not yet proven</h2></div><span class="mono-note" id="registry-note">untested designs</span></div>
             <div class="strategy-controls"><div class="filter-pills" id="strategy-filters"><button class="pill active" data-strategy-filter="All">All</button><button class="pill" data-strategy-filter="Pilot-tested">Pilot-tested</button><button class="pill" data-strategy-filter="Ready to source">Ready to source</button><button class="pill" data-strategy-filter="Blocked">Blocked</button></div><span class="mono-note">hypothesis registry</span></div>
             <div class="strategy-grid" id="strategy-grid"></div>
+          </section>
+
+          <section class="view" data-view-panel="forward" aria-labelledby="forward-title">
+            <div class="page-intro"><p class="eyebrow green">The live clock</p><h1 id="forward-title">Forward test</h1><p>Predictions issued <strong>before kick-off</strong> from committed captures, frozen in an append-only ledger, and graded on accuracy as official results arrive. No permissioned odds path exists for current seasons, so <strong>PnL is unavailable — never shown as zero</strong>. Every call shows its model trail, cutoff and evidence links.</p></div>
+            <div class="strategy-topline" id="forward-topline"></div>
+            <div class="section-heading"><div><p class="eyebrow">Upcoming calls</p><h2>Written like a top tipster — evidence only</h2></div><span class="mono-note" id="forward-cadence">append-only ledger</span></div>
+            <div class="tip-preview-grid" id="forward-predictions"></div>
+            <div class="section-heading" style="margin-top:28px"><div><p class="eyebrow">Ledger</p><h2>All forward-test predictions</h2></div><span class="mono-note">frozen at issue · graded when results land</span></div>
+            <div class="panel table-panel" style="margin-bottom:24px">
+              <div class="table-heading"><div><h2>Graded</h2><p>Accuracy only — hit rate and Brier against stored results</p></div><span class="badge muted" id="forward-graded-count">—</span></div>
+              <div class="source-table-wrap"><table class="source-table"><thead><tr><th>Event</th><th>Desk</th><th>Pick</th><th>Result</th><th>Hit</th><th>Brier</th><th>Issued (UTC)</th></tr></thead><tbody id="forward-graded-body"></tbody></table></div>
+            </div>
+            <div class="panel table-panel">
+              <div class="table-heading"><div><h2>Awaiting result / overdue</h2><p>Open forward calls; overdue rows go to the review queue, never silently dropped</p></div><span class="badge muted" id="forward-awaiting-count">—</span></div>
+              <div class="source-table-wrap"><table class="source-table"><thead><tr><th>Event</th><th>Kickoff (UTC)</th><th>Desk</th><th>Pick</th><th>Cutoff (UTC)</th><th>State</th></tr></thead><tbody id="forward-awaiting-body"></tbody></table></div>
+            </div>
+          </section>
+
+          <section class="view" data-view-panel="integrity" aria-labelledby="integrity-title">
+            <div class="page-intro"><p class="eyebrow green">Nothing smoothed over</p><h1 id="integrity-title">Integrity &amp; anomaly queue</h1><p>Every irregularity the pipeline detects — impossible result layerings, missing metadata, source edits, time conflicts — lands here with evidence links for manual review. Flags are findings, not failures.</p></div>
+            <div class="strategy-topline" id="integrity-topline"></div>
+            <div class="section-heading" style="margin-top:20px"><div><p class="eyebrow">Review queue</p><h2>Anomalies</h2></div><span class="mono-note" id="integrity-count">—</span></div>
+            <div class="panel table-panel">
+              <div class="source-table-wrap"><table class="source-table"><thead><tr><th>Kind</th><th>Entity</th><th>Detail</th><th>Evidence</th><th>Status</th><th>Detected (UTC)</th></tr></thead><tbody id="anomaly-body"></tbody></table></div>
+            </div>
+            <div class="section-heading" style="margin-top:28px"><div><p class="eyebrow">Verification states</p><h2>What each label means</h2></div></div>
+            <div class="two-col-note"><section class="panel"><div class="definition-list"><div><strong>verified</strong><span>identity confirmed by an independent second source agreeing on the final result (27/27 on the football pilot)</span></div><div><strong>probable</strong><span>single permissioned source only — graded on accuracy, never ranked as verified PnL</span></div><div><strong>review</strong><span>a settlement or desk carrying an unresolved irregularity; shown, demoted, never hidden</span></div><div><strong>blocked</strong><span>no permissioned results path exists for this sport in this repository</span></div></div></section><section class="panel"><div class="panel-heading"><div><p class="eyebrow">Protocol</p><h2>Settlement gates</h2></div></div><p class="panel-copy">Seven gates run before any settlement: identity, pre-start time, market rule set, final result existence, single consistent scoreline, provider permission, and rule version. Postponed → pending, cancelled/abandoned → void, disputed → withheld with anomalies. There is no force-settle path.</p><a class="source-link" href="docs/data-contract.md" target="_blank" rel="noreferrer">Full data contract ↗</a></section></div>
           </section>
 
           <section class="view" data-view-panel="sources" aria-labelledby="sources-title">

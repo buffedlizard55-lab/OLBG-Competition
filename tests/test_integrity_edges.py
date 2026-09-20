@@ -82,3 +82,36 @@ def test_implied_probabilities_reject_nonfinite_prices():
         implied_probabilities([2.0, float("inf"), 3.0])
     with pytest.raises(ValueError, match="finite"):
         implied_probabilities([2.0, float("nan"), 3.0])
+
+
+def test_flagged_result_is_excluded_from_grading_and_ratings(store):
+    """Audit 2026-09-20 (PDCPCF matchID 79962, Price v Littler): an event
+    with an open RESULT_KIND_INCONSISTENT anomaly must neither update
+    walk-forward ratings nor be graded on - the review queue owns it."""
+    from northstar.backtest import run_walk_forward
+    from northstar.evaluation import prediction_accuracy
+    from northstar.strategies import build
+
+    mk_event(store)
+    mk_result(store, home_goals=8, away_goals=11)
+    store.add_anomaly(models.Anomaly(
+        anomaly_id="an-dup-test",
+        kind=models.ANOMALY_RESULT_KIND_INCONSISTENT,
+        entity_type="result", entity_id="ev-t1",
+        detected_at_utc=models.utcnow(),
+        detail="conflicting duplicate result entries",
+        source_urls=["https://example.org/result"]))
+    store.commit()
+
+    rep = run_walk_forward(store, [store.get_event("ev-t1")],
+                           build("elo-edge-v1"), "elo-edge-v1",
+                           label="flag-test", allow_no_odds=True)
+    assert rep["bets"] == []
+    assert any("flagged" in s.get("reason", "") for s in rep["skipped"])
+
+    acc = prediction_accuracy(store, [{
+        "event_id": "ev-t1", "selection_key": "home",
+        "model": {"model_prob": {"home": 0.6, "draw": 0.2, "away": 0.2}},
+    }])
+    assert acc["n_graded"] == 0
+    assert any("flagged" in u.get("reason", "") for u in acc["ungraded"])

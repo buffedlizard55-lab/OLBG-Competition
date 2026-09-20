@@ -75,10 +75,13 @@ class TestWalkForward:
             odds_provider = "market_avg"
 
             def predict(self, event, tbs, start, market_odds=None,
-                        odds_observed_at=None):
+                        odds_observed_at=None, as_of=None):
                 return {"cutoff_utc": start + timedelta(minutes=5),
                         "selection_key": "home", "selection_text": "home",
                         "model": {}}
+
+            def ratings_after(self, event, hg, ag, tbs, final_at):
+                return {}
 
         ev = mk_event(store, event_id="ev-l1")
         mk_odds(store, "ev-l1", observed="2026-01-09T12:00:00Z")
@@ -95,12 +98,15 @@ class TestWalkForward:
             odds_provider = "market_avg"
 
             def predict(self, event, tbs, start, market_odds=None,
-                        odds_observed_at=None):
+                        odds_observed_at=None, as_of=None):
                 tbs.last_result(event["home_team"],
                                 odds_observed_at + timedelta(minutes=1))
                 return {"cutoff_utc": odds_observed_at,
                         "selection_key": "home", "selection_text": "home",
                         "model": {}}
+
+            def ratings_after(self, event, hg, ag, tbs, final_at):
+                return {}
 
         ev = mk_event(store, event_id="ev-read-cutoff")
         for sel, odds in (("home", 2.0), ("draw", 3.0), ("away", 4.0)):

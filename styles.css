@@ -81,3 +81,9 @@ button { cursor: pointer; }
 /* prediction-only desk chips (accuracy per matchday) */
 .metric-chips { display: flex; gap: 6px; flex-wrap: wrap; }
 .metric-chip { padding: 4px 6px; border-radius: 4px; color: #8fa9b2; background: rgba(126,203,255,.07); font-family: "DM Mono", monospace; font-size: 8px; }
+
+/* Forward test + integrity additions (2026-09-20) */
+#forward-topline, #integrity-topline { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
+.source-state.review { color: var(--amber); background: rgba(246,196,109,.08); }
+.badge.green { color: var(--green); background: rgba(166,242,110,.08); }
+.badge.review { color: var(--amber); background: rgba(246,196,109,.08); }

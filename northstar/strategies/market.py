@@ -23,7 +23,7 @@ class MarketFavourite(Strategy):
             odds_provider=odds_provider)
 
     def predict(self, event, tbs, start, market_odds=None,
-                odds_observed_at=None) -> Dict[str, Any]:
+                odds_observed_at=None, as_of=None) -> Dict[str, Any]:
         if odds_observed_at is None or not market_odds:
             return no_bet(odds_observed_at,
                           {"reason": "no pre-start market price"})
@@ -49,7 +49,7 @@ class MarketLongshot(Strategy):
             odds_provider=odds_provider)
 
     def predict(self, event, tbs, start, market_odds=None,
-                odds_observed_at=None) -> Dict[str, Any]:
+                odds_observed_at=None, as_of=None) -> Dict[str, Any]:
         if odds_observed_at is None or not market_odds:
             return no_bet(odds_observed_at,
                           {"reason": "no pre-start market price"})

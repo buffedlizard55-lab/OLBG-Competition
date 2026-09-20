@@ -12,7 +12,7 @@ from __future__ import annotations
 from typing import Any, Dict, List, Optional
 
 from .db import Store
-from .models import parse_utc
+from .models import ANOMALY_RESULT_KIND_INCONSISTENT, parse_utc
 
 OUTCOMES = ("home", "draw", "away")
 
@@ -42,8 +42,18 @@ def prediction_accuracy(store: Store, bets: List[Dict[str, Any]],
     """
     graded: List[Dict[str, Any]] = []
     ungraded: List[Dict[str, Any]] = []
+    # Results under review (RESULT_KIND_INCONSISTENT) are never graded on -
+    # the review queue owns the verdict (same rule as the walk-forward).
+    flagged = {a["entity_id"]
+               for a in store.anomalies(status="open")
+               if a["kind"] == ANOMALY_RESULT_KIND_INCONSISTENT}
     for bet in bets:
         eid = bet["event_id"]
+        if eid in flagged:
+            ungraded.append({"event_id": eid,
+                             "reason": "result flagged for review "
+                                       "(RESULT_KIND_INCONSISTENT)"})
+            continue
         event = store.get_event(eid)
         results = [r for r in store.results(eid)
                    if r["final_status"] == "finished"]

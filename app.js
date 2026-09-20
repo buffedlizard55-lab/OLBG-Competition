@@ -243,9 +243,14 @@ const STATUS_TITLES = {
 };
 const statusCell = (s) =>
   `<span${STATUS_TITLES[s] ? ` title="${STATUS_TITLES[s]}"` : ""}>${escapeHtml(s)}</span>`;
-const marketLabel = (b) =>
-  (b.sport === "ice_hockey" && b.market === "match_winner_3way")
-    ? "match winner (incl. OT/SO)" : b.market;
+const marketLabel = (b) => {
+  if (b.market === "match_winner_2way")
+    return b.sport === "darts" ? "match winner (sets)"
+      : "match winner (incl. OT/SO)";
+  if (b.sport === "ice_hockey" && b.market === "match_winner_3way")
+    return "match winner (incl. OT/SO)";
+  return b.market;
+};
 
 function tipRow(b) {
   const settled = b.settlement
@@ -298,7 +303,11 @@ function renderBets() {
     (DATA.bets.total_placed ?? 0) + (DATA.bets.total_upcoming ?? 0);
 }
 
-const SPORT_LABELS = { football: "Football", ice_hockey: "Ice Hockey" };
+const SPORT_LABELS = { football: "Football", ice_hockey: "Ice Hockey", darts: "Darts" };
+
+function registryList() {
+  return (DATA.registry && DATA.registry.hypotheses) || hypothesisRegistry;
+}
 
 function renderStrategies() {
   const tested = DATA.backtest || {};
@@ -310,10 +319,10 @@ function renderStrategies() {
     <div class="strategy-stat"><strong>${n}</strong><span>strategies pilot-tested</span></div>
     <div class="strategy-stat"><strong>${totalBets}</strong><span>walk-forward decisions placed</span></div>
     <div class="strategy-stat ${cleanLeaks ? "" : "warning"}"><strong>${cleanLeaks ? "0" : "!"}</strong><span>time-leakage violations</span></div>
-    <div class="strategy-stat"><strong>0</strong><span>forward-test PnL (live)</span></div>`;
+    <div class="strategy-stat"><strong>${DATA.forward?.n_awaiting ?? 0}</strong><span>forward calls open (PnL: unavailable)</span></div>`;
 
   $("backtest-grid").innerHTML = Object.entries(tested).map(([sid, t]) => {
-    const hyp = hypothesisRegistry.find((h) => h.tested === sid);
+    const hyp = registryList().find((h) => h.tested === sid);
     const sportLabel = SPORT_LABELS[t.sport] || t.sport || "Football";
     let metaHtml;
     if (t.pnl_available === false) {
@@ -330,10 +339,13 @@ function renderStrategies() {
     } else {
       const ci = t.profit_ci95
         ? `[${t.profit_ci95.lo.toFixed(2)}, ${t.profit_ci95.hi.toFixed(2)}]` : "—";
+      const stats = (t.p_value_raw !== undefined && t.p_value_raw !== null)
+        ? `<span><strong>Bootstrap p</strong> · ${t.p_value_raw} → Holm-adjusted <strong>${t.p_value_holm ?? "—"}</strong> (family m=${t.family_size ?? "—"}${t.significant_after_correction ? ", significant" : ", not significant"})</span>`
+        : "";
       metaHtml = `
         <span><strong>Bets</strong> · ${t.bets} placed · ${t.settled} settled · ${t.skipped} skipped</span>
         <span><strong>Profit</strong> · ${fmtUnits(t.profit_units)} u (ROI ${fmtPct(t.roi)}, strike ${fmtPct(t.strike_rate)})</span>
-        <span><strong>95% CI</strong> · ${ci} u</span>`;
+        <span><strong>95% CI</strong> · ${ci} u</span>${stats}`;
     }
     return `<article class="strategy-card" data-strategy-status="${escapeHtml(hyp?.status || "Pilot-tested")}">
       <div class="strategy-card-top"><span class="strategy-sport">${escapeHtml(sportLabel)}</span>
@@ -353,7 +365,7 @@ function renderStrategies() {
 }
 
 function renderHypotheses(filter) {
-  $("strategy-grid").innerHTML = hypothesisRegistry
+  $("strategy-grid").innerHTML = registryList()
     .filter((h) => filter === "All" || h.status === filter)
     .map((h) => `<article class="strategy-card" data-strategy-status="${escapeHtml(h.status)}">
       <div class="strategy-card-top"><span class="strategy-sport">${escapeHtml(h.sport)}</span>
@@ -363,6 +375,97 @@ function renderHypotheses(filter) {
       <div class="strategy-meta"><span><strong>Data gate</strong> · ${escapeHtml(h.data)}</span><span><strong>Test</strong> · ${escapeHtml(h.test)}</span></div>
       ${h.tested ? `<span class="tip-flag" style="color:var(--green, #39c07f)">✓ backtested as ${escapeHtml(h.tested)}</span>` : ""}
     </article>`).join("");
+}
+
+const FORWARD_STATE_LABEL = {
+  graded: ["green", "graded"],
+  awaiting_result: ["ready", "awaiting result"],
+  overdue: ["review", "overdue — review queue"],
+};
+
+function renderForward() {
+  const f = DATA.forward || {};
+  const state = f.state || "awaiting_first_capture";
+  $("nav-count-forward").textContent = f.n_awaiting ?? 0;
+  $("forward-cadence").textContent = f.cadence ||
+    "append-only ledger · frozen at capture time";
+  const chip = (label, value, warn) =>
+    `<div class="strategy-stat${warn ? " warning" : ""}"><strong>${value}</strong><span>${label}</span></div>`;
+  $("forward-topline").innerHTML =
+    chip("state", state === "live" ? "LIVE" : "awaiting capture") +
+    chip("predictions issued", f.n_issued ?? 0) +
+    chip("graded", f.n_graded ?? 0) +
+    chip("awaiting result", f.n_awaiting ?? 0) +
+    chip("overdue", f.n_overdue ?? 0, (f.n_overdue ?? 0) > 0) +
+    chip("cutoff violations", (f.leak_violations || []).length,
+      (f.leak_violations || []).length > 0);
+  if (f.latest_capture_utc) {
+    $("forward-topline").innerHTML +=
+      `<div class="strategy-stat"><strong>${fmtDate(f.latest_capture_utc)}</strong><span>latest capture (UTC)</span></div>`;
+  }
+
+  const rendered = f.rendered || [];
+  $("forward-predictions").innerHTML = rendered.length
+    ? rendered.map((p) => `
+      <article class="tip-card">
+        <span class="tip-sport">${escapeHtml(SPORT_LABELS[p.sport] || p.sport || "")} · ${escapeHtml(p.strategy)}</span>
+        <span class="tip-status${p.evidence_ok ? "" : " review"}">${p.evidence_ok ? "forward · frozen" : "renderer refused"}</span>
+        <h3 class="tip-event">${escapeHtml(p.headline)}</h3>
+        <p class="tip-league">${escapeHtml(p.competition || "")} · kickoff ${fmtDate(p.start_utc)} UTC · cutoff ${fmtDate(p.cutoff_utc)} UTC</p>
+        <p style="font-size:13px;line-height:1.55;margin:10px 0">${escapeHtml(p.body || "")}</p>
+        <span class="tip-source">${(p.source_links || []).filter(Boolean).map((u) => `<a href="${escapeHtml(u)}" target="_blank" rel="noreferrer">evidence ↗</a>`).join(" · ") || "no external source"}</span>
+      </article>`).join("")
+    : `<div class="empty-state compact"><div class="empty-icon">⏱</div><h3>${state === "live" ? "No upcoming calls inside the issue horizon" : "Awaiting the first current-season capture"}</h3><p>${escapeHtml(f.note || "The CI capture workflow fetches the permitted OpenLigaDB current-season payloads and issues the first frozen predictions into the ledger.")}</p></div>`;
+
+  const gradedRows = (f.graded || []).map((r) => `
+    <tr>
+      <td>${escapeHtml(r.event)}<br /><small style="opacity:.7">${escapeHtml(r.competition || "")}</small></td>
+      <td>${escapeHtml(r.strategy_id)}</td>
+      <td><strong>${escapeHtml(r.selection)}</strong></td>
+      <td>${escapeHtml(r.result || "")} (${escapeHtml(r.actual || "")})</td>
+      <td>${r.hit ? '<span class="source-state green">hit</span>' : '<span class="source-state review">miss</span>'}</td>
+      <td>${r.brier ?? "—"}</td>
+      <td><small>${fmtDate(r.issued_at_utc)}</small></td>
+    </tr>`).join("");
+  $("forward-graded-body").innerHTML = gradedRows || emptyRow(7);
+  $("forward-graded-count").textContent = `${(f.graded || []).length} graded`;
+
+  const open = [...(f.overdue || []), ...(f.awaiting || [])];
+  $("forward-awaiting-body").innerHTML = open.map((r) => {
+    const [cls, label] = FORWARD_STATE_LABEL[r.status] || ["muted", r.status];
+    return `<tr>
+      <td>${escapeHtml(r.event)}<br /><small style="opacity:.7">${escapeHtml(r.competition || "")}
+        ${r.source_url ? ` · <a href="${escapeHtml(r.source_url)}" target="_blank" rel="noreferrer">source ↗</a>` : ""}</small></td>
+      <td><small>${fmtDate(r.start_utc)}</small></td>
+      <td>${escapeHtml(r.strategy_id)}</td>
+      <td><strong>${escapeHtml(r.selection)}</strong></td>
+      <td><small>${fmtDate(r.cutoff_utc)}</small></td>
+      <td><span class="source-state ${cls}"${r.note ? ` title="${escapeHtml(r.note)}"` : ""}>${escapeHtml(label)}</span></td>
+    </tr>`;
+  }).join("") || emptyRow(6);
+  $("forward-awaiting-count").textContent = `${open.length} open`;
+}
+
+function renderIntegrity() {
+  const anoms = (DATA.anomalies && DATA.anomalies.queue) || [];
+  const open = (DATA.anomalies && DATA.anomalies.open) || 0;
+  const chip = (label, value, warn) =>
+    `<div class="strategy-stat${warn ? " warning" : ""}"><strong>${value}</strong><span>${label}</span></div>`;
+  $("integrity-topline").innerHTML =
+    chip("open anomalies", open, open > 0) +
+    chip("resolved", anoms.filter((a) => a.status === "resolved").length) +
+    chip("total flagged", anoms.length) +
+    chip("events in store", DATA.meta.event_count ?? 0);
+  $("integrity-count").textContent = `${anoms.length} rows`;
+  $("anomaly-body").innerHTML = anoms.map((a) => `
+    <tr>
+      <td><span class="source-state ${a.status === "open" ? "review" : "green"}">${escapeHtml(a.kind)}</span></td>
+      <td><code>${escapeHtml(a.entity_type)}:${escapeHtml(a.entity_id.slice(0, 24))}</code></td>
+      <td><small>${escapeHtml(a.detail)}</small></td>
+      <td>${(a.source_urls || []).filter(Boolean).map((u) => `<a href="${escapeHtml(u)}" target="_blank" rel="noreferrer">↗</a>`).join(" ") || "—"}</td>
+      <td>${escapeHtml(a.status)}</td>
+      <td><small>${fmtDate(a.detected_at_utc)}</small></td>
+    </tr>`).join("") || emptyRow(6);
 }
 
 function renderSources() {
@@ -443,6 +546,8 @@ function init(data) {
   renderTipDesk();
   renderBets();
   renderStrategies();
+  renderForward();
+  renderIntegrity();
   renderSources();
 
   document.querySelectorAll(".nav-item[data-view]").forEach((item) =>

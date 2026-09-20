@@ -23,7 +23,8 @@ from typing import Dict, List, Optional
 from .. import models
 from ..db import Store
 from ..models import (
-    EVENT_STATUS_FINISHED, EVENT_STATUS_POSTPONED, Event, Result,
+    EVENT_STATUS_FINISHED, EVENT_STATUS_POSTPONED, EVENT_STATUS_SCHEDULED,
+    Event, Result,
     RESULT_KIND_AFTER_90, RESULT_KIND_AFTER_EXTRA,
     RESULT_KIND_AFTER_PENALTIES, SPORT_FOOTBALL,
     parse_utc, sha256_text, stable_id,
@@ -42,16 +43,27 @@ def league_url(league_shortcut: str, league_season: int,
             f"{group_order}")
 
 
+def fetch_url(url: str) -> str:
+    """Generic policy-gated GET against the OpenLigaDB API base.
+
+    Refuses any URL outside ``api.openligadb.de`` (the only endpoint the
+    registered policy covers) and any run when the automated-API mode is
+    not permitted.  Used by CI capture (network) and injectable in tests.
+    """
+    get_policy("openligadb").assert_permitted(MODE_AUTO_API)
+    if not url.startswith(API_BASE + "/"):
+        raise PolicyError(f"refusing non-OpenLigaDB URL: {url}")
+    req = urllib.request.Request(url, headers={"User-Agent":
+                                               "NorthstarLab/0.3 (paper-trading research)"})
+    with urllib.request.urlopen(req, timeout=60) as resp:
+        return resp.read().decode("utf-8")
+
+
 def fetch_matchdata(league_shortcut: str, league_season: int,
                     group_order: Optional[int] = None) -> str:
     """Live fetch (used in CI / environments with network). Refuses to run
     unless the source policy permits automated API collection."""
-    get_policy("openligadb").assert_permitted(MODE_AUTO_API)
-    url = league_url(league_shortcut, league_season, group_order)
-    req = urllib.request.Request(url, headers={"User-Agent":
-                                               "NorthstarLab/0.2 (paper-trading research)"})
-    with urllib.request.urlopen(req, timeout=60) as resp:
-        return resp.read().decode("utf-8")
+    return fetch_url(league_url(league_shortcut, league_season, group_order))
 
 
 def event_id_for(match: Dict) -> str:
@@ -87,6 +99,14 @@ DEFAULT_FINAL_KIND_PRIORITY = [RESULT_KIND_AFTER_90,
 # second. It is documented in docs/STATUS.md.
 INFERRED_GAME_DURATION = {
     "ice_hockey": timedelta(hours=3),
+    # Darts: audit of the three committed 2025 PDC events (141 matches,
+    # docs/DARTS-AUDIT.md) measured same-day result entry lag of 1.2h-10.5h
+    # (median 1.7h-3.0h; some weekend sessions batch-entered days later),
+    # and an evening session's individual match can start late and run long.
+    # +12h is conservative against every observed same-day entry and against
+    # match end, while still releasing a round before the next day's first
+    # decision cutoff (same documented construction as hockey).
+    "darts": timedelta(hours=12),
 }
 
 
@@ -136,9 +156,25 @@ def parse_matchday(text: str, sport: Optional[str] = None) -> List[Dict]:
                          None)
         has_post_reg = bool({RESULT_KIND_AFTER_EXTRA,
                              RESULT_KIND_AFTER_PENALTIES} & kinds)
-        kind_inconsistent = bool(
+        # Audit 2026-09-20 (PDCPCF 2025 matchID 79962, Price v Littler):
+        # the same result kind can appear several times with conflicting
+        # scores (a real 8-11 plus two stale 0-0 duplicates with
+        # consecutive resultIDs). The first entry is retained, but the
+        # conflict is flagged for the review queue instead of silently
+        # resolved.
+        duplicate_conflict = False
+        if final is not None:
+            duplicate_conflict = any(
+                (r.get("pointsTeam1"), r.get("pointsTeam2"))
+                != (final.get("pointsTeam1"), final.get("pointsTeam2"))
+                for r in m.get("matchResults", [])
+                if r.get("resultTypeKind") == final.get("resultTypeKind"))
+        kind_inconsistent = bool(duplicate_conflict or (
             reg_entry is not None and has_post_reg
-            and reg_entry.get("pointsTeam1") != reg_entry.get("pointsTeam2"))
+            and reg_entry.get("pointsTeam1") != reg_entry.get("pointsTeam2")))
+        inconsistency_reason = (
+            "duplicate_conflict" if duplicate_conflict
+            else "impossible_layering" if kind_inconsistent else None)
         out.append({
             "match_id": m["matchID"],
             "league_shortcut": m.get("leagueShortcut"),
@@ -156,6 +192,7 @@ def parse_matchday(text: str, sport: Optional[str] = None) -> List[Dict]:
             "away_goals": final["pointsTeam2"] if final else None,
             "final_kind": final["resultTypeKind"] if final else None,
             "kind_inconsistent": kind_inconsistent,
+            "inconsistency_reason": inconsistency_reason,
             "source_version": m.get("lastUpdateDateTime"),
             "raw_match": m,
         })
@@ -164,17 +201,26 @@ def parse_matchday(text: str, sport: Optional[str] = None) -> List[Dict]:
 
 def ingest_matchday(store: Store, text: str,
                     verify_identity: bool = True,
-                    sport: Optional[str] = SPORT_FOOTBALL) -> Dict:
+                    sport: Optional[str] = SPORT_FOOTBALL,
+                    as_of=None) -> Dict:
     """Ingest one matchday payload: events + primary results.
 
     ``verify_identity``: when True, events start at ``probable`` identity
     confidence; the cross-check step (ingest_pilot in the pipeline) upgrades
     to ``verified`` once an independent source agrees.
+
+    ``as_of`` (aware datetime, optional): the capture instant. Unfinished
+    matches whose scheduled start is *after* ``as_of`` are ``scheduled``
+    (upcoming fixtures, forward-test candidates); unfinished matches at or
+    before ``as_of`` are unresolved -> ``postponed`` (review queue), the
+    pre-existing behaviour which remains the default when ``as_of`` is None.
     """
     policy = get_policy("openligadb")
     policy.assert_permitted(MODE_AUTO_API)  # documents the mode even offline
+    if as_of is not None and as_of.tzinfo is None:
+        raise ValueError("as_of must be a timezone-aware datetime")
     matches = parse_matchday(text, sport=sport)
-    stats = {"events": 0, "results": 0, "anomalies": 0}
+    stats = {"events": 0, "results": 0, "anomalies": 0, "event_ids": []}
     # Source-metadata repair: a match row with leagueSeason null (seen live
     # on del/2024 matchday 40, matchID 76412) would otherwise leak "None"
     # into ids and URLs. Normalise to the *modal* season of unambiguous rows
@@ -212,6 +258,8 @@ def ingest_matchday(store: Store, text: str,
                 source_urls=[url]))
         if m["finished"]:
             status = EVENT_STATUS_FINISHED
+        elif as_of is not None and m["start_utc"] > as_of:
+            status = EVENT_STATUS_SCHEDULED  # genuine upcoming fixture
         else:
             status = EVENT_STATUS_POSTPONED  # unresolved state; review queue
         event = Event(
@@ -235,6 +283,7 @@ def ingest_matchday(store: Store, text: str,
         anomalies = store.upsert_event(event)
         stats["anomalies"] += len(anomalies)
         stats["events"] += 1
+        stats["event_ids"].append(eid)
         if m["finished"] and m["home_goals"] is not None:
             final_at = availability_for(sport, m["start_utc"],
                                         m["source_version"])
@@ -262,19 +311,31 @@ def ingest_matchday(store: Store, text: str,
                             eid)
             if not store.anomaly_exists(aid):
                 stats["anomalies"] += 1
+            if m.get("inconsistency_reason") == "duplicate_conflict":
+                detail = (
+                    "the same result kind appears more than once with "
+                    "conflicting scores (audit 2026-09-20, e.g. PDCPCF 2025 "
+                    f"matchID={m['match_id']}: one real entry plus stale "
+                    "0-0 duplicates with consecutive resultIDs). The first "
+                    "entry is kept but NOT trusted silently: flagged for "
+                    "manual review against the official source, outcome kept "
+                    f"{m['home_goals']}-{m['away_goals']} ({m['final_kind']})")
+            else:
+                detail = (
+                    "decisive 'after regulation' entry coexists with an "
+                    "overtime/shootout entry (impossible layering in "
+                    f"community-entered source; matchID={m['match_id']}). "
+                    "Final read via hockey priority AfterPenalties > "
+                    "AfterExtraTime > After90Minutes; flagged for manual "
+                    "review, outcome kept "
+                    f"{m['home_goals']}-{m['away_goals']} "
+                    f"({m['final_kind']})")
             store.add_anomaly(models.Anomaly(
                 anomaly_id=aid,
                 kind=models.ANOMALY_RESULT_KIND_INCONSISTENT,
                 entity_type="result", entity_id=eid,
                 detected_at_utc=models.utcnow(),
-                detail=("decisive 'after regulation' entry coexists with an "
-                        "overtime/shootout entry (impossible layering in "
-                        f"community-entered source; matchID={m['match_id']}). "
-                        "Final read via hockey priority AfterPenalties > "
-                        "AfterExtraTime > After90Minutes; flagged for manual "
-                        "review, outcome kept "
-                        f"{m['home_goals']}-{m['away_goals']} "
-                        f"({m['final_kind']})"),
+                detail=detail,
                 source_urls=[url]))
     store.commit()
     return stats

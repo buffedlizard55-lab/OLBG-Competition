@@ -1,0 +1,347 @@
+{
+  "issued": [
+    {
+      "away_team": "Adler Mannheim",
+      "competition": "DEL 2026/2027",
+      "cutoff_utc": "2026-09-20T18:59:15Z",
+      "event": "Nürnberg Ice Tigers v Adler Mannheim",
+      "event_id": "ev-fce0833b56ccebe795bd",
+      "group_name": "31. Spieltag",
+      "group_order": 31,
+      "home_team": "Nürnberg Ice Tigers",
+      "issued_at_utc": "2026-09-20T18:59:15Z",
+      "label": "del-2026",
+      "market": "match_winner_2way",
+      "model": {
+        "decision_lag": "start-30min",
+        "model_prob": {
+          "away": 0.4063861927415259,
+          "draw": 0.0,
+          "home": 0.5936138072584741
+        },
+        "odds": "none (no permissioned odds path)",
+        "ratings": {
+          "away": 1501.3203016881046,
+          "home": 1532.146321635532
+        }
+      },
+      "model_version": "nr-forward-2026-09-20.1",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "prediction_id": "fwd-6fc22a3618a454a52ae4",
+      "selection": "Nürnberg Ice Tigers",
+      "selection_key": "home",
+      "source_event_id": "84528",
+      "source_url": "https://api.openligadb.de/getmatchdata/del/2026/84528",
+      "sport": "ice_hockey",
+      "start_utc": "2026-09-22T17:30:00Z",
+      "strategy_id": "hockey-elo-v1",
+      "strategy_name": "Hockey Elo favourite (no-market pilot)"
+    },
+    {
+      "away_team": "Krefeld Pinguine",
+      "competition": "DEL 2026/2027",
+      "cutoff_utc": "2026-09-20T18:59:15Z",
+      "event": "Adler Mannheim v Krefeld Pinguine",
+      "event_id": "ev-20061c8536a8539565c8",
+      "group_name": "3. Spieltag",
+      "group_order": 3,
+      "home_team": "Adler Mannheim",
+      "issued_at_utc": "2026-09-20T18:59:15Z",
+      "label": "del-2026",
+      "market": "match_winner_2way",
+      "model": {
+        "decision_lag": "start-30min",
+        "model_prob": {
+          "away": 0.44812875710770816,
+          "draw": 0.0,
+          "home": 0.5518712428922918
+        },
+        "odds": "none (no permissioned odds path)",
+        "ratings": {
+          "away": 1500.146321635532,
+          "home": 1501.3203016881046
+        }
+      },
+      "model_version": "nr-forward-2026-09-20.1",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "prediction_id": "fwd-3292a709f4248b6b3342",
+      "selection": "Adler Mannheim",
+      "selection_key": "home",
+      "source_event_id": "84333",
+      "source_url": "https://api.openligadb.de/getmatchdata/del/2026/84333",
+      "sport": "ice_hockey",
+      "start_utc": "2026-09-25T17:30:00Z",
+      "strategy_id": "hockey-elo-v1",
+      "strategy_name": "Hockey Elo favourite (no-market pilot)"
+    },
+    {
+      "away_team": "Schwenninger Wild Wings",
+      "competition": "DEL 2026/2027",
+      "cutoff_utc": "2026-09-20T18:59:15Z",
+      "event": "Grizzlys Wolfsburg v Schwenninger Wild Wings",
+      "event_id": "ev-2f9057f6deb89264db5b",
+      "group_name": "3. Spieltag",
+      "group_order": 3,
+      "home_team": "Grizzlys Wolfsburg",
+      "issued_at_utc": "2026-09-20T18:59:15Z",
+      "label": "del-2026",
+      "market": "match_winner_2way",
+      "model": {
+        "decision_lag": "start-30min",
+        "model_prob": {
+          "away": 0.36165106392462465,
+          "draw": 0.0,
+          "home": 0.6383489360753754
+        },
+        "odds": "none (no permissioned odds path)",
+        "ratings": {
+          "away": 1468.146321635532,
+          "home": 1531.853678364468
+        }
+      },
+      "model_version": "nr-forward-2026-09-20.1",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "prediction_id": "fwd-c3115ffece03b598b085",
+      "selection": "Grizzlys Wolfsburg",
+      "selection_key": "home",
+      "source_event_id": "84336",
+      "source_url": "https://api.openligadb.de/getmatchdata/del/2026/84336",
+      "sport": "ice_hockey",
+      "start_utc": "2026-09-25T17:30:00Z",
+      "strategy_id": "hockey-elo-v1",
+      "strategy_name": "Hockey Elo favourite (no-market pilot)"
+    },
+    {
+      "away_team": "Red Bull München",
+      "competition": "DEL 2026/2027",
+      "cutoff_utc": "2026-09-20T18:59:15Z",
+      "event": "Pinguins Bremerhaven v Red Bull München",
+      "event_id": "ev-e87caf36253f30c9599b",
+      "group_name": "3. Spieltag",
+      "group_order": 3,
+      "home_team": "Pinguins Bremerhaven",
+      "issued_at_utc": "2026-09-20T18:59:15Z",
+      "label": "del-2026",
+      "market": "match_winner_2way",
+      "model": {
+        "decision_lag": "start-30min",
+        "model_prob": {
+          "away": 0.4071586195857726,
+          "draw": 0.0,
+          "home": 0.5928413804142274
+        },
+        "odds": "none (no permissioned odds path)",
+        "ratings": {
+          "away": 1500.146321635532,
+          "home": 1530.416272262071
+        }
+      },
+      "model_version": "nr-forward-2026-09-20.1",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "prediction_id": "fwd-ef8fd6c7278846c2572e",
+      "selection": "Pinguins Bremerhaven",
+      "selection_key": "home",
+      "source_event_id": "84334",
+      "source_url": "https://api.openligadb.de/getmatchdata/del/2026/84334",
+      "sport": "ice_hockey",
+      "start_utc": "2026-09-25T17:30:00Z",
+      "strategy_id": "hockey-elo-v1",
+      "strategy_name": "Hockey Elo favourite (no-market pilot)"
+    },
+    {
+      "away_team": "Pinguins Bremerhaven",
+      "competition": "DEL 2026/2027",
+      "cutoff_utc": "2026-09-20T18:59:15Z",
+      "event": "Grizzlys Wolfsburg v Pinguins Bremerhaven",
+      "event_id": "ev-120780e21599bac80219",
+      "group_name": "4. Spieltag",
+      "group_order": 4,
+      "home_team": "Grizzlys Wolfsburg",
+      "issued_at_utc": "2026-09-20T18:59:15Z",
+      "label": "del-2026",
+      "market": "match_winner_2way",
+      "model": {
+        "decision_lag": "start-30min",
+        "model_prob": {
+          "away": 0.44775376618687757,
+          "draw": 0.0,
+          "home": 0.5522462338131224
+        },
+        "odds": "none (no permissioned odds path)",
+        "ratings": {
+          "away": 1530.416272262071,
+          "home": 1531.853678364468
+        }
+      },
+      "model_version": "nr-forward-2026-09-20.1",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "prediction_id": "fwd-740b42693dfccb89177f",
+      "selection": "Grizzlys Wolfsburg",
+      "selection_key": "home",
+      "source_event_id": "84339",
+      "source_url": "https://api.openligadb.de/getmatchdata/del/2026/84339",
+      "sport": "ice_hockey",
+      "start_utc": "2026-09-27T12:00:00Z",
+      "strategy_id": "hockey-elo-v1",
+      "strategy_name": "Hockey Elo favourite (no-market pilot)"
+    },
+    {
+      "away_team": "Iserlohn Roosters",
+      "competition": "DEL 2026/2027",
+      "cutoff_utc": "2026-09-20T18:59:15Z",
+      "event": "Eisbären Berlin v Iserlohn Roosters",
+      "event_id": "ev-e49bd8433ed47c094daf",
+      "group_name": "4. Spieltag",
+      "group_order": 4,
+      "home_team": "Eisbären Berlin",
+      "issued_at_utc": "2026-09-20T18:59:15Z",
+      "label": "del-2026",
+      "market": "match_winner_2way",
+      "model": {
+        "decision_lag": "start-30min",
+        "model_prob": {
+          "away": 0.4087908800996234,
+          "draw": 0.0,
+          "home": 0.5912091199003766
+        },
+        "odds": "none (no permissioned odds path)",
+        "ratings": {
+          "away": 1469.583727737929,
+          "home": 1498.6796983118954
+        }
+      },
+      "model_version": "nr-forward-2026-09-20.1",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "prediction_id": "fwd-4d053828dee31ce3896f",
+      "selection": "Eisbären Berlin",
+      "selection_key": "home",
+      "source_event_id": "84337",
+      "source_url": "https://api.openligadb.de/getmatchdata/del/2026/84337",
+      "sport": "ice_hockey",
+      "start_utc": "2026-09-27T12:00:00Z",
+      "strategy_id": "hockey-elo-v1",
+      "strategy_name": "Hockey Elo favourite (no-market pilot)"
+    },
+    {
+      "away_team": "Straubing Tigers",
+      "competition": "DEL 2026/2027",
+      "cutoff_utc": "2026-09-20T18:59:15Z",
+      "event": "Nürnberg Ice Tigers v Straubing Tigers",
+      "event_id": "ev-0641ef006b9728c5db87",
+      "group_name": "4. Spieltag",
+      "group_order": 4,
+      "home_team": "Nürnberg Ice Tigers",
+      "issued_at_utc": "2026-09-20T18:59:15Z",
+      "label": "del-2026",
+      "market": "match_winner_2way",
+      "model": {
+        "decision_lag": "start-30min",
+        "model_prob": {
+          "away": 0.36087361955325514,
+          "draw": 0.0,
+          "home": 0.6391263804467449
+        },
+        "odds": "none (no permissioned odds path)",
+        "ratings": {
+          "away": 1467.853678364468,
+          "home": 1532.146321635532
+        }
+      },
+      "model_version": "nr-forward-2026-09-20.1",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "prediction_id": "fwd-27f52520d67214c020e2",
+      "selection": "Nürnberg Ice Tigers",
+      "selection_key": "home",
+      "source_event_id": "84340",
+      "source_url": "https://api.openligadb.de/getmatchdata/del/2026/84340",
+      "sport": "ice_hockey",
+      "start_utc": "2026-09-27T14:30:00Z",
+      "strategy_id": "hockey-elo-v1",
+      "strategy_name": "Hockey Elo favourite (no-market pilot)"
+    },
+    {
+      "away_team": "Kölner Haie",
+      "competition": "DEL 2026/2027",
+      "cutoff_utc": "2026-09-20T18:59:15Z",
+      "event": "Augsburger Panther v Kölner Haie",
+      "event_id": "ev-64dc254bb3c20e999f8e",
+      "group_name": "4. Spieltag",
+      "group_order": 4,
+      "home_team": "Augsburger Panther",
+      "issued_at_utc": "2026-09-20T18:59:15Z",
+      "label": "del-2026",
+      "market": "match_winner_2way",
+      "model": {
+        "decision_lag": "start-30min",
+        "model_prob": {
+          "away": 0.4250724600103587,
+          "draw": 0.0,
+          "home": 0.5749275399896413
+        },
+        "odds": "none (no permissioned odds path)",
+        "ratings": {
+          "away": 1482.3936206958867,
+          "home": 1499.853678364468
+        }
+      },
+      "model_version": "nr-forward-2026-09-20.1",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "prediction_id": "fwd-6b834214e17f369ae0ba",
+      "selection": "Augsburger Panther",
+      "selection_key": "home",
+      "source_event_id": "84342",
+      "source_url": "https://api.openligadb.de/getmatchdata/del/2026/84342",
+      "sport": "ice_hockey",
+      "start_utc": "2026-09-27T14:30:00Z",
+      "strategy_id": "hockey-elo-v1",
+      "strategy_name": "Hockey Elo favourite (no-market pilot)"
+    },
+    {
+      "away_team": "Schwenninger Wild Wings",
+      "competition": "DEL 2026/2027",
+      "cutoff_utc": "2026-09-20T18:59:15Z",
+      "event": "Krefeld Pinguine v Schwenninger Wild Wings",
+      "event_id": "ev-83104e53b4c12ed413f7",
+      "group_name": "4. Spieltag",
+      "group_order": 4,
+      "home_team": "Krefeld Pinguine",
+      "issued_at_utc": "2026-09-20T18:59:15Z",
+      "label": "del-2026",
+      "market": "match_winner_2way",
+      "model": {
+        "decision_lag": "start-30min",
+        "model_prob": {
+          "away": 0.4047569603484281,
+          "draw": 0.0,
+          "home": 0.5952430396515719
+        },
+        "odds": "none (no permissioned odds path)",
+        "ratings": {
+          "away": 1468.146321635532,
+          "home": 1500.146321635532
+        }
+      },
+      "model_version": "nr-forward-2026-09-20.1",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "prediction_id": "fwd-ee976044daea7aa92aba",
+      "selection": "Krefeld Pinguine",
+      "selection_key": "home",
+      "source_event_id": "84341",
+      "source_url": "https://api.openligadb.de/getmatchdata/del/2026/84341",
+      "sport": "ice_hockey",
+      "start_utc": "2026-09-27T14:30:00Z",
+      "strategy_id": "hockey-elo-v1",
+      "strategy_name": "Hockey Elo favourite (no-market pilot)"
+    }
+  ],
+  "version": "nr-forward-ledger-1"
+}

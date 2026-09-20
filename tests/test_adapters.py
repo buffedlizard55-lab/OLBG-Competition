@@ -7,6 +7,7 @@ actual fixtures so a regression in parsing or reconciliation is caught.
 from __future__ import annotations
 
 import json
+from datetime import timedelta
 
 import pytest
 
@@ -292,3 +293,56 @@ class TestOddsWindowInference:
         ):
             window = odds_collection_window_utc(kickoff)
             assert window < kickoff, kickoff.isoformat()
+
+
+class TestDuplicateResultEntries:
+    """Audit 2026-09-20: PDCPCF 2025 matchID 79962 (Price v Littler) carries
+    one real 8-11 final plus two stale 0-0 duplicates of the same result
+    kind. The conflict must be flagged, not silently resolved."""
+
+    @staticmethod
+    def _payload(results):
+        return json.dumps([{
+            "matchID": 79962,
+            "leagueShortcut": "PDCPCF",
+            "leagueSeason": 2025,
+            "leagueName": "Players Championship Finals 2025",
+            "matchDateTimeUTC": "2025-11-23T19:15:00Z",
+            "matchIsFinished": True,
+            "group": {"groupOrderID": 5, "groupName": "Halbfinale"},
+            "team1": {"teamId": 1, "teamName": "Gerwyn Price"},
+            "team2": {"teamId": 2, "teamName": "Luke Littler"},
+            "lastUpdateDateTime": "2025-11-23T20:57:18.03",
+            "matchResults": results,
+        }])
+
+    def test_conflicting_duplicates_are_flagged(self):
+        text = self._payload([
+            {"resultTypeKind": "After90Minutes", "pointsTeam1": 8,
+             "pointsTeam2": 11},
+            {"resultTypeKind": "After90Minutes", "pointsTeam1": 0,
+             "pointsTeam2": 0},
+        ])
+        (m,) = openligadb.parse_matchday(text, sport="darts")
+        assert m["kind_inconsistent"] is True
+        assert (m["home_goals"], m["away_goals"]) == (8, 11)
+
+    def test_consistent_duplicates_are_not_flagged(self):
+        text = self._payload([
+            {"resultTypeKind": "After90Minutes", "pointsTeam1": 8,
+             "pointsTeam2": 11},
+            {"resultTypeKind": "After90Minutes", "pointsTeam1": 8,
+             "pointsTeam2": 11},
+        ])
+        (m,) = openligadb.parse_matchday(text, sport="darts")
+        assert m["kind_inconsistent"] is False
+        assert (m["home_goals"], m["away_goals"]) == (8, 11)
+
+
+def test_darts_availability_is_start_plus_12h():
+    """Audit-driven: same-day entry lag reached 10.46h across the three
+    committed 2025 PDC events; +12h stays conservative (docs/DARTS-AUDIT.md)."""
+    start = parse_utc("2025-11-23T19:15:00Z")
+    avail = openligadb.availability_for(
+        "darts", start, "2025-11-23T20:57:18.03")
+    assert avail == start + timedelta(hours=12)

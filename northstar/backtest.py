@@ -125,6 +125,25 @@ class TimeBoundedStore:
             return None
         return max(rows, key=lambda r: r["available_at"])
 
+    def recent_form(self, team: str, at: datetime,
+                    n: int = 3) -> List[Dict[str, Any]]:
+        """The last ``n`` released matches for a team at time ``at``.
+
+        Read-audited like every other feature read.  Rows carry the
+        conventional football points (win 3 / draw 1 / loss 0) computed from
+        the released scoreline only.  Newest first.
+        """
+        self._record_read(at)
+        rows = [r for r in self.team_history.get(team, [])
+                if r["available_at"] <= at]
+        rows.sort(key=lambda r: (r["available_at"], r["event_id"]))
+        out = []
+        for r in reversed(rows[-n:]):
+            g, og = r["goals"], r["opponent_goals"]
+            pts = 3 if g > og else (1 if g == og else 0)
+            out.append({**r, "points": pts})
+        return out
+
     def head_to_head(self, team_a: str, team_b: str, at: datetime
                      ) -> List[Dict[str, Any]]:
         self._record_read(at)
@@ -172,12 +191,27 @@ def run_walk_forward(store: Store, events: Sequence[Dict[str, Any]],
     # Deterministic total order: same-start games (a whole hockey matchday
     # can share a puck-drop time) must not depend on input order - the
     # event_id tiebreak makes any shuffle of the input list equivalent.
-    ordered = sorted(events, key=lambda e: (e.get("group_order") or 0,
-                                            e["scheduled_start_utc"],
+    # Start-first (not group-first) because walk-forwards can now span
+    # several competitions in one rating pool (darts 2025-26 events): a
+    # group_order-first sort would process a November tournament's early
+    # rounds before a July tournament's final, leaving chronologically
+    # available ratings unregistered at read time (under-use, not leakage -
+    # TimeBoundedStore still filters by availability - but it distorts the
+    # pool). For single-competition pilots the two orders coincide because
+    # matchday group_order is chronological with start time.
+    ordered = sorted(events, key=lambda e: (e["scheduled_start_utc"],
+                                            e.get("group_order") or 0,
                                             e["event_id"]))
     if strategy_sport:
         ordered = [e for e in ordered if e.get("sport") == strategy_sport]
     tbs = TimeBoundedStore()
+    # Data contract: an event whose result is under review
+    # (RESULT_KIND_INCONSISTENT - impossible layering or conflicting
+    # duplicate entries) must neither update ratings nor be graded on;
+    # the review queue owns its verdict, and a silent first-entry read
+    # would launder a disputed source row into the model.
+    flagged = {a["entity_id"] for a in store.anomalies(status="open")
+               if a["kind"] == models.ANOMALY_RESULT_KIND_INCONSISTENT}
     for e in ordered:
         tbs.register_event(e)
 
@@ -188,6 +222,12 @@ def run_walk_forward(store: Store, events: Sequence[Dict[str, Any]],
     for e in ordered:
         start = parse_utc(e["scheduled_start_utc"])
         if e["status"] != EVENT_STATUS_FINISHED:
+            continue
+        if e["event_id"] in flagged:
+            result.skipped.append({
+                "event_id": e["event_id"],
+                "reason": "result flagged for review "
+                          "(RESULT_KIND_INCONSISTENT)"})
             continue
         results = [r for r in store.results(e["event_id"])
                    if r["final_status"] == "finished"]
@@ -232,8 +272,20 @@ def run_walk_forward(store: Store, events: Sequence[Dict[str, Any]],
         # became available) and reads features only at/before that.  The
         # market snapshot is itself an input, even if the strategy does not
         # call a TimeBoundedStore method.
+        #
+        # ENGINE FIX (2026-09-20): every finished event with a consistent
+        # stored result now RELEASES that result to the feature timeline,
+        # whether the strategy bet, passed, or violated the cutoff rules.
+        # Previously a "strategy passed" decision skipped the release,
+        # which froze rating-based strategies at their last *bet* match and
+        # starved history-based features.  That is wrong walk-forward
+        # semantics (the match happened; a real desk observes it) and it
+        # silently distorted the pilot's Elo desks - all pilot numbers in
+        # docs/site are regenerated from the fixed engine.
         tbs.begin_decision(start)
         tbs.record_external_read(odds_observed_at)
+        decision = None
+        cutoff = None
         try:
             decision = strategy.predict(e, tbs, start,
                                         market_odds=market_odds,
@@ -241,131 +293,141 @@ def run_walk_forward(store: Store, events: Sequence[Dict[str, Any]],
         except TimeLeakageError as exc:
             result.leak_violations.append(
                 f"{strategy_id}: {exc} for {e['event_id']}")
-            continue
-        cutoff = decision.get("cutoff_utc")
-        if cutoff is not None:
-            if not isinstance(cutoff, datetime) or cutoff.tzinfo is None:
+        if decision is not None:
+            cutoff = decision.get("cutoff_utc")
+            if cutoff is not None:
+                if not isinstance(cutoff, datetime) or cutoff.tzinfo is None:
+                    result.leak_violations.append(
+                        f"{strategy_id}: cutoff must be timezone-aware "
+                        f"datetime for {e['event_id']}"
+                    )
+                    decision = None
+                else:
+                    cutoff = cutoff.astimezone(timezone.utc)
+        if decision is not None:
+            latest_read = tbs.latest_read_at
+            if latest_read is not None and (cutoff is None
+                                            or latest_read > cutoff):
                 result.leak_violations.append(
-                    f"{strategy_id}: cutoff must be timezone-aware datetime "
-                    f"for {e['event_id']}"
+                    f"{strategy_id}: read at {latest_read} exceeds declared "
+                    f"cutoff {cutoff} for {e['event_id']}"
                 )
-                continue
-            cutoff = cutoff.astimezone(timezone.utc)
-        latest_read = tbs.latest_read_at
-        if latest_read is not None and (cutoff is None or latest_read > cutoff):
-            result.leak_violations.append(
-                f"{strategy_id}: read at {latest_read} exceeds declared "
-                f"cutoff {cutoff} for {e['event_id']}")
-            continue
-        if cutoff is not None and cutoff >= start:
+                decision = None
+        if decision is not None and cutoff is not None and cutoff >= start:
             result.leak_violations.append(
                 f"{strategy_id}: cutoff {cutoff} not before start {start} "
-                f"for {e['event_id']}")
-            continue
-        if not decision.get("selection_key") or \
-                decision["selection_key"] == "none":
+                f"for {e['event_id']}"
+            )
+            decision = None
+        if decision is not None and (
+                not decision.get("selection_key")
+                or decision["selection_key"] == "none"):
             result.skipped.append({"event_id": e["event_id"],
                                    "reason": "strategy passed",
                                    "model": decision.get("model", {})})
-            continue
-        if cutoff is None:
+            decision = None
+        if decision is not None and cutoff is None:
             result.leak_violations.append(
                 f"{strategy_id}: bet has no cutoff for {e['event_id']}")
-            continue
+            decision = None
 
-        # Entry price: earliest stored snapshot at/before cutoff (the price
-        # the desk actually saw) - never a later 'better' price.
-        odds = None
-        provider = None
-        prediction_only = False
-        provider_key = decision.get(
-            "odds_provider", getattr(strategy, "odds_provider", "market_avg")
-        )
-        if provider_key:
-            snaps = [s for s in store.odds_snapshots(e["event_id"])
-                     if s["provider"] == provider_key
-                     and s["selection_key"] == decision["selection_key"]
-                     and parse_utc(s["observed_at_utc"]) <= cutoff]
-            if snaps:
-                snap = min(snaps, key=lambda s: s["observed_at_utc"])
-                odds = snap["decimal_odds"]
-                provider = snap["provider"]
+        if decision is not None:
+            # Entry price: earliest stored snapshot at/before cutoff (the
+            # price the desk actually saw) - never a later 'better' price.
+            odds = None
+            provider = None
+            prediction_only = False
+            provider_key = decision.get(
+                "odds_provider",
+                getattr(strategy, "odds_provider", "market_avg"))
+            if provider_key:
+                snaps = [s for s in store.odds_snapshots(e["event_id"])
+                         if s["provider"] == provider_key
+                         and s["selection_key"] == decision["selection_key"]
+                         and parse_utc(s["observed_at_utc"]) <= cutoff]
+                if snaps:
+                    snap = min(snaps, key=lambda s: s["observed_at_utc"])
+                    odds = snap["decimal_odds"]
+                    provider = snap["provider"]
+                elif allow_no_odds:
+                    prediction_only = True
+                else:
+                    # No price stored for this selection/cutoff: we cannot
+                    # settle a bet that never had an observable entry price.
+                    result.skipped.append({
+                        "event_id": e["event_id"],
+                        "reason": "no pre-cutoff odds",
+                        "selection": decision["selection_key"]})
+                    decision = None
             elif allow_no_odds:
                 prediction_only = True
             else:
-                # No price stored for this selection/cutoff: we cannot settle
-                # a bet that never had an observable entry price.
-                result.skipped.append({"event_id": e["event_id"],
-                                       "reason": "no pre-cutoff odds",
-                                       "selection": decision["selection_key"]})
-                continue
-        elif allow_no_odds:
-            prediction_only = True
-        else:
-            result.skipped.append({"event_id": e["event_id"],
-                                   "reason": "strategy declares no odds "
-                                             "provider and none is permitted",
-                                   "selection": decision["selection_key"]})
-            continue
+                result.skipped.append({
+                    "event_id": e["event_id"],
+                    "reason": "strategy declares no odds provider and none "
+                              "is permitted",
+                    "selection": decision["selection_key"]})
+                decision = None
 
-        tip_id = stable_id("bt-tip", strategy_id, e["event_id"])
-        tip = Tip(
-            tip_id=tip_id,
-            tipster_id=strategy_id,
-            strategy_id=strategy_id,
-            event_id=e["event_id"],
-            market=MARKET_MATCH_WINNER_3WAY,
-            selection=decision.get("selection_text",
-                                   decision["selection_key"]),
-            selection_key=decision["selection_key"],
-            published_at_utc=cutoff,
-            collected_at_utc=utcnow(),
-            cutoff_at_utc=cutoff,
-            odds_decimal=odds,
-            odds_source=provider,
-            stake_units=stake,
-            source_url=e.get("source_url"),
-            raw_payload_hash=None,
-            status=(TIP_STATUS_UNSETTLEABLE if prediction_only
-                    else TIP_STATUS_OPEN),
-            notes=((f"prediction-only walk-forward {label}: no permissioned "
-                    "odds path for this sport; PnL not computable and not "
-                    "zero").strip() if prediction_only
-                   else f"walk-forward backtest {label}".strip()),
-        )
-        add = store.add_tip(tip)
-        if not add["created"]:
-            # Re-run of the same backtest: idempotent, still settle below.
-            pass
-        decision_log = {
-            "event_id": e["event_id"],
-            "selection": decision["selection_key"],
-            "odds": odds,
-            "cutoff": models.fmt_utc(cutoff),
-            "model": decision.get("model", {}),
-            "strategy": strategy_id,
-        }
-        if prediction_only:
-            outcome = {"action": "prediction_only", "settlement_id": None}
-        else:
-            outcome = settle_tip(store, tip_id)
-        result.bets.append({**decision_log,
-                            "outcome_action": outcome["action"],
-                            "settlement_id": outcome.get("settlement_id")})
-        # Release this event's result to the feature store AFTER the bet.
-        # The post-result rating update is allowed to read the final timestamp;
-        # it is outside the decision audit window above.
+        if decision is not None:
+            tip_id = stable_id("bt-tip", strategy_id, e["event_id"])
+            tip = Tip(
+                tip_id=tip_id,
+                tipster_id=strategy_id,
+                strategy_id=strategy_id,
+                event_id=e["event_id"],
+                market=MARKET_MATCH_WINNER_3WAY,
+                selection=decision.get("selection_text",
+                                       decision["selection_key"]),
+                selection_key=decision["selection_key"],
+                published_at_utc=cutoff,
+                collected_at_utc=utcnow(),
+                cutoff_at_utc=cutoff,
+                odds_decimal=odds,
+                odds_source=provider,
+                stake_units=stake,
+                source_url=e.get("source_url"),
+                raw_payload_hash=None,
+                status=(TIP_STATUS_UNSETTLEABLE if prediction_only
+                        else TIP_STATUS_OPEN),
+                notes=((f"prediction-only walk-forward {label}: no "
+                        "permissioned odds path for this sport; PnL not "
+                        "computable and not zero").strip()
+                       if prediction_only
+                       else f"walk-forward backtest {label}".strip()),
+            )
+            store.add_tip(tip)
+            decision_log = {
+                "event_id": e["event_id"],
+                "selection": decision["selection_key"],
+                "odds": odds,
+                "cutoff": models.fmt_utc(cutoff),
+                "model": decision.get("model", {}),
+                "strategy": strategy_id,
+            }
+            if prediction_only:
+                outcome = {"action": "prediction_only",
+                           "settlement_id": None}
+            else:
+                outcome = settle_tip(store, tip_id)
+            result.bets.append({**decision_log,
+                                "outcome_action": outcome["action"],
+                                "settlement_id": outcome.get("settlement_id")})
+
+        # Release this event's result to the feature store AFTER the
+        # decision window closes - for EVERY decided event (bet, pass or
+        # violation; see ENGINE FIX above).  The post-result rating update
+        # may read the final timestamp; it is outside the audit window.
         tbs.end_decision()
-        tbs.add_result(e, primary["home_goals"], primary["away_goals"],
-                       available_at=parse_utc(primary["officially_final_at_utc"]))
         final_at = parse_utc(primary["officially_final_at_utc"])
+        tbs.add_result(e, primary["home_goals"], primary["away_goals"],
+                       available_at=final_at)
         ratings = strategy.ratings_after(e, primary["home_goals"],
                                          primary["away_goals"], tbs,
                                          final_at)
         if ratings:
-            tbs.update_ratings(ratings,
-                               available_at=parse_utc(
-                                   primary["officially_final_at_utc"]))
+            tbs.update_ratings(ratings, available_at=final_at)
+
     store.commit()
     return {
         "strategy_id": strategy_id,

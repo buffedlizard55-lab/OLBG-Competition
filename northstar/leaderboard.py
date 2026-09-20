@@ -107,7 +107,12 @@ def build_leaderboard(store: Store) -> List[Dict[str, Any]]:
     for e in entrants:
         m = entrant_metrics(store, e["entrant_id"])
         entrant_tips = store.tips(tipster_id=e["entrant_id"])
-        if (m["settled_bets"] == 0 and entrant_tips and all(
+        if not entrant_tips:
+            # A strategy that passed on every event has no record at all;
+            # a 0.00-profit row would imply a settled zero.  It is shown in
+            # the strategy lab (bets=0), not on the PnL board.
+            continue
+        if (m["settled_bets"] == 0 and all(
                 t["status"] == TIP_STATUS_UNSETTLEABLE
                 for t in entrant_tips)):
             # Prediction-only desk (e.g. a sport without a permissioned odds
@@ -176,7 +181,27 @@ def placed_bets(store: Store,
     return out
 
 
-def upcoming_bets(store: Store) -> List[Dict[str, Any]]:
-    """Open (placed, not yet settled) bets = what strategies currently hold."""
-    return [b for b in placed_bets(store)
-            if b["status"] in ("open", "pending", "disputed")]
+def upcoming_bets(store: Store,
+                  now: Optional[Any] = None) -> List[Dict[str, Any]]:
+    """Bets the desk currently holds that are not yet decided.
+
+    Includes open/pending/disputed rows (as before) and *forward-test*
+    prediction rows (status ``unsettleable``) whose event start lies in
+    the future of ``now`` - those are genuine upcoming calls.  Historical
+    prediction-only rows (hockey/darts pilots on 2024/25 fixtures) stay out
+    of "upcoming": their events already started, and they are graded in the
+    strategy/accuracy views instead.
+    """
+    from .models import parse_utc, utcnow
+    now = now or utcnow()
+    out = []
+    for b in placed_bets(store):
+        if b["status"] in ("open", "pending", "disputed"):
+            out.append(b)
+        elif b["status"] == TIP_STATUS_UNSETTLEABLE and b["event_start_utc"]:
+            try:
+                if parse_utc(b["event_start_utc"]) > now:
+                    out.append(b)
+            except ValueError:
+                continue
+    return out
