@@ -23,6 +23,8 @@ committed real fixtures) · `forward` (frozen live predictions in
 | R5 | *Home advantage in professional soccer and betting market efficiency: The role of spectator crowds* — <https://www.researchgate.net/publication/358982251_Home_advantage_in_professional_soccer_and_betting_market_efficiency_The_role_of_spectator_crowds> | Home-advantage mispricing (ghost-games natural experiment) |
 | R6 | Swartz & Arce, *New Insights Involving the Home Team Advantage* (SFU) — <https://www.sfu.ca/~tswartz/papers/hca.pdf> | NHL home-ice advantage ≈ 54.5% regular-season win rate |
 | R7 | FiveThirtyEight, *How Our Club Soccer Projections Work* — <https://fivethirtyeight.com/features/how-our-club-soccer-projections-work/> | Rating-based match projection design (Elo/SPI family) |
+| R8 | Dixon & Coles (1997), *Modelling Association Football Scores and Inefficiencies in the Football Betting Market*, JRSS-C 46(2), 265–280 — <https://research-information.bris.ac.uk/en/publications/modelling-association-football-scores-and-inefficiencies-in-the-f/> (checked 2026-09-21: Bristol record confirms journal/volume/pages) | Poisson goal-model family for totals; attack/defence multipliers × league rates |
+| R9 | Hvattum & Arntzen (2010), *Using ELO ratings for match result prediction in association football*, Int. J. Forecasting 26(3), 460–470 — <https://doi.org/10.1016/j.ijforecast.2009.10.002> (checked 2026-09-21: abstract + intro read; cites Maher 1982 as origin of the independent-Poisson attack/defence model) | Elo-covariate prior; literature lineage Maher → Dixon-Coles |
 
 References motivate hypotheses; **none of them is evidence about this
 repository's results**. Our own numbers come only from committed fixtures
@@ -30,12 +32,14 @@ repository's results**. Our own numbers come only from committed fixtures
 
 ## Football (Bundesliga pilot — 27 matches, dual-source verified)
 
-All seven ran walk-forward with strict cutoffs, level 1.0-unit stakes,
-bootstrap 95% CIs, and Holm correction across the family (m=7, R2).
-**All seven are negative; every Holm-adjusted p-value is 1.0; no edge is
-claimed.** Raw p-values 0.2675–0.694 — nothing is remotely significant, in
+All nine ran walk-forward with strict cutoffs, level 1.0-unit stakes,
+bootstrap 95% CIs, and Holm correction across the family (m=9, R2).
+**All nine are negative; every Holm-adjusted p-value is 1.0; no edge is
+claimed.** Raw p-values 0.2675–0.9435 — nothing is remotely significant, in
 either direction. Sample size (27 matches / 3–27 bets) is the binding
 limitation (`docs/STATUS.md` #1).
+
+### Market 1 — 1X2 (`match_winner_3way`, seven strategies)
 
 | id | research question | prior | rule (pre-registered) | result |
 |---|---|---|---|---|
@@ -46,6 +50,27 @@ limitation (`docs/STATUS.md` #1).
 | `home-edge-v1` | Is home advantage mispriced? | R5: bookmakers over-rated home teams absent crowds → home edge can be over- *or* under-priced | bet home when model home prob (form+venue) − implied ≥ threshold | −3.04 u, ROI −30.4% (10 bets), p_raw 0.694 |
 | `draw-value-v1` | Are draws systematically overpriced as longshots? | R3/R4: draw odds show negative longshot bias in some samples | bet draw when model draw prob − implied ≥ threshold | −1.32 u, ROI −16.5% (8 bets), p_raw 0.6145 |
 | `draw-no-bet-v1` | Does removing the draw outcome (stake refund on draw) beat 1X2 on this sample? | classic tipster construction — treated purely as a testable hypothesis, no external claim | Elo edge on 2-way DNB projection, decisive matches only | −5.20 u, ROI −22.6% (23 bets), p_raw 0.3395 |
+
+### Market 2 — over/under 2.5 goals (`total_goals_over_under_2_5`, added 2026-09-21)
+
+Same 27 verified matches, same football-data pilot file: its `B365>2.5 /
+B365<2.5`, `Avg>2.5 / Avg<2.5`, `Max>2.5 / Max<2.5`, `BFE>2.5 / BFE<2.5`
+columns (208 snapshots — BFE is blank on four rows), same collection-window
+close timestamp as the 1X2 prices, so no new leakage surface. Settlement
+rule `settlement.match_outcome_totals`: 90-minute total ≥ 3 → over wins,
+≤ 2 → under wins; a half-goal line cannot push and integer lines are
+refused (no guessed push rule). Rule version bumped to
+`nr-settlement-2026-09-21.1`. Actual pilot base rate: 13/27 matches over.
+
+| id | research question | prior | rule (pre-registered) | result |
+|---|---|---|---|---|
+| `poisson-totals-value-v1` | Does a plain independent-Poisson goal model find value in the O/U 2.5 price? | R8/R9 lineage (Maher → Dixon-Coles): league rate × attack × defence | league home/away rates from released matches (generic prior 1.60/1.30 until ≥10 released), team multipliers shrunk with a 6-match prior weight, P(total ≤ 2) Poisson; bet the side with ≥ 3-pt edge over the margin-removed Avg price | −0.48 u, ROI −1.9%, strike 40.0% (25 bets, 2 no-bets), p_raw 0.9435, CI [−0.51, +0.52] — closest to zero of all nine, still not distinguishable from noise |
+| `market-totals-favourite-v1` | Baseline: does the market's favoured side of O/U 2.5 beat the vig? | none — reference | always back the margin-removed favourite side of O/U 2.5 | −4.19 u, ROI −15.5%, strike 55.6% (27 bets), p_raw 0.29 |
+
+Not run: **Asian handicap** — the pilot file has `AHh / AvgAHH / AvgAHA`,
+but quarter lines (±0.25/±0.75) split the stake and integer lines push;
+that rule set is not written or tested, so it stays `Ready to source`
+in the registry rather than being graded with a guessed rule.
 
 Forward desk: `elo-favourite-3way-v1` (3-way Elo favourite, frozen live
 predictions; dormant at the 2026-09-20 capture because Bundesliga MD5
@@ -94,7 +119,7 @@ the repository's core anti-hallucination rule.
 
 ## Multiple comparisons & reporting rules
 
-- Holm step-down (R2) across the PnL-capable family (m=7 football
+- Holm step-down (R2) across the PnL-capable family (m=9 football
   strategies). Adjusted p-values: all 1.0. Implementation + tests:
   `northstar/stats.py`, `tests/test_stats.py`.
 - Prediction-only desks (hockey, darts) are excluded from the PnL family

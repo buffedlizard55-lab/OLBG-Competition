@@ -23,6 +23,11 @@ MARKET_MATCH_WINNER_3WAY = "match_winner_3way"
 # Prediction-only desks use it; the settlement engine has no rule set for it
 # yet (settlement would flag MARKET_RULE_UNKNOWN), which is intentional.
 MARKET_MATCH_WINNER_2WAY = "match_winner_2way"
+# Total goals over/under 2.5 (football). Settled on the 90-minute score:
+# ``over`` wins when home+away >= 3, ``under`` when <= 2; a half-goal line
+# can never push. Rule set: settlement.match_outcome_totals.
+MARKET_TOTALS_2_5 = "total_goals_over_under_2_5"
+TOTALS_2_5_LINE = 2.5
 
 EVENT_STATUS_SCHEDULED = "scheduled"
 EVENT_STATUS_LIVE = "live"
@@ -46,7 +51,7 @@ RESULT_KIND_AFTER_EXTRA = "AfterExtraTime"
 RESULT_KIND_AFTER_PENALTIES = "AfterPenalties"
 RESULT_KIND_HALF_TIME = "HalfTime"
 
-SETTLEMENT_RULE_VERSION = "nr-settlement-2026-09-19.1"
+SETTLEMENT_RULE_VERSION = "nr-settlement-2026-09-21.1"
 
 # Anomaly taxonomy (superset of docs/data-contract.md section 4).
 ANOMALY_MISSING_ODDS = "MISSING_ODDS"

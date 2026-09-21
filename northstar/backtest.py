@@ -21,7 +21,7 @@ from typing import Any, Callable, Dict, List, Optional, Sequence
 from . import models
 from .db import Store
 from .models import (
-    EVENT_STATUS_FINISHED, MARKET_MATCH_WINNER_3WAY,
+    EVENT_STATUS_FINISHED, MARKET_MATCH_WINNER_3WAY, MARKET_TOTALS_2_5,
     TIP_STATUS_OPEN, TIP_STATUS_UNSETTLEABLE, Tip,
     parse_utc, stable_id, utcnow,
 )
@@ -144,6 +144,33 @@ class TimeBoundedStore:
             out.append({**r, "points": pts})
         return out
 
+    def goal_record(self, team: str, at: datetime) -> List[Dict[str, Any]]:
+        """Every released match row for ``team`` at time ``at`` (oldest
+        first): goals for / against, venue flag.  Read-audited."""
+        self._record_read(at)
+        rows = [r for r in self.team_history.get(team, [])
+                if r["available_at"] <= at]
+        rows.sort(key=lambda r: (r["available_at"], r["event_id"]))
+        return rows
+
+    def released_matches(self, at: datetime) -> List[Dict[str, Any]]:
+        """Distinct released matches (one row per event) at time ``at``:
+        {event_id, home_goals, away_goals, start_utc}.  Used for the
+        walk-forward league scoring baseline; read-audited."""
+        self._record_read(at)
+        seen: Dict[str, Dict[str, Any]] = {}
+        for team, rows in self.team_history.items():
+            for r in rows:
+                if r["available_at"] > at or r["event_id"] in seen:
+                    continue
+                hg = r["goals"] if r["home"] else r["opponent_goals"]
+                ag = r["opponent_goals"] if r["home"] else r["goals"]
+                seen[r["event_id"]] = {"event_id": r["event_id"],
+                                       "home_goals": hg, "away_goals": ag,
+                                       "start_utc": r["start_utc"]}
+        return sorted(seen.values(),
+                      key=lambda m: (m["start_utc"], m["event_id"]))
+
     def head_to_head(self, team_a: str, team_b: str, at: datetime
                      ) -> List[Dict[str, Any]]:
         self._record_read(at)
@@ -188,6 +215,12 @@ def run_walk_forward(store: Store, events: Sequence[Dict[str, Any]],
     without a stored pre-cutoff price is skipped exactly as before.
     """
     strategy_sport = getattr(strategy, "sport", None)
+    # Market the strategy trades (default 1X2).  Only snapshots of that
+    # market are offered as the market view / entry price, and the tip is
+    # stored under it so settlement applies the matching rule set.
+    market_key = getattr(strategy, "market", None) or MARKET_MATCH_WINNER_3WAY
+    market_selections = ("over", "under") if market_key == MARKET_TOTALS_2_5 \
+        else ("home", "draw", "away")
     # Deterministic total order: same-start games (a whole hockey matchday
     # can share a puck-drop time) must not depend on input order - the
     # event_id tiebreak makes any shuffle of the input list equivalent.
@@ -254,6 +287,7 @@ def run_walk_forward(store: Store, events: Sequence[Dict[str, Any]],
         odds_observed_at = None
         snaps = [s for s in store.odds_snapshots(e["event_id"])
                  if s["provider"] == "market_avg"
+                 and s["market_key"] == market_key
                  and parse_utc(s["observed_at_utc"]) < start]
         if snaps:
             first = min(snaps, key=lambda s: s["observed_at_utc"])
@@ -264,7 +298,7 @@ def run_walk_forward(store: Store, events: Sequence[Dict[str, Any]],
                            if s["selection_key"] == sel
                            and parse_utc(s["observed_at_utc"]) <= first_at),
                           None)
-                for sel in ("home", "draw", "away")}
+                for sel in market_selections}
         else:
             market_odds = None
 
@@ -343,6 +377,7 @@ def run_walk_forward(store: Store, events: Sequence[Dict[str, Any]],
             if provider_key:
                 snaps = [s for s in store.odds_snapshots(e["event_id"])
                          if s["provider"] == provider_key
+                         and s["market_key"] == market_key
                          and s["selection_key"] == decision["selection_key"]
                          and parse_utc(s["observed_at_utc"]) <= cutoff]
                 if snaps:
@@ -376,7 +411,7 @@ def run_walk_forward(store: Store, events: Sequence[Dict[str, Any]],
                 tipster_id=strategy_id,
                 strategy_id=strategy_id,
                 event_id=e["event_id"],
-                market=MARKET_MATCH_WINNER_3WAY,
+                market=market_key,
                 selection=decision.get("selection_text",
                                        decision["selection_key"]),
                 selection_key=decision["selection_key"],

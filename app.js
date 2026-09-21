@@ -249,6 +249,9 @@ const marketLabel = (b) => {
       : "match winner (incl. OT/SO)";
   if (b.sport === "ice_hockey" && b.market === "match_winner_3way")
     return "match winner (incl. OT/SO)";
+  if (b.market === "total_goals_over_under_2_5")
+    return "total goals O/U 2.5 (90 min)";
+  if (b.market === "match_winner_3way") return "1X2 (90 min)";
   return b.market;
 };
 

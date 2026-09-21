@@ -28,7 +28,7 @@ from ..db import Store
 from ..models import (
     ANOMALY_COMPETITION_MISMATCH, ANOMALY_EVENT_UNMATCHED,
     ANOMALY_PARTICIPANT_AMBIGUOUS, ANOMALY_TIME_CONFLICT,
-    MARKET_MATCH_WINNER_3WAY,
+    MARKET_MATCH_WINNER_3WAY, MARKET_TOTALS_2_5,
     OddsSnapshot, parse_utc, sha256_text, stable_id, utcnow,
 )
 from ..policy import MODE_MANUAL_IMPORT, PolicyError, get_policy
@@ -68,6 +68,20 @@ PROVIDER_COLUMNS = [
     ("williamhill", "WHH", "WHD", "WHA"),
     ("market_avg", "AvgH", "AvgD", "AvgA"),
     ("betfair_exchange", "BFEH", "BFED", "BFEA"),
+]
+
+# Total goals over/under 2.5 columns (same file, same collection window;
+# column names per the source's notes.txt: "B365>2.5 = Bet365 over 2.5
+# goals", "Avg>2.5 = Market average over 2.5 goals", etc.).  Pinnacle
+# ("P>2.5"/"P<2.5") is excluded for the same reason as above.  Closing
+# columns (…C…) are deliberately NOT imported: they are post-window prices
+# whose observation time cannot be bounded before kickoff by the window
+# rule, so they would violate the no-leakage guarantee.
+TOTALS_COLUMNS = [
+    ("b365", "B365>2.5", "B365<2.5"),
+    ("market_avg", "Avg>2.5", "Avg<2.5"),
+    ("market_max", "Max>2.5", "Max<2.5"),
+    ("betfair_exchange", "BFE>2.5", "BFE<2.5"),
 ]
 
 
@@ -211,8 +225,16 @@ def ingest_csv_text(store: Store, text: str,
             event["scheduled_start_utc"]))
         row_hash = sha256_text(",".join(
             str(v) for v in row["raw"].values() if v is not None))
-        for provider, ch, cd, ca in PROVIDER_COLUMNS:
-            for sel, col in (("home", ch), ("draw", cd), ("away", ca)):
+        column_sets = [
+            (MARKET_MATCH_WINNER_3WAY, provider,
+             (("home", ch), ("draw", cd), ("away", ca)))
+            for provider, ch, cd, ca in PROVIDER_COLUMNS
+        ] + [
+            (MARKET_TOTALS_2_5, provider, (("over", co), ("under", cu)))
+            for provider, co, cu in TOTALS_COLUMNS
+        ]
+        for market_key, provider, columns in column_sets:
+            for sel, col in columns:
                 v = _num(row["raw"].get(col))
                 if v is None:
                     continue
@@ -220,19 +242,25 @@ def ingest_csv_text(store: Store, text: str,
                 if odds <= 1.0 or odds != odds:
                     store.add_anomaly(models.Anomaly(
                         anomaly_id=stable_id("an", "ODDS_INVALID", eid,
-                                             provider, sel),
+                                             market_key, provider, sel),
                         kind="MISSING_ODDS", entity_type="odds",
                         entity_id=eid, detected_at_utc=utcnow(),
-                        detail=f"invalid odds {v} for {provider}/{sel}",
+                        detail=f"invalid odds {v} for {market_key}/"
+                               f"{provider}/{sel}",
                         source_urls=[FILE_URL]))
                     continue
+                # Snapshot ids for the 1X2 market are unchanged (stable
+                # across versions); totals ids carry the market key.
+                sid_parts = ([eid, provider, sel, window.isoformat()]
+                             if market_key == MARKET_MATCH_WINNER_3WAY
+                             else [eid, market_key, provider, sel,
+                                   window.isoformat()])
                 snap = OddsSnapshot(
-                    snapshot_id=stable_id("os", eid, provider, sel,
-                                          window.isoformat()),
+                    snapshot_id=stable_id("os", *sid_parts),
                     event_id=eid,
                     observed_at_utc=window,
                     provider=provider,
-                    market_key=MARKET_MATCH_WINNER_3WAY,
+                    market_key=market_key,
                     selection_key=sel,
                     decimal_odds=odds,
                     timestamp_precision="window_close_inferred",
@@ -242,5 +270,8 @@ def ingest_csv_text(store: Store, text: str,
                            "source docs (Fri 17:00 UK / Tue 13:00 UK)"))
                 store.add_odds_snapshot(snap)
                 stats["odds_snapshots"] += 1
+                if market_key == MARKET_TOTALS_2_5:
+                    stats["totals_snapshots"] = \
+                        stats.get("totals_snapshots", 0) + 1
     store.commit()
     return stats

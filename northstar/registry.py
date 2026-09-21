@@ -20,7 +20,7 @@ from __future__ import annotations
 
 from typing import Any, Dict, List
 
-REGISTRY_VERSION = "nr-hypothesis-registry-2026-09-20.2"
+REGISTRY_VERSION = "nr-hypothesis-registry-2026-09-21.1"
 
 HYPOTHESES: List[Dict[str, Any]] = [
     # ------------------------------------------------ football: backtested
@@ -98,13 +98,42 @@ HYPOTHESES: List[Dict[str, Any]] = [
         "refs": [],
     },
     {
-        "sport": "Football", "name": "Poisson goal totals",
+        "sport": "Football", "name": "Poisson goal totals (O/U 2.5)",
+        "status": "Pilot-tested", "tested": "poisson-totals-value-v1",
+        "data": "Same verified pilot file - its over/under 2.5 columns "
+                "(B365/Avg/Max/BFE), same collection window",
+        "test": "Walk-forward O/U 2.5 (half-goal line, no push)",
+        "description": "Independent-Poisson goal model (Maher 1982 / "
+                       "Dixon-Coles 1997 family): league rates + shrunk "
+                       "attack/defence multipliers from released matches "
+                       "only; bets over/under 2.5 with a >=3-point edge "
+                       "over the margin-removed market. Priors "
+                       "pre-registered, not fitted.",
+        "refs": [
+            "https://research-information.bris.ac.uk/en/publications/"
+            "modelling-association-football-scores-and-inefficiencies-in-the-f/",
+            "https://doi.org/10.1016/j.ijforecast.2009.10.002",
+        ],
+    },
+    {
+        "sport": "Football", "name": "Market totals favourite (O/U baseline)",
+        "status": "Pilot-tested", "tested": "market-totals-favourite-v1",
+        "data": "Same verified pilot over/under 2.5 prices",
+        "test": "Walk-forward O/U 2.5",
+        "description": "Always backs the market's more-likely side of "
+                       "over/under 2.5. Baseline for the totals family.",
+        "refs": [],
+    },
+    {
+        "sport": "Football", "name": "Asian handicap value",
         "status": "Ready to source",
-        "description": "Estimate home and away scoring rates from "
-                       "pre-cutoff history and test totals/handicap markets "
-                       "once a permissioned odds path covers them.",
-        "data": "Verified scores - line-up/time gate - licensed odds",
-        "test": "Walk-forward totals", "refs": [],
+        "description": "Same Poisson goal model applied to the stored "
+                       "Asian-handicap line (AHh / AvgAHH / AvgAHA columns "
+                       "exist in the pilot file). Needs a quarter-line "
+                       "split/push settlement rule with tests before it "
+                       "can be graded - not guessed.",
+        "data": "Verified scores + pilot AH columns - settlement rule gate",
+        "test": "Walk-forward AH", "refs": [],
     },
     # ------------------------------------------------ ice hockey
     {

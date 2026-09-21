@@ -21,6 +21,7 @@ from .draw import DrawNoBet
 from .value import DrawValue, FormValue, HomeEdge
 from .hockey import HockeyElo
 from .darts import DartsElo
+from .totals import MarketTotalsFavourite, PoissonTotalsValue
 
 REGISTRY = {
     "market-favourite-v1": MarketFavourite,
@@ -33,6 +34,8 @@ REGISTRY = {
     "hockey-elo-v1": HockeyElo,
     "darts-elo-v1": DartsElo,
     "elo-favourite-3way-v1": EloFavourite3Way,
+    "poisson-totals-value-v1": PoissonTotalsValue,
+    "market-totals-favourite-v1": MarketTotalsFavourite,
 }
 
 # Backtested on the verified football pilot (permissioned odds exist).
@@ -40,6 +43,8 @@ FOOTBALL_STRATEGIES = [
     "market-favourite-v1", "market-longshot-v1",
     "elo-edge-v1", "draw-no-bet-v1",
     "draw-value-v1", "home-edge-v1", "form-value-v1",
+    # Second market on the same verified pilot: over/under 2.5 goals.
+    "poisson-totals-value-v1", "market-totals-favourite-v1",
 ]
 # Prediction-only desks on verified results paths without odds.
 HOCKEY_STRATEGIES = ["hockey-elo-v1"]
@@ -68,7 +73,7 @@ __all__ = [
     "Strategy", "market_implied", "remove_margin", "no_bet",
     "MarketFavourite", "MarketLongshot", "EloEdge", "EloFavourite3Way",
     "DrawNoBet", "DrawValue", "HomeEdge", "FormValue",
-    "HockeyElo", "DartsElo",
+    "HockeyElo", "DartsElo", "PoissonTotalsValue", "MarketTotalsFavourite",
     "REGISTRY", "FOOTBALL_STRATEGIES", "HOCKEY_STRATEGIES",
     "DARTS_STRATEGIES", "PREDICTION_ONLY_STRATEGIES", "FORWARD_STRATEGIES",
     "build",

@@ -11,8 +11,9 @@ are checked.
 > **Honesty status (2026-09-20 — live-capture + forward-test + darts-audit
 > pass):** the pipeline is verified on a **27-match football pilot**
 > (Bundesliga 1 2024/25) with **27/27 dual-source result agreement**;
-> **seven strategies are all negative** on that tiny sample (best ROI
-> −16.3% on 3 bets; Holm-adjusted p = 1.0 for every one). Sport #2 is
+> **nine strategies on two markets (1X2 + O/U 2.5) are all negative** on
+> that tiny sample (best ROI −1.9% on 25 O/U bets; Holm-adjusted p = 1.0
+> for every one). Sport #2 is
 > **ice hockey** (DEL 2024/25 pilot, 21 events) and sport #3 is **darts**
 > (eight real PDC events 2025–26, 423 finished matches — schema audit in
 > [`docs/DARTS-AUDIT.md`](docs/DARTS-AUDIT.md)); both are
@@ -60,18 +61,21 @@ are checked.
   edge-case behaviour: postponed → pending, cancelled/abandoned → void,
   disputed/conflicting results → withheld + anomaly, duplicate tips →
   flagged, source edits → flagged. Rule version:
-  `nr-settlement-2026-09-19.1`.
+  `nr-settlement-2026-09-21.1`.
 - **Walk-forward backtest engine** (`northstar/backtest.py`): a
   `TimeBoundedStore` that raises `TimeLeakageError` on post-cutoff reads,
   pre-start cutoff enforcement, entry price = earliest stored snapshot ≤
   cutoff, ordering invariance, deterministic bootstrap CIs.
-- **Seven football strategies** (level 1.0 units): market favourite, market
-  longshot probe, Elo value edge (K=40, home adv 60, 3% edge threshold),
-  Draw-No-Bet decisive, form value, home-edge value, draw value — **all
-  negative on the pilot; results shown as-is**, with bootstrap CIs and
-  **Holm multiple-comparison correction** across the family (all adjusted
+- **Nine football strategies on two markets** (level 1.0 units). 1X2:
+  market favourite, market longshot probe, Elo value edge (K=40, home adv
+  60, 3% edge threshold), Draw-No-Bet decisive, form value, home-edge
+  value, draw value. Over/under 2.5 goals (added 2026-09-21, same verified
+  pilot file — its O/U columns, same collection window): Poisson goal-model
+  value desk and a market-totals-favourite baseline. **All nine negative on
+  the pilot; results shown as-is**, with bootstrap CIs and **Holm
+  multiple-comparison correction** across the family (m=9, all adjusted
   p = 1.0). Research priors + citations: `docs/STRATEGIES.md`.
-- **218 automated tests** (offline, `python -m pytest`) covering the
+- **248 automated tests** (offline, `python -m pytest`) covering the
   required matrix: postponements, voids, duplicate tips, time leakage,
   disputed results, settlement arithmetic — plus adapter parsing of the
   real fixtures, the 27/27 cross-check, policy gates, leaderboard math,
@@ -136,7 +140,7 @@ are checked.
 ```bash
 python3 -m venv .venv && .venv/bin/pip install pytest
 
-python -m pytest                      # 220 tests, offline
+python -m pytest                      # 248 tests, offline
 python -m northstar.cli run-pipeline --fresh   # rebuild store + site data
 python -m northstar.cli verify              # fixture hashes + 27/27 agreement
 node scripts/site-smoke.mjs            # (optional) site render smoke test
@@ -156,9 +160,9 @@ Pages; external source links open in a new tab for manual review.
 | Results source | OpenLigaDB (ODbL-1.0) | OpenLigaDB (ODbL-1.0) | OpenLigaDB (ODbL-1.0), discovery-driven |
 | Identity | **verified** (27/27 dual-source agreement vs football-data) | `probable` (single source; no independent DEL cross-check) | `probable` (single source; audit in `docs/DARTS-AUDIT.md`) |
 | Odds path | football-data.co.uk manual pilot; The Odds API connector inactive | **none verified** → prediction-only | **none** → prediction-only |
-| Engine output | 405 odds snapshots · 7 strategies · real settled PnL | 11 graded predictions · accuracy **7/11 (63.6%)** · Brier 0.4737 · **PnL unavailable (not zero)** | cold 2025 pool: **0 selections in 141** (max prob 0.551 < 0.60 — silence, no refit); full 2025–26 pool: **39/48 = 81.25%**, Brier 0.349 · **PnL unavailable (not zero)** |
+| Engine output | 613 odds snapshots (405 1X2 + 208 O/U 2.5) · 9 strategies · real settled PnL | 11 graded predictions · accuracy **7/11 (63.6%)** · Brier 0.4737 · **PnL unavailable (not zero)** | cold 2025 pool: **0 selections in 141** (max prob 0.551 < 0.60 — silence, no refit); full 2025–26 pool: **39/48 = 81.25%**, Brier 0.349 · **PnL unavailable (not zero)** |
 | Regularity | 0 open anomalies | **5 flagged source irregularities** (review queue) | **2 flagged** (conflicting duplicate results, matchIDs 79962 + 80237) + 1 abandoned duplicate league excluded |
-| Backtest | all seven strategies negative, CIs include 0, Holm-adjusted p = 1.0 | no odds → no PnL by construction | no odds → no PnL by construction |
+| Backtest | all nine strategies negative (both markets), CIs include 0, Holm-adjusted p = 1.0 | no odds → no PnL by construction | no odds → no PnL by construction |
 | Forward desk | dormant by design (MD5 starts 2026-10-09, outside 10-day horizon) | **LIVE: 9 frozen calls, DEL Sep 22–27** | first live event met in play (WSDF final → review queue, next capture resolves); activates for the next World Championship (Dec 2026) |
 
 Anchors: 72214 M'gladbach 2-3 Leverkusen (23/08/24, B365 5.25/4.5/1.55);
@@ -213,8 +217,8 @@ northstar/            package: models, db, policy, settlement, backtest,
                       stats, registry, capture, forward, value, cli,
                       adapters/{openligadb,official_results,the_odds_api,
                       football_data,olbg},
-                      strategies/{base,market,elo,draw,value,hockey,darts}
-tests/                218 offline tests (pytest)
+                      strategies/{base,market,elo,draw,value,totals,hockey,darts}
+tests/                248 offline tests (pytest)
 data/fixtures/        committed pilot fixtures: football-bl1 + hockey-del
                       (sha256-verified)
 data/fixtures/current/ CI-captured live-season fixtures + capture log

@@ -63,7 +63,7 @@ Licensing claims were re-fetched and re-confirmed verbatim (see the
   tie-breaks tested).
 - **Statistics layer** (`northstar/stats.py`): bootstrap 95% CIs, binomial
   tests, and **Holm step-down correction** (Holm 1979) across the PnL
-  family (m=7). Applied in the pipeline and rendered per-card on the site.
+  family (m=9 since 2026-09-21). Applied in the pipeline and rendered per-card on the site.
 - **Real source irregularities surfaced, not smoothed**: 7 open anomalies
   in the review queue — 4 DEL matches with impossible result layering, 1
   DEL match with `leagueSeason: null` (normalized + flagged), and 2 darts
@@ -87,7 +87,7 @@ Licensing claims were re-fetched and re-confirmed verbatim (see the
   review evidence only; no bulk collection permission exists for it, so
   OpenLigaDB remains the sole systematic DEL source and identity stays
   `probable`.
-- **Automated tests: 220 passing** covering the user-specified matrix —
+- **Automated tests: 248 passing** covering the user-specified matrix —
   postponements, voids, duplicate tips, time leakage, disputed results,
   settlement arithmetic — plus adapter parsing of the real fixtures, the
   27/27 cross-check, policy gates, leaderboard math, walk-forward
@@ -96,10 +96,13 @@ Licensing claims were re-fetched and re-confirmed verbatim (see the
   tests, and Holm/stats tests. Run: `python -m pytest`.
 
 ### Strategies & results (all details + citations: docs/STRATEGIES.md)
-- **Seven football strategies** on the 27-match pilot — **all negative**,
-  Holm-adjusted p = 1.0 for all seven (raw p 0.2675–0.694), bootstrap CIs
-  include zero. Best ROI: form-value −16.3% (3 bets); worst: longshot probe
-  −29.2% (27 bets). No edge claimed anywhere.
+- **Nine football strategies on two markets** on the 27-match pilot —
+  **all negative**, Holm-adjusted p = 1.0 for all nine (raw p
+  0.2675–0.9435), bootstrap CIs include zero. 1X2 best ROI: form-value
+  −16.3% (3 bets); worst: longshot probe −29.2% (27 bets). O/U 2.5 (added
+  2026-09-21): Poisson value desk −0.48 u, ROI −1.9% (25 bets, strike
+  40%); totals-favourite baseline −4.19 u, ROI −15.5% (27 bets). No edge
+  claimed anywhere.
 - **Hockey pilot (prediction-only)**: `hockey-elo-v1` graded on **11
   predictions, 7 hits = 63.6%, mean Brier 0.4737** (two disputed DEL rows
   are excluded from grading — review queue owns them; before exclusion the
@@ -163,9 +166,13 @@ Licensing claims were re-fetched and re-confirmed verbatim (see the
    unauthorised exports. Full-season CI captures keep events at `probable`
    until a second source is attached; only the football pilot (dual-source
    27/27) is `verified`.
-4. **One market only.** Only `match_winner_3way` (football) and the 2-way
-   match-winner (hockey/darts, prediction-only) exist. OLBG's other
-   markets are not settleable here yet; imported OLBG tips stay `pending`.
+4. **Two markets only.** `match_winner_3way` and (since 2026-09-21)
+   `total_goals_over_under_2_5` for football, plus the 2-way match-winner
+   for hockey/darts (prediction-only). Asian handicap is design-only: the
+   pilot file carries AH columns, but a quarter-line split/push rule has
+   not been written or tested, so nothing is graded on it. Other OLBG
+   markets are not settleable here; imported OLBG tips on them stay
+   `pending`.
 5. **Forward test has no PnL and one weekly heartbeat.** The live forward
    desks grade accuracy/Brier only (no permissioned odds for DEL/darts);
    the capture cadence is weekly (Mondays) plus scoped pushes, so grading
@@ -262,7 +269,7 @@ Licensing claims were re-fetched and re-confirmed verbatim (see the
 
 ```bash
 python -m venv .venv && .venv/bin/pip install pytest
-python -m pytest                     # 220 tests, offline
+python -m pytest                     # 248 tests, offline
 python -m northstar.cli run-pipeline --fresh   # rebuild store + site-data/site.json
 python -m northstar.cli verify               # re-check fixture hashes + 27/27
 node scripts/site-smoke.mjs          # renders the site payload headlessly

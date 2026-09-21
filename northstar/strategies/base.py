@@ -44,6 +44,10 @@ class Strategy:
     # Sport this strategy is responsible for (`None` = any). The walk-forward
     # engine only feeds the strategy events of its own sport.
     sport: Optional[str] = None
+    # Market the strategy trades.  ``None`` = the default 1X2 market; the
+    # walk-forward engine offers only that market's snapshots and stores
+    # the tip under it (settlement then applies the matching rule set).
+    market: Optional[str] = None
 
     def predict(self, event: Dict[str, Any], tbs: "TimeBoundedStore",
                 start: datetime,

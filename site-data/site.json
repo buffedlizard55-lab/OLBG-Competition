@@ -5,7 +5,7 @@
       {
         "anomaly_id": "an-763e7e78dbbcdd279e10",
         "detail": "decisive 'after regulation' entry coexists with an overtime/shootout entry (impossible layering in community-entered source; matchID=76100). Final read via hockey priority AfterPenalties > AfterExtraTime > After90Minutes; flagged for manual review, outcome kept 3-2 (AfterExtraTime)",
-        "detected_at_utc": "2026-09-20T20:20:12Z",
+        "detected_at_utc": "2026-09-21T04:36:40Z",
         "entity_id": "ev-ff0008b0c9aa899d4755",
         "entity_type": "result",
         "kind": "RESULT_KIND_INCONSISTENT",
@@ -18,7 +18,7 @@
       {
         "anomaly_id": "an-8590725575f24e03dba3",
         "detail": "decisive 'after regulation' entry coexists with an overtime/shootout entry (impossible layering in community-entered source; matchID=76273). Final read via hockey priority AfterPenalties > AfterExtraTime > After90Minutes; flagged for manual review, outcome kept 2-1 (AfterExtraTime)",
-        "detected_at_utc": "2026-09-20T20:20:12Z",
+        "detected_at_utc": "2026-09-21T04:36:40Z",
         "entity_id": "ev-c1a1db0ea682db60d797",
         "entity_type": "result",
         "kind": "RESULT_KIND_INCONSISTENT",
@@ -31,7 +31,7 @@
       {
         "anomaly_id": "an-23d18a627ed1aea5b092",
         "detail": "decisive 'after regulation' entry coexists with an overtime/shootout entry (impossible layering in community-entered source; matchID=76409). Final read via hockey priority AfterPenalties > AfterExtraTime > After90Minutes; flagged for manual review, outcome kept 1-2 (AfterExtraTime)",
-        "detected_at_utc": "2026-09-20T20:20:12Z",
+        "detected_at_utc": "2026-09-21T04:36:40Z",
         "entity_id": "ev-78dfc67268398c894ed5",
         "entity_type": "result",
         "kind": "RESULT_KIND_INCONSISTENT",
@@ -44,7 +44,7 @@
       {
         "anomaly_id": "an-28ab36176a0a1f02e8c8",
         "detail": "source left leagueSeason null for matchID 76412 (DEL Eishockey 2024/2025); normalised to 2024 from the payload's unambiguous rows and flagged for manual review",
-        "detected_at_utc": "2026-09-20T20:20:12Z",
+        "detected_at_utc": "2026-09-21T04:36:40Z",
         "entity_id": "ev-3f32836fac8ddfb0bb12",
         "entity_type": "event",
         "kind": "MISSING_METADATA",
@@ -57,7 +57,7 @@
       {
         "anomaly_id": "an-6f494ddd324692776bd3",
         "detail": "decisive 'after regulation' entry coexists with an overtime/shootout entry (impossible layering in community-entered source; matchID=76414). Final read via hockey priority AfterPenalties > AfterExtraTime > After90Minutes; flagged for manual review, outcome kept 5-6 (AfterPenalties)",
-        "detected_at_utc": "2026-09-20T20:20:12Z",
+        "detected_at_utc": "2026-09-21T04:36:40Z",
         "entity_id": "ev-8358bbded1593cbd6ea0",
         "entity_type": "result",
         "kind": "RESULT_KIND_INCONSISTENT",
@@ -70,7 +70,7 @@
       {
         "anomaly_id": "an-870a7d10688c5d15dd0d",
         "detail": "the same result kind appears more than once with conflicting scores (audit 2026-09-20, e.g. PDCPCF 2025 matchID=79962: one real entry plus stale 0-0 duplicates with consecutive resultIDs). The first entry is kept but NOT trusted silently: flagged for manual review against the official source, outcome kept 8-11 (After90Minutes)",
-        "detected_at_utc": "2026-09-20T20:20:12Z",
+        "detected_at_utc": "2026-09-21T04:36:41Z",
         "entity_id": "ev-bcdcfe1fb3d7753beee8",
         "entity_type": "result",
         "kind": "RESULT_KIND_INCONSISTENT",
@@ -83,7 +83,7 @@
       {
         "anomaly_id": "an-0bf555cbbc1c9d39b727",
         "detail": "the same result kind appears more than once with conflicting scores (audit 2026-09-20, e.g. PDCPCF 2025 matchID=80237: one real entry plus stale 0-0 duplicates with consecutive resultIDs). The first entry is kept but NOT trusted silently: flagged for manual review against the official source, outcome kept 5-0 (After90Minutes)",
-        "detected_at_utc": "2026-09-20T20:20:12Z",
+        "detected_at_utc": "2026-09-21T04:36:41Z",
         "entity_id": "ev-d614a2e17776ef1cb0fa",
         "entity_type": "result",
         "kind": "RESULT_KIND_INCONSISTENT",
@@ -788,7 +788,7 @@
     },
     "draw-no-bet-v1": {
       "bets": 23,
-      "family_size": 7,
+      "family_size": 9,
       "label": "pilot",
       "leak_violations": [],
       "max_drawdown_units": 5.2,
@@ -812,7 +812,7 @@
     },
     "draw-value-v1": {
       "bets": 8,
-      "family_size": 7,
+      "family_size": 9,
       "label": "pilot",
       "leak_violations": [],
       "max_drawdown_units": 4.0,
@@ -836,7 +836,7 @@
     },
     "elo-edge-v1": {
       "bets": 12,
-      "family_size": 7,
+      "family_size": 9,
       "label": "pilot",
       "leak_violations": [],
       "max_drawdown_units": 3.69,
@@ -860,7 +860,7 @@
     },
     "form-value-v1": {
       "bets": 3,
-      "family_size": 7,
+      "family_size": 9,
       "label": "pilot",
       "leak_violations": [],
       "max_drawdown_units": 2.0,
@@ -1073,7 +1073,7 @@
     },
     "home-edge-v1": {
       "bets": 10,
-      "family_size": 7,
+      "family_size": 9,
       "label": "pilot",
       "leak_violations": [],
       "max_drawdown_units": 5.0,
@@ -1097,7 +1097,7 @@
     },
     "market-favourite-v1": {
       "bets": 27,
-      "family_size": 7,
+      "family_size": 9,
       "label": "pilot",
       "leak_violations": [],
       "max_drawdown_units": 6.4,
@@ -1121,7 +1121,7 @@
     },
     "market-longshot-v1": {
       "bets": 27,
-      "family_size": 7,
+      "family_size": 9,
       "label": "pilot",
       "leak_violations": [],
       "max_drawdown_units": 9.84,
@@ -1141,6 +1141,54 @@
       "sport": "football",
       "strike_rate": 0.185185,
       "turnover_units": 27.0,
+      "verification_state": "verified"
+    },
+    "market-totals-favourite-v1": {
+      "bets": 27,
+      "family_size": 9,
+      "label": "pilot",
+      "leak_violations": [],
+      "max_drawdown_units": 6.08,
+      "p_value_holm": 1.0,
+      "p_value_raw": 0.29,
+      "pnl_available": true,
+      "profit_ci95": {
+        "hi": 0.13111111111111112,
+        "lo": -0.4511111111111112
+      },
+      "profit_units": -4.19,
+      "roi": -0.155185,
+      "sample_warning": "Only 27 settled bets - far too few to distinguish skill from luck; see docs/STATUS.md",
+      "settled": 27,
+      "significant_after_correction": false,
+      "skipped": 0,
+      "sport": "football",
+      "strike_rate": 0.555556,
+      "turnover_units": 27.0,
+      "verification_state": "verified"
+    },
+    "poisson-totals-value-v1": {
+      "bets": 25,
+      "family_size": 9,
+      "label": "pilot",
+      "leak_violations": [],
+      "max_drawdown_units": 4.31,
+      "p_value_holm": 1.0,
+      "p_value_raw": 0.9435,
+      "pnl_available": true,
+      "profit_ci95": {
+        "hi": 0.516,
+        "lo": -0.5084000000000001
+      },
+      "profit_units": -0.48,
+      "roi": -0.0192,
+      "sample_warning": "Only 25 settled bets - far too few to distinguish skill from luck; see docs/STATUS.md",
+      "settled": 25,
+      "significant_after_correction": false,
+      "skipped": 2,
+      "sport": "football",
+      "strike_rate": 0.4,
+      "turnover_units": 25.0,
       "verification_state": "verified"
     }
   },
@@ -1283,6 +1331,52 @@
         "stake_units": 1.0,
         "status": "lost",
         "tip_id": "bt-tip-fdcabe9915f28cc2c879"
+      },
+      {
+        "cutoff_at_utc": "2024-08-23T16:00:00Z",
+        "entrant": "market-totals-favourite-v1",
+        "event": "Borussia Mönchengladbach v Bayer 04 Leverkusen",
+        "event_id": "ev-6362d9d750e92d8202bc",
+        "event_start_utc": "2024-08-23T18:30:00Z",
+        "market": "total_goals_over_under_2_5",
+        "notes": "settled vs openligadb",
+        "odds": 1.47,
+        "odds_source": "market_avg",
+        "pnl_units": 0.47,
+        "published_at_utc": "2024-08-23T16:00:00Z",
+        "selection": "over 2.5 goals",
+        "settlement": {
+          "outcome": "won",
+          "verification_state": "verified"
+        },
+        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72214",
+        "sport": "football",
+        "stake_units": 1.0,
+        "status": "won",
+        "tip_id": "bt-tip-7c0348ff2f723682067f"
+      },
+      {
+        "cutoff_at_utc": "2024-08-23T16:00:00Z",
+        "entrant": "poisson-totals-value-v1",
+        "event": "Borussia Mönchengladbach v Bayer 04 Leverkusen",
+        "event_id": "ev-6362d9d750e92d8202bc",
+        "event_start_utc": "2024-08-23T18:30:00Z",
+        "market": "total_goals_over_under_2_5",
+        "notes": "settled vs openligadb",
+        "odds": 2.68,
+        "odds_source": "market_avg",
+        "pnl_units": -1.0,
+        "published_at_utc": "2024-08-23T16:00:00Z",
+        "selection": "under 2.5 goals",
+        "settlement": {
+          "outcome": "lost",
+          "verification_state": "verified"
+        },
+        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72214",
+        "sport": "football",
+        "stake_units": 1.0,
+        "status": "lost",
+        "tip_id": "bt-tip-b658747a651a3e8d7282"
       },
       {
         "cutoff_at_utc": "2024-08-23T16:00:00Z",
@@ -1700,6 +1794,190 @@
       },
       {
         "cutoff_at_utc": "2024-08-23T16:00:00Z",
+        "entrant": "market-totals-favourite-v1",
+        "event": "RB Leipzig v VfL Bochum",
+        "event_id": "ev-30e9200a60292003d159",
+        "event_start_utc": "2024-08-24T13:30:00Z",
+        "market": "total_goals_over_under_2_5",
+        "notes": "settled vs openligadb",
+        "odds": 1.36,
+        "odds_source": "market_avg",
+        "pnl_units": -1.0,
+        "published_at_utc": "2024-08-23T16:00:00Z",
+        "selection": "over 2.5 goals",
+        "settlement": {
+          "outcome": "lost",
+          "verification_state": "verified"
+        },
+        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72215",
+        "sport": "football",
+        "stake_units": 1.0,
+        "status": "lost",
+        "tip_id": "bt-tip-79566b445973b1c529a8"
+      },
+      {
+        "cutoff_at_utc": "2024-08-23T16:00:00Z",
+        "entrant": "market-totals-favourite-v1",
+        "event": "SC Freiburg v VfB Stuttgart",
+        "event_id": "ev-512f364b9ebd01883054",
+        "event_start_utc": "2024-08-24T13:30:00Z",
+        "market": "total_goals_over_under_2_5",
+        "notes": "settled vs openligadb",
+        "odds": 1.7,
+        "odds_source": "market_avg",
+        "pnl_units": 0.7,
+        "published_at_utc": "2024-08-23T16:00:00Z",
+        "selection": "over 2.5 goals",
+        "settlement": {
+          "outcome": "won",
+          "verification_state": "verified"
+        },
+        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72218",
+        "sport": "football",
+        "stake_units": 1.0,
+        "status": "won",
+        "tip_id": "bt-tip-911d506cd7cadc66fb16"
+      },
+      {
+        "cutoff_at_utc": "2024-08-23T16:00:00Z",
+        "entrant": "market-totals-favourite-v1",
+        "event": "1. FSV Mainz 05 v 1. FC Union Berlin",
+        "event_id": "ev-a44405a1feda247d1b7c",
+        "event_start_utc": "2024-08-24T13:30:00Z",
+        "market": "total_goals_over_under_2_5",
+        "notes": "settled vs openligadb",
+        "odds": 1.68,
+        "odds_source": "market_avg",
+        "pnl_units": 0.68,
+        "published_at_utc": "2024-08-23T16:00:00Z",
+        "selection": "under 2.5 goals",
+        "settlement": {
+          "outcome": "won",
+          "verification_state": "verified"
+        },
+        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72221",
+        "sport": "football",
+        "stake_units": 1.0,
+        "status": "won",
+        "tip_id": "bt-tip-c9c3199f74a26ee11841"
+      },
+      {
+        "cutoff_at_utc": "2024-08-23T16:00:00Z",
+        "entrant": "market-totals-favourite-v1",
+        "event": "TSG Hoffenheim v Holstein Kiel",
+        "event_id": "ev-c2157e59f45724ecc81e",
+        "event_start_utc": "2024-08-24T13:30:00Z",
+        "market": "total_goals_over_under_2_5",
+        "notes": "settled vs openligadb",
+        "odds": 1.53,
+        "odds_source": "market_avg",
+        "pnl_units": 0.53,
+        "published_at_utc": "2024-08-23T16:00:00Z",
+        "selection": "over 2.5 goals",
+        "settlement": {
+          "outcome": "won",
+          "verification_state": "verified"
+        },
+        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72217",
+        "sport": "football",
+        "stake_units": 1.0,
+        "status": "won",
+        "tip_id": "bt-tip-80609eaf3468d4787c3b"
+      },
+      {
+        "cutoff_at_utc": "2024-08-23T16:00:00Z",
+        "entrant": "market-totals-favourite-v1",
+        "event": "FC Augsburg v SV Werder Bremen",
+        "event_id": "ev-c9bd07dd83af7cd1f52a",
+        "event_start_utc": "2024-08-24T13:30:00Z",
+        "market": "total_goals_over_under_2_5",
+        "notes": "settled vs openligadb",
+        "odds": 1.72,
+        "odds_source": "market_avg",
+        "pnl_units": 0.72,
+        "published_at_utc": "2024-08-23T16:00:00Z",
+        "selection": "over 2.5 goals",
+        "settlement": {
+          "outcome": "won",
+          "verification_state": "verified"
+        },
+        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72219",
+        "sport": "football",
+        "stake_units": 1.0,
+        "status": "won",
+        "tip_id": "bt-tip-cddb6a2ad66f1b665376"
+      },
+      {
+        "cutoff_at_utc": "2024-08-23T16:00:00Z",
+        "entrant": "poisson-totals-value-v1",
+        "event": "RB Leipzig v VfL Bochum",
+        "event_id": "ev-30e9200a60292003d159",
+        "event_start_utc": "2024-08-24T13:30:00Z",
+        "market": "total_goals_over_under_2_5",
+        "notes": "settled vs openligadb",
+        "odds": 3.14,
+        "odds_source": "market_avg",
+        "pnl_units": 2.14,
+        "published_at_utc": "2024-08-23T16:00:00Z",
+        "selection": "under 2.5 goals",
+        "settlement": {
+          "outcome": "won",
+          "verification_state": "verified"
+        },
+        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72215",
+        "sport": "football",
+        "stake_units": 1.0,
+        "status": "won",
+        "tip_id": "bt-tip-55a137efb8e9378da796"
+      },
+      {
+        "cutoff_at_utc": "2024-08-23T16:00:00Z",
+        "entrant": "poisson-totals-value-v1",
+        "event": "1. FSV Mainz 05 v 1. FC Union Berlin",
+        "event_id": "ev-a44405a1feda247d1b7c",
+        "event_start_utc": "2024-08-24T13:30:00Z",
+        "market": "total_goals_over_under_2_5",
+        "notes": "settled vs openligadb",
+        "odds": 2.23,
+        "odds_source": "market_avg",
+        "pnl_units": -1.0,
+        "published_at_utc": "2024-08-23T16:00:00Z",
+        "selection": "over 2.5 goals",
+        "settlement": {
+          "outcome": "lost",
+          "verification_state": "verified"
+        },
+        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72221",
+        "sport": "football",
+        "stake_units": 1.0,
+        "status": "lost",
+        "tip_id": "bt-tip-ccb0e37f79e90ca37153"
+      },
+      {
+        "cutoff_at_utc": "2024-08-23T16:00:00Z",
+        "entrant": "poisson-totals-value-v1",
+        "event": "TSG Hoffenheim v Holstein Kiel",
+        "event_id": "ev-c2157e59f45724ecc81e",
+        "event_start_utc": "2024-08-24T13:30:00Z",
+        "market": "total_goals_over_under_2_5",
+        "notes": "settled vs openligadb",
+        "odds": 2.49,
+        "odds_source": "market_avg",
+        "pnl_units": -1.0,
+        "published_at_utc": "2024-08-23T16:00:00Z",
+        "selection": "under 2.5 goals",
+        "settlement": {
+          "outcome": "lost",
+          "verification_state": "verified"
+        },
+        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72217",
+        "sport": "football",
+        "stake_units": 1.0,
+        "status": "lost",
+        "tip_id": "bt-tip-c289313db40c0ee2e43b"
+      },
+      {
+        "cutoff_at_utc": "2024-08-23T16:00:00Z",
         "entrant": "draw-no-bet-v1",
         "event": "Borussia Dortmund v Eintracht Frankfurt",
         "event_id": "ev-5ef76c0b313a71d09c47",
@@ -1766,6 +2044,52 @@
         "stake_units": 1.0,
         "status": "lost",
         "tip_id": "bt-tip-7a2b6a01ff613203c7ed"
+      },
+      {
+        "cutoff_at_utc": "2024-08-23T16:00:00Z",
+        "entrant": "market-totals-favourite-v1",
+        "event": "Borussia Dortmund v Eintracht Frankfurt",
+        "event_id": "ev-5ef76c0b313a71d09c47",
+        "event_start_utc": "2024-08-24T16:30:00Z",
+        "market": "total_goals_over_under_2_5",
+        "notes": "settled vs openligadb",
+        "odds": 1.47,
+        "odds_source": "market_avg",
+        "pnl_units": -1.0,
+        "published_at_utc": "2024-08-23T16:00:00Z",
+        "selection": "over 2.5 goals",
+        "settlement": {
+          "outcome": "lost",
+          "verification_state": "verified"
+        },
+        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72216",
+        "sport": "football",
+        "stake_units": 1.0,
+        "status": "lost",
+        "tip_id": "bt-tip-9358e17534a0fd307994"
+      },
+      {
+        "cutoff_at_utc": "2024-08-23T16:00:00Z",
+        "entrant": "poisson-totals-value-v1",
+        "event": "Borussia Dortmund v Eintracht Frankfurt",
+        "event_id": "ev-5ef76c0b313a71d09c47",
+        "event_start_utc": "2024-08-24T16:30:00Z",
+        "market": "total_goals_over_under_2_5",
+        "notes": "settled vs openligadb",
+        "odds": 2.68,
+        "odds_source": "market_avg",
+        "pnl_units": 1.68,
+        "published_at_utc": "2024-08-23T16:00:00Z",
+        "selection": "under 2.5 goals",
+        "settlement": {
+          "outcome": "won",
+          "verification_state": "verified"
+        },
+        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72216",
+        "sport": "football",
+        "stake_units": 1.0,
+        "status": "won",
+        "tip_id": "bt-tip-0164c1304957327c145f"
       },
       {
         "cutoff_at_utc": "2024-08-20T12:00:00Z",
@@ -1907,6 +2231,52 @@
       },
       {
         "cutoff_at_utc": "2024-08-20T12:00:00Z",
+        "entrant": "market-totals-favourite-v1",
+        "event": "VfL Wolfsburg v FC Bayern München",
+        "event_id": "ev-d2e31a68e883b7c5c881",
+        "event_start_utc": "2024-08-25T13:30:00Z",
+        "market": "total_goals_over_under_2_5",
+        "notes": "settled vs openligadb",
+        "odds": 1.44,
+        "odds_source": "market_avg",
+        "pnl_units": 0.44,
+        "published_at_utc": "2024-08-20T12:00:00Z",
+        "selection": "over 2.5 goals",
+        "settlement": {
+          "outcome": "won",
+          "verification_state": "verified"
+        },
+        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72220",
+        "sport": "football",
+        "stake_units": 1.0,
+        "status": "won",
+        "tip_id": "bt-tip-3457a4258210262d109b"
+      },
+      {
+        "cutoff_at_utc": "2024-08-20T12:00:00Z",
+        "entrant": "poisson-totals-value-v1",
+        "event": "VfL Wolfsburg v FC Bayern München",
+        "event_id": "ev-d2e31a68e883b7c5c881",
+        "event_start_utc": "2024-08-25T13:30:00Z",
+        "market": "total_goals_over_under_2_5",
+        "notes": "settled vs openligadb",
+        "odds": 2.76,
+        "odds_source": "market_avg",
+        "pnl_units": -1.0,
+        "published_at_utc": "2024-08-20T12:00:00Z",
+        "selection": "under 2.5 goals",
+        "settlement": {
+          "outcome": "lost",
+          "verification_state": "verified"
+        },
+        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72220",
+        "sport": "football",
+        "stake_units": 1.0,
+        "status": "lost",
+        "tip_id": "bt-tip-ef3bc4f21d57b955e4af"
+      },
+      {
+        "cutoff_at_utc": "2024-08-20T12:00:00Z",
         "entrant": "draw-no-bet-v1",
         "event": "FC St. Pauli v 1. FC Heidenheim 1846",
         "event_id": "ev-22f02041987efe7a5b2a",
@@ -1973,6 +2343,52 @@
         "stake_units": 1.0,
         "status": "won",
         "tip_id": "bt-tip-5a31e91af91a714cf621"
+      },
+      {
+        "cutoff_at_utc": "2024-08-20T12:00:00Z",
+        "entrant": "market-totals-favourite-v1",
+        "event": "FC St. Pauli v 1. FC Heidenheim 1846",
+        "event_id": "ev-22f02041987efe7a5b2a",
+        "event_start_utc": "2024-08-25T15:30:00Z",
+        "market": "total_goals_over_under_2_5",
+        "notes": "settled vs openligadb",
+        "odds": 1.85,
+        "odds_source": "market_avg",
+        "pnl_units": -1.0,
+        "published_at_utc": "2024-08-20T12:00:00Z",
+        "selection": "over 2.5 goals",
+        "settlement": {
+          "outcome": "lost",
+          "verification_state": "verified"
+        },
+        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72222",
+        "sport": "football",
+        "stake_units": 1.0,
+        "status": "lost",
+        "tip_id": "bt-tip-ad02f76468315f57fc60"
+      },
+      {
+        "cutoff_at_utc": "2024-08-20T12:00:00Z",
+        "entrant": "poisson-totals-value-v1",
+        "event": "FC St. Pauli v 1. FC Heidenheim 1846",
+        "event_id": "ev-22f02041987efe7a5b2a",
+        "event_start_utc": "2024-08-25T15:30:00Z",
+        "market": "total_goals_over_under_2_5",
+        "notes": "settled vs openligadb",
+        "odds": 1.85,
+        "odds_source": "market_avg",
+        "pnl_units": -1.0,
+        "published_at_utc": "2024-08-20T12:00:00Z",
+        "selection": "over 2.5 goals",
+        "settlement": {
+          "outcome": "lost",
+          "verification_state": "verified"
+        },
+        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72222",
+        "sport": "football",
+        "stake_units": 1.0,
+        "status": "lost",
+        "tip_id": "bt-tip-1445eb0d32c22ea1e9f8"
       },
       {
         "cutoff_at_utc": "2024-09-20T17:00:00Z",
@@ -2185,6 +2601,52 @@
         "stake_units": 1.0,
         "status": "lost",
         "tip_id": "bt-tip-01bb0feb45e2c2848b7a"
+      },
+      {
+        "cutoff_at_utc": "2024-11-08T17:00:00Z",
+        "entrant": "market-totals-favourite-v1",
+        "event": "1. FC Union Berlin v SC Freiburg",
+        "event_id": "ev-1f9288a520ea5ff773c1",
+        "event_start_utc": "2024-11-08T19:30:00Z",
+        "market": "total_goals_over_under_2_5",
+        "notes": "settled vs openligadb",
+        "odds": 1.59,
+        "odds_source": "market_avg",
+        "pnl_units": 0.59,
+        "published_at_utc": "2024-11-08T17:00:00Z",
+        "selection": "under 2.5 goals",
+        "settlement": {
+          "outcome": "won",
+          "verification_state": "verified"
+        },
+        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72301",
+        "sport": "football",
+        "stake_units": 1.0,
+        "status": "won",
+        "tip_id": "bt-tip-ba29f753ef12a9ce1093"
+      },
+      {
+        "cutoff_at_utc": "2024-11-08T17:00:00Z",
+        "entrant": "poisson-totals-value-v1",
+        "event": "1. FC Union Berlin v SC Freiburg",
+        "event_id": "ev-1f9288a520ea5ff773c1",
+        "event_start_utc": "2024-11-08T19:30:00Z",
+        "market": "total_goals_over_under_2_5",
+        "notes": "settled vs openligadb",
+        "odds": 2.41,
+        "odds_source": "market_avg",
+        "pnl_units": -1.0,
+        "published_at_utc": "2024-11-08T17:00:00Z",
+        "selection": "over 2.5 goals",
+        "settlement": {
+          "outcome": "lost",
+          "verification_state": "verified"
+        },
+        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72301",
+        "sport": "football",
+        "stake_units": 1.0,
+        "status": "lost",
+        "tip_id": "bt-tip-8564d41f5d3c672ed3d7"
       },
       {
         "cutoff_at_utc": "2024-11-08T17:00:00Z",
@@ -2602,6 +3064,190 @@
       },
       {
         "cutoff_at_utc": "2024-11-08T17:00:00Z",
+        "entrant": "market-totals-favourite-v1",
+        "event": "1. FSV Mainz 05 v Borussia Dortmund",
+        "event_id": "ev-28879f1f624827bd95c5",
+        "event_start_utc": "2024-11-09T14:30:00Z",
+        "market": "total_goals_over_under_2_5",
+        "notes": "settled vs openligadb",
+        "odds": 1.59,
+        "odds_source": "market_avg",
+        "pnl_units": 0.59,
+        "published_at_utc": "2024-11-08T17:00:00Z",
+        "selection": "over 2.5 goals",
+        "settlement": {
+          "outcome": "won",
+          "verification_state": "verified"
+        },
+        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72300",
+        "sport": "football",
+        "stake_units": 1.0,
+        "status": "won",
+        "tip_id": "bt-tip-e0cd175b9c56a734c455"
+      },
+      {
+        "cutoff_at_utc": "2024-11-08T17:00:00Z",
+        "entrant": "market-totals-favourite-v1",
+        "event": "SV Werder Bremen v Holstein Kiel",
+        "event_id": "ev-2b5aceef36ea4f25bc2f",
+        "event_start_utc": "2024-11-09T14:30:00Z",
+        "market": "total_goals_over_under_2_5",
+        "notes": "settled vs openligadb",
+        "odds": 1.52,
+        "odds_source": "market_avg",
+        "pnl_units": 0.52,
+        "published_at_utc": "2024-11-08T17:00:00Z",
+        "selection": "over 2.5 goals",
+        "settlement": {
+          "outcome": "won",
+          "verification_state": "verified"
+        },
+        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72298",
+        "sport": "football",
+        "stake_units": 1.0,
+        "status": "won",
+        "tip_id": "bt-tip-cd2dbaf43ad9b8a92195"
+      },
+      {
+        "cutoff_at_utc": "2024-11-08T17:00:00Z",
+        "entrant": "market-totals-favourite-v1",
+        "event": "FC St. Pauli v FC Bayern München",
+        "event_id": "ev-93b9026a556834accb47",
+        "event_start_utc": "2024-11-09T14:30:00Z",
+        "market": "total_goals_over_under_2_5",
+        "notes": "settled vs openligadb",
+        "odds": 1.38,
+        "odds_source": "market_avg",
+        "pnl_units": -1.0,
+        "published_at_utc": "2024-11-08T17:00:00Z",
+        "selection": "over 2.5 goals",
+        "settlement": {
+          "outcome": "lost",
+          "verification_state": "verified"
+        },
+        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72303",
+        "sport": "football",
+        "stake_units": 1.0,
+        "status": "lost",
+        "tip_id": "bt-tip-0a96909e0166e03895bf"
+      },
+      {
+        "cutoff_at_utc": "2024-11-08T17:00:00Z",
+        "entrant": "market-totals-favourite-v1",
+        "event": "VfL Bochum v Bayer 04 Leverkusen",
+        "event_id": "ev-d465430efda5d7112775",
+        "event_start_utc": "2024-11-09T14:30:00Z",
+        "market": "total_goals_over_under_2_5",
+        "notes": "settled vs openligadb",
+        "odds": 1.29,
+        "odds_source": "market_avg",
+        "pnl_units": -1.0,
+        "published_at_utc": "2024-11-08T17:00:00Z",
+        "selection": "over 2.5 goals",
+        "settlement": {
+          "outcome": "lost",
+          "verification_state": "verified"
+        },
+        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72302",
+        "sport": "football",
+        "stake_units": 1.0,
+        "status": "lost",
+        "tip_id": "bt-tip-fac071de9a4bd0a933b2"
+      },
+      {
+        "cutoff_at_utc": "2024-11-08T17:00:00Z",
+        "entrant": "poisson-totals-value-v1",
+        "event": "1. FSV Mainz 05 v Borussia Dortmund",
+        "event_id": "ev-28879f1f624827bd95c5",
+        "event_start_utc": "2024-11-09T14:30:00Z",
+        "market": "total_goals_over_under_2_5",
+        "notes": "settled vs openligadb",
+        "odds": 2.4,
+        "odds_source": "market_avg",
+        "pnl_units": -1.0,
+        "published_at_utc": "2024-11-08T17:00:00Z",
+        "selection": "under 2.5 goals",
+        "settlement": {
+          "outcome": "lost",
+          "verification_state": "verified"
+        },
+        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72300",
+        "sport": "football",
+        "stake_units": 1.0,
+        "status": "lost",
+        "tip_id": "bt-tip-15d18413ad1b0e6235ec"
+      },
+      {
+        "cutoff_at_utc": "2024-11-08T17:00:00Z",
+        "entrant": "poisson-totals-value-v1",
+        "event": "SV Werder Bremen v Holstein Kiel",
+        "event_id": "ev-2b5aceef36ea4f25bc2f",
+        "event_start_utc": "2024-11-09T14:30:00Z",
+        "market": "total_goals_over_under_2_5",
+        "notes": "settled vs openligadb",
+        "odds": 1.52,
+        "odds_source": "market_avg",
+        "pnl_units": 0.52,
+        "published_at_utc": "2024-11-08T17:00:00Z",
+        "selection": "over 2.5 goals",
+        "settlement": {
+          "outcome": "won",
+          "verification_state": "verified"
+        },
+        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72298",
+        "sport": "football",
+        "stake_units": 1.0,
+        "status": "won",
+        "tip_id": "bt-tip-45ffe0d01a318934f15f"
+      },
+      {
+        "cutoff_at_utc": "2024-11-08T17:00:00Z",
+        "entrant": "poisson-totals-value-v1",
+        "event": "FC St. Pauli v FC Bayern München",
+        "event_id": "ev-93b9026a556834accb47",
+        "event_start_utc": "2024-11-09T14:30:00Z",
+        "market": "total_goals_over_under_2_5",
+        "notes": "settled vs openligadb",
+        "odds": 3.03,
+        "odds_source": "market_avg",
+        "pnl_units": 2.03,
+        "published_at_utc": "2024-11-08T17:00:00Z",
+        "selection": "under 2.5 goals",
+        "settlement": {
+          "outcome": "won",
+          "verification_state": "verified"
+        },
+        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72303",
+        "sport": "football",
+        "stake_units": 1.0,
+        "status": "won",
+        "tip_id": "bt-tip-09d914de64d41065bec0"
+      },
+      {
+        "cutoff_at_utc": "2024-11-08T17:00:00Z",
+        "entrant": "poisson-totals-value-v1",
+        "event": "VfL Bochum v Bayer 04 Leverkusen",
+        "event_id": "ev-d465430efda5d7112775",
+        "event_start_utc": "2024-11-09T14:30:00Z",
+        "market": "total_goals_over_under_2_5",
+        "notes": "settled vs openligadb",
+        "odds": 3.54,
+        "odds_source": "market_avg",
+        "pnl_units": 2.54,
+        "published_at_utc": "2024-11-08T17:00:00Z",
+        "selection": "under 2.5 goals",
+        "settlement": {
+          "outcome": "won",
+          "verification_state": "verified"
+        },
+        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72302",
+        "sport": "football",
+        "stake_units": 1.0,
+        "status": "won",
+        "tip_id": "bt-tip-ca50c57d20b201c880c1"
+      },
+      {
+        "cutoff_at_utc": "2024-11-08T17:00:00Z",
         "entrant": "draw-no-bet-v1",
         "event": "RB Leipzig v Borussia Mönchengladbach",
         "event_id": "ev-4595e46a4548652c605b",
@@ -2668,6 +3314,52 @@
         "stake_units": 1.0,
         "status": "lost",
         "tip_id": "bt-tip-321613e1e891fba69bac"
+      },
+      {
+        "cutoff_at_utc": "2024-11-08T17:00:00Z",
+        "entrant": "market-totals-favourite-v1",
+        "event": "RB Leipzig v Borussia Mönchengladbach",
+        "event_id": "ev-4595e46a4548652c605b",
+        "event_start_utc": "2024-11-09T17:30:00Z",
+        "market": "total_goals_over_under_2_5",
+        "notes": "settled vs openligadb",
+        "odds": 1.41,
+        "odds_source": "market_avg",
+        "pnl_units": -1.0,
+        "published_at_utc": "2024-11-08T17:00:00Z",
+        "selection": "over 2.5 goals",
+        "settlement": {
+          "outcome": "lost",
+          "verification_state": "verified"
+        },
+        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72296",
+        "sport": "football",
+        "stake_units": 1.0,
+        "status": "lost",
+        "tip_id": "bt-tip-082a71883717f29df2b7"
+      },
+      {
+        "cutoff_at_utc": "2024-11-08T17:00:00Z",
+        "entrant": "poisson-totals-value-v1",
+        "event": "RB Leipzig v Borussia Mönchengladbach",
+        "event_id": "ev-4595e46a4548652c605b",
+        "event_start_utc": "2024-11-09T17:30:00Z",
+        "market": "total_goals_over_under_2_5",
+        "notes": "settled vs openligadb",
+        "odds": 2.92,
+        "odds_source": "market_avg",
+        "pnl_units": 1.92,
+        "published_at_utc": "2024-11-08T17:00:00Z",
+        "selection": "under 2.5 goals",
+        "settlement": {
+          "outcome": "won",
+          "verification_state": "verified"
+        },
+        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72296",
+        "sport": "football",
+        "stake_units": 1.0,
+        "status": "won",
+        "tip_id": "bt-tip-8eb36b8626a248664870"
       },
       {
         "cutoff_at_utc": "2024-11-05T13:00:00Z",
@@ -2740,6 +3432,52 @@
       },
       {
         "cutoff_at_utc": "2024-11-05T13:00:00Z",
+        "entrant": "market-totals-favourite-v1",
+        "event": "FC Augsburg v TSG Hoffenheim",
+        "event_id": "ev-6757190f0d227c770af9",
+        "event_start_utc": "2024-11-10T14:30:00Z",
+        "market": "total_goals_over_under_2_5",
+        "notes": "settled vs openligadb",
+        "odds": 1.55,
+        "odds_source": "market_avg",
+        "pnl_units": -1.0,
+        "published_at_utc": "2024-11-05T13:00:00Z",
+        "selection": "over 2.5 goals",
+        "settlement": {
+          "outcome": "lost",
+          "verification_state": "verified"
+        },
+        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72299",
+        "sport": "football",
+        "stake_units": 1.0,
+        "status": "lost",
+        "tip_id": "bt-tip-45b3dfae918c742ab99a"
+      },
+      {
+        "cutoff_at_utc": "2024-11-05T13:00:00Z",
+        "entrant": "poisson-totals-value-v1",
+        "event": "FC Augsburg v TSG Hoffenheim",
+        "event_id": "ev-6757190f0d227c770af9",
+        "event_start_utc": "2024-11-10T14:30:00Z",
+        "market": "total_goals_over_under_2_5",
+        "notes": "settled vs openligadb",
+        "odds": 1.55,
+        "odds_source": "market_avg",
+        "pnl_units": -1.0,
+        "published_at_utc": "2024-11-05T13:00:00Z",
+        "selection": "over 2.5 goals",
+        "settlement": {
+          "outcome": "lost",
+          "verification_state": "verified"
+        },
+        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72299",
+        "sport": "football",
+        "stake_units": 1.0,
+        "status": "lost",
+        "tip_id": "bt-tip-a5816556ef7db23aa272"
+      },
+      {
+        "cutoff_at_utc": "2024-11-05T13:00:00Z",
         "entrant": "draw-no-bet-v1",
         "event": "VfB Stuttgart v Eintracht Frankfurt",
         "event_id": "ev-b0b97a454a782aaf7715",
@@ -2806,6 +3544,52 @@
         "stake_units": 1.0,
         "status": "won",
         "tip_id": "bt-tip-bd96b97f746f6a9c8e3e"
+      },
+      {
+        "cutoff_at_utc": "2024-11-05T13:00:00Z",
+        "entrant": "market-totals-favourite-v1",
+        "event": "VfB Stuttgart v Eintracht Frankfurt",
+        "event_id": "ev-b0b97a454a782aaf7715",
+        "event_start_utc": "2024-11-10T16:30:00Z",
+        "market": "total_goals_over_under_2_5",
+        "notes": "settled vs openligadb",
+        "odds": 1.45,
+        "odds_source": "market_avg",
+        "pnl_units": 0.45,
+        "published_at_utc": "2024-11-05T13:00:00Z",
+        "selection": "over 2.5 goals",
+        "settlement": {
+          "outcome": "won",
+          "verification_state": "verified"
+        },
+        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72295",
+        "sport": "football",
+        "stake_units": 1.0,
+        "status": "won",
+        "tip_id": "bt-tip-798c64bb3f1541705aa9"
+      },
+      {
+        "cutoff_at_utc": "2024-11-05T13:00:00Z",
+        "entrant": "poisson-totals-value-v1",
+        "event": "VfB Stuttgart v Eintracht Frankfurt",
+        "event_id": "ev-b0b97a454a782aaf7715",
+        "event_start_utc": "2024-11-10T16:30:00Z",
+        "market": "total_goals_over_under_2_5",
+        "notes": "settled vs openligadb",
+        "odds": 2.72,
+        "odds_source": "market_avg",
+        "pnl_units": -1.0,
+        "published_at_utc": "2024-11-05T13:00:00Z",
+        "selection": "under 2.5 goals",
+        "settlement": {
+          "outcome": "lost",
+          "verification_state": "verified"
+        },
+        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72295",
+        "sport": "football",
+        "stake_units": 1.0,
+        "status": "lost",
+        "tip_id": "bt-tip-f768d6620507162baca9"
       },
       {
         "cutoff_at_utc": "2024-11-05T13:00:00Z",
@@ -2921,6 +3705,52 @@
         "stake_units": 1.0,
         "status": "lost",
         "tip_id": "bt-tip-7610eb2641a04499c6e8"
+      },
+      {
+        "cutoff_at_utc": "2024-11-05T13:00:00Z",
+        "entrant": "market-totals-favourite-v1",
+        "event": "1. FC Heidenheim 1846 v VfL Wolfsburg",
+        "event_id": "ev-fd01b7d016c7d3c24952",
+        "event_start_utc": "2024-11-10T18:30:00Z",
+        "market": "total_goals_over_under_2_5",
+        "notes": "settled vs openligadb",
+        "odds": 1.91,
+        "odds_source": "market_avg",
+        "pnl_units": -1.0,
+        "published_at_utc": "2024-11-05T13:00:00Z",
+        "selection": "under 2.5 goals",
+        "settlement": {
+          "outcome": "lost",
+          "verification_state": "verified"
+        },
+        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72297",
+        "sport": "football",
+        "stake_units": 1.0,
+        "status": "lost",
+        "tip_id": "bt-tip-864a31a42d1308670a06"
+      },
+      {
+        "cutoff_at_utc": "2024-11-05T13:00:00Z",
+        "entrant": "poisson-totals-value-v1",
+        "event": "1. FC Heidenheim 1846 v VfL Wolfsburg",
+        "event_id": "ev-fd01b7d016c7d3c24952",
+        "event_start_utc": "2024-11-10T18:30:00Z",
+        "market": "total_goals_over_under_2_5",
+        "notes": "settled vs openligadb",
+        "odds": 1.92,
+        "odds_source": "market_avg",
+        "pnl_units": 0.92,
+        "published_at_utc": "2024-11-05T13:00:00Z",
+        "selection": "over 2.5 goals",
+        "settlement": {
+          "outcome": "won",
+          "verification_state": "verified"
+        },
+        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72297",
+        "sport": "football",
+        "stake_units": 1.0,
+        "status": "won",
+        "tip_id": "bt-tip-9aa800b05b12abc79772"
       },
       {
         "cutoff_at_utc": "2024-11-26T18:00:00Z",
@@ -3113,6 +3943,52 @@
         "stake_units": 1.0,
         "status": "lost",
         "tip_id": "bt-tip-cb2018498a65d4569c68"
+      },
+      {
+        "cutoff_at_utc": "2025-01-31T17:00:00Z",
+        "entrant": "market-totals-favourite-v1",
+        "event": "SV Werder Bremen v 1. FSV Mainz 05",
+        "event_id": "ev-935dedd8ae94ebd03584",
+        "event_start_utc": "2025-01-31T19:30:00Z",
+        "market": "total_goals_over_under_2_5",
+        "notes": "settled vs openligadb",
+        "odds": 1.86,
+        "odds_source": "market_avg",
+        "pnl_units": -1.0,
+        "published_at_utc": "2025-01-31T17:00:00Z",
+        "selection": "over 2.5 goals",
+        "settlement": {
+          "outcome": "lost",
+          "verification_state": "verified"
+        },
+        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72390",
+        "sport": "football",
+        "stake_units": 1.0,
+        "status": "lost",
+        "tip_id": "bt-tip-e26d04ddcf0a89a3f977"
+      },
+      {
+        "cutoff_at_utc": "2025-01-31T17:00:00Z",
+        "entrant": "poisson-totals-value-v1",
+        "event": "SV Werder Bremen v 1. FSV Mainz 05",
+        "event_id": "ev-935dedd8ae94ebd03584",
+        "event_start_utc": "2025-01-31T19:30:00Z",
+        "market": "total_goals_over_under_2_5",
+        "notes": "settled vs openligadb",
+        "odds": 1.86,
+        "odds_source": "market_avg",
+        "pnl_units": -1.0,
+        "published_at_utc": "2025-01-31T17:00:00Z",
+        "selection": "over 2.5 goals",
+        "settlement": {
+          "outcome": "lost",
+          "verification_state": "verified"
+        },
+        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72390",
+        "sport": "football",
+        "stake_units": 1.0,
+        "status": "lost",
+        "tip_id": "bt-tip-8d4c8bf428a36ba70d27"
       },
       {
         "cutoff_at_utc": "2025-01-31T17:00:00Z",
@@ -3599,6 +4475,236 @@
       },
       {
         "cutoff_at_utc": "2025-01-31T17:00:00Z",
+        "entrant": "market-totals-favourite-v1",
+        "event": "VfB Stuttgart v Borussia Mönchengladbach",
+        "event_id": "ev-839850c626e8f8d6c9d7",
+        "event_start_utc": "2025-02-01T14:30:00Z",
+        "market": "total_goals_over_under_2_5",
+        "notes": "settled vs openligadb",
+        "odds": 1.41,
+        "odds_source": "market_avg",
+        "pnl_units": 0.41,
+        "published_at_utc": "2025-01-31T17:00:00Z",
+        "selection": "over 2.5 goals",
+        "settlement": {
+          "outcome": "won",
+          "verification_state": "verified"
+        },
+        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72386",
+        "sport": "football",
+        "stake_units": 1.0,
+        "status": "won",
+        "tip_id": "bt-tip-68f0ec753fb0fedb9ea6"
+      },
+      {
+        "cutoff_at_utc": "2025-01-31T17:00:00Z",
+        "entrant": "market-totals-favourite-v1",
+        "event": "VfL Bochum v SC Freiburg",
+        "event_id": "ev-99de80b2c08b95ac9a4a",
+        "event_start_utc": "2025-02-01T14:30:00Z",
+        "market": "total_goals_over_under_2_5",
+        "notes": "settled vs openligadb",
+        "odds": 1.79,
+        "odds_source": "market_avg",
+        "pnl_units": -1.0,
+        "published_at_utc": "2025-01-31T17:00:00Z",
+        "selection": "over 2.5 goals",
+        "settlement": {
+          "outcome": "lost",
+          "verification_state": "verified"
+        },
+        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72392",
+        "sport": "football",
+        "stake_units": 1.0,
+        "status": "lost",
+        "tip_id": "bt-tip-066de68c21883d36c643"
+      },
+      {
+        "cutoff_at_utc": "2025-01-31T17:00:00Z",
+        "entrant": "market-totals-favourite-v1",
+        "event": "1. FC Heidenheim 1846 v Borussia Dortmund",
+        "event_id": "ev-ba96ae250c0bf922269f",
+        "event_start_utc": "2025-02-01T14:30:00Z",
+        "market": "total_goals_over_under_2_5",
+        "notes": "settled vs openligadb",
+        "odds": 1.56,
+        "odds_source": "market_avg",
+        "pnl_units": 0.56,
+        "published_at_utc": "2025-01-31T17:00:00Z",
+        "selection": "over 2.5 goals",
+        "settlement": {
+          "outcome": "won",
+          "verification_state": "verified"
+        },
+        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72389",
+        "sport": "football",
+        "stake_units": 1.0,
+        "status": "won",
+        "tip_id": "bt-tip-e1ea9c44fe684c2c48cc"
+      },
+      {
+        "cutoff_at_utc": "2025-01-31T17:00:00Z",
+        "entrant": "market-totals-favourite-v1",
+        "event": "FC St. Pauli v FC Augsburg",
+        "event_id": "ev-d0d0031790358565ad72",
+        "event_start_utc": "2025-02-01T14:30:00Z",
+        "market": "total_goals_over_under_2_5",
+        "notes": "settled vs openligadb",
+        "odds": 1.66,
+        "odds_source": "market_avg",
+        "pnl_units": 0.66,
+        "published_at_utc": "2025-01-31T17:00:00Z",
+        "selection": "under 2.5 goals",
+        "settlement": {
+          "outcome": "won",
+          "verification_state": "verified"
+        },
+        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72393",
+        "sport": "football",
+        "stake_units": 1.0,
+        "status": "won",
+        "tip_id": "bt-tip-2de3da4c9e5e5b604041"
+      },
+      {
+        "cutoff_at_utc": "2025-01-31T17:00:00Z",
+        "entrant": "market-totals-favourite-v1",
+        "event": "FC Bayern München v Holstein Kiel",
+        "event_id": "ev-f846c0b18638ea034321",
+        "event_start_utc": "2025-02-01T14:30:00Z",
+        "market": "total_goals_over_under_2_5",
+        "notes": "settled vs openligadb",
+        "odds": 1.13,
+        "odds_source": "market_avg",
+        "pnl_units": 0.13,
+        "published_at_utc": "2025-01-31T17:00:00Z",
+        "selection": "over 2.5 goals",
+        "settlement": {
+          "outcome": "won",
+          "verification_state": "verified"
+        },
+        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72387",
+        "sport": "football",
+        "stake_units": 1.0,
+        "status": "won",
+        "tip_id": "bt-tip-942b356d126faff62973"
+      },
+      {
+        "cutoff_at_utc": "2025-01-31T17:00:00Z",
+        "entrant": "poisson-totals-value-v1",
+        "event": "VfB Stuttgart v Borussia Mönchengladbach",
+        "event_id": "ev-839850c626e8f8d6c9d7",
+        "event_start_utc": "2025-02-01T14:30:00Z",
+        "market": "total_goals_over_under_2_5",
+        "notes": "settled vs openligadb",
+        "odds": 2.84,
+        "odds_source": "market_avg",
+        "pnl_units": -1.0,
+        "published_at_utc": "2025-01-31T17:00:00Z",
+        "selection": "under 2.5 goals",
+        "settlement": {
+          "outcome": "lost",
+          "verification_state": "verified"
+        },
+        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72386",
+        "sport": "football",
+        "stake_units": 1.0,
+        "status": "lost",
+        "tip_id": "bt-tip-0e4c70b6133379abd6a8"
+      },
+      {
+        "cutoff_at_utc": "2025-01-31T17:00:00Z",
+        "entrant": "poisson-totals-value-v1",
+        "event": "VfL Bochum v SC Freiburg",
+        "event_id": "ev-99de80b2c08b95ac9a4a",
+        "event_start_utc": "2025-02-01T14:30:00Z",
+        "market": "total_goals_over_under_2_5",
+        "notes": "settled vs openligadb",
+        "odds": 2.03,
+        "odds_source": "market_avg",
+        "pnl_units": 1.03,
+        "published_at_utc": "2025-01-31T17:00:00Z",
+        "selection": "under 2.5 goals",
+        "settlement": {
+          "outcome": "won",
+          "verification_state": "verified"
+        },
+        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72392",
+        "sport": "football",
+        "stake_units": 1.0,
+        "status": "won",
+        "tip_id": "bt-tip-315d60fdea91f7852a23"
+      },
+      {
+        "cutoff_at_utc": "2025-01-31T17:00:00Z",
+        "entrant": "poisson-totals-value-v1",
+        "event": "1. FC Heidenheim 1846 v Borussia Dortmund",
+        "event_id": "ev-ba96ae250c0bf922269f",
+        "event_start_utc": "2025-02-01T14:30:00Z",
+        "market": "total_goals_over_under_2_5",
+        "notes": "settled vs openligadb",
+        "odds": 2.4,
+        "odds_source": "market_avg",
+        "pnl_units": -1.0,
+        "published_at_utc": "2025-01-31T17:00:00Z",
+        "selection": "under 2.5 goals",
+        "settlement": {
+          "outcome": "lost",
+          "verification_state": "verified"
+        },
+        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72389",
+        "sport": "football",
+        "stake_units": 1.0,
+        "status": "lost",
+        "tip_id": "bt-tip-6f5c79014fee19616af6"
+      },
+      {
+        "cutoff_at_utc": "2025-01-31T17:00:00Z",
+        "entrant": "poisson-totals-value-v1",
+        "event": "FC St. Pauli v FC Augsburg",
+        "event_id": "ev-d0d0031790358565ad72",
+        "event_start_utc": "2025-02-01T14:30:00Z",
+        "market": "total_goals_over_under_2_5",
+        "notes": "settled vs openligadb",
+        "odds": 1.66,
+        "odds_source": "market_avg",
+        "pnl_units": 0.66,
+        "published_at_utc": "2025-01-31T17:00:00Z",
+        "selection": "under 2.5 goals",
+        "settlement": {
+          "outcome": "won",
+          "verification_state": "verified"
+        },
+        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72393",
+        "sport": "football",
+        "stake_units": 1.0,
+        "status": "won",
+        "tip_id": "bt-tip-79101fcd4995e554cbee"
+      },
+      {
+        "cutoff_at_utc": "2025-01-31T17:00:00Z",
+        "entrant": "poisson-totals-value-v1",
+        "event": "FC Bayern München v Holstein Kiel",
+        "event_id": "ev-f846c0b18638ea034321",
+        "event_start_utc": "2025-02-01T14:30:00Z",
+        "market": "total_goals_over_under_2_5",
+        "notes": "settled vs openligadb",
+        "odds": 5.31,
+        "odds_source": "market_avg",
+        "pnl_units": -1.0,
+        "published_at_utc": "2025-01-31T17:00:00Z",
+        "selection": "under 2.5 goals",
+        "settlement": {
+          "outcome": "lost",
+          "verification_state": "verified"
+        },
+        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72387",
+        "sport": "football",
+        "stake_units": 1.0,
+        "status": "lost",
+        "tip_id": "bt-tip-b366b5753681975b9a20"
+      },
+      {
+        "cutoff_at_utc": "2025-01-31T17:00:00Z",
         "entrant": "draw-no-bet-v1",
         "event": "1. FC Union Berlin v RB Leipzig",
         "event_id": "ev-938747a33a1db650cce1",
@@ -3736,6 +4842,52 @@
         "tip_id": "bt-tip-3a3245338aea2ac3a823"
       },
       {
+        "cutoff_at_utc": "2025-01-31T17:00:00Z",
+        "entrant": "market-totals-favourite-v1",
+        "event": "1. FC Union Berlin v RB Leipzig",
+        "event_id": "ev-938747a33a1db650cce1",
+        "event_start_utc": "2025-02-01T17:30:00Z",
+        "market": "total_goals_over_under_2_5",
+        "notes": "settled vs openligadb",
+        "odds": 1.76,
+        "odds_source": "market_avg",
+        "pnl_units": -1.0,
+        "published_at_utc": "2025-01-31T17:00:00Z",
+        "selection": "over 2.5 goals",
+        "settlement": {
+          "outcome": "lost",
+          "verification_state": "verified"
+        },
+        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72391",
+        "sport": "football",
+        "stake_units": 1.0,
+        "status": "lost",
+        "tip_id": "bt-tip-25df04f7cbf09d51faaf"
+      },
+      {
+        "cutoff_at_utc": "2025-01-31T17:00:00Z",
+        "entrant": "poisson-totals-value-v1",
+        "event": "1. FC Union Berlin v RB Leipzig",
+        "event_id": "ev-938747a33a1db650cce1",
+        "event_start_utc": "2025-02-01T17:30:00Z",
+        "market": "total_goals_over_under_2_5",
+        "notes": "settled vs openligadb",
+        "odds": 2.08,
+        "odds_source": "market_avg",
+        "pnl_units": 1.08,
+        "published_at_utc": "2025-01-31T17:00:00Z",
+        "selection": "under 2.5 goals",
+        "settlement": {
+          "outcome": "won",
+          "verification_state": "verified"
+        },
+        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72391",
+        "sport": "football",
+        "stake_units": 1.0,
+        "status": "won",
+        "tip_id": "bt-tip-3f2af5345f02f5ba59c5"
+      },
+      {
         "cutoff_at_utc": "2025-01-28T13:00:00Z",
         "entrant": "draw-no-bet-v1",
         "event": "Eintracht Frankfurt v VfL Wolfsburg",
@@ -3803,6 +4955,52 @@
         "stake_units": 1.0,
         "status": "lost",
         "tip_id": "bt-tip-1f574bd29ba796c33384"
+      },
+      {
+        "cutoff_at_utc": "2025-01-28T13:00:00Z",
+        "entrant": "market-totals-favourite-v1",
+        "event": "Eintracht Frankfurt v VfL Wolfsburg",
+        "event_id": "ev-cef67475eea24d08c27a",
+        "event_start_utc": "2025-02-02T14:30:00Z",
+        "market": "total_goals_over_under_2_5",
+        "notes": "settled vs openligadb",
+        "odds": 1.52,
+        "odds_source": "market_avg",
+        "pnl_units": -1.0,
+        "published_at_utc": "2025-01-28T13:00:00Z",
+        "selection": "over 2.5 goals",
+        "settlement": {
+          "outcome": "lost",
+          "verification_state": "verified"
+        },
+        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72388",
+        "sport": "football",
+        "stake_units": 1.0,
+        "status": "lost",
+        "tip_id": "bt-tip-12d4e735f0dffcc56b7c"
+      },
+      {
+        "cutoff_at_utc": "2025-01-28T13:00:00Z",
+        "entrant": "poisson-totals-value-v1",
+        "event": "Eintracht Frankfurt v VfL Wolfsburg",
+        "event_id": "ev-cef67475eea24d08c27a",
+        "event_start_utc": "2025-02-02T14:30:00Z",
+        "market": "total_goals_over_under_2_5",
+        "notes": "settled vs openligadb",
+        "odds": 1.52,
+        "odds_source": "market_avg",
+        "pnl_units": -1.0,
+        "published_at_utc": "2025-01-28T13:00:00Z",
+        "selection": "over 2.5 goals",
+        "settlement": {
+          "outcome": "lost",
+          "verification_state": "verified"
+        },
+        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72388",
+        "sport": "football",
+        "stake_units": 1.0,
+        "status": "lost",
+        "tip_id": "bt-tip-f99bce3c4f2c7b4d8310"
       },
       {
         "cutoff_at_utc": "2025-01-28T13:00:00Z",
@@ -3895,6 +5093,52 @@
         "stake_units": 1.0,
         "status": "lost",
         "tip_id": "bt-tip-6b760c4c36c84c07ec10"
+      },
+      {
+        "cutoff_at_utc": "2025-01-28T13:00:00Z",
+        "entrant": "market-totals-favourite-v1",
+        "event": "Bayer 04 Leverkusen v TSG Hoffenheim",
+        "event_id": "ev-b5d8e9303b589f145485",
+        "event_start_utc": "2025-02-02T16:30:00Z",
+        "market": "total_goals_over_under_2_5",
+        "notes": "settled vs openligadb",
+        "odds": 1.36,
+        "odds_source": "market_avg",
+        "pnl_units": 0.36,
+        "published_at_utc": "2025-01-28T13:00:00Z",
+        "selection": "over 2.5 goals",
+        "settlement": {
+          "outcome": "won",
+          "verification_state": "verified"
+        },
+        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72385",
+        "sport": "football",
+        "stake_units": 1.0,
+        "status": "won",
+        "tip_id": "bt-tip-b7fe1fa0f07ce1544e1a"
+      },
+      {
+        "cutoff_at_utc": "2025-01-28T13:00:00Z",
+        "entrant": "poisson-totals-value-v1",
+        "event": "Bayer 04 Leverkusen v TSG Hoffenheim",
+        "event_id": "ev-b5d8e9303b589f145485",
+        "event_start_utc": "2025-02-02T16:30:00Z",
+        "market": "total_goals_over_under_2_5",
+        "notes": "settled vs openligadb",
+        "odds": 3.07,
+        "odds_source": "market_avg",
+        "pnl_units": -1.0,
+        "published_at_utc": "2025-01-28T13:00:00Z",
+        "selection": "under 2.5 goals",
+        "settlement": {
+          "outcome": "lost",
+          "verification_state": "verified"
+        },
+        "source_url": "https://api.openligadb.de/getmatchdata/bl1/2024/72385",
+        "sport": "football",
+        "stake_units": 1.0,
+        "status": "lost",
+        "tip_id": "bt-tip-d524fce7991d6e509a54"
       },
       {
         "cutoff_at_utc": "2025-11-22T14:00:00Z",
@@ -5297,7 +6541,7 @@
         "tip_id": "fwd-tip-ee976044daea7aa92aba"
       }
     ],
-    "total_placed": 191,
+    "total_placed": 243,
     "total_upcoming": 22,
     "upcoming": [
       {
@@ -6115,6 +7359,18 @@
       "entrant_id": "form-value-v1",
       "kind": "strategy",
       "name": "Form + price value"
+    },
+    {
+      "description": "Independent-Poisson goal model (Maher/Dixon-Coles family; league rates + shrunk attack/defence multipliers from released matches only, prior weight 6 matches) vs the margin-removed market over/under 2.5 price; bets the side with a >= 3% edge. Pre-registered priors, not fitted.",
+      "entrant_id": "poisson-totals-value-v1",
+      "kind": "strategy",
+      "name": "Poisson totals value (O/U 2.5)"
+    },
+    {
+      "description": "Always backs the margin-removed market favourite side of the over/under 2.5 goals market. Baseline reference for the totals family, not a claimed edge.",
+      "entrant_id": "market-totals-favourite-v1",
+      "kind": "strategy",
+      "name": "Market totals favourite (O/U 2.5 baseline)"
     },
     {
       "description": "2-way Elo incl. OT/SO (K=32, home adv 35 Elo pts, research priors); backs the model favourite when win prob >= 55%. Prediction-only: DEL has no permissioned odds path in this build, so graded on accuracy, not PnL.",
@@ -7167,6 +8423,26 @@
   },
   "leaderboard": [
     {
+      "description": "Independent-Poisson goal model (Maher/Dixon-Coles family; league rates + shrunk attack/defence multipliers from released matches only, prior weight 6 matches) vs the margin-removed market over/under 2.5 price; bets the side with a >= 3% edge. Pre-registered priors, not fitted.",
+      "disputed": 0,
+      "entrant_id": "poisson-totals-value-v1",
+      "kind": "strategy",
+      "losses": 15,
+      "max_drawdown_units": 4.31,
+      "name": "Poisson totals value (O/U 2.5)",
+      "pending": 0,
+      "profit_units": -0.48,
+      "profit_units_ranked": -0.48,
+      "rank": 1,
+      "roi": -0.0192,
+      "settled_bets": 25,
+      "strike_rate": 0.4,
+      "turnover_units": 25.0,
+      "verification_state": "verified",
+      "voids": 0,
+      "wins": 10
+    },
+    {
       "description": "Back the better recent-form side (mean points per match over last 3 released matches) when the gap >= 1.0 pts/match and the stored price >= 1.80. Tipster-style rule, fully auditable, no fitted parameters.",
       "disputed": 0,
       "entrant_id": "form-value-v1",
@@ -7177,7 +8453,7 @@
       "pending": 0,
       "profit_units": -0.49,
       "profit_units_ranked": -0.49,
-      "rank": 1,
+      "rank": 2,
       "roi": -0.163333,
       "settled_bets": 3,
       "strike_rate": 0.333333,
@@ -7197,7 +8473,7 @@
       "pending": 0,
       "profit_units": -1.32,
       "profit_units_ranked": -1.32,
-      "rank": 2,
+      "rank": 3,
       "roi": -0.165,
       "settled_bets": 8,
       "strike_rate": 0.125,
@@ -7217,7 +8493,7 @@
       "pending": 0,
       "profit_units": -2.73,
       "profit_units_ranked": -2.73,
-      "rank": 3,
+      "rank": 4,
       "roi": -0.2275,
       "settled_bets": 12,
       "strike_rate": 0.25,
@@ -7237,7 +8513,7 @@
       "pending": 0,
       "profit_units": -3.04,
       "profit_units_ranked": -3.04,
-      "rank": 4,
+      "rank": 5,
       "roi": -0.304,
       "settled_bets": 10,
       "strike_rate": 0.2,
@@ -7245,6 +8521,26 @@
       "verification_state": "verified",
       "voids": 0,
       "wins": 2
+    },
+    {
+      "description": "Always backs the margin-removed market favourite side of the over/under 2.5 goals market. Baseline reference for the totals family, not a claimed edge.",
+      "disputed": 0,
+      "entrant_id": "market-totals-favourite-v1",
+      "kind": "strategy",
+      "losses": 12,
+      "max_drawdown_units": 6.08,
+      "name": "Market totals favourite (O/U 2.5 baseline)",
+      "pending": 0,
+      "profit_units": -4.19,
+      "profit_units_ranked": -4.19,
+      "rank": 6,
+      "roi": -0.155185,
+      "settled_bets": 27,
+      "strike_rate": 0.555556,
+      "turnover_units": 27.0,
+      "verification_state": "verified",
+      "voids": 0,
+      "wins": 15
     },
     {
       "description": "Always backs the margin-removed market favourite (highest implied probability). Baseline reference, not a claimed edge.",
@@ -7257,7 +8553,7 @@
       "pending": 0,
       "profit_units": -5.08,
       "profit_units_ranked": -5.08,
-      "rank": 5,
+      "rank": 7,
       "roi": -0.188148,
       "settled_bets": 27,
       "strike_rate": 0.481481,
@@ -7277,7 +8573,7 @@
       "pending": 0,
       "profit_units": -5.2,
       "profit_units_ranked": -5.2,
-      "rank": 6,
+      "rank": 8,
       "roi": -0.226087,
       "settled_bets": 23,
       "strike_rate": 0.391304,
@@ -7297,7 +8593,7 @@
       "pending": 0,
       "profit_units": -7.88,
       "profit_units_ranked": -7.88,
-      "rank": 7,
+      "rank": 9,
       "roi": -0.291852,
       "settled_bets": 27,
       "strike_rate": 0.185185,
@@ -7308,7 +8604,7 @@
     }
   ],
   "meta": {
-    "built_utc": "2026-09-20T20:20:12Z",
+    "built_utc": "2026-09-21T04:36:41Z",
     "event_count": 1152,
     "hockey": {
       "competition": "DEL Eishockey 2024/2025",
@@ -7333,7 +8629,7 @@
       ],
       "note": "27 hand-audited events; results OpenLigaDB (ODbL), odds football-data.co.uk manual import (research-use flag, no redistribution). The licensed The Odds API connector is not active in this build."
     },
-    "snapshot_count": 405,
+    "snapshot_count": 613,
     "stake_basis": "level 1.0 units per bet (profit units)",
     "title": "Northstar Competition Lab"
   },
@@ -7470,13 +8766,36 @@
         "tested": "elo-favourite-3way-v1"
       },
       {
-        "data": "Verified scores - line-up/time gate - licensed odds",
-        "description": "Estimate home and away scoring rates from pre-cutoff history and test totals/handicap markets once a permissioned odds path covers them.",
-        "name": "Poisson goal totals",
+        "data": "Same verified pilot file - its over/under 2.5 columns (B365/Avg/Max/BFE), same collection window",
+        "description": "Independent-Poisson goal model (Maher 1982 / Dixon-Coles 1997 family): league rates + shrunk attack/defence multipliers from released matches only; bets over/under 2.5 with a >=3-point edge over the margin-removed market. Priors pre-registered, not fitted.",
+        "name": "Poisson goal totals (O/U 2.5)",
+        "refs": [
+          "https://research-information.bris.ac.uk/en/publications/modelling-association-football-scores-and-inefficiencies-in-the-f/",
+          "https://doi.org/10.1016/j.ijforecast.2009.10.002"
+        ],
+        "sport": "Football",
+        "status": "Pilot-tested",
+        "test": "Walk-forward O/U 2.5 (half-goal line, no push)",
+        "tested": "poisson-totals-value-v1"
+      },
+      {
+        "data": "Same verified pilot over/under 2.5 prices",
+        "description": "Always backs the market's more-likely side of over/under 2.5. Baseline for the totals family.",
+        "name": "Market totals favourite (O/U baseline)",
+        "refs": [],
+        "sport": "Football",
+        "status": "Pilot-tested",
+        "test": "Walk-forward O/U 2.5",
+        "tested": "market-totals-favourite-v1"
+      },
+      {
+        "data": "Verified scores + pilot AH columns - settlement rule gate",
+        "description": "Same Poisson goal model applied to the stored Asian-handicap line (AHh / AvgAHH / AvgAHA columns exist in the pilot file). Needs a quarter-line split/push settlement rule with tests before it can be graded - not guessed.",
+        "name": "Asian handicap value",
         "refs": [],
         "sport": "Football",
         "status": "Ready to source",
-        "test": "Walk-forward totals"
+        "test": "Walk-forward AH"
       },
       {
         "data": "OpenLigaDB DEL pilot fixtures/results (ODbL) - no permissioned odds",
@@ -7689,7 +9008,7 @@
         "test": "Fight winner / method"
       }
     ],
-    "version": "nr-hypothesis-registry-2026-09-20.2"
+    "version": "nr-hypothesis-registry-2026-09-21.1"
   },
   "sources": [
     {
