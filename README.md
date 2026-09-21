@@ -222,7 +222,7 @@ tests/                248 offline tests (pytest)
 data/fixtures/        committed pilot fixtures: football-bl1 + hockey-del
                       (sha256-verified)
 data/fixtures/current/ CI-captured live-season fixtures + capture log
-                      (bl1/del 2026/27, PDC darts 2025-26; sha256 sidecars)
+                      (bl1/pl/bl2/la1/del 2026/27, PDC darts 2025-26; sha256 sidecars)
 data/forward/         append-only forward-test ledger (frozen predictions)
 data/raw/             manual OLBG snapshots (provenance headers)
 site-data/site.json   generated site payload (rebuilt by the pipeline)
@@ -246,7 +246,10 @@ scripts/assemble_fixture.py     strict chunk-assembly + validation used to
   chunk-assembled and JSON-validated by `scripts/assemble_fixture.py`.
 - `data/fixtures/current/openligadb_*.json` — live-season OpenLigaDB
   payloads (**ODbL-1.0**), captured and committed automatically by
-  `.github/workflows/capture.yml` on 2026-09-20 (bl1/del 2026/27; PDC
+  `.github/workflows/capture.yml` since 2026-09-20 (bl1/del 2026/27; from
+  2026-09-21 also Premier League `pl`, 2. Bundesliga `bl2` and LaLiga `la1`
+  2026/27 — each probed live before listing; team crest URLs are stripped
+  on capture and the raw sha256 kept in the sidecar; PDC
   darts events 2025–26 found via league-index discovery after
   `getavailableseasons` returned 404 for every darts shortcut — see
   `capture-log.json` and `docs/DARTS-AUDIT.md`).

@@ -36,13 +36,38 @@ from . import models
 from .adapters import openligadb
 from .models import parse_utc
 
-# Whole-season targets for the forward-test desks. bl1 = Bundesliga
-# (football), del = DEL (ice hockey).  Both verified live on 2026-09-20
-# via getmatchdata probes.  Darts targets come from discovery (below).
+# Whole-season targets for the forward-test desks.  Every shortcut was
+# probed live via getmatchdata before being listed (no assumptions):
+#   bl1  Bundesliga            verified 2026-09-20
+#   del  DEL (ice hockey)      verified 2026-09-20
+#   pl   Premier League 2026/27 (leagueId 5996)   probed 2026-09-20/21:
+#        same schema as bl1; matchday 4 carries one match with duplicate
+#        conflicting Endergebnis rows -> the ingest flags it
+#        RESULT_KIND_INCONSISTENT and refuses to grade it (review queue).
+#        Community duplicates "Permier League" (5993) and "epl" (4905) are
+#        NOT used.
+#   bl2  2. Bundesliga 2026/27 (leagueId 4938)   probed 2026-09-20: clean
+#   la1  LaLiga 2026/27 (leagueId 4936)          probed 2026-09-20: clean
+# DEL2 (5962) was probed too and is deliberately NOT listed: its period
+# rows are labelled HalfTime/After90Minutes with scores that do not match
+# the goal list, so a schema audit + tests must land first (docs/STATUS).
+# Darts targets come from discovery (below).
 CURRENT_TARGETS: List[Tuple[str, int, str]] = [
     ("bl1", 2026, "football"),
+    ("pl", 2026, "football"),
+    ("bl2", 2026, "football"),
+    ("la1", 2026, "football"),
     ("del", 2026, "ice_hockey"),
 ]
+
+# Keys dropped from every team object before a fixture is stored.  They
+# are presentation-only (crest URLs) and at least one live payload
+# (pl/2026, Aston Villa) carries a multi-hundred-kB base64 data URI in
+# ``teamIconUrl`` - which would bloat the repository for zero analytical
+# value.  The stored sha256 is of the stripped canonical text; the raw
+# payload's sha256 is recorded alongside so the provenance chain is
+# explicit (``source_sha256_raw`` in the sidecar).
+STRIPPED_TEAM_KEYS = ("teamIconUrl",)
 
 # League shortcuts previously documented for darts; discovery decides
 # whether they exist and which seasons carry data.
@@ -243,6 +268,26 @@ def discover_darts_seasons(fetch=openligadb.fetch_url,
     return out
 
 
+def strip_presentation_fields(payload: List[Dict[str, Any]]) -> int:
+    """Remove STRIPPED_TEAM_KEYS from team1/team2 in place.
+
+    Returns the number of non-empty values removed (recorded in the
+    sidecar so a reviewer can see exactly what was dropped).
+    """
+    removed = 0
+    for m in payload:
+        for side in ("team1", "team2"):
+            team = m.get(side)
+            if not isinstance(team, dict):
+                continue
+            for key in STRIPPED_TEAM_KEYS:
+                if key in team:
+                    if team[key]:
+                        removed += 1
+                    del team[key]
+    return removed
+
+
 def capture_season(shortcut: str, season: int, sport: str, out_dir: str,
                    fetch=openligadb.fetch_url) -> Dict[str, Any]:
     """Fetch one league-season, validate strictly, write fixture + meta.
@@ -292,6 +337,8 @@ def capture_season(shortcut: str, season: int, sport: str, out_dir: str,
     fixture_name = f"openligadb_{shortcut.lower()}_{season}.json"
     fixture_path = os.path.join(out_dir, fixture_name)
     os.makedirs(out_dir, exist_ok=True)
+    raw_sha = models.sha256_text(_canonical(payload))
+    stripped = strip_presentation_fields(payload)
     canonical = _canonical(payload)
     with open(fixture_path, "w", encoding="utf-8") as fh:
         fh.write(canonical)
@@ -312,9 +359,14 @@ def capture_season(shortcut: str, season: int, sport: str, out_dir: str,
         "sport": sport,
         "n_matches": len(payload),
         "n_finished": finished,
+        "source_sha256_raw": raw_sha,
+        "stripped_fields": {"team_keys": list(STRIPPED_TEAM_KEYS),
+                            "values_removed": stripped},
         "note": ("whole-season payload fetched via the permitted automated "
-                 "API (ODbL-1.0); canonical compact JSON, unmodified "
-                 "content"),
+                 "API (ODbL-1.0); canonical compact JSON; the only edit is "
+                 "the removal of presentation-only team crest URLs "
+                 f"({', '.join(STRIPPED_TEAM_KEYS)}) - scores, times, "
+                 "ids and names are untouched (raw sha256 recorded)"),
     }
     with open(os.path.join(out_dir, fixture_name + ".meta.json"), "w",
               encoding="utf-8") as fh:
