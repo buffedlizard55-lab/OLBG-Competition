@@ -1,6 +1,16 @@
 # Status, limitations & remaining work
 
-**Updated 2026-09-20 (live-capture + forward-test + darts-audit pass).**
+**Updated 2026-09-21 (second-market + four-league-capture + alias pass).**
+Changes since 2026-09-20 in one paragraph: a second football market
+(over/under 2.5 goals) is backtested on the same verified pilot with its own
+settlement rule (m=9 Holm family, all still negative); the current-season
+capture now covers Premier League, 2. Bundesliga and LaLiga besides
+Bundesliga and DEL (each probed live first; team crest URLs stripped); a
+CET/CEST local-vs-UTC cross-check runs on every OpenLigaDB row; darts
+player identity uses a curated, evidence-linked alias table (pilot result
+unchanged); registry data-gate notes record the live probes that keep
+Handball/Basketball/NFL/Volleyball blocked and DEL2/CHL at
+"Ready to source". Test count 262.
 Read together with `README.md` (what this is), `docs/LICENSING.md` (what
 sources allow), `docs/OLBG-RESEARCH.md` (what OLBG is),
 `docs/data-contract.md` (the rules every number must pass),
@@ -92,7 +102,7 @@ Licensing claims were re-fetched and re-confirmed verbatim (see the
   review evidence only; no bulk collection permission exists for it, so
   OpenLigaDB remains the sole systematic DEL source and identity stays
   `probable`.
-- **Automated tests: 256 passing** covering the user-specified matrix —
+- **Automated tests: 262 passing** covering the user-specified matrix —
   postponements, voids, duplicate tips, time leakage, disputed results,
   settlement arithmetic — plus adapter parsing of the real fixtures, the
   27/27 cross-check, policy gates, leaderboard math, walk-forward
@@ -190,8 +200,8 @@ Licensing claims were re-fetched and re-confirmed verbatim (see the
 7. **Odds licensing boundary.** The Odds API connector is permissioned only
    for an active paid-plan customer accepting current terms; this repo has
    no key or response. football-data remains a private/manual fixture.
-8. **Multiple comparisons.** 7 PnL strategies were run on one 27-match
-   sample. Holm correction is applied (all adjusted p = 1.0) — treat every
+8. **Multiple comparisons.** 9 PnL strategies (7 on 1X2, 2 on O/U 2.5) were
+   run on one 27-match sample. Holm correction is applied (all adjusted p = 1.0) — treat every
    pilot result as exploratory, not confirmatory. The design-stage catalog
    (25+ hypotheses) has **not** been run and must never be quoted as
    results.
@@ -224,11 +234,23 @@ Licensing claims were re-fetched and re-confirmed verbatim (see the
     68–90%), darts favourites win often, and there is no market baseline;
     the forward ledger has graded nothing yet. No hockey/darts number may
     be quoted as profitability.
-13. **Darts player identity splits.** The same player appears under
-    different names across events (`R. van Barneveld`/`Raymond van
-    Barneveld`, `Mickey/Michael Mansell`); the Elo pool keys on exact
-    names and we do not auto-merge without a curated mapping. Effect:
-    compressed rating gaps → the desk biases toward silence.
+13. **Darts player identity is only as good as the alias table.** Three
+    verified splits are merged via `data/aliases/darts.json` (evidence
+    links inside; `northstar/aliases.py` refuses unverified entries).
+    Anything not listed still fragments rating history → the desk biases
+    toward silence. New splits must be added by a human with a link,
+    never by a heuristic.
+15. **New football leagues are warm-up only.** pl/bl2/la1 2026/27 feed the
+    forward desk's rating history; they are single-source (`probable`)
+    and have no odds path. The pl payload already showed the duplicate
+    conflicting-result defect (matchID 86559) and 10 matchday-5 fixtures
+    without result rows at capture time (held unresolved). No settled
+    PnL exists or can exist for them.
+16. **O/U 2.5 shares the pilot's sample-size problem** (25–27 bets) and its
+    window-close-inferred odds; the Poisson model's league priors
+    (1.60/1.30) are generic pre-registered values, not fitted — a
+    different prior would move early-season probabilities. Asian handicap
+    stays design-only (no push/split rule written).
 14. **18 sports stay `verification_blocked`.** Each needs a permissioned
     results path before any strategy may run; the registry and site keep
     them visibly blocked.
@@ -254,27 +276,36 @@ Licensing claims were re-fetched and re-confirmed verbatim (see the
 4. **Hockey identity + odds**: an independent DEL cross-check source (to
    lift identity from `probable`) and a permissioned historical DEL odds
    path (only then may hockey PnL exist).
-5. **Darts identity mapping**: a curated, reviewed alias table (human
-   verified against PDC player pages) before the WM 2026 forward desk
-   starts, so cross-event ratings pool correctly. Then re-state the darts
-   pilot on the mapped pool — as a *new* pre-registered run, not a refit.
-6. **More markets** (totals, Asian handicap, each-way) once odds coverage
-   allows; each gets its own versioned rule set and test matrix row.
-7. **Model work**: Poisson goal totals from pre-cutoff history, rating
-   decay, draw-rate calibration — each as a new registry hypothesis with
-   its own Holm family, never a silent parameter change.
-8. **Timezone utility for OpenLigaDB `lastUpdateDateTime`** (CET/CEST →
-   UTC with DST-refusal, mirroring `uk_local_to_utc`), then restate
-   `retrieved_at_utc`/football availability on exact timestamps (today's
-   treatment is conservatively shifted, see limitation #11).
-9. **Site**: per-tipster sparklines; per-group forward accuracy; keep the
-   payload free of raw football-data rows.
+5. **Darts identity mapping — keep it human.** The alias table exists
+   (3 entries); extend it only with an evidence link per entry as new
+   PDC payloads arrive (WM 2026 field in December). ✔ done 2026-09-21
+   for the splits known today.
+6. **More markets.** O/U 2.5 ✔ done 2026-09-21. Next: Asian handicap
+   (needs a quarter-line split + integer-line push rule with tests;
+   pilot columns already present), then each-way for outright sports
+   once any outright data path exists.
+7. **Model work**: Poisson totals ✔ done (design-stage → pilot-tested).
+   Next: rating decay, draw-rate calibration, and a Dixon-Coles
+   low-score correction — each as a new registry hypothesis with its own
+   Holm family, never a silent parameter change.
+8. **Timezone utility** ✔ `cet_offset_at_utc` landed 2026-09-21 and every
+   OpenLigaDB row is cross-checked. Still open: restate
+   `retrieved_at_utc`/football availability on exact `lastUpdateDateTime`
+   timestamps (today's treatment is conservatively shifted, see
+   limitation #11).
+9. **DEL2 / CHL hockey extension**: write the period-row schema audit
+   (the del2/2026 probe showed HalfTime/After90 labels with scores that
+   disagree with the goal list), add a FINAL_KIND rule + anomaly tests,
+   then list the shortcuts in `CURRENT_TARGETS`.
+10. **Site**: per-tipster sparklines; per-league forward accuracy once the
+    four football desks issue; keep the payload free of raw football-data
+    rows.
 
 ## Reproduce everything
 
 ```bash
 python -m venv .venv && .venv/bin/pip install pytest
-python -m pytest                     # 256 tests, offline
+python -m pytest                     # 262 tests, offline
 python -m northstar.cli run-pipeline --fresh   # rebuild store + site-data/site.json
 python -m northstar.cli verify               # re-check fixture hashes + 27/27
 node scripts/site-smoke.mjs          # renders the site payload headlessly

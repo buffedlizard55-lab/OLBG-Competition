@@ -25,6 +25,19 @@ matches). All automated darts ingest is therefore discovery-driven:
    season exists. The probe also counts unfinished matches and splits them
    into **future** (start after the probe instant) and **past**.
 
+### Sport classification caveat (checked 2026-09-20, `/getavailablesports`)
+
+OpenLigaDB's sport index lists 13 sports (1 Fußball, 2 Eishockey, 4
+Handball, 10 Tischtennis, 13 Basketball, 28 NFL, 44 **"Test"**, 69 Cricket,
+73 Kubb, 76 Floorball, 77 Roboterfußball, 78 Quidditch, 79 Frauenfußball).
+**Every PDC darts league sits under `sportId 44 "Test"`** — there is no
+dedicated darts sport id, and the same "Test" bucket also holds the
+volleyball leagues (`VBL1`/`vblf1`). The sport tag is therefore *not* a
+usable discriminator; discovery keys on the league shortcut/name
+(`dart*`/`pdc*`) and every payload is schema-checked before it is stored.
+The `sport` value written into our sidecars/events (`darts`) is assigned by
+our capture code from that shortcut match, not copied from the source.
+
 ### Capture priority (refined against two live findings)
 
 - **Upcoming-first:** leagues whose latest season carries *future*
