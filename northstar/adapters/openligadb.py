@@ -20,7 +20,7 @@ import urllib.request
 from datetime import timedelta
 from typing import Dict, List, Optional
 
-from .. import models
+from .. import models, timeutil
 from ..db import Store
 from ..models import (
     EVENT_STATUS_FINISHED, EVENT_STATUS_POSTPONED, EVENT_STATUS_SCHEDULED,
@@ -181,6 +181,13 @@ def parse_matchday(text: str, sport: Optional[str] = None) -> List[Dict]:
             "league_season": m.get("leagueSeason"),
             "league_name": m.get("leagueName"),
             "start_utc": parse_utc(m["matchDateTimeUTC"]),
+            # Local/UTC consistency: matchDateTime must equal
+            # matchDateTimeUTC + CET/CEST.  None when the local field is
+            # absent (nothing to check), False = TIME_CONFLICT.
+            "local_time_consistent": (
+                timeutil.openligadb_local_matches_utc(
+                    m["matchDateTime"], m["matchDateTimeUTC"])
+                if m.get("matchDateTime") else None),
             "group_order": (m.get("group") or {}).get("groupOrderID"),
             "group_name": (m.get("group") or {}).get("groupName"),
             "home_team_id": str(m["team1"]["teamId"]),
@@ -255,6 +262,21 @@ def ingest_matchday(store: Store, text: str,
                         f"{m['match_id']} ({m['league_name']}); normalised "
                         f"to {season} from the payload's unambiguous rows "
                         "and flagged for manual review"),
+                source_urls=[url]))
+        if m["local_time_consistent"] is False:
+            aid = stable_id("an", models.ANOMALY_TIME_CONFLICT, eid,
+                            "openligadb-local-vs-utc")
+            if not store.anomaly_exists(aid):
+                stats["anomalies"] += 1
+            store.add_anomaly(models.Anomaly(
+                anomaly_id=aid,
+                kind=models.ANOMALY_TIME_CONFLICT,
+                entity_type="event", entity_id=eid,
+                detected_at_utc=models.utcnow(),
+                detail=(f"matchDateTime {m['raw_match'].get('matchDateTime')} "
+                        f"is not matchDateTimeUTC "
+                        f"{m['raw_match'].get('matchDateTimeUTC')} + "
+                        "CET/CEST; UTC field used, local field distrusted"),
                 source_urls=[url]))
         if m["finished"]:
             status = EVENT_STATUS_FINISHED

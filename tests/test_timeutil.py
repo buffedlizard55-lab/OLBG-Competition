@@ -83,3 +83,60 @@ class TestOddsWindow:
         window = odds_collection_window_utc(kickoff)
         assert window == parse_utc("2024-11-05T13:00:00Z")
         assert window < kickoff
+
+
+class TestCentralEuropeanOffset:
+    """OpenLigaDB local/UTC cross-check (verified on all committed rows)."""
+
+    def test_offsets_around_2026_changes(self):
+        from datetime import datetime, timezone
+        from northstar.timeutil import cet_offset_at_utc
+        # EU summer time 2026: 29 March 01:00 UTC -> 25 October 01:00 UTC
+        assert cet_offset_at_utc(datetime(2026, 3, 29, 0, 59,
+                                          tzinfo=timezone.utc)) == 1
+        assert cet_offset_at_utc(datetime(2026, 3, 29, 1, 0,
+                                          tzinfo=timezone.utc)) == 2
+        assert cet_offset_at_utc(datetime(2026, 10, 25, 0, 59,
+                                          tzinfo=timezone.utc)) == 2
+        assert cet_offset_at_utc(datetime(2026, 10, 25, 1, 0,
+                                          tzinfo=timezone.utc)) == 1
+
+    def test_pilot_rows_match(self):
+        from northstar.timeutil import openligadb_local_matches_utc as ok
+        # bl1 2024 md1 (CEST) and a January row (CET) from the pilot files
+        assert ok("2024-08-23T20:30:00", "2024-08-23T18:30:00Z")
+        assert ok("2025-02-01T15:30:00", "2025-02-01T14:30:00Z")
+        assert not ok("2024-08-23T19:30:00", "2024-08-23T18:30:00Z")
+
+    def test_all_committed_fixtures_consistent(self):
+        import glob, json, os
+        from northstar.timeutil import openligadb_local_matches_utc as ok
+        root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        n = 0
+        for f in glob.glob(os.path.join(root, "data", "fixtures", "**",
+                                        "openligadb_*.json"), recursive=True):
+            if f.endswith(".meta.json"):
+                continue
+            for m in json.load(open(f, encoding="utf-8")):
+                if m.get("matchDateTime") and m.get("matchDateTimeUTC"):
+                    assert ok(m["matchDateTime"], m["matchDateTimeUTC"]), \
+                        (f, m["matchID"])
+                    n += 1
+        assert n >= 1000
+
+    def test_ingest_flags_local_utc_mismatch(self, store):
+        import json
+        from northstar.adapters import openligadb
+        m = {"matchID": 1, "matchDateTime": "2026-09-25T18:30:00",
+             "matchDateTimeUTC": "2026-09-25T18:30:00Z",
+             "leagueId": 1, "leagueName": "L 2026/2027", "leagueSeason": 2026,
+             "leagueShortcut": "bl1", "team1": {"teamId": 1, "teamName": "A"},
+             "team2": {"teamId": 2, "teamName": "B"},
+             "matchIsFinished": False, "matchResults": [],
+             "lastUpdateDateTime": None}
+        out = openligadb.ingest_matchday(store, json.dumps([m]),
+                                         verify_identity=False,
+                                         sport="football")
+        kinds = [a["kind"] for a in store.anomalies()]
+        assert "TIME_CONFLICT" in kinds
+        assert out["anomalies"] >= 1

@@ -166,6 +166,21 @@ HYPOTHESES: List[Dict[str, Any]] = [
         "data": "Federation/league results - licensed odds",
         "test": "Moneyline / totals", "refs": [],
     },
+    {
+        "sport": "Ice Hockey", "name": "DEL2 / CHL results extension",
+        "status": "Ready to source",
+        "description": "OpenLigaDB lists DEL2 2026 (leagueId 5962) and CHL "
+                       "2026 (4951). Live probe 2026-09-20 of "
+                       "getmatchdata/del2/2026/1: matchday finished, but "
+                       "period rows are labelled HalfTime/After90Minutes "
+                       "and their scores disagree with the goal list (e.g. "
+                       "matchID 84080 After90 row 0-0 vs 4-3 in goals). "
+                       "Ingest must not grade such rows; a schema audit + "
+                       "tests (like docs/DARTS-AUDIT.md) is the gate.",
+        "data": "OpenLigaDB (ODbL) - schema audit gate - no odds",
+        "test": "Prediction-only 2-way accuracy",
+        "refs": ["https://api.openligadb.de/getmatchdata/del2/2026/1"],
+    },
     # ------------------------------------------------ darts
     {
         "sport": "Darts", "name": "Darts Elo favourite (no-market)",
@@ -227,7 +242,10 @@ HYPOTHESES: List[Dict[str, Any]] = [
         "name": "Efficiency differential with injury freshness",
         "status": "Blocked",
         "description": "Dated injury state, explicit regulation/overtime "
-                       "settlement, no post-selection inputs.",
+                       "settlement, no post-selection inputs. Data gate "
+                       "checked 2026-09-20: OpenLigaDB carries 'nfl' only "
+                       "for 2014-2023 and getmatchdata/nfl/2026 returns an "
+                       "empty list - no permitted current results path.",
         "data": "League results - dated injury archive - licensed odds",
         "test": "Spread / total", "refs": [],
     },
@@ -244,7 +262,10 @@ HYPOTHESES: List[Dict[str, Any]] = [
         "status": "Blocked",
         "description": "Separate home advantage, rest days, travel and "
                        "overtime from team strength; explicit regulation/"
-                       "overtime markets.",
+                       "overtime markets. Data gate checked 2026-09-20: "
+                       "OpenLigaDB basketball leagues (BBL2010, BBL1718, "
+                       "BBBL1 2018) are historical community uploads with "
+                       "no current season - no permitted results path.",
         "data": "League results - schedule - licensed odds",
         "test": "Moneyline / spread", "refs": [],
     },
@@ -287,7 +308,11 @@ HYPOTHESES: List[Dict[str, Any]] = [
         "sport": "Handball", "name": "Possession and pace split",
         "status": "Blocked",
         "description": "League vs tournament rules, extra time and "
-                       "seven-metre shootouts separated before grading.",
+                       "seven-metre shootouts separated before grading. "
+                       "Data gate checked 2026-09-20: OpenLigaDB 'hbl' "
+                       "covers 2011-2016 and HBL/HBL23 2023 only; "
+                       "getmatchdata/HBL/2026 and /hbl/2025 return empty "
+                       "lists - no permitted current results path.",
         "data": "Federation results - licensed odds",
         "test": "Match / total", "refs": [],
     },
@@ -336,7 +361,11 @@ HYPOTHESES: List[Dict[str, Any]] = [
         "sport": "Volleyball", "name": "Set differential rating",
         "status": "Blocked",
         "description": "Best-of format, golden-set rules and walkovers "
-                       "explicit; a missing set is never a loss.",
+                       "explicit; a missing set is never a loss. Data gate "
+                       "checked 2026-09-20: OpenLigaDB lists VBL1/vblf1 "
+                       "under sportId 44 ('Test', the same bucket as the "
+                       "PDC darts leagues); no season was probed with "
+                       "data, so no results path is claimed.",
         "data": "Federation results - licensed odds",
         "test": "Match / set handicap", "refs": [],
     },
