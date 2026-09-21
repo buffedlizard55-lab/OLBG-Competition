@@ -532,6 +532,7 @@ def main(argv: List[str] = None) -> int:
             backtest_meta[sid] = {
                 "label": rep["label"],
                 "sport": sport,
+                "market": models.MARKET_MATCH_WINNER_2WAY,
                 "pnl_available": False,
                 "bets": len(entries),
                 "settled": len(settled),
@@ -560,6 +561,8 @@ def main(argv: List[str] = None) -> int:
         backtest_meta[sid] = {
             "label": rep["label"],
             "sport": "football",
+            "market": (getattr(build(sid), "market", None)
+                       or models.MARKET_MATCH_WINNER_3WAY),
             "pnl_available": True,
             "bets": len(entries),
             "settled": len(settled),

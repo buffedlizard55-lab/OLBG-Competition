@@ -351,7 +351,7 @@ function renderStrategies() {
         <span><strong>95% CI</strong> · ${ci} u</span>${stats}`;
     }
     return `<article class="strategy-card" data-strategy-status="${escapeHtml(hyp?.status || "Pilot-tested")}">
-      <div class="strategy-card-top"><span class="strategy-sport">${escapeHtml(sportLabel)}</span>
+      <div class="strategy-card-top"><span class="strategy-sport">${escapeHtml(sportLabel)}${t.market ? ` · ${escapeHtml(marketLabel({ market: t.market, sport: t.sport }))}` : ""}</span>
         <span class="strategy-state">${stateBadge(t.verification_state)}</span></div>
       <h3>${escapeHtml(hyp?.name || sid)}</h3>
       <p>${escapeHtml(hyp?.description || sid)}</p>
