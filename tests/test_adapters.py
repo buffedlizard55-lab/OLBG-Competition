@@ -91,17 +91,31 @@ class TestFootballDataCrossCheck:
         assert all(e["identity_confidence"] == "verified" for e in events)
 
     def test_all_five_provider_snapshots_present(self, pilot_store):
-        """27 matches x 3 selections x 5 providers = 405 snapshots (Pinnacle
-        excluded per the source's 2025-07-23 notice)."""
+        """1X2: 27 matches x 3 selections x 5 providers = 405 snapshots
+        (Pinnacle excluded per the source's 2025-07-23 notice).
+        O/U 2.5: 27 x 2 x 3 full providers (B365/Avg/Max) + 23 x 2 BFE
+        (four rows have blank BFE totals columns) = 208. Total 613."""
         s, stats = pilot_store
-        assert stats["odds_snapshots"] == 405
+        assert stats["odds_snapshots"] == 613
+        assert stats["totals_snapshots"] == 208
         by_provider = {}
         for snap in s.odds_snapshots():
+            if snap["market_key"] != "match_winner_3way":
+                continue
             by_provider[snap["provider"]] = by_provider.get(
                 snap["provider"], 0) + 1
+        assert sum(by_provider.values()) == 405
         for p in ("b365", "betfair", "williamhill", "market_avg",
                   "betfair_exchange"):
             assert by_provider.get(p) == 81, p
+        totals = {}
+        for snap in s.odds_snapshots():
+            if snap["market_key"] != "total_goals_over_under_2_5":
+                continue
+            assert snap["selection_key"] in ("over", "under")
+            totals[snap["provider"]] = totals.get(snap["provider"], 0) + 1
+        assert totals == {"b365": 54, "market_avg": 54, "market_max": 54,
+                          "betfair_exchange": 46}
         # Pinnacle must be absent (source notice: unreliable, excluded)
         assert "pinacle" not in by_provider
         assert "pinnacle" not in by_provider

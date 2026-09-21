@@ -30,7 +30,7 @@ from .models import (
     Anomaly, SETTLEMENT_RULE_VERSION,
     EVENT_STATUS_CANCELLED, EVENT_STATUS_DISPUTED, EVENT_STATUS_FINISHED,
     EVENT_STATUS_POSTPONED,
-    MARKET_MATCH_WINNER_3WAY,
+    MARKET_MATCH_WINNER_3WAY, MARKET_TOTALS_2_5, TOTALS_2_5_LINE,
     TIP_STATUS_DISPUTED, TIP_STATUS_LOST, TIP_STATUS_PENDING, TIP_STATUS_VOID,
     TIP_STATUS_WON,
     VERIFICATION_REVIEW, VERIFICATION_VERIFIED,
@@ -106,6 +106,35 @@ def match_outcome_3way(selection_key: str, home_goals: int,
     return "won" if win == selection_key else "lost"
 
 
+def match_outcome_totals(selection_key: str, home_goals: int,
+                         away_goals: int,
+                         line: float = TOTALS_2_5_LINE) -> str:
+    """Grade an over/under selection against a full-time score.
+
+    Same score validation as the 3-way rule. ``line`` must be a half-goal
+    line (x.5) so a push is impossible; integer lines would need a push
+    rule that is deliberately NOT implemented here (it would be guessed).
+    """
+    if selection_key not in ("over", "under"):
+        raise ValueError(f"unknown totals selection: {selection_key}")
+    if (isinstance(home_goals, bool) or isinstance(away_goals, bool)
+            or not isinstance(home_goals, int)
+            or not isinstance(away_goals, int)
+            or home_goals < 0 or away_goals < 0):
+        raise ValueError(f"invalid final score: {home_goals}-{away_goals}")
+    if (line * 2) % 2 != 1:
+        raise ValueError(f"only half-goal lines are settleable, got {line}")
+    total = home_goals + away_goals
+    win = "over" if total > line else "under"
+    return "won" if win == selection_key else "lost"
+
+
+MARKET_RULES = {
+    MARKET_MATCH_WINNER_3WAY: (("home", "draw", "away"), match_outcome_3way),
+    MARKET_TOTALS_2_5: (("over", "under"), match_outcome_totals),
+}
+
+
 def settle_tip(store: Store, tip_id: str,
                allowed_result_providers: Optional[List[str]] = None
                ) -> Dict[str, Any]:
@@ -167,9 +196,9 @@ def settle_tip(store: Store, tip_id: str,
             detail=("tip publish/cutoff timestamp is not before event start"),
             source_urls=[tip["source_url"] or ""])))
 
-    # Gate 3: market
-    if tip["market"] == MARKET_MATCH_WINNER_3WAY and \
-            tip["selection_key"] in ("home", "draw", "away"):
+    # Gate 3: market - only markets with an implemented, tested rule set
+    rule = MARKET_RULES.get(tip["market"])
+    if rule is not None and tip["selection_key"] in rule[0]:
         gates.market = "pass"
     else:
         gates.market = "fail:unknown market rule"
@@ -275,9 +304,21 @@ def settle_tip(store: Store, tip_id: str,
     primary = max(allowed, key=lambda r: parse_utc(
         r["officially_final_at_utc"]))
     try:
-        outcome = match_outcome_3way(tip["selection_key"],
-                                     primary["home_goals"],
-                                     primary["away_goals"])
+        if gates.market != "pass":
+            raise ValueError(f"no rule set for market {tip['market']}")
+        if tip["market"] == MARKET_TOTALS_2_5 and \
+                primary.get("result_type_kind") not in (
+                    None, models.RESULT_KIND_AFTER_90):
+            # Totals are a 90-minute market.  A cup tie decided after extra
+            # time stores the 120-minute score as its final kind; grading
+            # over/under on it would be wrong, so it is refused (blocked,
+            # never a guessed loss) until a 90-minute row exists.
+            raise ValueError(
+                "totals need a 90-minute score; result kind is "
+                f"{primary.get('result_type_kind')}")
+        outcome = rule[1](tip["selection_key"],
+                          primary["home_goals"],
+                          primary["away_goals"])
         pnl = decimal_pnl(tip["stake_units"], tip["odds_decimal"], outcome)
         gates.arithmetic = "pass"
     except ValueError as exc:

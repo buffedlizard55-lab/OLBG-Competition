@@ -20,7 +20,7 @@ import urllib.request
 from datetime import timedelta
 from typing import Dict, List, Optional
 
-from .. import models
+from .. import models, timeutil
 from ..db import Store
 from ..models import (
     EVENT_STATUS_FINISHED, EVENT_STATUS_POSTPONED, EVENT_STATUS_SCHEDULED,
@@ -181,6 +181,13 @@ def parse_matchday(text: str, sport: Optional[str] = None) -> List[Dict]:
             "league_season": m.get("leagueSeason"),
             "league_name": m.get("leagueName"),
             "start_utc": parse_utc(m["matchDateTimeUTC"]),
+            # Local/UTC consistency: matchDateTime must equal
+            # matchDateTimeUTC + CET/CEST.  None when the local field is
+            # absent (nothing to check), False = TIME_CONFLICT.
+            "local_time_consistent": (
+                timeutil.openligadb_local_matches_utc(
+                    m["matchDateTime"], m["matchDateTimeUTC"])
+                if m.get("matchDateTime") else None),
             "group_order": (m.get("group") or {}).get("groupOrderID"),
             "group_name": (m.get("group") or {}).get("groupName"),
             "home_team_id": str(m["team1"]["teamId"]),
@@ -256,6 +263,21 @@ def ingest_matchday(store: Store, text: str,
                         f"to {season} from the payload's unambiguous rows "
                         "and flagged for manual review"),
                 source_urls=[url]))
+        if m["local_time_consistent"] is False:
+            aid = stable_id("an", models.ANOMALY_TIME_CONFLICT, eid,
+                            "openligadb-local-vs-utc")
+            if not store.anomaly_exists(aid):
+                stats["anomalies"] += 1
+            store.add_anomaly(models.Anomaly(
+                anomaly_id=aid,
+                kind=models.ANOMALY_TIME_CONFLICT,
+                entity_type="event", entity_id=eid,
+                detected_at_utc=models.utcnow(),
+                detail=(f"matchDateTime {m['raw_match'].get('matchDateTime')} "
+                        f"is not matchDateTimeUTC "
+                        f"{m['raw_match'].get('matchDateTimeUTC')} + "
+                        "CET/CEST; UTC field used, local field distrusted"),
+                source_urls=[url]))
         if m["finished"]:
             status = EVENT_STATUS_FINISHED
         elif as_of is not None and m["start_utc"] > as_of:
@@ -314,11 +336,13 @@ def ingest_matchday(store: Store, text: str,
             if m.get("inconsistency_reason") == "duplicate_conflict":
                 detail = (
                     "the same result kind appears more than once with "
-                    "conflicting scores (audit 2026-09-20, e.g. PDCPCF 2025 "
-                    f"matchID={m['match_id']}: one real entry plus stale "
-                    "0-0 duplicates with consecutive resultIDs). The first "
-                    "entry is kept but NOT trusted silently: flagged for "
-                    "manual review against the official source, outcome kept "
+                    f"conflicting scores ({m['league_name']} matchID="
+                    f"{m['match_id']}; pattern first seen in the 2026-09-20 "
+                    "darts audit: one real entry plus stale 0-0 duplicates "
+                    "with consecutive resultIDs; seen again on pl/2026 "
+                    "matchday 4 on 2026-09-21). The first entry is kept but "
+                    "NOT trusted silently: flagged for manual review against "
+                    "the official source, outcome kept "
                     f"{m['home_goals']}-{m['away_goals']} ({m['final_kind']})")
             else:
                 detail = (

@@ -1,0 +1,37 @@
+{
+  "version": "darts-aliases-2026-09-21.1",
+  "note": "Curated, human-reviewable identity map for PDC players who appear under different teamName spellings in OpenLigaDB payloads (docs/DARTS-AUDIT.md section 3.4). Only entries with an evidence link are merged; anything not listed here keeps its raw name. Surname-only or heuristic merges are deliberately NOT performed (e.g. Michael Smith vs Ross Smith are different players).",
+  "aliases": [
+    {
+      "canonical": "Dirk van Duijvenbode",
+      "aliases": ["D. van Duijvenbode"],
+      "openligadb_team_ids": {"D. van Duijvenbode": 6944, "Dirk van Duijvenbode": 6980},
+      "seen_in": ["bsdo 2025 (abbreviated)", "PDCMP/PDCPCF/PDCWM/PDCWSDF/pdccdo/pdcfdt (full)"],
+      "evidence": [
+        "https://en.wikipedia.org/wiki/2025_Baltic_Sea_Darts_Open",
+        "https://en.wikipedia.org/wiki/Dirk_van_Duijvenbode"
+      ],
+      "evidence_note": "2025 Baltic Sea Darts Open entry list names Dirk van Duijvenbode as a Pro Tour qualifier eliminated in the second round; the bsdo payload has 'D. van Duijvenbode' losing in '2. Runde' (matchID 78690). Checked 2026-09-21."
+    },
+    {
+      "canonical": "Raymond van Barneveld",
+      "aliases": ["R. van Barneveld"],
+      "openligadb_team_ids": {"R. van Barneveld": 6951, "Raymond van Barneveld": 6985},
+      "seen_in": ["bsdo 2025 (abbreviated)", "PDCMP/PDCPCF/PDCWM/pdcfdt (full)"],
+      "evidence": [
+        "https://en.wikipedia.org/wiki/2025_Baltic_Sea_Darts_Open"
+      ],
+      "evidence_note": "2025 Baltic Sea Darts Open entry list names Raymond van Barneveld as a Pro Tour qualifier; the bsdo payload has 'R. van Barneveld' in '1. Runde' (matchID 78670). Checked 2026-09-21."
+    },
+    {
+      "canonical": "Mickey Mansell",
+      "aliases": ["Michael Mansell"],
+      "openligadb_team_ids": {"Mickey Mansell": 6927, "Michael Mansell": 7211},
+      "seen_in": ["bsdo 2025 + pdcfdt 2026 (Mickey)", "PDCPCF 2025 + PDCWM 2026 (Michael)"],
+      "evidence": [
+        "https://en.wikipedia.org/wiki/Mickey_Mansell"
+      ],
+      "evidence_note": "Wikipedia infobox: full name Michael Mansell, nickname 'Mickey', Northern Irish PDC player. Two distinct OpenLigaDB teamIds (6927/7211) carry the two spellings. Checked 2026-09-21."
+    }
+  ]
+}

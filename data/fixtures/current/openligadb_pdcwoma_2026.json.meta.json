@@ -1,5 +1,5 @@
 {
-  "captured_at_utc": "2026-09-20T19:55:07Z",
+  "captured_at_utc": "2026-09-21T05:05:44Z",
   "collection_mode": "automated_api",
   "fixture": "openligadb_pdcwoma_2026.json",
   "league_name": "PDC World Masters 2026",
@@ -8,9 +8,16 @@
   "license_id": "odbl-1.0",
   "n_finished": 31,
   "n_matches": 31,
-  "note": "whole-season payload fetched via the permitted automated API (ODbL-1.0); canonical compact JSON, unmodified content",
-  "sha256": "7e3b06073fdc4b71f231ec8bc6650e6f2ac55ad29d198f1e6305e51690985b40",
+  "note": "whole-season payload fetched via the permitted automated API (ODbL-1.0); canonical compact JSON; the only edit is the removal of presentation-only team crest URLs (teamIconUrl) - scores, times, ids and names are untouched (raw sha256 recorded)",
+  "sha256": "975e6b653ea84419f8cb011509c967a5307348157eafa406e3731d94f108ea96",
   "source_id": "openligadb",
+  "source_sha256_raw": "7e3b06073fdc4b71f231ec8bc6650e6f2ac55ad29d198f1e6305e51690985b40",
   "sport": "darts",
+  "stripped_fields": {
+    "team_keys": [
+      "teamIconUrl"
+    ],
+    "values_removed": 62
+  },
   "url": "https://api.openligadb.de/getmatchdata/PDCWOMA/2026"
 }

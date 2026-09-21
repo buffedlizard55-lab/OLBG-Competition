@@ -68,6 +68,44 @@ class TestCaptureSeason:
         assert meta["collection_mode"] == "automated_api"
         assert meta["league_name"] == payload[0]["leagueName"]
         assert meta["captured_at_utc"].endswith("Z")
+        assert meta["source_sha256_raw"] == meta["sha256"]  # nothing dropped
+        assert meta["stripped_fields"]["values_removed"] == 0
+
+    def test_team_icon_urls_are_stripped_and_recorded(self, tmp_path):
+        """A live pl/2026 payload carried a ~300 kB base64 crest as
+        teamIconUrl; crests are presentation-only and must not enter the
+        repository.  The raw sha256 is kept for provenance."""
+        big = "data:image/png;base64," + "A" * 5000
+        payload = [_match(1, shortcut="pl",
+                          team1={"teamId": 1, "teamName": "A",
+                                    "teamIconUrl": big},
+                          team2={"teamId": 2, "teamName": "B",
+                                 "teamIconUrl": None})]
+        text = json.dumps(payload)
+        url = capture.openligadb.league_url("pl", 2026)
+        row = capture.capture_season("pl", 2026, "football", str(tmp_path),
+                                     fetch=fake_fetch({url: text}))
+        assert row["written"] is True
+        stored = json.loads((tmp_path / "openligadb_pl_2026.json").read_text())
+        assert "teamIconUrl" not in stored[0]["team1"]
+        assert "teamIconUrl" not in stored[0]["team2"]
+        assert stored[0]["team1"]["teamName"] == "A"
+        assert big not in (tmp_path / "openligadb_pl_2026.json").read_text()
+        meta = json.loads((tmp_path / "openligadb_pl_2026.json.meta.json")
+                          .read_text())
+        assert meta["stripped_fields"]["values_removed"] == 1
+        assert meta["stripped_fields"]["team_keys"] == ["teamIconUrl"]
+        assert meta["source_sha256_raw"] != meta["sha256"]
+        assert meta["sha256"] == sha256_text(
+            (tmp_path / "openligadb_pl_2026.json").read_text())
+
+    def test_current_targets_are_probed_leagues_only(self):
+        """Only shortcuts probed live (docs in capture.py) may be listed;
+        DEL2 stays out until its period-row schema is audited."""
+        shortcuts = [t[0] for t in capture.CURRENT_TARGETS]
+        assert shortcuts == ["bl1", "pl", "bl2", "la1", "del"]
+        assert "DEL2" not in shortcuts and "del2" not in shortcuts
+        assert all(t[1] == 2026 for t in capture.CURRENT_TARGETS)
 
     def test_invalid_json_refused(self, tmp_path):
         url = capture.openligadb.league_url("bl1", 2026)

@@ -58,6 +58,35 @@ def uk_offset_at_utc(dt_utc: datetime) -> int:
     return 1 if uk_dst_start(dt_utc.year) <= dt_utc < uk_dst_end(dt_utc.year) else 0
 
 
+def cet_offset_at_utc(dt_utc: datetime) -> int:
+    """Central European civil offset in hours at a UTC instant (1=CET,
+    2=CEST).  EU summer time runs from the last Sunday of March 01:00 UTC
+    to the last Sunday of October 01:00 UTC - the same instants as the UK
+    change (EU Directive 2000/84/EC), only the base offset differs.
+
+    Used to cross-check OpenLigaDB rows: ``matchDateTime`` (local, tagged
+    ``timeZoneID`` "W. Europe Standard Time") must equal
+    ``matchDateTimeUTC`` + this offset.  Verified 2026-09-21 on all 1,187
+    committed fixture rows (bl1/del pilots, bl1/del 2026, 8 PDC events):
+    every row matches.
+    """
+    start = uk_dst_start(dt_utc.year)
+    end = uk_dst_end(dt_utc.year)
+    return 2 if start <= dt_utc < end else 1
+
+
+def openligadb_local_matches_utc(local_iso: str, utc_iso: str) -> bool:
+    """True when the source's local wall time equals UTC + CET/CEST."""
+    local = datetime.fromisoformat(local_iso)
+    utc_dt = datetime.fromisoformat(utc_iso.replace("Z", "+00:00"))
+    if utc_dt.tzinfo is None:
+        utc_dt = utc_dt.replace(tzinfo=UTC)
+    utc_dt = utc_dt.astimezone(UTC)
+    expected = (utc_dt + timedelta(hours=cet_offset_at_utc(utc_dt))
+                ).replace(tzinfo=None)
+    return local.replace(tzinfo=None) == expected
+
+
 def uk_local_to_utc(date, hm: time) -> datetime:
     """Convert a UK local wall time to UTC. ``date`` may be a date or a
     datetime (its date part is used).

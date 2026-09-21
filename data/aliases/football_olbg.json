@@ -1,0 +1,16 @@
+{
+  "version": "football-olbg-aliases-2026-09-21.1",
+  "note": "OLBG short team names -> OpenLigaDB teamName, used ONLY to cross-check manually snapshotted OLBG events against the permitted OpenLigaDB fixture list (northstar/reconcile.py). Each entry lists the two fixture URLs a reviewer can open side by side. Nothing here changes stored data; mismatches become TIME_CONFLICT / EVENT_UNMATCHED anomalies.",
+  "aliases": [
+    {"canonical": "Manchester City", "aliases": ["Man City"], "evidence": ["https://api.openligadb.de/getmatchdata/pl/2026/86573", "https://www.olbg.com/betting-tips/Football/UK/England_Premier_League/Man_City_v_Sunderland/1?event_id=2039511"], "evidence_note": "pl matchID 86573 Manchester City v Sunderland 2026-09-20; OLBG card Man City v Sunderland, England Premier League."},
+    {"canonical": "Sunderland", "aliases": ["Sunderland AFC"], "evidence": ["https://api.openligadb.de/getmatchdata/pl/2026/86573"], "evidence_note": "Identical spelling in both sources; listed so the canonical set is explicit."},
+    {"canonical": "Leeds United", "aliases": ["Leeds"], "evidence": ["https://api.openligadb.de/getmatchdata/pl/2026/86572", "https://www.olbg.com/betting-tips/Football/UK/England_Premier_League/Leeds_v_Crystal_Palace/1"], "evidence_note": "pl matchID 86572 Leeds United v Crystal Palace FC 2026-09-20."},
+    {"canonical": "Crystal Palace FC", "aliases": ["Crystal Palace"], "evidence": ["https://api.openligadb.de/getmatchdata/pl/2026/86572"], "evidence_note": "same fixture as above."},
+    {"canonical": "AFC Bournemouth", "aliases": ["Bournemouth"], "evidence": ["https://api.openligadb.de/getmatchdata/pl/2026/86576"], "evidence_note": "pl matchID 86576 AFC Bournemouth v FC Liverpool 2026-09-20."},
+    {"canonical": "FC Liverpool", "aliases": ["Liverpool"], "evidence": ["https://api.openligadb.de/getmatchdata/pl/2026/86576"], "evidence_note": "same fixture as above (OpenLigaDB uses German-style club names)."},
+    {"canonical": "Fulham FC", "aliases": ["Fulham"], "evidence": ["https://api.openligadb.de/getmatchdata/pl/2026/86577"], "evidence_note": "pl matchID 86577 Fulham FC v Manchester United FC 2026-09-20."},
+    {"canonical": "Manchester United FC", "aliases": ["Man Utd"], "evidence": ["https://api.openligadb.de/getmatchdata/pl/2026/86577"], "evidence_note": "same fixture as above."},
+    {"canonical": "FC Sevilla", "aliases": ["Sevilla"], "evidence": ["https://api.openligadb.de/getmatchdata/la1/2026/85402", "https://www.olbg.com/betting-tips/Football/European_Competitions/Spain_Primera_Liga/Sevilla_v_Barcelona/1?event_id=2040420"], "evidence_note": "la1 matchID 85402 FC Sevilla v FC Barcelona 2026-09-19."},
+    {"canonical": "FC Barcelona", "aliases": ["Barcelona"], "evidence": ["https://api.openligadb.de/getmatchdata/la1/2026/85402"], "evidence_note": "same fixture as above."}
+  ]
+}

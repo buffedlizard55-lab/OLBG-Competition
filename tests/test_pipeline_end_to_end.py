@@ -2,7 +2,7 @@
 
 Requirement coverage: the full collect->store->compile->analyze->track chain
 must reproduce the headline numbers deterministically: 27 events, 27 results,
-27/27 dual-source agreement, 405 odds snapshots, four strategies that settle
+27/27 dual-source agreement, 613 odds snapshots (405 1X2 + 208 O/U 2.5), four strategies that settle
 with *verified* state and produce reviewable placed/upcoming bets.
 """
 from __future__ import annotations
@@ -46,7 +46,8 @@ def test_headline_counts(pipeline_store):
     assert len(results) == 27
     assert stats["cross_checked"] == 27
     assert stats["cross_checked_agree"] == 27
-    assert stats["odds_snapshots"] == 405
+    assert stats["odds_snapshots"] == 613
+    assert stats["totals_snapshots"] == 208
 
 
 def test_every_event_is_verified(pipeline_store):
@@ -67,7 +68,7 @@ def test_all_snapshots_pre_start_and_inferred(pipeline_store):
             assert parse_utc(snap["observed_at_utc"]) < start
             assert snap["timestamp_precision"] == "window_close_inferred"
             n += 1
-    assert n == 405
+    assert n == 613
 
 
 def test_all_strategies_settle_verified_no_leaks(pipeline_store):

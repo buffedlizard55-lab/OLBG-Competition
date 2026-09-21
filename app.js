@@ -148,7 +148,7 @@ function predictionCard(p) {
   const links = (p.source_links || []).filter(Boolean).map((u) =>
     `<a href="${escapeHtml(u)}" target="_blank" rel="noreferrer">source ↗</a>`).join(" · ");
   return `<article class="tip-card">
-    <span class="tip-sport">${escapeHtml(p.strategy || "model")}</span>
+    <span class="tip-sport">${escapeHtml(p.strategy || "model")}${p.market ? ` · ${escapeHtml(marketLabel({ market: p.market, sport: "football" }))}` : ""}</span>
     <span class="tip-status">paper</span>
     <h3 class="tip-event">${escapeHtml(p.headline || "—")}</h3>
     <p class="tip-league">kickoff ${fmtDate(p.event_start_utc)} UTC · ${p.odds ? "odds " + p.odds : "no odds"}</p>
@@ -249,6 +249,9 @@ const marketLabel = (b) => {
       : "match winner (incl. OT/SO)";
   if (b.sport === "ice_hockey" && b.market === "match_winner_3way")
     return "match winner (incl. OT/SO)";
+  if (b.market === "total_goals_over_under_2_5")
+    return "total goals O/U 2.5 (90 min)";
+  if (b.market === "match_winner_3way") return "1X2 (90 min)";
   return b.market;
 };
 
@@ -348,7 +351,7 @@ function renderStrategies() {
         <span><strong>95% CI</strong> · ${ci} u</span>${stats}`;
     }
     return `<article class="strategy-card" data-strategy-status="${escapeHtml(hyp?.status || "Pilot-tested")}">
-      <div class="strategy-card-top"><span class="strategy-sport">${escapeHtml(sportLabel)}</span>
+      <div class="strategy-card-top"><span class="strategy-sport">${escapeHtml(sportLabel)}${t.market ? ` · ${escapeHtml(marketLabel({ market: t.market, sport: t.sport }))}` : ""}</span>
         <span class="strategy-state">${stateBadge(t.verification_state)}</span></div>
       <h3>${escapeHtml(hyp?.name || sid)}</h3>
       <p>${escapeHtml(hyp?.description || sid)}</p>

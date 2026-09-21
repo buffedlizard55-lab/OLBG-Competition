@@ -3,7 +3,7 @@ name: Current-season capture + forward ledger (OpenLigaDB)
 # The recurring forward-test cadence that does NOT need OLBG (whose ToS
 # forbids automation): OpenLigaDB's license permits automated API
 # collection (ODbL-1.0, 60 req/min).  Every Monday this workflow
-#   1. fetches whole current-season payloads (bl1, del) + discovers the
+#   1. fetches whole current-season payloads (bl1, pl, bl2, la1, del) + discovers the
 #      darts leagues that actually carry data (no hardcoded assumptions -
 #      the 2026-09-20 probe found PDCWSDF/2024 empty),
 #   2. rebuilds the store, issues any NEW forward-test predictions into
