@@ -64,13 +64,18 @@ Licensing claims were re-fetched and re-confirmed verbatim (see the
 - **Statistics layer** (`northstar/stats.py`): bootstrap 95% CIs, binomial
   tests, and **Holm step-down correction** (Holm 1979) across the PnL
   family (m=9 since 2026-09-21). Applied in the pipeline and rendered per-card on the site.
-- **Real source irregularities surfaced, not smoothed**: 7 open anomalies
+- **Real source irregularities surfaced, not smoothed**: 8 open anomalies
   in the review queue — 4 DEL matches with impossible result layering, 1
-  DEL match with `leagueSeason: null` (normalized + flagged), and 2 darts
+  DEL match with `leagueSeason: null` (normalized + flagged), 2 darts
   matches (PDCPCF 2025 matchID 79962, Price v Littler; PDCWM 2026 matchID
   80237, Littler v Ratajski) with **conflicting duplicate result entries**
   (one real score + stale 0-0 duplicates; found by the 2026-09-20 darts
-  audit). Flagged events are excluded from rating
+  audit), and — since the 2026-09-21 capture — 1 Premier League match
+  (pl/2026 matchID 86559, Aston Villa v Nottingham Forest, 2026-09-12)
+  carrying the same defect: five duplicate `HalfTime 0-0` rows plus three
+  `After90Minutes` rows (1-2, 0-0, 0-0); the ingest kept 1-2 as the
+  candidate but refuses to grade or rate on it until reviewed
+  (<https://api.openligadb.de/getmatchdata/pl/2026/86559>). Flagged events are excluded from rating
   updates and from grading until a human resolves them — a silent
   first-entry read would launder disputed rows into the model.
 - **The DEL flags were right (manual corroboration, 2026-09-20).** The two

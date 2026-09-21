@@ -161,9 +161,9 @@ Pages; external source links open in a new tab for manual review.
 | Identity | **verified** (27/27 dual-source agreement vs football-data) | `probable` (single source; no independent DEL cross-check) | `probable` (single source; audit in `docs/DARTS-AUDIT.md`) |
 | Odds path | football-data.co.uk manual pilot; The Odds API connector inactive | **none verified** → prediction-only | **none** → prediction-only |
 | Engine output | 613 odds snapshots (405 1X2 + 208 O/U 2.5) · 9 strategies · real settled PnL | 11 graded predictions · accuracy **7/11 (63.6%)** · Brier 0.4737 · **PnL unavailable (not zero)** | cold 2025 pool: **0 selections in 141** (max prob 0.551 < 0.60 — silence, no refit); full 2025–26 pool: **39/48 = 81.25%**, Brier 0.349 · **PnL unavailable (not zero)** |
-| Regularity | 0 open anomalies | **5 flagged source irregularities** (review queue) | **2 flagged** (conflicting duplicate results, matchIDs 79962 + 80237) + 1 abandoned duplicate league excluded |
+| Regularity | 0 open anomalies on the pilot; 1 flagged on the pl/2026 capture (duplicate conflicting result rows, matchID 86559) | **5 flagged source irregularities** (review queue) | **2 flagged** (conflicting duplicate results, matchIDs 79962 + 80237) + 1 abandoned duplicate league excluded |
 | Backtest | all nine strategies negative (both markets), CIs include 0, Holm-adjusted p = 1.0 | no odds → no PnL by construction | no odds → no PnL by construction |
-| Forward desk | dormant by design (MD5 starts 2026-10-09, outside 10-day horizon) | **LIVE: 9 frozen calls, DEL Sep 22–27** | first live event met in play (WSDF final → review queue, next capture resolves); activates for the next World Championship (Dec 2026) |
+| Forward desk | dormant by design across bl1/pl/bl2/la1 (international break; next kick-offs 2026-10-09/10, outside the 10-day horizon) | **LIVE: 9 frozen calls, DEL Sep 22–27** | first live event met in play (WSDF final → review queue, next capture resolves); activates for the next World Championship (Dec 2026) |
 
 Anchors: 72214 M'gladbach 2-3 Leverkusen (23/08/24, B365 5.25/4.5/1.55);
 72300 Mainz 3-1 Dortmund (09/11/24, 3.5/3.6/2.0); 72387 Bayern 4-3 Kiel

@@ -336,11 +336,13 @@ def ingest_matchday(store: Store, text: str,
             if m.get("inconsistency_reason") == "duplicate_conflict":
                 detail = (
                     "the same result kind appears more than once with "
-                    "conflicting scores (audit 2026-09-20, e.g. PDCPCF 2025 "
-                    f"matchID={m['match_id']}: one real entry plus stale "
-                    "0-0 duplicates with consecutive resultIDs). The first "
-                    "entry is kept but NOT trusted silently: flagged for "
-                    "manual review against the official source, outcome kept "
+                    f"conflicting scores ({m['league_name']} matchID="
+                    f"{m['match_id']}; pattern first seen in the 2026-09-20 "
+                    "darts audit: one real entry plus stale 0-0 duplicates "
+                    "with consecutive resultIDs; seen again on pl/2026 "
+                    "matchday 4 on 2026-09-21). The first entry is kept but "
+                    "NOT trusted silently: flagged for manual review against "
+                    "the official source, outcome kept "
                     f"{m['home_goals']}-{m['away_goals']} ({m['final_kind']})")
             else:
                 detail = (

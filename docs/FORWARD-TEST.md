@@ -77,6 +77,18 @@ For each captured fixture group, with that capture's own `as_of`:
   **2026-10-09** (international break) — outside the horizon. First
   football calls issue at the Monday capture once MD5 enters the window.
   This is the horizon rule working, not a bug.
+- **2026-09-21 — football coverage widened to four leagues.** The capture
+  now also fetches Premier League (`pl`, 380 fixtures, 40 finished),
+  2. Bundesliga (`bl2`, 306 / 54) and LaLiga (`la1`, 380 / 62) 2026/27 —
+  each probed live before listing. All four football leagues are in the
+  same international break (next kick-offs 2026-10-09/10), so the desk is
+  still dormant everywhere; the warm-up history it will rate from is
+  already ingested (1,372 football fixtures, 192 finished). The pl payload
+  also carried 10 finished-looking matchday-5 fixtures (Sep 18–20) with
+  **no result rows at capture time** and la1 7 such rows; both are held
+  `postponed` (unresolved) in the review queue until the next capture, and
+  pl matchID 86559 (Villa v Forest) is flagged for duplicate conflicting
+  result rows — see `docs/STATUS.md`.
 - **Desk `darts-elo-v1`: no upcoming darts payload yet.** The captured
   darts events are finished; the WSDF 2026 final (Smith v Price) was
   **in play** at the 19:33Z capture and is held `postponed` in the review
