@@ -5,7 +5,7 @@
       {
         "anomaly_id": "an-763e7e78dbbcdd279e10",
         "detail": "decisive 'after regulation' entry coexists with an overtime/shootout entry (impossible layering in community-entered source; matchID=76100). Final read via hockey priority AfterPenalties > AfterExtraTime > After90Minutes; flagged for manual review, outcome kept 3-2 (AfterExtraTime)",
-        "detected_at_utc": "2026-09-21T04:47:34Z",
+        "detected_at_utc": "2026-09-21T04:50:10Z",
         "entity_id": "ev-ff0008b0c9aa899d4755",
         "entity_type": "result",
         "kind": "RESULT_KIND_INCONSISTENT",
@@ -18,7 +18,7 @@
       {
         "anomaly_id": "an-8590725575f24e03dba3",
         "detail": "decisive 'after regulation' entry coexists with an overtime/shootout entry (impossible layering in community-entered source; matchID=76273). Final read via hockey priority AfterPenalties > AfterExtraTime > After90Minutes; flagged for manual review, outcome kept 2-1 (AfterExtraTime)",
-        "detected_at_utc": "2026-09-21T04:47:34Z",
+        "detected_at_utc": "2026-09-21T04:50:10Z",
         "entity_id": "ev-c1a1db0ea682db60d797",
         "entity_type": "result",
         "kind": "RESULT_KIND_INCONSISTENT",
@@ -31,7 +31,7 @@
       {
         "anomaly_id": "an-23d18a627ed1aea5b092",
         "detail": "decisive 'after regulation' entry coexists with an overtime/shootout entry (impossible layering in community-entered source; matchID=76409). Final read via hockey priority AfterPenalties > AfterExtraTime > After90Minutes; flagged for manual review, outcome kept 1-2 (AfterExtraTime)",
-        "detected_at_utc": "2026-09-21T04:47:34Z",
+        "detected_at_utc": "2026-09-21T04:50:10Z",
         "entity_id": "ev-78dfc67268398c894ed5",
         "entity_type": "result",
         "kind": "RESULT_KIND_INCONSISTENT",
@@ -44,7 +44,7 @@
       {
         "anomaly_id": "an-28ab36176a0a1f02e8c8",
         "detail": "source left leagueSeason null for matchID 76412 (DEL Eishockey 2024/2025); normalised to 2024 from the payload's unambiguous rows and flagged for manual review",
-        "detected_at_utc": "2026-09-21T04:47:34Z",
+        "detected_at_utc": "2026-09-21T04:50:10Z",
         "entity_id": "ev-3f32836fac8ddfb0bb12",
         "entity_type": "event",
         "kind": "MISSING_METADATA",
@@ -57,7 +57,7 @@
       {
         "anomaly_id": "an-6f494ddd324692776bd3",
         "detail": "decisive 'after regulation' entry coexists with an overtime/shootout entry (impossible layering in community-entered source; matchID=76414). Final read via hockey priority AfterPenalties > AfterExtraTime > After90Minutes; flagged for manual review, outcome kept 5-6 (AfterPenalties)",
-        "detected_at_utc": "2026-09-21T04:47:34Z",
+        "detected_at_utc": "2026-09-21T04:50:10Z",
         "entity_id": "ev-8358bbded1593cbd6ea0",
         "entity_type": "result",
         "kind": "RESULT_KIND_INCONSISTENT",
@@ -70,7 +70,7 @@
       {
         "anomaly_id": "an-870a7d10688c5d15dd0d",
         "detail": "the same result kind appears more than once with conflicting scores (Players Championship Finals 2025 matchID=79962; pattern first seen in the 2026-09-20 darts audit: one real entry plus stale 0-0 duplicates with consecutive resultIDs; seen again on pl/2026 matchday 4 on 2026-09-21). The first entry is kept but NOT trusted silently: flagged for manual review against the official source, outcome kept 8-11 (After90Minutes)",
-        "detected_at_utc": "2026-09-21T04:47:34Z",
+        "detected_at_utc": "2026-09-21T04:50:10Z",
         "entity_id": "ev-bcdcfe1fb3d7753beee8",
         "entity_type": "result",
         "kind": "RESULT_KIND_INCONSISTENT",
@@ -83,7 +83,7 @@
       {
         "anomaly_id": "an-0bf555cbbc1c9d39b727",
         "detail": "the same result kind appears more than once with conflicting scores (PDC Darts-WM matchID=80237; pattern first seen in the 2026-09-20 darts audit: one real entry plus stale 0-0 duplicates with consecutive resultIDs; seen again on pl/2026 matchday 4 on 2026-09-21). The first entry is kept but NOT trusted silently: flagged for manual review against the official source, outcome kept 5-0 (After90Minutes)",
-        "detected_at_utc": "2026-09-21T04:47:34Z",
+        "detected_at_utc": "2026-09-21T04:50:10Z",
         "entity_id": "ev-d614a2e17776ef1cb0fa",
         "entity_type": "result",
         "kind": "RESULT_KIND_INCONSISTENT",
@@ -96,7 +96,7 @@
       {
         "anomaly_id": "an-86d1e8c5aa6034462667",
         "detail": "the same result kind appears more than once with conflicting scores (Premier League 2026/2027 matchID=86559; pattern first seen in the 2026-09-20 darts audit: one real entry plus stale 0-0 duplicates with consecutive resultIDs; seen again on pl/2026 matchday 4 on 2026-09-21). The first entry is kept but NOT trusted silently: flagged for manual review against the official source, outcome kept 1-2 (After90Minutes)",
-        "detected_at_utc": "2026-09-21T04:47:34Z",
+        "detected_at_utc": "2026-09-21T04:50:10Z",
         "entity_id": "ev-d656c5a97f99bc9b5d4f",
         "entity_type": "result",
         "kind": "RESULT_KIND_INCONSISTENT",
@@ -152,7 +152,7 @@
         "graded": [
           {
             "actual": "home",
-            "brier": 0.303666191376939,
+            "brier": 0.3036661311444465,
             "event_id": "ev-f68e076564b4e151bbaf",
             "group_order": 2,
             "hit": true,
@@ -165,7 +165,7 @@
           },
           {
             "actual": "home",
-            "brier": 0.23817728058726356,
+            "brier": 0.23817870454513604,
             "event_id": "ev-2719fedac8b025fbd961",
             "group_order": 1,
             "hit": true,
@@ -178,7 +178,7 @@
           },
           {
             "actual": "home",
-            "brier": 0.2464519999547533,
+            "brier": 0.24645280132007719,
             "event_id": "ev-60addb55fe2dd95c0537",
             "group_order": 1,
             "hit": true,
@@ -191,7 +191,7 @@
           },
           {
             "actual": "home",
-            "brier": 0.31292334061830346,
+            "brier": 0.3129516563736637,
             "event_id": "ev-669d7ea7cb45470f533c",
             "group_order": 1,
             "hit": true,
@@ -204,7 +204,7 @@
           },
           {
             "actual": "away",
-            "brier": 0.8696493613229357,
+            "brier": 0.8696479239761838,
             "event_id": "ev-a6434cfd53b14f9bfa0a",
             "group_order": 2,
             "hit": false,
@@ -217,7 +217,7 @@
           },
           {
             "actual": "home",
-            "brier": 0.24423796094060363,
+            "brier": 0.24423936611592548,
             "event_id": "ev-98438bc27137d1c53558",
             "group_order": 2,
             "hit": true,
@@ -230,7 +230,7 @@
           },
           {
             "actual": "away",
-            "brier": 0.7597700703312555,
+            "brier": 0.7597278766355609,
             "event_id": "ev-d096f069a898fb14651d",
             "group_order": 2,
             "hit": false,
@@ -243,7 +243,7 @@
           },
           {
             "actual": "home",
-            "brier": 0.2293220498465449,
+            "brier": 0.22932334905989987,
             "event_id": "ev-163a7405edbdb849901e",
             "group_order": 3,
             "hit": true,
@@ -256,7 +256,7 @@
           },
           {
             "actual": "home",
-            "brier": 0.20107591402001931,
+            "brier": 0.2010566946775041,
             "event_id": "ev-6c5874239af2d07ef5b2",
             "group_order": 4,
             "hit": true,
@@ -269,7 +269,7 @@
           },
           {
             "actual": "home",
-            "brier": 0.2959347166908388,
+            "brier": 0.2959361544134143,
             "event_id": "ev-b1d50e799259ec99eb30",
             "group_order": 6,
             "hit": true,
@@ -282,7 +282,7 @@
           },
           {
             "actual": "home",
-            "brier": 0.31923044670855355,
+            "brier": 0.3192064444100211,
             "event_id": "ev-457824e4d1ebadad2b12",
             "group_order": 7,
             "hit": true,
@@ -295,7 +295,7 @@
           },
           {
             "actual": "home",
-            "brier": 0.3140207322881256,
+            "brier": 0.3140468614541119,
             "event_id": "ev-0f3abf9ff1568d0815db",
             "group_order": 1,
             "hit": true,
@@ -308,7 +308,7 @@
           },
           {
             "actual": "home",
-            "brier": 0.291674869566908,
+            "brier": 0.2916732356159332,
             "event_id": "ev-aba8f9ed4bd0ca257acc",
             "group_order": 1,
             "hit": true,
@@ -321,7 +321,7 @@
           },
           {
             "actual": "home",
-            "brier": 0.12984587615039225,
+            "brier": 0.12984746111756068,
             "event_id": "ev-869499032299771708fb",
             "group_order": 1,
             "hit": true,
@@ -334,7 +334,7 @@
           },
           {
             "actual": "home",
-            "brier": 0.14094079010704222,
+            "brier": 0.14094240913755318,
             "event_id": "ev-cbdbd56a13f2ff8a0719",
             "group_order": 2,
             "hit": true,
@@ -347,7 +347,7 @@
           },
           {
             "actual": "home",
-            "brier": 0.27609228105324896,
+            "brier": 0.2760544534656543,
             "event_id": "ev-d7c621071c7631dab81d",
             "group_order": 3,
             "hit": true,
@@ -360,7 +360,7 @@
           },
           {
             "actual": "home",
-            "brier": 0.2107178623154484,
+            "brier": 0.2107187470079219,
             "event_id": "ev-6163a458465dbd5c518b",
             "group_order": 5,
             "hit": true,
@@ -373,7 +373,7 @@
           },
           {
             "actual": "away",
-            "brier": 0.7989032029086072,
+            "brier": 0.7988639577223015,
             "event_id": "ev-5500fd11803d09183d5a",
             "group_order": 2,
             "hit": false,
@@ -386,7 +386,7 @@
           },
           {
             "actual": "home",
-            "brier": 0.239082129649678,
+            "brier": 0.23910169625328084,
             "event_id": "ev-f3431ac5fceb14b7af4e",
             "group_order": 2,
             "hit": true,
@@ -399,7 +399,7 @@
           },
           {
             "actual": "home",
-            "brier": 0.2510198565042225,
+            "brier": 0.2510199534626194,
             "event_id": "ev-199bddb4a54f8840667d",
             "group_order": 2,
             "hit": true,
@@ -412,7 +412,7 @@
           },
           {
             "actual": "home",
-            "brier": 0.12461655869535533,
+            "brier": 0.12461859998903281,
             "event_id": "ev-d48149fc49995c75139a",
             "group_order": 2,
             "hit": true,
@@ -425,7 +425,7 @@
           },
           {
             "actual": "home",
-            "brier": 0.2935046594003497,
+            "brier": 0.29352083985383975,
             "event_id": "ev-e1f51ca1ea01a293d75e",
             "group_order": 2,
             "hit": true,
@@ -438,7 +438,7 @@
           },
           {
             "actual": "home",
-            "brier": 0.19841373147684715,
+            "brier": 0.19841441499796866,
             "event_id": "ev-64be186ef388b227140c",
             "group_order": 3,
             "hit": true,
@@ -451,7 +451,7 @@
           },
           {
             "actual": "away",
-            "brier": 0.8249605984020507,
+            "brier": 0.8249248553150447,
             "event_id": "ev-94d6ab16a2843c36338a",
             "group_order": 3,
             "hit": false,
@@ -464,7 +464,7 @@
           },
           {
             "actual": "home",
-            "brier": 0.2070310409167725,
+            "brier": 0.20654566573228195,
             "event_id": "ev-3ec0fe22760ef8df005e",
             "group_order": 3,
             "hit": true,
@@ -477,7 +477,7 @@
           },
           {
             "actual": "home",
-            "brier": 0.20595630222285785,
+            "brier": 0.20595750651259248,
             "event_id": "ev-3966fd98391d55c0a127",
             "group_order": 4,
             "hit": true,
@@ -490,7 +490,7 @@
           },
           {
             "actual": "away",
-            "brier": 0.15720322404168913,
+            "brier": 0.15720508800592078,
             "event_id": "ev-fa58c9658cc2fd184c07",
             "group_order": 4,
             "hit": true,
@@ -503,7 +503,7 @@
           },
           {
             "actual": "away",
-            "brier": 0.13065686366133902,
+            "brier": 0.13029529848277094,
             "event_id": "ev-b09b0fb92b8714bb7a3f",
             "group_order": 5,
             "hit": true,
@@ -516,7 +516,7 @@
           },
           {
             "actual": "away",
-            "brier": 0.2014557489734122,
+            "brier": 0.20145687530524292,
             "event_id": "ev-2be38046027f47bcbe01",
             "group_order": 6,
             "hit": true,
@@ -529,7 +529,7 @@
           },
           {
             "actual": "away",
-            "brier": 0.7321721017232665,
+            "brier": 0.732147414031392,
             "event_id": "ev-829cd1d049d592b7b6f0",
             "group_order": 2,
             "hit": false,
@@ -542,7 +542,7 @@
           },
           {
             "actual": "home",
-            "brier": 0.20440824789896544,
+            "brier": 0.203214504111281,
             "event_id": "ev-bb115db369912389eb63",
             "group_order": 2,
             "hit": true,
@@ -555,7 +555,7 @@
           },
           {
             "actual": "home",
-            "brier": 0.3183998351167627,
+            "brier": 0.31842150252570134,
             "event_id": "ev-3fc7186f199545f28ee4",
             "group_order": 2,
             "hit": true,
@@ -568,7 +568,7 @@
           },
           {
             "actual": "away",
-            "brier": 0.8908903904366355,
+            "brier": 0.8908124441937262,
             "event_id": "ev-eec76f9af27af58e4f9f",
             "group_order": 3,
             "hit": false,
@@ -581,7 +581,7 @@
           },
           {
             "actual": "home",
-            "brier": 0.3051443110619765,
+            "brier": 0.3051716339973066,
             "event_id": "ev-a0e6445ae5b5709f781f",
             "group_order": 3,
             "hit": true,
@@ -594,7 +594,7 @@
           },
           {
             "actual": "away",
-            "brier": 0.7419553362642637,
+            "brier": 0.7419235654093653,
             "event_id": "ev-3048c99063db9e0d7122",
             "group_order": 5,
             "hit": false,
@@ -607,7 +607,7 @@
           },
           {
             "actual": "home",
-            "brier": 0.3065038434937747,
+            "brier": 0.3064893992354803,
             "event_id": "ev-76fc87f4ef86c67459eb",
             "group_order": 5,
             "hit": true,
@@ -620,7 +620,7 @@
           },
           {
             "actual": "away",
-            "brier": 0.317276749302439,
+            "brier": 0.31732848384141965,
             "event_id": "ev-9c06932e6b6fd4d32554",
             "group_order": 6,
             "hit": true,
@@ -633,7 +633,7 @@
           },
           {
             "actual": "home",
-            "brier": 0.2977043146612094,
+            "brier": 0.29768641370500015,
             "event_id": "ev-05eb5ac80f4756fd5c53",
             "group_order": 1,
             "hit": true,
@@ -646,7 +646,7 @@
           },
           {
             "actual": "home",
-            "brier": 0.2589433005465421,
+            "brier": 0.25893082598452527,
             "event_id": "ev-2aca6c1093e8f9f33b04",
             "group_order": 1,
             "hit": true,
@@ -659,7 +659,7 @@
           },
           {
             "actual": "home",
-            "brier": 0.22000941969534152,
+            "brier": 0.22004760601779533,
             "event_id": "ev-537b2ac641722682d942",
             "group_order": 1,
             "hit": true,
@@ -672,7 +672,7 @@
           },
           {
             "actual": "home",
-            "brier": 0.13901492756538555,
+            "brier": 0.1390336617034384,
             "event_id": "ev-7269ac3ac59cc8438989",
             "group_order": 1,
             "hit": true,
@@ -685,7 +685,7 @@
           },
           {
             "actual": "home",
-            "brier": 0.24135718984126028,
+            "brier": 0.24137169132499214,
             "event_id": "ev-f6da7a85e36ea0ae5781",
             "group_order": 2,
             "hit": true,
@@ -698,7 +698,7 @@
           },
           {
             "actual": "away",
-            "brier": 0.9310494792059439,
+            "brier": 0.9321065563522697,
             "event_id": "ev-1795b1b2ffc4ad34b370",
             "group_order": 2,
             "hit": false,
@@ -711,7 +711,7 @@
           },
           {
             "actual": "home",
-            "brier": 0.22880599552767988,
+            "brier": 0.22824494783339494,
             "event_id": "ev-b9cca57e0bccf1f0ddea",
             "group_order": 2,
             "hit": true,
@@ -724,7 +724,7 @@
           },
           {
             "actual": "home",
-            "brier": 0.20090911968005193,
+            "brier": 0.20092857721558127,
             "event_id": "ev-70ce8613496bf3541c63",
             "group_order": 2,
             "hit": true,
@@ -737,7 +737,7 @@
           },
           {
             "actual": "home",
-            "brier": 0.12745887391791322,
+            "brier": 0.12747523550984108,
             "event_id": "ev-11c5f6345af80114475c",
             "group_order": 2,
             "hit": true,
@@ -750,7 +750,7 @@
           },
           {
             "actual": "away",
-            "brier": 0.21605404737490647,
+            "brier": 0.2155620887959959,
             "event_id": "ev-f99e3f25e3872be14be2",
             "group_order": 3,
             "hit": true,
@@ -763,7 +763,7 @@
           },
           {
             "actual": "away",
-            "brier": 1.0516106706851627,
+            "brier": 1.0515891158486543,
             "event_id": "ev-48b574412d0c94c3c111",
             "group_order": 3,
             "hit": false,
@@ -776,7 +776,7 @@
           }
         ],
         "hits": 39,
-        "mean_brier": 0.348879,
+        "mean_brier": 0.348835,
         "n_graded": 48,
         "note": "Hit rate and Brier score against stored single-source results (identity 'probable' until an independent cross-check is attached). Not PnL: no entry price exists for this sport, so profit cannot be computed and is shown as unavailable, never as zero.",
         "sport": "darts",
@@ -8671,7 +8671,7 @@
     }
   ],
   "meta": {
-    "built_utc": "2026-09-21T04:47:34Z",
+    "built_utc": "2026-09-21T04:50:10Z",
     "event_count": 2218,
     "hockey": {
       "competition": "DEL Eishockey 2024/2025",

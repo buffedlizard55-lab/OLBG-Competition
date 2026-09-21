@@ -14,6 +14,12 @@ Sport rules (from the PDC schema audit, docs/DARTS-AUDIT.md):
   missing set counts; the parser keeps whatever the source recorded and the
   audit flags irregularities instead of guessing.
 
+Player identity: rating lookups/updates key on the *canonical* player
+name from the curated, evidence-linked table ``data/aliases/darts.json``
+(northstar.aliases).  Only three verified splits are merged (abbreviated
+BSDO spellings + the Mansell nickname split); unknown names stay raw.  The
+applied aliases are written into the model trail so a reviewer sees them.
+
 Calibration honesty: K=24 and MIN_PROB are *research priors* for an
 individual-sport Elo, stated before any grading, not fitted on the pilot.
 There is no permissioned historical darts odds path in this repository, so
@@ -25,6 +31,7 @@ from __future__ import annotations
 from datetime import timedelta
 from typing import Any, Dict
 
+from ..aliases import applied_aliases, alias_version, canonical_name
 from ..models import SPORT_DARTS, fmt_utc
 from .base import Strategy, no_bet
 
@@ -61,14 +68,20 @@ class DartsElo(Strategy):
         if at >= start:
             return no_bet(start - DECISION_LAG,
                           {"reason": "decision time not before start"})
-        rh = tbs.team_rating(event["home_team"], at) or INITIAL
-        ra = tbs.team_rating(event["away_team"], at) or INITIAL
+        home = canonical_name(SPORT_DARTS, event["home_team"])
+        away = canonical_name(SPORT_DARTS, event["away_team"])
+        rh = tbs.team_rating(home, at) or INITIAL
+        ra = tbs.team_rating(away, at) or INITIAL
         e_home = _expected_first(rh, ra)
         model = {
             "model_prob": {"home": e_home, "draw": 0.0, "away": 1.0 - e_home},
             "ratings": {"home": round(rh, 1), "away": round(ra, 1)},
             "decision_time": fmt_utc(at),
             "odds": "none (no permissioned odds path)",
+            "identity": {
+                "alias_table": alias_version(SPORT_DARTS),
+                "applied": applied_aliases(
+                    SPORT_DARTS, [event["home_team"], event["away_team"]])},
         }
         if max(e_home, 1.0 - e_home) < self.min_prob:
             return no_bet(at, {**model, "reason": "below selectivity "
@@ -81,8 +94,10 @@ class DartsElo(Strategy):
 
     def ratings_after(self, event, home_goals, away_goals, tbs,
                       final_at) -> Dict[str, float]:
-        rh = tbs.team_rating(event["home_team"], final_at) or INITIAL
-        ra = tbs.team_rating(event["away_team"], final_at) or INITIAL
+        home = canonical_name(SPORT_DARTS, event["home_team"])
+        away = canonical_name(SPORT_DARTS, event["away_team"])
+        rh = tbs.team_rating(home, final_at) or INITIAL
+        ra = tbs.team_rating(away, final_at) or INITIAL
         e_home = _expected_first(rh, ra)
         if home_goals > away_goals:
             s_home = 1.0
@@ -94,5 +109,4 @@ class DartsElo(Strategy):
             # ingest flags it for review.
             s_home = 0.5
         delta = K * (s_home - e_home)
-        return {event["home_team"]: rh + delta,
-                event["away_team"]: ra - delta}
+        return {home: rh + delta, away: ra - delta}

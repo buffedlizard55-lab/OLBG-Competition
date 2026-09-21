@@ -92,7 +92,7 @@ Licensing claims were re-fetched and re-confirmed verbatim (see the
   review evidence only; no bulk collection permission exists for it, so
   OpenLigaDB remains the sole systematic DEL source and identity stays
   `probable`.
-- **Automated tests: 248 passing** covering the user-specified matrix —
+- **Automated tests: 256 passing** covering the user-specified matrix —
   postponements, voids, duplicate tips, time leakage, disputed results,
   settlement arithmetic — plus adapter parsing of the real fixtures, the
   27/27 cross-check, policy gates, leaderboard math, walk-forward
@@ -274,7 +274,7 @@ Licensing claims were re-fetched and re-confirmed verbatim (see the
 
 ```bash
 python -m venv .venv && .venv/bin/pip install pytest
-python -m pytest                     # 248 tests, offline
+python -m pytest                     # 256 tests, offline
 python -m northstar.cli run-pipeline --fresh   # rebuild store + site-data/site.json
 python -m northstar.cli verify               # re-check fixture hashes + 27/27
 node scripts/site-smoke.mjs          # renders the site payload headlessly

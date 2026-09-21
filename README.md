@@ -75,7 +75,7 @@ are checked.
   the pilot; results shown as-is**, with bootstrap CIs and **Holm
   multiple-comparison correction** across the family (m=9, all adjusted
   p = 1.0). Research priors + citations: `docs/STRATEGIES.md`.
-- **248 automated tests** (offline, `python -m pytest`) covering the
+- **256 automated tests** (offline, `python -m pytest`) covering the
   required matrix: postponements, voids, duplicate tips, time leakage,
   disputed results, settlement arithmetic — plus adapter parsing of the
   real fixtures, the 27/27 cross-check, policy gates, leaderboard math,
@@ -140,7 +140,7 @@ are checked.
 ```bash
 python3 -m venv .venv && .venv/bin/pip install pytest
 
-python -m pytest                      # 248 tests, offline
+python -m pytest                      # 256 tests, offline
 python -m northstar.cli run-pipeline --fresh   # rebuild store + site data
 python -m northstar.cli verify              # fixture hashes + 27/27 agreement
 node scripts/site-smoke.mjs            # (optional) site render smoke test
@@ -218,7 +218,7 @@ northstar/            package: models, db, policy, settlement, backtest,
                       adapters/{openligadb,official_results,the_odds_api,
                       football_data,olbg},
                       strategies/{base,market,elo,draw,value,totals,hockey,darts}
-tests/                248 offline tests (pytest)
+tests/                256 offline tests (pytest)
 data/fixtures/        committed pilot fixtures: football-bl1 + hockey-del
                       (sha256-verified)
 data/fixtures/current/ CI-captured live-season fixtures + capture log

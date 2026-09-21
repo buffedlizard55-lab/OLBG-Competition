@@ -178,12 +178,24 @@ Players are stored in `team1/team2` with `teamName` as the player name.
 - `Michael Smith` vs `Ross Smith` — genuinely different players: a naive
   surname merge would be *wrong*.
 
-The Elo pool keys on exact `teamName`, so these splits fragment rating
-history. We deliberately do **not** auto-merge: identity resolution needs a
-curated, reviewed mapping (a future `data/aliases/darts.json`-style
-artifact, human-verified against official PDC player pages); merging on
-heuristics would violate the no-silent-correction contract. Effect today:
-compressed rating gaps — biasing the desk toward *silence*, never toward
+We deliberately do **not** auto-merge on heuristics — that would violate
+the no-silent-correction contract. **Since 2026-09-21 a curated,
+evidence-linked table exists: `data/aliases/darts.json`**
+(`northstar/aliases.py`). It merges exactly the three verified splits
+above (each entry carries the OpenLigaDB `teamId`s, the payloads it was
+seen in and a link a reviewer can open: the 2025 Baltic Sea Darts Open
+entry list for the two abbreviated Dutch names; the Mansell infobox for the
+nickname split). The loader refuses a table with a missing evidence link, a
+raw name mapping to two canonicals, or a canonical that is itself an alias.
+Only the **rating key** is canonicalised — stored events keep the source's
+raw spelling and the applied aliases are written into every model trail
+(`model.identity.applied`). `tests/test_aliases.py` also asserts every raw
+and canonical name in the table exists in a committed payload.
+
+Effect on the pilot: **none of the 48 graded selections changed** (still
+39/48 = 81.25 %, Brier 0.349) — the three merged players' extra history did
+not move any probability across the 0.60 threshold. Unlisted splits (if
+any) still fragment history and bias the desk toward silence, never toward
 false confidence.
 
 ### 3.5 Other checks
