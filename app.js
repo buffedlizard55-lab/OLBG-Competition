@@ -148,7 +148,7 @@ function predictionCard(p) {
   const links = (p.source_links || []).filter(Boolean).map((u) =>
     `<a href="${escapeHtml(u)}" target="_blank" rel="noreferrer">source ↗</a>`).join(" · ");
   return `<article class="tip-card">
-    <span class="tip-sport">${escapeHtml(p.strategy || "model")}</span>
+    <span class="tip-sport">${escapeHtml(p.strategy || "model")}${p.market ? ` · ${escapeHtml(marketLabel({ market: p.market, sport: "football" }))}` : ""}</span>
     <span class="tip-status">paper</span>
     <h3 class="tip-event">${escapeHtml(p.headline || "—")}</h3>
     <p class="tip-league">kickoff ${fmtDate(p.event_start_utc)} UTC · ${p.odds ? "odds " + p.odds : "no odds"}</p>

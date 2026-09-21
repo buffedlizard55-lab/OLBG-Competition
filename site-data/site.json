@@ -1,11 +1,11 @@
 {
   "anomalies": {
-    "open": 8,
+    "open": 13,
     "queue": [
       {
         "anomaly_id": "an-763e7e78dbbcdd279e10",
         "detail": "decisive 'after regulation' entry coexists with an overtime/shootout entry (impossible layering in community-entered source; matchID=76100). Final read via hockey priority AfterPenalties > AfterExtraTime > After90Minutes; flagged for manual review, outcome kept 3-2 (AfterExtraTime)",
-        "detected_at_utc": "2026-09-21T05:05:46Z",
+        "detected_at_utc": "2026-09-21T07:41:00Z",
         "entity_id": "ev-ff0008b0c9aa899d4755",
         "entity_type": "result",
         "kind": "RESULT_KIND_INCONSISTENT",
@@ -18,7 +18,7 @@
       {
         "anomaly_id": "an-8590725575f24e03dba3",
         "detail": "decisive 'after regulation' entry coexists with an overtime/shootout entry (impossible layering in community-entered source; matchID=76273). Final read via hockey priority AfterPenalties > AfterExtraTime > After90Minutes; flagged for manual review, outcome kept 2-1 (AfterExtraTime)",
-        "detected_at_utc": "2026-09-21T05:05:46Z",
+        "detected_at_utc": "2026-09-21T07:41:00Z",
         "entity_id": "ev-c1a1db0ea682db60d797",
         "entity_type": "result",
         "kind": "RESULT_KIND_INCONSISTENT",
@@ -31,7 +31,7 @@
       {
         "anomaly_id": "an-23d18a627ed1aea5b092",
         "detail": "decisive 'after regulation' entry coexists with an overtime/shootout entry (impossible layering in community-entered source; matchID=76409). Final read via hockey priority AfterPenalties > AfterExtraTime > After90Minutes; flagged for manual review, outcome kept 1-2 (AfterExtraTime)",
-        "detected_at_utc": "2026-09-21T05:05:46Z",
+        "detected_at_utc": "2026-09-21T07:41:00Z",
         "entity_id": "ev-78dfc67268398c894ed5",
         "entity_type": "result",
         "kind": "RESULT_KIND_INCONSISTENT",
@@ -44,7 +44,7 @@
       {
         "anomaly_id": "an-28ab36176a0a1f02e8c8",
         "detail": "source left leagueSeason null for matchID 76412 (DEL Eishockey 2024/2025); normalised to 2024 from the payload's unambiguous rows and flagged for manual review",
-        "detected_at_utc": "2026-09-21T05:05:46Z",
+        "detected_at_utc": "2026-09-21T07:41:00Z",
         "entity_id": "ev-3f32836fac8ddfb0bb12",
         "entity_type": "event",
         "kind": "MISSING_METADATA",
@@ -57,7 +57,7 @@
       {
         "anomaly_id": "an-6f494ddd324692776bd3",
         "detail": "decisive 'after regulation' entry coexists with an overtime/shootout entry (impossible layering in community-entered source; matchID=76414). Final read via hockey priority AfterPenalties > AfterExtraTime > After90Minutes; flagged for manual review, outcome kept 5-6 (AfterPenalties)",
-        "detected_at_utc": "2026-09-21T05:05:46Z",
+        "detected_at_utc": "2026-09-21T07:41:00Z",
         "entity_id": "ev-8358bbded1593cbd6ea0",
         "entity_type": "result",
         "kind": "RESULT_KIND_INCONSISTENT",
@@ -70,7 +70,7 @@
       {
         "anomaly_id": "an-870a7d10688c5d15dd0d",
         "detail": "the same result kind appears more than once with conflicting scores (Players Championship Finals 2025 matchID=79962; pattern first seen in the 2026-09-20 darts audit: one real entry plus stale 0-0 duplicates with consecutive resultIDs; seen again on pl/2026 matchday 4 on 2026-09-21). The first entry is kept but NOT trusted silently: flagged for manual review against the official source, outcome kept 8-11 (After90Minutes)",
-        "detected_at_utc": "2026-09-21T05:05:46Z",
+        "detected_at_utc": "2026-09-21T07:41:00Z",
         "entity_id": "ev-bcdcfe1fb3d7753beee8",
         "entity_type": "result",
         "kind": "RESULT_KIND_INCONSISTENT",
@@ -83,7 +83,7 @@
       {
         "anomaly_id": "an-0bf555cbbc1c9d39b727",
         "detail": "the same result kind appears more than once with conflicting scores (PDC Darts-WM matchID=80237; pattern first seen in the 2026-09-20 darts audit: one real entry plus stale 0-0 duplicates with consecutive resultIDs; seen again on pl/2026 matchday 4 on 2026-09-21). The first entry is kept but NOT trusted silently: flagged for manual review against the official source, outcome kept 5-0 (After90Minutes)",
-        "detected_at_utc": "2026-09-21T05:05:46Z",
+        "detected_at_utc": "2026-09-21T07:41:00Z",
         "entity_id": "ev-d614a2e17776ef1cb0fa",
         "entity_type": "result",
         "kind": "RESULT_KIND_INCONSISTENT",
@@ -96,13 +96,83 @@
       {
         "anomaly_id": "an-86d1e8c5aa6034462667",
         "detail": "the same result kind appears more than once with conflicting scores (Premier League 2026/2027 matchID=86559; pattern first seen in the 2026-09-20 darts audit: one real entry plus stale 0-0 duplicates with consecutive resultIDs; seen again on pl/2026 matchday 4 on 2026-09-21). The first entry is kept but NOT trusted silently: flagged for manual review against the official source, outcome kept 1-2 (After90Minutes)",
-        "detected_at_utc": "2026-09-21T05:05:46Z",
+        "detected_at_utc": "2026-09-21T07:41:00Z",
         "entity_id": "ev-d656c5a97f99bc9b5d4f",
         "entity_type": "result",
         "kind": "RESULT_KIND_INCONSISTENT",
         "resolution": null,
         "source_urls": [
           "https://api.openligadb.de/getmatchdata/pl/2026/86559"
+        ],
+        "status": "open"
+      },
+      {
+        "anomaly_id": "an-77a525fb5bc1dd6de29f",
+        "detail": "OLBG snapshot kickoff 2026-09-19T14:00:00Z differs from OpenLigaDB 2026-09-19T19:00:00Z for FC Sevilla v FC Barcelona by +5.0 h; the manual snapshot's relative time label was parsed as UK local time - the permitted source's UTC is authoritative, the OLBG row is left as captured and flagged for review",
+        "detected_at_utc": "2026-09-21T07:41:00Z",
+        "entity_id": "ev-olbg-7c047106db7d2c0c81d5",
+        "entity_type": "event",
+        "kind": "TIME_CONFLICT",
+        "resolution": null,
+        "source_urls": [
+          "https://www.olbg.com/betting-tips/Football/European_Competitions/Spain_Primera_Liga/Sevilla_v_Barcelona/1?event_id=2040420",
+          "https://api.openligadb.de/getmatchdata/la1/2026/85402"
+        ],
+        "status": "open"
+      },
+      {
+        "anomaly_id": "an-c4bd123a76e983cacd47",
+        "detail": "OLBG snapshot kickoff 2026-09-20T08:00:00Z differs from OpenLigaDB 2026-09-20T13:00:00Z for Manchester City v Sunderland by +5.0 h; the manual snapshot's relative time label was parsed as UK local time - the permitted source's UTC is authoritative, the OLBG row is left as captured and flagged for review",
+        "detected_at_utc": "2026-09-21T07:41:00Z",
+        "entity_id": "ev-olbg-3b86bdfd679f9b031415",
+        "entity_type": "event",
+        "kind": "TIME_CONFLICT",
+        "resolution": null,
+        "source_urls": [
+          "https://www.olbg.com/betting-tips/Football/UK/England_Premier_League/Man_City_v_Sunderland/1?event_id=2039511",
+          "https://api.openligadb.de/getmatchdata/pl/2026/86573"
+        ],
+        "status": "open"
+      },
+      {
+        "anomaly_id": "an-0e4ec1a93c0e77632920",
+        "detail": "OLBG snapshot kickoff 2026-09-20T08:00:00Z differs from OpenLigaDB 2026-09-20T13:00:00Z for Leeds United v Crystal Palace FC by +5.0 h; the manual snapshot's relative time label was parsed as UK local time - the permitted source's UTC is authoritative, the OLBG row is left as captured and flagged for review",
+        "detected_at_utc": "2026-09-21T07:41:00Z",
+        "entity_id": "ev-olbg-5691e9e0ae02b3979962",
+        "entity_type": "event",
+        "kind": "TIME_CONFLICT",
+        "resolution": null,
+        "source_urls": [
+          "https://www.olbg.com/betting-tips/Football/UK/England_Premier_League/Leeds_v_Crystal_Palace/1?event_id=2039505",
+          "https://api.openligadb.de/getmatchdata/pl/2026/86572"
+        ],
+        "status": "open"
+      },
+      {
+        "anomaly_id": "an-b49977c528a768fe12df",
+        "detail": "OLBG snapshot kickoff 2026-09-20T08:00:00Z differs from OpenLigaDB 2026-09-20T13:00:00Z for AFC Bournemouth v FC Liverpool by +5.0 h; the manual snapshot's relative time label was parsed as UK local time - the permitted source's UTC is authoritative, the OLBG row is left as captured and flagged for review",
+        "detected_at_utc": "2026-09-21T07:41:00Z",
+        "entity_id": "ev-olbg-91a4460bc6476c8cb6c8",
+        "entity_type": "event",
+        "kind": "TIME_CONFLICT",
+        "resolution": null,
+        "source_urls": [
+          "https://www.olbg.com/betting-tips/Football/UK/England_Premier_League/Bournemouth_v_Liverpool/1?event_id=2039509",
+          "https://api.openligadb.de/getmatchdata/pl/2026/86576"
+        ],
+        "status": "open"
+      },
+      {
+        "anomaly_id": "an-feab1ffb49ddc8df8705",
+        "detail": "OLBG snapshot kickoff 2026-09-20T10:30:00Z differs from OpenLigaDB 2026-09-20T15:30:00Z for Fulham FC v Manchester United FC by +5.0 h; the manual snapshot's relative time label was parsed as UK local time - the permitted source's UTC is authoritative, the OLBG row is left as captured and flagged for review",
+        "detected_at_utc": "2026-09-21T07:41:00Z",
+        "entity_id": "ev-olbg-0acb91e93055178f443e",
+        "entity_type": "event",
+        "kind": "TIME_CONFLICT",
+        "resolution": null,
+        "source_urls": [
+          "https://www.olbg.com/betting-tips/Football/UK/England_Premier_League/Fulham_v_Man_Utd/1?event_id=2039510",
+          "https://api.openligadb.de/getmatchdata/pl/2026/86577"
         ],
         "status": "open"
       }
@@ -8682,7 +8752,7 @@
     }
   ],
   "meta": {
-    "built_utc": "2026-09-21T05:05:46Z",
+    "built_utc": "2026-09-21T07:41:01Z",
     "event_count": 2218,
     "hockey": {
       "competition": "DEL Eishockey 2024/2025",
@@ -8711,54 +8781,159 @@
     "stake_basis": "level 1.0 units per bet (profit units)",
     "title": "Northstar Competition Lab"
   },
+  "olbg_reconciliation": {
+    "alias_table": "football-olbg-aliases-2026-09-21.1",
+    "checked": 7,
+    "matched": 5,
+    "rows": [
+      {
+        "event": "Venezia v Lazio",
+        "official_event_id": null,
+        "official_start_utc": null,
+        "olbg_event_id": "ev-olbg-f1d0c347db3b4bc43844",
+        "olbg_start_utc": "2026-09-19T13:45:00Z",
+        "status": "unmatched"
+      },
+      {
+        "delta_hours": 5.0,
+        "event": "FC Sevilla v FC Barcelona",
+        "official_event_id": "ev-57dcf171316e46f95466",
+        "official_source_url": "https://api.openligadb.de/getmatchdata/la1/2026/85402",
+        "official_start_utc": "2026-09-19T19:00:00Z",
+        "olbg_event_id": "ev-olbg-7c047106db7d2c0c81d5",
+        "olbg_start_utc": "2026-09-19T14:00:00Z",
+        "status": "time_conflict"
+      },
+      {
+        "event": "Sporting v FC Arouca",
+        "official_event_id": null,
+        "official_start_utc": null,
+        "olbg_event_id": "ev-olbg-9d7748a94b947e892575",
+        "olbg_start_utc": "2026-09-19T14:30:00Z",
+        "status": "unmatched"
+      },
+      {
+        "delta_hours": 5.0,
+        "event": "Manchester City v Sunderland",
+        "official_event_id": "ev-04ff9c5f663265982711",
+        "official_source_url": "https://api.openligadb.de/getmatchdata/pl/2026/86573",
+        "official_start_utc": "2026-09-20T13:00:00Z",
+        "olbg_event_id": "ev-olbg-3b86bdfd679f9b031415",
+        "olbg_start_utc": "2026-09-20T08:00:00Z",
+        "status": "time_conflict"
+      },
+      {
+        "delta_hours": 5.0,
+        "event": "Leeds United v Crystal Palace FC",
+        "official_event_id": "ev-9f754178527f47e8cf17",
+        "official_source_url": "https://api.openligadb.de/getmatchdata/pl/2026/86572",
+        "official_start_utc": "2026-09-20T13:00:00Z",
+        "olbg_event_id": "ev-olbg-5691e9e0ae02b3979962",
+        "olbg_start_utc": "2026-09-20T08:00:00Z",
+        "status": "time_conflict"
+      },
+      {
+        "delta_hours": 5.0,
+        "event": "AFC Bournemouth v FC Liverpool",
+        "official_event_id": "ev-b9c1520aeae33c2cff33",
+        "official_source_url": "https://api.openligadb.de/getmatchdata/pl/2026/86576",
+        "official_start_utc": "2026-09-20T13:00:00Z",
+        "olbg_event_id": "ev-olbg-91a4460bc6476c8cb6c8",
+        "olbg_start_utc": "2026-09-20T08:00:00Z",
+        "status": "time_conflict"
+      },
+      {
+        "delta_hours": 5.0,
+        "event": "Fulham FC v Manchester United FC",
+        "official_event_id": "ev-def0573adeb9dacdf0be",
+        "official_source_url": "https://api.openligadb.de/getmatchdata/pl/2026/86577",
+        "official_start_utc": "2026-09-20T15:30:00Z",
+        "olbg_event_id": "ev-olbg-0acb91e93055178f443e",
+        "olbg_start_utc": "2026-09-20T10:30:00Z",
+        "status": "time_conflict"
+      }
+    ],
+    "time_conflicts": 5,
+    "unmatched": 2
+  },
   "predictions": [
     {
-      "body": "Ratings are level (1500 vs 1500) - nothing separates the two yet. Our three-way model has Borussia Mönchengladbach 44%, draw 25%, Bayer 04 Leverkusen 31%. The market (margin-removed) implies Borussia Mönchengladbach 19%, draw 21%, Bayer 04 Leverkusen 60%. We are backing home - our model rates it +25 points against the market price, a clear value edge worth acting on. Getting it at 5.16 makes the risk worth taking on a level stake. Tip: HOME Paper trading only - not betting advice.",
-      "event_start_utc": "2024-08-23T18:30:00Z",
-      "headline": "Borussia Mönchengladbach v Bayer 04 Leverkusen: HOME",
-      "odds": 5.16,
+      "body": "On ratings (1501 vs 1511) RB Leipzig is the stronger side going in. Our three-way model has 1. FC Union Berlin 43%, draw 26%, RB Leipzig 32%. The market (margin-removed) implies 1. FC Union Berlin 31%, draw 27%, RB Leipzig 42%. We are backing home - our model rates it +12 points against the market price, a clear value edge worth acting on. Getting it at 3.12 makes the risk worth taking on a level stake. Tip: HOME Paper trading only - not betting advice.",
+      "event_start_utc": "2025-02-01T17:30:00Z",
+      "headline": "1. FC Union Berlin v RB Leipzig: HOME",
+      "market": "match_winner_3way",
+      "odds": 3.12,
       "paper_only": true,
       "source_links": [
-        "https://api.openligadb.de/getmatchdata/bl1/2024/72214",
+        "https://api.openligadb.de/getmatchdata/bl1/2024/72391",
         "https://www.football-data.co.uk/mmz4281/2425/D1.csv"
       ],
       "strategy": "elo-edge-v1"
     },
     {
-      "body": "Ratings are level (1500 vs 1500) - nothing separates the two yet. Our three-way model has SC Freiburg 44%, draw 25%, VfB Stuttgart 31%. The market (margin-removed) implies SC Freiburg 27%, draw 26%, VfB Stuttgart 47%. We are backing home - our model rates it +16 points against the market price, a clear value edge worth acting on. Getting it at 3.50 makes the risk worth taking on a level stake. Tip: HOME Paper trading only - not betting advice.",
-      "event_start_utc": "2024-08-24T13:30:00Z",
-      "headline": "SC Freiburg v VfB Stuttgart: HOME",
-      "odds": 3.5,
+      "body": "On ratings (1525 vs 1519) Bayer 04 Leverkusen is the stronger side going in. Our three-way model has Bayer 04 Leverkusen 45%, draw 25%, TSG Hoffenheim 31%. The market (margin-removed) implies Bayer 04 Leverkusen 77%, draw 14%, TSG Hoffenheim 9%. We are backing draw - our model rates it +11 points against the market price, a clear value edge worth acting on. Getting it at 6.86 makes the risk worth taking on a level stake. Tip: DRAW Paper trading only - not betting advice.",
+      "event_start_utc": "2025-02-02T16:30:00Z",
+      "headline": "Bayer 04 Leverkusen v TSG Hoffenheim: DRAW",
+      "market": "match_winner_3way",
+      "odds": 6.86,
       "paper_only": true,
       "source_links": [
-        "https://api.openligadb.de/getmatchdata/bl1/2024/72218",
+        "https://api.openligadb.de/getmatchdata/bl1/2024/72385",
+        "https://www.football-data.co.uk/mmz4281/2425/D1.csv"
+      ],
+      "strategy": "draw-value-v1"
+    },
+    {
+      "body": "On ratings (1498 vs 1499) Borussia Dortmund is the stronger side going in. Our three-way model has 1. FC Heidenheim 1846 44%, draw 25%, Borussia Dortmund 31%. The market (margin-removed) implies 1. FC Heidenheim 1846 22%, draw 24%, Borussia Dortmund 54%. We are backing home - our model rates it +22 points against the market price, a clear value edge worth acting on. Getting it at 4.30 makes the risk worth taking on a level stake. Tip: HOME Paper trading only - not betting advice.",
+      "event_start_utc": "2025-02-01T14:30:00Z",
+      "headline": "1. FC Heidenheim 1846 v Borussia Dortmund: HOME",
+      "market": "match_winner_3way",
+      "odds": 4.3,
+      "paper_only": true,
+      "source_links": [
+        "https://api.openligadb.de/getmatchdata/bl1/2024/72389",
+        "https://www.football-data.co.uk/mmz4281/2425/D1.csv"
+      ],
+      "strategy": "home-edge-v1"
+    },
+    {
+      "body": "Our Poisson goal model (expected goals 1.59 + 1.80) has over 2.5 66%, under 2.5 34%. The market (margin-removed) implies over 62%, under 38%. We are backing over - our model rates it +4 points against the market price, a clear value edge worth acting on. Getting it at 1.52 makes the risk worth taking on a level stake. Tip: OVER 2.5 GOALS Paper trading only - not betting advice.",
+      "event_start_utc": "2025-02-02T14:30:00Z",
+      "headline": "Eintracht Frankfurt v VfL Wolfsburg: OVER 2.5 GOALS",
+      "market": "total_goals_over_under_2_5",
+      "odds": 1.52,
+      "paper_only": true,
+      "source_links": [
+        "https://api.openligadb.de/getmatchdata/bl1/2024/72388",
+        "https://www.football-data.co.uk/mmz4281/2425/D1.csv"
+      ],
+      "strategy": "poisson-totals-value-v1"
+    },
+    {
+      "body": "On ratings (1482 vs 1519) SC Freiburg is the stronger side going in. Our three-way model has VfL Bochum 39%, draw 27%, SC Freiburg 34%. The market (margin-removed) implies VfL Bochum 34%, draw 28%, SC Freiburg 38%. We are backing home - our model rates it +5 points against the market price, a clear value edge worth acting on. Getting it at 2.81 makes the risk worth taking on a level stake. Tip: HOME Paper trading only - not betting advice.",
+      "event_start_utc": "2025-02-01T14:30:00Z",
+      "headline": "VfL Bochum v SC Freiburg: HOME",
+      "market": "match_winner_3way",
+      "odds": 2.81,
+      "paper_only": true,
+      "source_links": [
+        "https://api.openligadb.de/getmatchdata/bl1/2024/72392",
         "https://www.football-data.co.uk/mmz4281/2425/D1.csv"
       ],
       "strategy": "elo-edge-v1"
     },
     {
-      "body": "Ratings are level (1500 vs 1500) - nothing separates the two yet. Our three-way model has VfL Wolfsburg 44%, draw 25%, FC Bayern München 31%. The market (margin-removed) implies VfL Wolfsburg 15%, draw 19%, FC Bayern München 65%. We are backing home - our model rates it +29 points against the market price, a clear value edge worth acting on. Getting it at 6.32 makes the risk worth taking on a level stake. Tip: HOME Paper trading only - not betting advice.",
-      "event_start_utc": "2024-08-25T13:30:00Z",
-      "headline": "VfL Wolfsburg v FC Bayern München: HOME",
-      "odds": 6.32,
+      "body": "On ratings (1544 vs 1468) FC Bayern München is the stronger side going in. Our three-way model has FC Bayern München 54%, draw 21%, Holstein Kiel 25%. The market (margin-removed) implies FC Bayern München 92%, draw 6%, Holstein Kiel 3%. We are backing draw - our model rates it +15 points against the market price, a clear value edge worth acting on. Getting it at 16.44 makes the risk worth taking on a level stake. Tip: DRAW Paper trading only - not betting advice.",
+      "event_start_utc": "2025-02-01T14:30:00Z",
+      "headline": "FC Bayern München v Holstein Kiel: DRAW",
+      "market": "match_winner_3way",
+      "odds": 16.44,
       "paper_only": true,
       "source_links": [
-        "https://api.openligadb.de/getmatchdata/bl1/2024/72220",
+        "https://api.openligadb.de/getmatchdata/bl1/2024/72387",
         "https://www.football-data.co.uk/mmz4281/2425/D1.csv"
       ],
-      "strategy": "elo-edge-v1"
-    },
-    {
-      "body": "On ratings (1503 vs 1517) SC Freiburg is the stronger side going in. Our three-way model has 1. FC Union Berlin 42%, draw 26%, SC Freiburg 32%. The market (margin-removed) implies 1. FC Union Berlin 38%, draw 30%, SC Freiburg 32%. We are backing home - our model rates it +4 points against the market price, a clear value edge worth acting on. Getting it at 2.52 makes the risk worth taking on a level stake. Tip: HOME Paper trading only - not betting advice.",
-      "event_start_utc": "2024-11-08T19:30:00Z",
-      "headline": "1. FC Union Berlin v SC Freiburg: HOME",
-      "odds": 2.52,
-      "paper_only": true,
-      "source_links": [
-        "https://api.openligadb.de/getmatchdata/bl1/2024/72301",
-        "https://www.football-data.co.uk/mmz4281/2425/D1.csv"
-      ],
-      "strategy": "elo-edge-v1"
+      "strategy": "draw-value-v1"
     }
   ],
   "registry": {

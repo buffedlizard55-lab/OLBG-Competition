@@ -305,24 +305,41 @@ def run_forward_desks(store: Store, current: Dict[str, Any],
 
 def _pick_predictions(store: Store,
                       reports: Dict[str, Any]) -> List[Dict[str, Any]]:
-    """Render evidence-only predictions for up to 4 settled backtest bets
+    """Render evidence-only predictions for up to 6 settled backtest bets
     that carry a full model/fair/edge trail (any strategy in the family -
-    the trail, not the strategy id, is the admission gate)."""
+    the trail, not the strategy id, is the admission gate).  Round-robin
+    across strategies so every market/model family is represented, latest
+    decisions first so the examples show warmed-up ratings rather than
+    the cold-start 1500-vs-1500 rows."""
     out: List[Dict[str, Any]] = []
     seen = set()
+    candidates: Dict[str, List[Dict[str, Any]]] = {}
     for sid, rep in reports.items():
-        for bet in rep["bets"]:
-            model = bet.get("model") or {}
-            if model.get("model_prob") and model.get("fair_prob") and \
-                    model.get("edge") is not None:
+        rows = [b for b in reversed(rep["bets"])
+                if (b.get("model") or {}).get("model_prob")
+                and (b.get("model") or {}).get("fair_prob")
+                and (b.get("model") or {}).get("edge") is not None]
+        if rows:
+            candidates[sid] = rows
+    while len(out) < 6 and any(candidates.values()):
+        for sid in list(candidates):
+            if len(out) >= 6:
+                break
+            while candidates[sid]:
+                bet = candidates[sid].pop(0)
+                model = bet["model"]
                 event = store.get_event(bet["event_id"])
                 if not event or bet["event_id"] in seen:
                     continue
                 sel = bet["selection"]
+                lam = ({"home": model.get("lambda_home"),
+                        "away": model.get("lambda_away")}
+                       if model.get("lambda_home") is not None else None)
                 rendered = render_prediction(
                     event,
                     model={"ratings": model.get("ratings"),
-                           "model_prob": model["model_prob"]},
+                           "model_prob": model["model_prob"],
+                           "lambda": lam},
                     fair=model.get("fair_prob"),
                     edge=model.get("edge"),
                     selection=sel,
@@ -334,6 +351,8 @@ def _pick_predictions(store: Store,
                 seen.add(bet["event_id"])
                 out.append({
                     "strategy": sid,
+                    "market": (getattr(build(sid), "market", None)
+                               or models.MARKET_MATCH_WINNER_3WAY),
                     "headline": rendered["headline"],
                     "body": rendered["body"],
                     "event_start_utc": event["scheduled_start_utc"],
@@ -341,8 +360,8 @@ def _pick_predictions(store: Store,
                     "source_links": rendered["source_links"],
                     "paper_only": True,
                 })
-                if len(out) >= 4:
-                    return out
+                break
+        candidates = {k: v for k, v in candidates.items() if v}
     return out
 
 
@@ -508,6 +527,12 @@ def main(argv: List[str] = None) -> int:
                  str(hockey_stats["anomalies"]))
     current = ingest_current(store)
     olbg_stats = ingest_olbg(store)
+    # Cross-check the manual OLBG snapshot events against the permitted
+    # fixture list (identity via curated aliases, kickoff vs UTC).
+    from .reconcile import reconcile_olbg_events
+    olbg_stats["reconciliation"] = reconcile_olbg_events(store)
+    store.kv_set("olbg_reconciliation",
+                 json.dumps(olbg_stats["reconciliation"], sort_keys=True))
     reports = run_backtests(store)
 
     # Forward test: issue new frozen predictions from the committed

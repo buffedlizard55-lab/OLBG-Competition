@@ -74,7 +74,7 @@ Licensing claims were re-fetched and re-confirmed verbatim (see the
 - **Statistics layer** (`northstar/stats.py`): bootstrap 95% CIs, binomial
   tests, and **Holm step-down correction** (Holm 1979) across the PnL
   family (m=9 since 2026-09-21). Applied in the pipeline and rendered per-card on the site.
-- **Real source irregularities surfaced, not smoothed**: 8 open anomalies
+- **Real source irregularities surfaced, not smoothed**: 13 open anomalies
   in the review queue — 4 DEL matches with impossible result layering, 1
   DEL match with `leagueSeason: null` (normalized + flagged), 2 darts
   matches (PDCPCF 2025 matchID 79962, Price v Littler; PDCWM 2026 matchID
@@ -88,6 +88,22 @@ Licensing claims were re-fetched and re-confirmed verbatim (see the
   (<https://api.openligadb.de/getmatchdata/pl/2026/86559>). Flagged events are excluded from rating
   updates and from grading until a human resolves them — a silent
   first-entry read would launder disputed rows into the model.
+- **OLBG snapshot kickoffs were wrong by 5 h (found 2026-09-21, now 13 open
+  anomalies).** A new reconciliation step (`northstar/reconcile.py`, curated
+  table `data/aliases/football_olbg.json`, 10 evidence-linked team aliases)
+  cross-checks every manually snapshotted OLBG football event against the
+  permitted OpenLigaDB fixture list. All 5 matchable cards (Sevilla v
+  Barcelona la1 85402; Man City v Sunderland pl 86573; Leeds v Crystal
+  Palace 86572; Bournemouth v Liverpool 86576; Fulham v Man Utd 86577)
+  sit exactly 5.0 h *before* the official UTC kickoff: the manual page
+  render's "Today 15:00" labels were evidently produced in a UTC−5 locale,
+  not UK time, so parsing them as UK local time was wrong. The OLBG rows are
+  **not** edited (they are captured evidence); each carries a
+  `TIME_CONFLICT` anomaly with both source URLs in the review queue, and
+  the reconciliation table is published in `site.json.olbg_reconciliation`.
+  Venezia v Lazio and Sporting v Arouca have no permitted fixture source
+  and stay `unmatched`. These pending OLBG tips were never gradable anyway
+  (no permissioned odds, no official result path) so no PnL is affected.
 - **The DEL flags were right (manual corroboration, 2026-09-20).** The two
   keystone finals were re-checked by hand against independent outlets:
   Augsburg 3-2 Ingolstadt on 19.09.2024 was **2-2 after regulation, 1-0 in

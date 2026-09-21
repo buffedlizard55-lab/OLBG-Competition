@@ -126,6 +126,16 @@ def build_coverage(store: Store) -> List[Dict[str, Any]]:
         BLOCKED_SPORT_COVERAGE
 
 
+def _json_kv(store: Store, key: str):
+    raw = store.kv_get(key)
+    if not raw:
+        return None
+    try:
+        return json.loads(raw)
+    except (TypeError, ValueError):
+        return None
+
+
 def build_site_data(store: Store, raw_dir: str,
                     predictions: Optional[List[Dict[str, Any]]] = None,
                     backtest_meta: Optional[Dict[str, Any]] = None,
@@ -199,6 +209,7 @@ def build_site_data(store: Store, raw_dir: str,
                      "ledger."),
         },
         "registry": registry or {},
+        "olbg_reconciliation": _json_kv(store, "olbg_reconciliation"),
         "sources": [{
             "source_id": p.source_id,
             "display_name": p.display_name,

@@ -37,7 +37,7 @@ def render_prediction(event: Dict[str, Any],
     bits: List[str] = []
     ok = True
 
-    if model and "ratings" in model:
+    if model and model.get("ratings") is not None:
         rh, ra = model["ratings"].get("home"), model["ratings"].get("away")
         if rh is not None and ra is not None:
             diff = rh - ra
@@ -52,6 +52,7 @@ def render_prediction(event: Dict[str, Any],
                     f"stronger side going in.")
         else:
             ok = False
+    totals = False
     if model and "model_prob" in model:
         mp = model["model_prob"]
         if all(k in mp for k in ("home", "draw", "away")):
@@ -59,6 +60,16 @@ def render_prediction(event: Dict[str, Any],
                 f"Our three-way model has "
                 f"{home} {_pct(mp['home'])}, draw {_pct(mp['draw'])}, "
                 f"{away} {_pct(mp['away'])}.")
+        elif all(k in mp for k in ("over", "under")):
+            totals = True
+            lam = model.get("lambda")
+            lam_txt = (f" (expected goals {lam['home']:.2f} + "
+                       f"{lam['away']:.2f})"
+                       if lam and lam.get("home") is not None
+                       and lam.get("away") is not None else "")
+            bits.append(
+                f"Our Poisson goal model{lam_txt} has over 2.5 "
+                f"{_pct(mp['over'])}, under 2.5 {_pct(mp['under'])}.")
         else:
             ok = False
     if fair and all(k in fair for k in ("home", "draw", "away")):
@@ -66,6 +77,10 @@ def render_prediction(event: Dict[str, Any],
             f"The market (margin-removed) implies "
             f"{home} {_pct(fair['home'])}, draw {_pct(fair['draw'])}, "
             f"{away} {_pct(fair['away'])}.")
+    elif fair and totals and all(k in fair for k in ("over", "under")):
+        bits.append(
+            f"The market (margin-removed) implies over "
+            f"{_pct(fair['over'])}, under {_pct(fair['under'])}.")
     if selection and edge:
         e = edge.get(selection)
         if e is not None:
@@ -83,19 +98,22 @@ def render_prediction(event: Dict[str, Any],
     if not bits:
         ok = False
 
+    sel_label = (f"{selection.upper()} 2.5 GOALS"
+                 if totals and selection in ("over", "under")
+                 else (selection.upper() if selection else ""))
     if not ok:
         body = ("No call. The verified evidence is incomplete for a "
                 "defensible tip (missing model/market/edge), and this desk "
                 "does not write predictions without evidence.")
     else:
-        verdict = (f"Tip: {selection.upper()}" if selection
+        verdict = (f"Tip: {sel_label}" if selection
                    else "No bet this round.")
         body = " ".join(bits)
         if selection:
             body += f" {verdict}"
         body += " Paper trading only - not betting advice."
 
-    headline = (f"{home} v {away}: {selection.upper()}"
+    headline = (f"{home} v {away}: {sel_label}"
                 if selection else f"{home} v {away}: No call")
     return {"headline": headline, "body": body, "evidence_ok": ok,
             "source_links": source_links or []}
