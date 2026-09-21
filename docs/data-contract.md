@@ -1,9 +1,10 @@
 # Data contract and verification protocol
 
-Status: **implemented for the pilot path** (football, 3-way match market) —
-the code in `northstar/` enforces the gates below and `tests/` pins the
-behaviour. Sport-specific market rules beyond the 3-way match market are still
-design-only (section 2 lists what remains). See `docs/STATUS.md` for the
+Status: **implemented for the pilot path** (football: 3-way match market
+and, since 2026-09-21, the over/under 2.5 goals market) — the code in
+`northstar/` enforces the gates below and `tests/` pins the behaviour.
+Sport-specific market rules beyond those two are still design-only
+(section 2 lists what remains). See `docs/STATUS.md` for the
 remaining-work list.
 
 This document is the boundary between a useful paper-trading experiment and an invented track record. A production connector must satisfy this contract before a record can affect the leaderboard.
@@ -13,14 +14,15 @@ This document is the boundary between a useful paper-trading experiment and an i
 | Contract section | Where it is enforced | State |
 | --- | --- | --- |
 | 1. Core entities | `northstar/models.py` (dataclasses), `northstar/db.py` (schema) | implemented; odds retain provider event ids |
-| 2. Settlement arithmetic | `northstar/settlement.py::decimal_pnl` | implemented (3-way match market) |
+| 2. Settlement arithmetic | `northstar/settlement.py::decimal_pnl`; rule table `MARKET_RULES` (`match_outcome_3way`, `match_outcome_totals`) | implemented (3-way match market; O/U 2.5 on the 90-minute score, half-goal line only — an `AfterExtraTime` final blocks the totals settlement rather than grading it) |
 | 3. Verification gates (1–7) | `northstar/settlement.py::settle_tip` (`GateLog`) | implemented |
 | 4. Anomaly taxonomy | `northstar/models.py` constants, `northstar/db.py::add_anomaly` | implemented (adds `POLICY_VIOLATION`, `CONSENSUS_DRIFT`, `EVENT_CHANGED`) |
 | 5. Research protocol | `northstar/backtest.py` (walk-forward, `TimeBoundedStore`, bootstrap CI) | implemented for football pilot |
 | 6. Prediction writing contract | `northstar/predictor.py` (refuses without model/fair/edge evidence) | implemented |
 | 7. Minimum test matrix | `tests/` (postponement, voids, duplicates, time leakage, disputes, arithmetic, ordering invariance) | implemented for the listed football cases |
 
-Not yet implemented (design-only): handicap/totals/each-way market rules,
+Not yet implemented (design-only): handicap/each-way market rules and
+integer-line totals (push rule),
 tennis/cricket/motor-racing/esports settlement, live multi-source identity
 matching beyond the football pilot, an active organizer-authorized result
 feed, and a production tip collector (OLBG collection is deliberately

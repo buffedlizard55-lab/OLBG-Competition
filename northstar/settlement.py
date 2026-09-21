@@ -306,6 +306,16 @@ def settle_tip(store: Store, tip_id: str,
     try:
         if gates.market != "pass":
             raise ValueError(f"no rule set for market {tip['market']}")
+        if tip["market"] == MARKET_TOTALS_2_5 and \
+                primary.get("result_type_kind") not in (
+                    None, models.RESULT_KIND_AFTER_90):
+            # Totals are a 90-minute market.  A cup tie decided after extra
+            # time stores the 120-minute score as its final kind; grading
+            # over/under on it would be wrong, so it is refused (blocked,
+            # never a guessed loss) until a 90-minute row exists.
+            raise ValueError(
+                "totals need a 90-minute score; result kind is "
+                f"{primary.get('result_type_kind')}")
         outcome = rule[1](tip["selection_key"],
                           primary["home_goals"],
                           primary["away_goals"])

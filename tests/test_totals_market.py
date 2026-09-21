@@ -75,6 +75,32 @@ class TestTotalsSettlement:
         assert s["outcome"] == "lost"
         assert s["pnl_units"] == pytest.approx(-1.0)
 
+    def test_extra_time_result_kind_blocks_totals(self, store):
+        """O/U 2.5 is a 90-minute market: an AfterExtraTime final must not
+        be graded (blocked, not lost)."""
+        from northstar.models import Result, parse_utc, utcnow, stable_id
+        from conftest import FINAL_AT
+        mk_event(store)
+        mk_tip(store, market=MARKET_TOTALS_2_5, selection_key="over",
+               odds=1.9)
+        store.add_result(Result(
+            result_id=stable_id("res", "ev-t1", "openligadb", 2, 1, "aet"),
+            event_id="ev-t1", provider="openligadb",
+            retrieved_at_utc=utcnow(), source_url="https://example.org/r",
+            raw_payload_hash="cafe", final_status="finished",
+            officially_final_at_utc=parse_utc(FINAL_AT),
+            home_goals=2, away_goals=1,
+            result_type_kind=models.RESULT_KIND_AFTER_EXTRA, version="v1"))
+        store.commit()
+        out = settle_tip(store, "tip-t1")
+        assert out["action"] == "blocked"
+        assert "90-minute" in out["gates"]["arithmetic"]
+        assert store.latest_settlement("tip-t1") is None
+        # the same score as a 90-minute row settles normally
+        mk_tip(store, tip_id="tip-t2", market=MARKET_MATCH_WINNER_3WAY,
+               selection_key="home", odds=1.9)
+        assert settle_tip(store, "tip-t2")["action"] == "settled"
+
     def test_wrong_selection_for_market_is_blocked(self, store):
         mk_event(store)
         mk_tip(store, market=MARKET_TOTALS_2_5, selection_key="home")
