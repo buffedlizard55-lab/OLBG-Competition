@@ -57,15 +57,31 @@ jobs:
         run: python -m northstar.cli run-pipeline --fresh
       - name: Re-verify fixture integrity
         run: python -m northstar.cli verify
+      - name: Regenerate the fact sheet, register + README numbers
+        # A fresh capture moves counted numbers (open anomalies, issued
+        # forward calls).  These files are part of the capture commit, so
+        # the repository never drifts from its own data - and the offline
+        # Tests workflow keeps proving the committed copies were current.
+        run: python -m northstar.cli facts --sync-readme
       - name: Test suite must stay green before committing
-        run: python -m pytest -q
+        run: |
+          set -o pipefail
+          python -m pytest -q 2>&1 | tee /tmp/pytest.log || {
+            grep -E "^(FAILED|ERROR)" /tmp/pytest.log | head -25 | \
+              while IFS= read -r line; do
+                echo "::error title=pytest::$line"
+              done
+            exit 1
+          }
       - name: Commit refreshed captures (if changed)
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           # data/fixtures = historical pilot seasons (frozen after first
           # capture); data/fixtures/current = live-season payloads.
-          git add data/fixtures data/fixtures/current data/forward/ledger.json site-data/site.json
+          git add data/fixtures data/fixtures/current data/forward/ledger.json \
+                  site-data/site.json docs/FACTS.md docs/SOURCE-REGISTRY.md \
+                  README.md
           if git diff --cached --quiet; then
             echo "No capture changes this run."
           else

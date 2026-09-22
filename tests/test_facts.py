@@ -62,10 +62,13 @@ class TestFactSheet:
         assert f"**{counted}**" in text
 
     def test_fact_sheet_declares_its_version_and_source_hash(self):
+        """The sheet must say what evidence it was computed from - and that
+        evidence must be the fixture hashes, not a wall-clock timestamp."""
         text = open(FACTS_PATH, "r", encoding="utf-8").read()
         assert "Generated fact sheet" in text
-        assert re.search(r"site\.json` sha256 \(canonical JSON\): `[0-9a-f]{64}`",
-                         text)
+        assert re.search(r"Fixtures:\*\* \d+ hash-verified payloads, "
+                         r"aggregate sha256 `[0-9a-f]{64}`", text)
+        assert "Built (UTC)" not in text
 
     def test_stale_detection_reports_the_line(self, tmp_path):
         stale = tmp_path / "FACTS.md"

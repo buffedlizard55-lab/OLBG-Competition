@@ -26,8 +26,24 @@ jobs:
         run: python -m northstar.cli verify
       - name: Check generated docs are in sync with the data
         run: python -m northstar.cli facts --check
+      - name: Generated docs + README must be committed (no drift)
+        # `run-pipeline` regenerates docs/FACTS.md, docs/SOURCE-REGISTRY.md
+        # and the counted README quotes in place.  If any of them changed
+        # here, the committed copies were stale.  site-data/site.json is
+        # excluded on purpose: it carries a build timestamp.
+        run: git diff --exit-code -- docs/FACTS.md docs/SOURCE-REGISTRY.md README.md
       - name: Render the site against the fresh payload (node smoke test)
         # Catches a broken view / undefined helper before a deploy does.
         run: node scripts/site-smoke.mjs
       - name: Run test suite (offline - committed fixtures only)
-        run: python -m pytest -v
+        # tee + annotations, so a red test is readable from the checks API
+        # even when the raw job log is not downloadable.
+        run: |
+          set -o pipefail
+          python -m pytest -q 2>&1 | tee /tmp/pytest.log || {
+            grep -E "^(FAILED|ERROR)" /tmp/pytest.log | head -25 | \
+              while IFS= read -r line; do
+                echo "::error title=pytest::$line"
+              done
+            exit 1
+          }

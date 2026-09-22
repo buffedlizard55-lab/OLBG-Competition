@@ -710,19 +710,16 @@ def main(argv: List[str] = None) -> int:
                 return 1
             print("docs/FACTS.md and docs/SOURCE-REGISTRY.md are current")
             return 0
-        facts = write_facts()
+        facts = write_facts(sync_readme=True)
         payload = write_register()
-        if args.sync_readme:
-            count = facts["tests"]["count"]
-            readme = os.path.join(ROOT, "README.md")
-            with open(readme, "r", encoding="utf-8") as fh:
-                text = fh.read()
-            synced = re.sub(r"\b\d+ test functions\b",
-                            f"{count} test functions", text)
-            if synced != text:
-                with open(readme, "w", encoding="utf-8") as fh:
-                    fh.write(synced)
-                print(f"synced README.md to the counted {count} test functions")
+        # The generated fact sheet owns the counted quotes in README.md, so
+        # this command rewrites them; a plain `run-pipeline` does not, which
+        # is what lets CI prove with a git diff that the committed prose was
+        # already current.
+        for change in facts.get("readme_synced", []):
+            print(f"synced README.md: {change}")
+        if args.sync_readme and not facts.get("readme_synced"):
+            print("README.md already quotes the generated numbers")
         print(f"wrote {os.path.relpath(FACTS_PATH, ROOT)} "
               f"({len(facts['desks'])} desks, "
               f"{facts['anomalies']['open']} open anomalies, "

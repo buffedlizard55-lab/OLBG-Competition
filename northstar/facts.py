@@ -28,6 +28,8 @@ from . import models
 from .sources import sport_source_payload
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+README_PATH = os.path.join(ROOT, "README.md")
+FIXTURES_DIR = os.path.join(ROOT, "data", "fixtures")
 FACTS_PATH = os.path.join(ROOT, "docs", "FACTS.md")
 SITE_PATH = os.path.join(ROOT, "site-data", "site.json")
 TESTS_DIR = os.path.join(ROOT, "tests")
@@ -63,6 +65,34 @@ def count_source_lines(root: str = ROOT) -> Dict[str, int]:
                         lines += sum(1 for _ in fh)
         out[module] = lines
     return out
+
+
+def fixtures_digest(fixtures_dir: str = FIXTURES_DIR) -> Dict[str, Any]:
+    """Aggregate digest of the committed fixture sidecars.
+
+    The sheet must be reproducible: a wall-clock timestamp or the payload's
+    own build time would make every regeneration look like drift.  What
+    actually identifies the evidence base is the set of hash-verified
+    fixture payloads, so that is what gets printed - it changes exactly when
+    the captured data changes, which is exactly when the sheet must be
+    regenerated (the capture workflow does so and commits it).
+    """
+    rows = []
+    for dirpath, _dirs, files in os.walk(fixtures_dir):
+        for name in sorted(files):
+            if not name.endswith(".meta.json"):
+                continue
+            with open(os.path.join(dirpath, name), "r",
+                      encoding="utf-8") as fh:
+                meta = json.load(fh)
+            fixture = meta.get("fixture", name[:-len(".meta.json")])
+            rows.append([os.path.relpath(os.path.join(dirpath, fixture),
+                                         ROOT),
+                         meta.get("sha256")])
+    rows.sort()
+    digest = hashlib.sha256(
+        json.dumps(rows, separators=(",", ":")).encode("utf-8")).hexdigest()
+    return {"count": len(rows), "sha256": digest}
 
 
 def site_json_sha256(path: str = SITE_PATH) -> Optional[str]:
@@ -131,6 +161,7 @@ def build_facts(site: Dict[str, Any],
         "version": FACTS_VERSION,
         "built_utc": meta.get("built_utc"),
         "site_json_sha256": site_json_sha256(),
+        "fixtures": fixtures_digest(),
         "meta": meta,
         "anomalies": {"open": len([r for r in queue
                                    if r.get("status") == "open"]),
@@ -172,6 +203,80 @@ def build_facts(site: Dict[str, Any],
     }
 
 
+# ---------------------------------------------------------------------------
+# README number sync
+#
+# README.md is prose, but a handful of its numbers are *counts* that move
+# whenever the pipeline does (test functions, open anomalies, issued forward
+# calls, graded desks).  Typing them by hand is how documentation drifts, so
+# the same generated fact sheet that backs docs/FACTS.md also rewrites those
+# quotes in place.  `facts --check` (CI) fails when a quote is stale, so a
+# hand-edit can never survive.
+# ---------------------------------------------------------------------------
+
+def _readme_rules(facts: Dict[str, Any]):
+    """(pattern, replacement) pairs - every number comes from the payload."""
+    issued = facts["forward"]["issued"]
+    return [
+        (re.compile(r"\b\d+ test functions\b"),
+         f"{facts['tests']['count']} test functions"),
+        # Deliberately narrow: only the repo-wide claim is a generated
+        # number.  Sentences about a *specific* pilot's anomaly count stay
+        # as written - a broad regex would rewrite history (learned the
+        # hard way: "0 open anomalies on the pilot itself" must not become
+        # the repo-wide total).
+        (re.compile(r"\*\*\d+ open anomalies\*\*"),
+         f"**{facts['anomalies']['open']} open anomalies**"),
+        (re.compile(r"\b\d+ open anomalies repo-wide\b"),
+         f"{facts['anomalies']['open']} open anomalies repo-wide"),
+        (re.compile(r"\b\d+ graded desks\b"),
+         f"{len(facts['desks'])} graded desks"),
+        (re.compile(r"\b\d+ (frozen|live) calls\b"),
+         lambda m: f"{issued} {m.group(1)} calls"),
+    ]
+
+
+def sync_readme_numbers(facts: Dict[str, Any],
+                        path: str = README_PATH) -> List[str]:
+    """Rewrite the counted quotes in README.md; return what changed."""
+    if not os.path.exists(path):
+        return []
+    with open(path, "r", encoding="utf-8", newline="") as fh:
+        text = fh.read()
+    updated = text
+    for pattern, replacement in _readme_rules(facts):
+        updated = pattern.sub(replacement, updated)
+    if updated == text:
+        return []
+    changes = []
+    for old, new in zip(text.splitlines(), updated.splitlines()):
+        if old != new:
+            changes.append(f"{old.strip()!r} -> {new.strip()!r}")
+    with open(path, "w", encoding="utf-8", newline="") as fh:
+        fh.write(updated)
+    return changes
+
+
+def readme_drift(facts: Dict[str, Any],
+                 path: str = README_PATH) -> Optional[str]:
+    """Return None when README quotes the payload's numbers, else a note."""
+    if not os.path.exists(path):
+        return None
+    with open(path, "r", encoding="utf-8", newline="") as fh:
+        text = fh.read()
+    updated = text
+    for pattern, replacement in _readme_rules(facts):
+        updated = pattern.sub(replacement, updated)
+    if updated == text:
+        return None
+    for old, new in zip(text.splitlines(), updated.splitlines()):
+        if old != new:
+            return (f"README.md quotes a stale number:\n"
+                    f"  file:     {old.strip()}\n  expected: {new.strip()}")
+    return ("README.md quotes stale counted numbers - run "
+            "`python -m northstar.cli facts`")
+
+
 def render_facts_md(facts: Dict[str, Any]) -> str:
     """Deterministic markdown rendering (byte-comparable)."""
     lines: List[str] = []
@@ -183,9 +288,14 @@ def render_facts_md(facts: Dict[str, Any]) -> str:
         "`tests/test_facts.py` fails when this file is stale, which is what "
         "stops prose numbers from drifting away from the data.")
     add("")
-    add(f"- **Built (UTC):** {_fmt(facts['built_utc'])}")
-    add(f"- **`site-data/site.json` sha256 (canonical JSON): "
-        f"`{_fmt(facts['site_json_sha256'])}`**")
+    fx = facts["fixtures"]
+    add(f"- **Fixtures:** {fx['count']} hash-verified payloads, aggregate "
+        f"sha256 `{fx['sha256']}` (computed from the committed sidecars; "
+        "reproducible, so a diff here always means the evidence changed)")
+    add("")
+    add("Nothing above is a clock reading: the sheet is a pure function of "
+        "the committed fixture hashes and the payload built from them, so a "
+        "diff always means the evidence changed (never that time passed).")
     add(f"- **{facts['tests']['count']}** test functions are counted from "
         "the test sources (never remembered); pytest additionally expands "
         "parametrised cases.")
@@ -278,12 +388,22 @@ def render_facts_md(facts: Dict[str, Any]) -> str:
 
 
 def write_facts(path: str = FACTS_PATH,
-                site_path: str = SITE_PATH) -> Dict[str, Any]:
+                site_path: str = SITE_PATH,
+                sync_readme: bool = False) -> Dict[str, Any]:
+    """Regenerate docs/FACTS.md.
+
+    ``sync_readme`` is deliberately opt-in: a plain pipeline run must leave
+    README.md untouched so CI can prove (with a git diff) that the committed
+    prose already quotes the generated numbers.  The capture workflow, which
+    commits its own refresh, passes ``sync_readme=True``.
+    """
     with open(site_path, "r", encoding="utf-8") as fh:
         site = json.load(fh)
     facts = build_facts(site)
     with open(path, "w", encoding="utf-8") as fh:
         fh.write(render_facts_md(facts))
+    facts["readme_synced"] = (sync_readme_numbers(facts)
+                              if sync_readme else [])
     return facts
 
 
@@ -292,7 +412,11 @@ def facts_are_current(path: str = FACTS_PATH,
     """Return None when current, else a one-line description of the drift."""
     with open(site_path, "r", encoding="utf-8") as fh:
         site = json.load(fh)
-    expected = render_facts_md(build_facts(site))
+    facts = build_facts(site)
+    drift = readme_drift(facts)
+    if drift:
+        return drift
+    expected = render_facts_md(facts)
     if not os.path.exists(path):
         return (f"{os.path.relpath(path, ROOT)} is missing - run "
                 f"`python -m northstar.cli facts`")
