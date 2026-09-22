@@ -51,10 +51,10 @@ are checked.
 >   blocked by the source's own robots.txt** (BoxRec boxing). A robots.txt
 >   verdict is not a licence, a missing robots.txt is not permission, and
 >   the gate is computed in code — it cannot be promoted by editing prose.
-> * **Forward test is LIVE**: 263 frozen calls across 7 hockey desks,
+> * **Forward test is LIVE**: 284 frozen calls across 7 hockey desks,
 >   issued before kick-off, each freezing its desk's outcome mode; 0
 >   graded, 0 overdue, 0 time-leak violations.
-> * **152 open anomalies** are flagged, never smoothed
+> * **153 open anomalies** are flagged, never smoothed
 >   (`RESULT_KIND_INCONSISTENT` 98, `SOURCE_EDITED` 48, `TIME_CONFLICT`
 >   5, `MISSING_METADATA` 1).
 > * **433 test functions** (`docs/FACTS.md` counts them from source;
@@ -177,7 +177,7 @@ are checked.
   + a capture log, and re-runs the pipeline. The forward desk freezes
   predictions **at capture time** into the append-only
   `data/forward/ledger.json` (10-day issue horizon, start−30min cutoffs,
-  leakage guards, idempotent issuance) — currently **263 live calls across
+  leakage guards, idempotent issuance) — currently **284 live calls across
   seven hockey desks** (see `docs/FACTS.md` for the per-desk split);
   protocol:
   [`docs/FORWARD-TEST.md`](docs/FORWARD-TEST.md). A second workflow
@@ -258,9 +258,9 @@ Pages; external source links open in a new tab for manual review.
 | Identity | **verified** (27/27 dual-source agreement vs football-data) | `probable` (single source; no independent DEL cross-check) | `probable` (single source; audit in `docs/DARTS-AUDIT.md`) |
 | Odds path | football-data.co.uk manual pilot; The Odds API connector inactive | **none verified** → prediction-only | **none** → prediction-only |
 | Engine output | 829 odds snapshots (405 1X2 + 208 O/U 2.5 + 216 AH) · 13 PnL desks · real settled PnL | **7 prediction-only desks** on the whole season (428 events): Elo **243 calls, 66.3%, Brier 0.446**; always-home baseline **323, 59.8%**; regulation 3-way Poisson **64.7%** vs regulation-home **59.4%**; **new** margin-of-victory Elo **255, 65.5%, Brier 0.454** (does not beat plain Elo); **new** totals O/U 5.5 Poisson **52.3%, Brier 0.515** (below the always-over baseline's **53.6%**) · **PnL unavailable (not zero)** | 3 desks: Elo **48 calls, 81.25%, Brier 0.349** · **new** margin-of-victory Elo **111, 78.4%, Brier 0.358** · listed-first baseline **421, 66.3%** · **PnL unavailable (not zero)** |
-| Regularity | 0 open anomalies on the pilot itself; 1 flagged on the pl/2026 capture (duplicate conflicting result rows, matchID 86559) | **106 flagged source rows** reported by the pipeline (impossible OT/regulation layering + rows-vs-goal-list disagreements, e.g. matchID 76236 — `docs/HOCKEY-SCHEMA-AUDIT.md`); the current per-kind totals are in `docs/FACTS.md` (152 open anomalies repo-wide) | **2 flagged** (conflicting duplicate results, matchIDs 79962 + 80237) + 1 abandoned duplicate league excluded |
+| Regularity | 0 open anomalies on the pilot itself; 1 flagged on the pl/2026 capture (duplicate conflicting result rows, matchID 86559) | **106 flagged source rows** reported by the pipeline (impossible OT/regulation layering + rows-vs-goal-list disagreements, e.g. matchID 76236 — `docs/HOCKEY-SCHEMA-AUDIT.md`); the current per-kind totals are in `docs/FACTS.md` (153 open anomalies repo-wide) | **2 flagged** (conflicting duplicate results, matchIDs 79962 + 80237) + 1 abandoned duplicate league excluded |
 | Backtest | twelve of thirteen PnL desks negative; `ah-poisson-value-v1` **+9.8 u (ROI +44.7%) but Holm-adjusted p = 0.0715 — not significant** (family m=13); `dixon-coles-v1` +5.0 u / p_raw 0.475 also not significant; no edge claimed | no odds → no PnL by construction; Elo does **not** beat the home baseline on this sample; the regulation Poisson desk is below its own home baseline (full season is the pre-registered verdict) | no odds → no PnL by construction; Elo **does** beat the listed-first baseline (81.25% vs 66.3%) |
-| Forward desk | dormant by design across bl1/pl/bl2/la1 (international break; next kick-offs 2026-10-09/10, outside the 10-day horizon); pool already warmed by the whole 2024/25 bl1 season, now also graded on it | **LIVE: 7 desks, 263 frozen calls on DEL Sep 2026 fixtures** (2-way Elo + MoV Elo + home baseline; regulation 3-way Poisson + regulation home; totals 5.5 Poisson + always-over), each freezing its outcome mode | both darts desks (Elo + MoV Elo) activate when an event enters the 10-day horizon (next World Championship, Dec 2026); the WSDF final was met in play and went to the review queue |
+| Forward desk | dormant by design across bl1/pl/bl2/la1 (international break; next kick-offs 2026-10-09/10, outside the 10-day horizon); pool already warmed by the whole 2024/25 bl1 season, now also graded on it | **LIVE: 7 desks, 284 frozen calls on DEL Sep 2026 fixtures** (2-way Elo + MoV Elo + home baseline; regulation 3-way Poisson + regulation home; totals 5.5 Poisson + always-over), each freezing its outcome mode | both darts desks (Elo + MoV Elo) activate when an event enters the 10-day horizon (next World Championship, Dec 2026); the WSDF final was met in play and went to the review queue |
 
 Anchors: 72214 M'gladbach 2-3 Leverkusen (23/08/24, B365 5.25/4.5/1.55);
 72300 Mainz 3-1 Dortmund (09/11/24, 3.5/3.6/2.0); 72387 Bayern 4-3 Kiel
@@ -387,7 +387,7 @@ scripts/assemble_fixture.py     strict chunk-assembly + validation used to
 Generated, prioritised list with every open item: [`docs/STATUS.md`](docs/STATUS.md).
 Top five:
 
-1. **Let the forward test grade.** The ledger holds 263 frozen calls
+1. **Let the forward test grade.** The ledger holds 284 frozen calls
    (0 graded). When DEL results land, per-desk accuracy/Brier appears
    automatically; the totals and regulation desks have never been graded
    live before, so their first graded rows are the real out-of-sample test

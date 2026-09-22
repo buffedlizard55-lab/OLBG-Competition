@@ -2,7 +2,7 @@
 
 Written by `python -m northstar.cli run-pipeline` / `facts` (nr-facts-2026-09-22.1) from the pipeline payload. `tests/test_facts.py` fails when this file is stale, which is what stops prose numbers from drifting away from the data.
 
-- **Fixtures:** 17 hash-verified payloads, aggregate sha256 `7876be5c4b42ac94292254fcfec648301c0c673bba399d5d1ed21ebacd0a8f7a` (computed from the committed sidecars; reproducible, so a diff here always means the evidence changed)
+- **Fixtures:** 17 hash-verified payloads, aggregate sha256 `2dfbb756c66a771d2cb4a47797bdb02b8343165ba6911f893dd942cc2e68b9af` (computed from the committed sidecars; reproducible, so a diff here always means the evidence changed)
 
 Nothing above is a clock reading: the sheet is a pure function of the committed fixture hashes and the payload built from them, so a diff always means the evidence changed (never that time passed).
 - **433** test functions are counted from the test sources (never remembered); pytest additionally expands parametrised cases.
@@ -36,10 +36,10 @@ Nothing above is a clock reading: the sheet is a pure function of the committed 
 
 ## Anomalies (flagged, never smoothed)
 
-**152 open anomalies** in the review queue:
+**153 open anomalies** in the review queue:
 
 - `MISSING_METADATA`: 1
-- `RESULT_KIND_INCONSISTENT`: 98
+- `RESULT_KIND_INCONSISTENT`: 99
 - `SOURCE_EDITED`: 48
 - `TIME_CONFLICT`: 5
 
@@ -77,20 +77,20 @@ Nothing above is a clock reading: the sheet is a pure function of the committed 
 
 ## Forward test (append-only ledger, state: live)
 
-- issued 263 frozen pre-kickoff calls (263 awaiting a result)
+- issued 284 frozen pre-kickoff calls (284 awaiting a result)
 - graded 0; overdue (started, ungraded) 0
 - leak violations: 0
 - next kick-off: 2026-09-22T17:30:00Z
 
 | forward desk | issued |
 |---|---|
-| `hockey-elo-mov-v1` | 32 |
-| `hockey-elo-v1` | 33 |
-| `hockey-home-v1` | 40 |
-| `hockey-reg-home-v1` | 40 |
-| `hockey-reg-poisson-v1` | 40 |
-| `hockey-totals-over-v1` | 39 |
-| `hockey-totals-poisson-v1` | 39 |
+| `hockey-elo-mov-v1` | 35 |
+| `hockey-elo-v1` | 36 |
+| `hockey-home-v1` | 43 |
+| `hockey-reg-home-v1` | 43 |
+| `hockey-reg-poisson-v1` | 43 |
+| `hockey-totals-over-v1` | 42 |
+| `hockey-totals-poisson-v1` | 42 |
 
 ## Sport source registry (all 21 OLBG families)
 

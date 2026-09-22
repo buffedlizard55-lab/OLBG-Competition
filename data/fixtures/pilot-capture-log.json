@@ -1,7 +1,7 @@
 {
   "errors": [],
-  "finished_utc": "2026-09-22T17:29:52Z",
-  "started_utc": "2026-09-22T17:29:52Z",
+  "finished_utc": "2026-09-22T23:20:40Z",
+  "started_utc": "2026-09-22T23:20:40Z",
   "targets": [
     {
       "fixture": "/home/runner/work/OLBG-Competition/OLBG-Competition/data/fixtures/openligadb_del_2024.json",
