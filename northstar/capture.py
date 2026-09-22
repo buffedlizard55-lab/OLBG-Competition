@@ -48,9 +48,20 @@ from .models import parse_utc
 #        NOT used.
 #   bl2  2. Bundesliga 2026/27 (leagueId 4938)   probed 2026-09-20: clean
 #   la1  LaLiga 2026/27 (leagueId 4936)          probed 2026-09-20: clean
-# DEL2 (5962) was probed too and is deliberately NOT listed: its period
-# rows are labelled HalfTime/After90Minutes with scores that do not match
-# the goal list, so a schema audit + tests must land first (docs/STATUS).
+#   DEL2 (leagueId 5962) + CHL (leagueId 4951), added 2026-09-22 after
+#        the period-row schema audit (docs/HOCKEY-SCHEMA-AUDIT.md, probe
+#        slices data/fixtures/openligadb_del2_2026_sd1.json /
+#        openligadb_chl_2026_sd1.json): both carry hockey period rows
+#        named 1./2./3.Drittel under the football-era resultTypeKind
+#        labels HalfTime/HalfTime/After90Minutes.  CHL md1 is internally
+#        consistent (12/12 rows agree with the goal lists, correct OT
+#        layering); DEL2 md1 is NOT - 5/7 matches have rows that disagree
+#        with the goal list and 1 more has impossible OT layering, so the
+#        new goals-vs-results anomaly rule quarantines them for review.
+#        Capture is storage-first: the rows are committed and flagged,
+#        never silently trusted.  Community duplicate hockey leagues
+#        "1. DEL"/"2. DEL" (leagueId 4790/4791, shortcuts with spaces)
+#        are NOT used - del/2024 (4827) is the pilot league.
 # Darts targets come from discovery (below).
 CURRENT_TARGETS: List[Tuple[str, int, str]] = [
     ("bl1", 2026, "football"),
@@ -58,6 +69,8 @@ CURRENT_TARGETS: List[Tuple[str, int, str]] = [
     ("bl2", 2026, "football"),
     ("la1", 2026, "football"),
     ("del", 2026, "ice_hockey"),
+    ("DEL2", 2026, "ice_hockey"),
+    ("CHL", 2026, "ice_hockey"),
 ]
 
 # Keys dropped from every team object before a fixture is stored.  They

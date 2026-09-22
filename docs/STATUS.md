@@ -1,6 +1,26 @@
 # Status, limitations & remaining work
 
-**Updated 2026-09-22 (fourth-strategy-family + whole-season + history warm-up pass).**
+**Updated 2026-09-22 (hockey schema audit + exact-CET + baseline-flag pass).**
+Changes in this pass: the DEL2/CHL period-row schema audit
+(`docs/HOCKEY-SCHEMA-AUDIT.md`; both probe slices committed and
+fixture-verified) produced the `goals_vs_results` rule — a
+goal-list-vs-rows cross-check whose goal-list final is the running-score
+**maximum** (goal rows arrive out of chronological order) — plus
+`inconsistency_reason` and goal-list evidence on every
+`RESULT_KIND_INCONSISTENT` flag (review queue 140 → **141 open**,
+including the new del/2024 matchID 76236 rows-vs-goal-list finding);
+`cet_local_to_utc` settles the CET/CEST timestamp question (the DARTS-AUDIT
+§3.2 proof case): `retrieved_at_utc` **and football availability** now use
+the exact `lastUpdateDateTime` instant (previously the stamp was parsed as
+UTC and released results 1–2 h late), and the entry-lag bounds behind the
+`start+3h`/`start+12h` hockey/darts constructions are restated on exact
+stamps; `CURRENT_TARGETS` grows DEL2 + CHL (2026, audited shortcuts); and
+every accuracy card on the site gains the "beats its naive baseline?" flag
+(`NAIVE_BASELINE_FOR` + `naive_baseline_comparison` — point estimates on
+their own graded pools, never evidence of skill). Test count 423.
+
+**Prior pass (2026-09-22, fourth-strategy-family + whole-season + history
+warm-up).**
 Changes in this pass: two football desks — the **Dixon-Coles 1X2 value
 desk** (`dixon-coles-v1`, +5.01 u / ROI +38.5% on 13 bets, p_raw 0.475,
 *not* significant; the low-score draw correction is a pre-registered R8
@@ -19,7 +39,7 @@ baseline. The pilot data is widening: `capture-pilot` commits the **whole
 the bl1 season warms the forward Elo pool as cross-season history (leak-
 audited, refused loudly on any data bug), and the hockey desks re-grade on
 the full season automatically. Forward ledger now carries the per-call
-outcome mode and **63 frozen DEL calls**. Test count 383.
+outcome mode and **63 frozen DEL calls**. (Test count then: 383.)
 
 **Prior pass (2026-09-22):** the Asian handicap became the third
 settleable football market (settlement rule written and tested, all 52
@@ -101,9 +121,13 @@ Licensing claims were re-fetched and re-confirmed verbatim (see the
   tests, and **Holm step-down correction** (Holm 1979) across the PnL
   family (m=13 since 2026-09-22: 9 × 1X2 + 2 × O/U 2.5 + 2 × AH). Applied in
   the pipeline and rendered per-card on the site.
-- **Real source irregularities surfaced, not smoothed**: 13 open anomalies
-  in the review queue — 4 DEL matches with impossible result layering, 1
-  DEL match with `leagueSeason: null` (normalized + flagged), 2 darts
+- **Real source irregularities surfaced, not smoothed**: 141 open anomalies
+  in the review queue — 83 DEL matches with impossible result layering
+  (del/2024 rows whose regulation score is marked decisive while an
+  overtime/shootout row exists), 1 DEL match whose period rows disagree
+  with its goal list (del/2024 matchID 76236; quarantined by the new
+  `goals_vs_results` rule — docs/HOCKEY-SCHEMA-AUDIT.md), 3
+  duplicate-conflict events: 2 darts
   matches (PDCPCF 2025 matchID 79962, Price v Littler; PDCWM 2026 matchID
   80237, Littler v Ratajski) with **conflicting duplicate result entries**
   (one real score + stale 0-0 duplicates; found by the 2026-09-20 darts
@@ -112,11 +136,17 @@ Licensing claims were re-fetched and re-confirmed verbatim (see the
   carrying the same defect: five duplicate `HalfTime 0-0` rows plus three
   `After90Minutes` rows (1-2, 0-0, 0-0); the ingest kept 1-2 as the
   candidate but refuses to grade or rate on it until reviewed
-  (<https://api.openligadb.de/getmatchdata/pl/2026/86559>). Flagged events are excluded from rating
+  (<https://api.openligadb.de/getmatchdata/pl/2026/86559>) — its goal list
+  (1-1) now documents which duplicate the goals support, appended to the
+  flag detail, 1 DEL match with `leagueSeason: null` (normalized +
+  flagged), 48 `SOURCE_EDITED` rows whose source copy changed on re-fetch
+  (the queue owns every diff; history is append-only), and 5 OLBG
+  `TIME_CONFLICT` kickoff offsets (below).
+  Flagged events are excluded from rating
   updates and from grading until a human resolves them — a silent
   first-entry read would launder disputed rows into the model.
-- **OLBG snapshot kickoffs were wrong by 5 h (found 2026-09-21, now 13 open
-  anomalies).** A new reconciliation step (`northstar/reconcile.py`, curated
+- **OLBG snapshot kickoffs were wrong by 5 h (found 2026-09-21; the 5
+  `TIME_CONFLICT` rows of the review queue).** A new reconciliation step (`northstar/reconcile.py`, curated
   table `data/aliases/football_olbg.json`, 10 evidence-linked team aliases)
   cross-checks every manually snapshotted OLBG football event against the
   permitted OpenLigaDB fixture list. All 5 matchable cards (Sevilla v
@@ -145,13 +175,17 @@ Licensing claims were re-fetched and re-confirmed verbatim (see the
   review evidence only; no bulk collection permission exists for it, so
   OpenLigaDB remains the sole systematic DEL source and identity stays
   `probable`.
-- **Automated tests: 262 passing** covering the user-specified matrix —
+- **Automated tests: 423 passing** covering the user-specified matrix —
   postponements, voids, duplicate tips, time leakage, disputed results,
   settlement arithmetic — plus adapter parsing of the real fixtures, the
   27/27 cross-check, policy gates, leaderboard math, walk-forward
   invariants, capture discovery (incl. the darts 404 fallback and the
   upcoming-first priority sort), forward-ledger idempotency/horizon/leak
-  tests, and Holm/stats tests. Run: `python -m pytest`.
+  tests, and Holm/stats tests — since 2026-09-22 also the hockey
+  period-row schema rules (`goals_vs_results`, out-of-order goal rows,
+  the DEL2/CHL probe slices), the CET/CEST conversion incl. DST edge
+  cases and full-fixture round-trips, and the naive-baseline comparison.
+  Run: `python -m pytest`.
 
 ### Strategies & results (all details + citations: docs/STRATEGIES.md)
 - **Thirteen football strategies on three markets** on the 27-match pilot.
@@ -250,7 +284,9 @@ Licensing claims were re-fetched and re-confirmed verbatim (see the
   olbg.com; the human follows `docs/OLBG-CAPTURE-RUNBOOK.md`. Since the
   same pass, the site renders the third market (Asian handicap with its
   priced line) and the naive baseline desks alongside every accuracy
-  number.
+  number — since 2026-09-22 each accuracy card also carries a "beats its
+  naive baseline?" flag with the point-estimate caveat (own graded pools;
+  error bars overlap at these sample sizes; never evidence of skill).
 
 ## Hard limitations (do not mistake for bugs)
 
@@ -313,17 +349,23 @@ Licensing claims were re-fetched and re-confirmed verbatim (see the
 10. **Hockey & darts are single-source.** No independent DEL/PDC
     compilation is attached; identity stays `probable`; accuracy metrics
     are explicitly not verified official outcomes.
-11. **Result availability is inferred for hockey and darts — and
-    `lastUpdateDateTime` is German local time, not UTC.** DEL rows carry
+11. **Result availability is inferred for hockey and darts.** DEL rows carry
     end-of-season batch-edit timestamps; darts entry mixes live and
     multi-day batch entry. The audit proved OpenLigaDB's
     `lastUpdateDateTime` carries no timezone and is CET/CEST (a capture at
     20:08:53Z contained a row stamped 22:07:50 — `docs/DARTS-AUDIT.md`
-    §3.2); where the pipeline uses it (football availability,
-    `retrieved_at_utc` on OpenLigaDB rows) the value is treated as UTC,
-    which shifts timestamps 1–2 h *later* — conservative for every
-    leakage-relevant read, never earlier — but the mislabel is a known
-    caveat and a proper CET/CEST conversion utility is backlog work. The
+    §3.2). *Settled 2026-09-22:* `timeutil.cet_local_to_utc` converts the
+    stamps exactly (fold→later reading, gap→later algebraic, aware input
+    passes through) and ingest stores `retrieved_at_utc` on it — previously
+    the value was treated as UTC, shifting timestamps 1–2 h later
+    (conservative for every leakage-relevant read, but lossy). The
+    entry-lag bounds behind the availability inferences are restated on
+    exact stamps in `docs/HOCKEY-SCHEMA-AUDIT.md` §5 (bl1/2024 same-evening
+    entries land ≥1.82 h after kickoff, del/2024 same-evening ≥2.16 h).
+    Football availability is the row's exact `lastUpdateDateTime` instant
+    (`availability_for` converts with `cet_local_to_utc` since 2026-09-22;
+    the stamp used to be parsed as UTC and released results 1–2 h late).
+    The
     adapters release hockey/darts results at start+3h / start+12h —
     *conservative constructions* (a desk cannot know a result before the
     match ends, and +12h covers every observed same-day darts entry),
@@ -418,25 +460,31 @@ Licensing claims were re-fetched and re-confirmed verbatim (see the
    calibration, hockey regulation draw-rate prior — each as a new registry
    hypothesis, never a silent parameter change.
 8. **Timezone utility** ✔ `cet_offset_at_utc` landed 2026-09-21 and every
-   OpenLigaDB row is cross-checked. Still open: restate
-   `retrieved_at_utc`/football availability on exact `lastUpdateDateTime`
-   timestamps (today's treatment is conservatively shifted, see
-   limitation #11).
-9. **DEL2 / CHL hockey extension**: write the period-row schema audit
-   (the del2/2026 probe showed HalfTime/After90 labels with scores that
-   disagree with the goal list), add a FINAL_KIND rule + anomaly tests,
-   then list the shortcuts in `CURRENT_TARGETS`.
+   OpenLigaDB row is cross-checked. ✔ done 2026-09-22 (this pass):
+   `cet_local_to_utc` (CET/CEST, exact) lands in
+   `northstar/timeutil.py` with the fold/gap rules above and is wired into
+   ingest: `retrieved_at_utc` and football availability are both restated
+   on exact `lastUpdateDateTime` stamps (`availability_for` no longer
+   parses the stamp as UTC), and the hockey/darts entry-lag bounds behind
+   `start+3h`/`start+12h` are restated on exact stamps
+   (docs/HOCKEY-SCHEMA-AUDIT.md §5).
+9. **DEL2 / CHL hockey extension** ✔ done 2026-09-22 (this pass): the
+   period-row schema audit is `docs/HOCKEY-SCHEMA-AUDIT.md` (DEL2 vs CHL
+   probe slices committed and fixture-verified), the goal-list-vs-rows
+   `goals_vs_results` rule + anomaly tests land in `parse_matchday`
+   (goal-list final = running-score maximum, goal rows arrive out of
+   order), and `CURRENT_TARGETS` lists `DEL2` + `CHL` (2026).
 10. **Site**: per-tipster sparklines; per-league forward accuracy once the
-    four football desks issue; keep the payload free of raw football-data
-    rows. Candidate next: a per-card "beats its naive baseline?" flag on
-    the accuracy desks (the numbers are already in the payload side by
-    side).
+   four football desks issue; keep the payload free of raw football-data
+   rows. ✔ done 2026-09-22 (this pass): the per-card "beats its naive
+   baseline?" flag on the accuracy desks (`NAIVE_BASELINE_FOR`,
+   `naive_baseline_comparison`) renders with the point-estimate caveat.
 
 ## Reproduce everything
 
 ```bash
 python -m venv .venv && .venv/bin/pip install pytest
-python -m pytest                     # 383 tests, offline
+python -m pytest                     # 423 tests, offline
 python -m northstar.cli run-pipeline --fresh   # rebuild store + site-data/site.json
 python -m northstar.cli verify               # re-check fixture hashes + 27/27
 python -m northstar.cli capture-pilot --out data/fixtures   # fetch+frozen whole-season pilots (network)

@@ -50,6 +50,37 @@ def regulation_outcome(result_row: Dict[str, Any],
     return None
 
 
+def naive_baseline_comparison(desk_eval: Optional[Dict[str, Any]],
+                              baseline_eval: Optional[Dict[str, Any]],
+                              baseline_id: str) -> Optional[Dict[str, Any]]:
+    """Compare an accuracy desk against its naive baseline (site flag).
+
+    Pure point-estimate comparison of hit rates, each on its OWN graded
+    pool (a selective desk grades fewer matches than a no-selectivity
+    baseline - the pools differ and the payload says so).  Returns None
+    when either side has nothing graded: no number beats nothing, and the
+    site renders no flag instead of inventing a comparison.  ``beats``
+    is strictly-greater hit rate on this sample - never a significance
+    claim; the caller's wording must keep the error-bar caveat.
+    """
+    if not desk_eval or not baseline_eval:
+        return None
+    da = desk_eval.get("accuracy")
+    ba = baseline_eval.get("accuracy")
+    dn = desk_eval.get("n_graded") or 0
+    bn = baseline_eval.get("n_graded") or 0
+    if da is None or ba is None or not dn or not bn:
+        return None
+    return {
+        "strategy_id": baseline_id,
+        "desk_accuracy": da,
+        "desk_n_graded": dn,
+        "accuracy": ba,
+        "n_graded": bn,
+        "beats_baseline": da > ba,
+    }
+
+
 def brier_three(probs: Dict[str, float], actual: str) -> float:
     if actual not in OUTCOMES:
         raise ValueError(f"unknown outcome {actual}")

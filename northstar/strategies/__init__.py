@@ -80,6 +80,17 @@ HOCKEY_STRATEGIES = [
 ]
 DARTS_STRATEGIES = ["darts-elo-v1", "darts-listed-first-v1"]
 
+# Which naive baseline each accuracy desk must be quoted against (site
+# "beats its naive baseline?" flag; cli attaches the comparison to the
+# backtest card).  A model desk without its baseline in the payload is a
+# wiring bug, not a missing number - the site renders no flag rather than
+# comparing against nothing.
+NAIVE_BASELINE_FOR = {
+    "hockey-elo-v1": "hockey-home-v1",
+    "hockey-reg-poisson-v1": "hockey-reg-home-v1",
+    "darts-elo-v1": "darts-listed-first-v1",
+}
+
 # Strategies whose source path lacks permissioned odds: run prediction-only.
 PREDICTION_ONLY_STRATEGIES = HOCKEY_STRATEGIES + DARTS_STRATEGIES
 
@@ -111,5 +122,6 @@ __all__ = [
     "HockeyHomeBaseline", "DartsListedFirstBaseline",
     "REGISTRY", "FOOTBALL_STRATEGIES", "HOCKEY_STRATEGIES",
     "DARTS_STRATEGIES", "PREDICTION_ONLY_STRATEGIES", "FORWARD_STRATEGIES",
+    "NAIVE_BASELINE_FOR",
     "build",
 ]

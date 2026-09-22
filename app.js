@@ -350,10 +350,14 @@ function renderStrategies() {
         .sort(([a], [b]) => Number(a) - Number(b))
         .map(([md, d]) => `<span class="metric-chip">MD ${md}: ${d.hits}/${d.n} (${fmtPct(d.accuracy)})</span>`)
         .join(" ");
+      const nb = t.naive_baseline;
+      const baselineLine = nb ? `
+        <span><strong>Beats its naive baseline?</strong> · ${nb.beats_baseline ? "<em>yes</em>" : "<em>no</em>"} on this sample — desk ${fmtPct(nb.desk_accuracy)} (${nb.desk_n_graded} graded) vs <strong>${escapeHtml(nb.strategy_id)}</strong> ${fmtPct(nb.accuracy)} (${nb.n_graded} graded). Point estimates on their own graded pools; error bars overlap at these sample sizes — never evidence of skill.</span>` : "";
       metaHtml = `
         <span><strong>Predictions</strong> · ${t.predictions} placed · ${acc.n_graded ?? 0} graded · ${t.skipped} skipped</span>
         <span><strong>Accuracy</strong> · ${acc.hits ?? "—"}/${acc.n_graded ?? "—"} = ${fmtPct(acc.accuracy)} · <strong>Mean Brier</strong> · ${acc.mean_brier ?? "—"}</span>
         <span><strong>PnL</strong> · <em>unavailable</em> — no permissioned odds path for this sport (not zero, not a loss)</span>
+        ${baselineLine}
         ${matchdays ? `<span class="metric-chips">${matchdays}</span>` : ""}`;
     } else {
       const ci = t.profit_ci95

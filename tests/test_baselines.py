@@ -137,3 +137,83 @@ def _hours_before(dt, hours):
 def _tbs():
     from northstar.backtest import TimeBoundedStore
     return TimeBoundedStore()
+
+
+class TestNaiveBaselineComparison:
+    """The per-card "beats its naive baseline?" flag (pure comparison)."""
+
+    def test_above_baseline(self):
+        from northstar.evaluation import naive_baseline_comparison
+        out = naive_baseline_comparison(
+            {"accuracy": 0.8125, "n_graded": 48},
+            {"accuracy": 0.6627, "n_graded": 421},
+            "darts-listed-first-v1")
+        assert out["beats_baseline"] is True
+        assert out["strategy_id"] == "darts-listed-first-v1"
+        assert out["desk_accuracy"] == 0.8125
+        assert out["desk_n_graded"] == 48
+        assert out["accuracy"] == 0.6627
+        assert out["n_graded"] == 421
+
+    def test_below_baseline(self):
+        from northstar.evaluation import naive_baseline_comparison
+        out = naive_baseline_comparison(
+            {"accuracy": 0.471, "n_graded": 17},
+            {"accuracy": 0.647, "n_graded": 17},
+            "hockey-reg-home-v1")
+        assert out["beats_baseline"] is False
+
+    def test_equal_is_not_a_win(self):
+        from northstar.evaluation import naive_baseline_comparison
+        out = naive_baseline_comparison(
+            {"accuracy": 0.6, "n_graded": 5},
+            {"accuracy": 0.6, "n_graded": 5},
+            "b")
+        assert out["beats_baseline"] is False
+
+    @pytest.mark.parametrize("desk,base", [
+        (None, {"accuracy": 0.6, "n_graded": 5}),
+        ({"accuracy": 0.6, "n_graded": 5}, None),
+        ({"accuracy": None, "n_graded": 0},
+         {"accuracy": 0.6, "n_graded": 5}),
+        ({"accuracy": 0.6, "n_graded": 5},
+         {"accuracy": 0.6, "n_graded": 0}),
+        ({}, {}),
+    ])
+    def test_missing_sides_render_no_flag(self, desk, base):
+        from northstar.evaluation import naive_baseline_comparison
+        assert naive_baseline_comparison(desk, base, "b") is None
+
+
+class TestNaiveBaselineWiring:
+    def test_every_model_desk_paired_with_a_registered_baseline(self):
+        from northstar.strategies import (
+            NAIVE_BASELINE_FOR, PREDICTION_ONLY_STRATEGIES, REGISTRY,
+        )
+        assert set(NAIVE_BASELINE_FOR) == {
+            "hockey-elo-v1", "hockey-reg-poisson-v1", "darts-elo-v1"}
+        for sid, baseline_id in NAIVE_BASELINE_FOR.items():
+            assert sid in REGISTRY and baseline_id in REGISTRY
+            assert sid in PREDICTION_ONLY_STRATEGIES
+            assert baseline_id in PREDICTION_ONLY_STRATEGIES
+
+    def test_committed_site_payload_carries_the_flag(self):
+        """The shipped site.json must already carry the comparison (the
+        pipeline attaches it before every deploy)."""
+        import json, os
+        root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        site = json.load(open(os.path.join(root, "site-data", "site.json"),
+                              encoding="utf-8"))
+        bt = site.get("backtest") or {}
+        expect = {"hockey-elo-v1": "hockey-home-v1",
+                  "hockey-reg-poisson-v1": "hockey-reg-home-v1",
+                  "darts-elo-v1": "darts-listed-first-v1"}
+        for sid, baseline_id in expect.items():
+            nb = (bt.get(sid) or {}).get("naive_baseline")
+            assert nb, f"{sid} must carry its naive baseline comparison"
+            assert nb["strategy_id"] == baseline_id
+            assert nb["accuracy"] is not None and nb["n_graded"] > 0
+            assert nb["desk_accuracy"] is not None and nb["desk_n_graded"] > 0
+            assert isinstance(nb["beats_baseline"], bool)
+        # PnL strategies never carry an accuracy-baseline flag:
+        assert "naive_baseline" not in (bt.get("ah-poisson-value-v1") or {})
