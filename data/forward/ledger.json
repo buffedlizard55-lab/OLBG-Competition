@@ -2574,6 +2574,3732 @@
       "start_utc": "2026-10-01T17:30:00Z",
       "strategy_id": "hockey-reg-home-v1",
       "strategy_name": "Regulation home naive baseline (hockey)"
+    },
+    {
+      "away_team": "Blue Devils Weiden",
+      "competition": "DEL2 Hauptrunde",
+      "cutoff_utc": "2026-09-22T17:30:06Z",
+      "event": "Bietigheim Steelers v Blue Devils Weiden",
+      "event_id": "ev-23ab06d1a2da26be2e9c",
+      "group_name": "3. Spieltag",
+      "group_order": 3,
+      "home_team": "Bietigheim Steelers",
+      "issued_at_utc": "2026-09-22T17:30:06Z",
+      "label": "DEL2-2026",
+      "market": "match_winner_2way",
+      "model": {
+        "decision_lag": "start-30min",
+        "model_prob": {
+          "away": 0.44980064674646303,
+          "draw": 0.0,
+          "home": 0.550199353253537
+        },
+        "odds": "none (no permissioned odds path)",
+        "ratings": {
+          "away": 1500.0,
+          "home": 1500.0
+        }
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "final",
+      "prediction_id": "fwd-378c102a045d6eb3038e",
+      "selection": "Bietigheim Steelers",
+      "selection_key": "home",
+      "source_event_id": "84093",
+      "source_url": "https://api.openligadb.de/getmatchdata/DEL2/2026/84093",
+      "sport": "ice_hockey",
+      "start_utc": "2026-09-25T17:30:00Z",
+      "strategy_id": "hockey-elo-v1",
+      "strategy_name": "Hockey Elo favourite (no-market pilot)"
+    },
+    {
+      "away_team": "Eisbären Regensburg",
+      "competition": "DEL2 Hauptrunde",
+      "cutoff_utc": "2026-09-22T17:30:06Z",
+      "event": "EC Bad Nauheim v Eisbären Regensburg",
+      "event_id": "ev-2f05f34ea327a9d1fe95",
+      "group_name": "3. Spieltag",
+      "group_order": 3,
+      "home_team": "EC Bad Nauheim",
+      "issued_at_utc": "2026-09-22T17:30:06Z",
+      "label": "DEL2-2026",
+      "market": "match_winner_2way",
+      "model": {
+        "decision_lag": "start-30min",
+        "model_prob": {
+          "away": 0.42939191856416237,
+          "draw": 0.0,
+          "home": 0.5706080814358376
+        },
+        "odds": "none (no permissioned odds path)",
+        "ratings": {
+          "away": 1485.6063793041133,
+          "home": 1500.0
+        }
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "final",
+      "prediction_id": "fwd-c38390c3b42295c05b94",
+      "selection": "EC Bad Nauheim",
+      "selection_key": "home",
+      "source_event_id": "84094",
+      "source_url": "https://api.openligadb.de/getmatchdata/DEL2/2026/84094",
+      "sport": "ice_hockey",
+      "start_utc": "2026-09-25T17:30:00Z",
+      "strategy_id": "hockey-elo-v1",
+      "strategy_name": "Hockey Elo favourite (no-market pilot)"
+    },
+    {
+      "away_team": "Lausitzer Füchse",
+      "competition": "DEL2 Hauptrunde",
+      "cutoff_utc": "2026-09-22T17:30:06Z",
+      "event": "EC Kassel Huskies v Lausitzer Füchse",
+      "event_id": "ev-6178274d9a2587af463f",
+      "group_name": "3. Spieltag",
+      "group_order": 3,
+      "home_team": "EC Kassel Huskies",
+      "issued_at_utc": "2026-09-22T17:30:06Z",
+      "label": "DEL2-2026",
+      "market": "match_winner_2way",
+      "model": {
+        "decision_lag": "start-30min",
+        "model_prob": {
+          "away": 0.44980064674646303,
+          "draw": 0.0,
+          "home": 0.550199353253537
+        },
+        "odds": "none (no permissioned odds path)",
+        "ratings": {
+          "away": 1500.0,
+          "home": 1500.0
+        }
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "final",
+      "prediction_id": "fwd-0c5d1b326937d1d4b47e",
+      "selection": "EC Kassel Huskies",
+      "selection_key": "home",
+      "source_event_id": "84097",
+      "source_url": "https://api.openligadb.de/getmatchdata/DEL2/2026/84097",
+      "sport": "ice_hockey",
+      "start_utc": "2026-09-25T17:30:00Z",
+      "strategy_id": "hockey-elo-v1",
+      "strategy_name": "Hockey Elo favourite (no-market pilot)"
+    },
+    {
+      "away_team": "EHC Freiburg",
+      "competition": "DEL2 Hauptrunde",
+      "cutoff_utc": "2026-09-22T17:30:06Z",
+      "event": "ECDC Memmingen v EHC Freiburg",
+      "event_id": "ev-f0fb790346c007219eb5",
+      "group_name": "3. Spieltag",
+      "group_order": 3,
+      "home_team": "ECDC Memmingen",
+      "issued_at_utc": "2026-09-22T17:30:06Z",
+      "label": "DEL2-2026",
+      "market": "match_winner_2way",
+      "model": {
+        "decision_lag": "start-30min",
+        "model_prob": {
+          "away": 0.44980064674646303,
+          "draw": 0.0,
+          "home": 0.550199353253537
+        },
+        "odds": "none (no permissioned odds path)",
+        "ratings": {
+          "away": 1500.0,
+          "home": 1500.0
+        }
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "final",
+      "prediction_id": "fwd-bc1fe1ba57d45963af08",
+      "selection": "ECDC Memmingen",
+      "selection_key": "home",
+      "source_event_id": "84098",
+      "source_url": "https://api.openligadb.de/getmatchdata/DEL2/2026/84098",
+      "sport": "ice_hockey",
+      "start_utc": "2026-09-25T18:00:00Z",
+      "strategy_id": "hockey-elo-v1",
+      "strategy_name": "Hockey Elo favourite (no-market pilot)"
+    },
+    {
+      "away_team": "EC Kassel Huskies",
+      "competition": "DEL2 Hauptrunde",
+      "cutoff_utc": "2026-09-22T17:30:06Z",
+      "event": "EHC Freiburg v EC Kassel Huskies",
+      "event_id": "ev-135fad2ec9ce20421f7a",
+      "group_name": "4. Spieltag",
+      "group_order": 4,
+      "home_team": "EHC Freiburg",
+      "issued_at_utc": "2026-09-22T17:30:06Z",
+      "label": "DEL2-2026",
+      "market": "match_winner_2way",
+      "model": {
+        "decision_lag": "start-30min",
+        "model_prob": {
+          "away": 0.44980064674646303,
+          "draw": 0.0,
+          "home": 0.550199353253537
+        },
+        "odds": "none (no permissioned odds path)",
+        "ratings": {
+          "away": 1500.0,
+          "home": 1500.0
+        }
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "final",
+      "prediction_id": "fwd-31155ed86daa7710df69",
+      "selection": "EHC Freiburg",
+      "selection_key": "home",
+      "source_event_id": "84100",
+      "source_url": "https://api.openligadb.de/getmatchdata/DEL2/2026/84100",
+      "sport": "ice_hockey",
+      "start_utc": "2026-09-27T14:00:00Z",
+      "strategy_id": "hockey-elo-v1",
+      "strategy_name": "Hockey Elo favourite (no-market pilot)"
+    },
+    {
+      "away_team": "Bietigheim Steelers",
+      "competition": "DEL2 Hauptrunde",
+      "cutoff_utc": "2026-09-22T17:30:06Z",
+      "event": "Starbulls Rosenheim v Bietigheim Steelers",
+      "event_id": "ev-8f6c27bf02297b16d581",
+      "group_name": "4. Spieltag",
+      "group_order": 4,
+      "home_team": "Starbulls Rosenheim",
+      "issued_at_utc": "2026-09-22T17:30:06Z",
+      "label": "DEL2-2026",
+      "market": "match_winner_2way",
+      "model": {
+        "decision_lag": "start-30min",
+        "model_prob": {
+          "away": 0.44980064674646303,
+          "draw": 0.0,
+          "home": 0.550199353253537
+        },
+        "odds": "none (no permissioned odds path)",
+        "ratings": {
+          "away": 1500.0,
+          "home": 1500.0
+        }
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "final",
+      "prediction_id": "fwd-7b1a8da88ed5a76870d0",
+      "selection": "Starbulls Rosenheim",
+      "selection_key": "home",
+      "source_event_id": "84105",
+      "source_url": "https://api.openligadb.de/getmatchdata/DEL2/2026/84105",
+      "sport": "ice_hockey",
+      "start_utc": "2026-09-27T15:00:00Z",
+      "strategy_id": "hockey-elo-v1",
+      "strategy_name": "Hockey Elo favourite (no-market pilot)"
+    },
+    {
+      "away_team": "EC Bad Nauheim",
+      "competition": "DEL2 Hauptrunde",
+      "cutoff_utc": "2026-09-22T17:30:06Z",
+      "event": "Lausitzer Füchse v EC Bad Nauheim",
+      "event_id": "ev-a16258480f1f57c485fd",
+      "group_name": "4. Spieltag",
+      "group_order": 4,
+      "home_team": "Lausitzer Füchse",
+      "issued_at_utc": "2026-09-22T17:30:06Z",
+      "label": "DEL2-2026",
+      "market": "match_winner_2way",
+      "model": {
+        "decision_lag": "start-30min",
+        "model_prob": {
+          "away": 0.44980064674646303,
+          "draw": 0.0,
+          "home": 0.550199353253537
+        },
+        "odds": "none (no permissioned odds path)",
+        "ratings": {
+          "away": 1500.0,
+          "home": 1500.0
+        }
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "final",
+      "prediction_id": "fwd-ada2e5130756b3c21e8d",
+      "selection": "Lausitzer Füchse",
+      "selection_key": "home",
+      "source_event_id": "84104",
+      "source_url": "https://api.openligadb.de/getmatchdata/DEL2/2026/84104",
+      "sport": "ice_hockey",
+      "start_utc": "2026-09-27T15:00:00Z",
+      "strategy_id": "hockey-elo-v1",
+      "strategy_name": "Hockey Elo favourite (no-market pilot)"
+    },
+    {
+      "away_team": "EV Landshut",
+      "competition": "DEL2 Hauptrunde",
+      "cutoff_utc": "2026-09-22T17:30:06Z",
+      "event": "Eisbären Regensburg v EV Landshut",
+      "event_id": "ev-adcd0374f51289f70685",
+      "group_name": "4. Spieltag",
+      "group_order": 4,
+      "home_team": "Eisbären Regensburg",
+      "issued_at_utc": "2026-09-22T17:30:06Z",
+      "label": "DEL2-2026",
+      "market": "match_winner_2way",
+      "model": {
+        "decision_lag": "start-30min",
+        "model_prob": {
+          "away": 0.4463744529002309,
+          "draw": 0.0,
+          "home": 0.5536255470997691
+        },
+        "odds": "none (no permissioned odds path)",
+        "ratings": {
+          "away": 1483.1996626796767,
+          "home": 1485.6063793041133
+        }
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "final",
+      "prediction_id": "fwd-7c09660fdbd836ce0571",
+      "selection": "Eisbären Regensburg",
+      "selection_key": "home",
+      "source_event_id": "84103",
+      "source_url": "https://api.openligadb.de/getmatchdata/DEL2/2026/84103",
+      "sport": "ice_hockey",
+      "start_utc": "2026-09-27T15:00:00Z",
+      "strategy_id": "hockey-elo-v1",
+      "strategy_name": "Hockey Elo favourite (no-market pilot)"
+    },
+    {
+      "away_team": "ECDC Memmingen",
+      "competition": "DEL2 Hauptrunde",
+      "cutoff_utc": "2026-09-22T17:30:06Z",
+      "event": "Düsseldorfer EG v ECDC Memmingen",
+      "event_id": "ev-d2287cec51073c069afb",
+      "group_name": "4. Spieltag",
+      "group_order": 4,
+      "home_team": "Düsseldorfer EG",
+      "issued_at_utc": "2026-09-22T17:30:06Z",
+      "label": "DEL2-2026",
+      "market": "match_winner_2way",
+      "model": {
+        "decision_lag": "start-30min",
+        "model_prob": {
+          "away": 0.40142354301185734,
+          "draw": 0.0,
+          "home": 0.5985764569881427
+        },
+        "odds": "none (no permissioned odds path)",
+        "ratings": {
+          "away": 1500.0,
+          "home": 1534.4067166244365
+        }
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "final",
+      "prediction_id": "fwd-0894cf6be415d615cef4",
+      "selection": "Düsseldorfer EG",
+      "selection_key": "home",
+      "source_event_id": "84102",
+      "source_url": "https://api.openligadb.de/getmatchdata/DEL2/2026/84102",
+      "sport": "ice_hockey",
+      "start_utc": "2026-09-27T15:00:00Z",
+      "strategy_id": "hockey-elo-v1",
+      "strategy_name": "Hockey Elo favourite (no-market pilot)"
+    },
+    {
+      "away_team": "Eispiraten Crimmitschau",
+      "competition": "DEL2 Hauptrunde",
+      "cutoff_utc": "2026-09-22T17:30:06Z",
+      "event": "Blue Devils Weiden v Eispiraten Crimmitschau",
+      "event_id": "ev-3c96048da74d81d34d5a",
+      "group_name": "4. Spieltag",
+      "group_order": 4,
+      "home_team": "Blue Devils Weiden",
+      "issued_at_utc": "2026-09-22T17:30:06Z",
+      "label": "DEL2-2026",
+      "market": "match_winner_2way",
+      "model": {
+        "decision_lag": "start-30min",
+        "model_prob": {
+          "away": 0.4248666280114636,
+          "draw": 0.0,
+          "home": 0.5751333719885364
+        },
+        "odds": "none (no permissioned odds path)",
+        "ratings": {
+          "away": 1482.3936206958867,
+          "home": 1500.0
+        }
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "final",
+      "prediction_id": "fwd-09af5cc79cf826e7a449",
+      "selection": "Blue Devils Weiden",
+      "selection_key": "home",
+      "source_event_id": "84106",
+      "source_url": "https://api.openligadb.de/getmatchdata/DEL2/2026/84106",
+      "sport": "ice_hockey",
+      "start_utc": "2026-09-27T16:30:00Z",
+      "strategy_id": "hockey-elo-v1",
+      "strategy_name": "Hockey Elo favourite (no-market pilot)"
+    },
+    {
+      "away_team": "Eispiraten Crimmitschau",
+      "competition": "DEL2 Hauptrunde",
+      "cutoff_utc": "2026-09-22T17:30:06Z",
+      "event": "EC Kassel Huskies v Eispiraten Crimmitschau",
+      "event_id": "ev-68c4573b0e149a1a70c1",
+      "group_name": "5. Spieltag",
+      "group_order": 5,
+      "home_team": "EC Kassel Huskies",
+      "issued_at_utc": "2026-09-22T17:30:06Z",
+      "label": "DEL2-2026",
+      "market": "match_winner_2way",
+      "model": {
+        "decision_lag": "start-30min",
+        "model_prob": {
+          "away": 0.4248666280114636,
+          "draw": 0.0,
+          "home": 0.5751333719885364
+        },
+        "odds": "none (no permissioned odds path)",
+        "ratings": {
+          "away": 1482.3936206958867,
+          "home": 1500.0
+        }
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "final",
+      "prediction_id": "fwd-92ac1e13a2bd60ecb06f",
+      "selection": "EC Kassel Huskies",
+      "selection_key": "home",
+      "source_event_id": "84110",
+      "source_url": "https://api.openligadb.de/getmatchdata/DEL2/2026/84110",
+      "sport": "ice_hockey",
+      "start_utc": "2026-10-02T17:30:00Z",
+      "strategy_id": "hockey-elo-v1",
+      "strategy_name": "Hockey Elo favourite (no-market pilot)"
+    },
+    {
+      "away_team": "Bietigheim Steelers",
+      "competition": "DEL2 Hauptrunde",
+      "cutoff_utc": "2026-09-22T17:30:06Z",
+      "event": "Dresdner Eislöwen v Bietigheim Steelers",
+      "event_id": "ev-a68e23356949c949a9f7",
+      "group_name": "5. Spieltag",
+      "group_order": 5,
+      "home_team": "Dresdner Eislöwen",
+      "issued_at_utc": "2026-09-22T17:30:06Z",
+      "label": "DEL2-2026",
+      "market": "match_winner_2way",
+      "model": {
+        "decision_lag": "start-30min",
+        "model_prob": {
+          "away": 0.44980064674646303,
+          "draw": 0.0,
+          "home": 0.550199353253537
+        },
+        "odds": "none (no permissioned odds path)",
+        "ratings": {
+          "away": 1500.0,
+          "home": 1500.0
+        }
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "final",
+      "prediction_id": "fwd-32df01433e746f23a31b",
+      "selection": "Dresdner Eislöwen",
+      "selection_key": "home",
+      "source_event_id": "84109",
+      "source_url": "https://api.openligadb.de/getmatchdata/DEL2/2026/84109",
+      "sport": "ice_hockey",
+      "start_utc": "2026-10-02T17:30:00Z",
+      "strategy_id": "hockey-elo-v1",
+      "strategy_name": "Hockey Elo favourite (no-market pilot)"
+    },
+    {
+      "away_team": "EV Landshut",
+      "competition": "DEL2 Hauptrunde",
+      "cutoff_utc": "2026-09-22T17:30:06Z",
+      "event": "EHC Freiburg v EV Landshut",
+      "event_id": "ev-be801434a5da69b8622b",
+      "group_name": "5. Spieltag",
+      "group_order": 5,
+      "home_team": "EHC Freiburg",
+      "issued_at_utc": "2026-09-22T17:30:06Z",
+      "label": "DEL2-2026",
+      "market": "match_winner_2way",
+      "model": {
+        "decision_lag": "start-30min",
+        "model_prob": {
+          "away": 0.4260008164011849,
+          "draw": 0.0,
+          "home": 0.5739991835988151
+        },
+        "odds": "none (no permissioned odds path)",
+        "ratings": {
+          "away": 1483.1996626796767,
+          "home": 1500.0
+        }
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "final",
+      "prediction_id": "fwd-a1a32f6885ee47f29b7f",
+      "selection": "EHC Freiburg",
+      "selection_key": "home",
+      "source_event_id": "84107",
+      "source_url": "https://api.openligadb.de/getmatchdata/DEL2/2026/84107",
+      "sport": "ice_hockey",
+      "start_utc": "2026-10-02T17:30:00Z",
+      "strategy_id": "hockey-elo-v1",
+      "strategy_name": "Hockey Elo favourite (no-market pilot)"
+    },
+    {
+      "away_team": "Blue Devils Weiden",
+      "competition": "DEL2 Hauptrunde",
+      "cutoff_utc": "2026-09-22T17:30:06Z",
+      "event": "Bietigheim Steelers v Blue Devils Weiden",
+      "event_id": "ev-23ab06d1a2da26be2e9c",
+      "group_name": "3. Spieltag",
+      "group_order": 3,
+      "home_team": "Bietigheim Steelers",
+      "issued_at_utc": "2026-09-22T17:30:06Z",
+      "label": "DEL2-2026",
+      "market": "match_winner_2way",
+      "model": {
+        "model_prob": {
+          "away": 0.5,
+          "draw": 0.0,
+          "home": 0.5
+        },
+        "prior": "flat 0.5/0.5 (uninformative by design)",
+        "rule": "always the home side"
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "final",
+      "prediction_id": "fwd-f6d413cf88107adf0eed",
+      "selection": "Bietigheim Steelers",
+      "selection_key": "home",
+      "source_event_id": "84093",
+      "source_url": "https://api.openligadb.de/getmatchdata/DEL2/2026/84093",
+      "sport": "ice_hockey",
+      "start_utc": "2026-09-25T17:30:00Z",
+      "strategy_id": "hockey-home-v1",
+      "strategy_name": "Home-ice naive baseline (hockey)"
+    },
+    {
+      "away_team": "Eisbären Regensburg",
+      "competition": "DEL2 Hauptrunde",
+      "cutoff_utc": "2026-09-22T17:30:06Z",
+      "event": "EC Bad Nauheim v Eisbären Regensburg",
+      "event_id": "ev-2f05f34ea327a9d1fe95",
+      "group_name": "3. Spieltag",
+      "group_order": 3,
+      "home_team": "EC Bad Nauheim",
+      "issued_at_utc": "2026-09-22T17:30:06Z",
+      "label": "DEL2-2026",
+      "market": "match_winner_2way",
+      "model": {
+        "model_prob": {
+          "away": 0.5,
+          "draw": 0.0,
+          "home": 0.5
+        },
+        "prior": "flat 0.5/0.5 (uninformative by design)",
+        "rule": "always the home side"
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "final",
+      "prediction_id": "fwd-8f28a795e57c5d73870f",
+      "selection": "EC Bad Nauheim",
+      "selection_key": "home",
+      "source_event_id": "84094",
+      "source_url": "https://api.openligadb.de/getmatchdata/DEL2/2026/84094",
+      "sport": "ice_hockey",
+      "start_utc": "2026-09-25T17:30:00Z",
+      "strategy_id": "hockey-home-v1",
+      "strategy_name": "Home-ice naive baseline (hockey)"
+    },
+    {
+      "away_team": "Lausitzer Füchse",
+      "competition": "DEL2 Hauptrunde",
+      "cutoff_utc": "2026-09-22T17:30:06Z",
+      "event": "EC Kassel Huskies v Lausitzer Füchse",
+      "event_id": "ev-6178274d9a2587af463f",
+      "group_name": "3. Spieltag",
+      "group_order": 3,
+      "home_team": "EC Kassel Huskies",
+      "issued_at_utc": "2026-09-22T17:30:06Z",
+      "label": "DEL2-2026",
+      "market": "match_winner_2way",
+      "model": {
+        "model_prob": {
+          "away": 0.5,
+          "draw": 0.0,
+          "home": 0.5
+        },
+        "prior": "flat 0.5/0.5 (uninformative by design)",
+        "rule": "always the home side"
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "final",
+      "prediction_id": "fwd-050d97a6c34d87ded9a8",
+      "selection": "EC Kassel Huskies",
+      "selection_key": "home",
+      "source_event_id": "84097",
+      "source_url": "https://api.openligadb.de/getmatchdata/DEL2/2026/84097",
+      "sport": "ice_hockey",
+      "start_utc": "2026-09-25T17:30:00Z",
+      "strategy_id": "hockey-home-v1",
+      "strategy_name": "Home-ice naive baseline (hockey)"
+    },
+    {
+      "away_team": "Dresdner Eislöwen",
+      "competition": "DEL2 Hauptrunde",
+      "cutoff_utc": "2026-09-22T17:30:06Z",
+      "event": "Eispiraten Crimmitschau v Dresdner Eislöwen",
+      "event_id": "ev-63118edd72efb0b8bd45",
+      "group_name": "3. Spieltag",
+      "group_order": 3,
+      "home_team": "Eispiraten Crimmitschau",
+      "issued_at_utc": "2026-09-22T17:30:06Z",
+      "label": "DEL2-2026",
+      "market": "match_winner_2way",
+      "model": {
+        "model_prob": {
+          "away": 0.5,
+          "draw": 0.0,
+          "home": 0.5
+        },
+        "prior": "flat 0.5/0.5 (uninformative by design)",
+        "rule": "always the home side"
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "final",
+      "prediction_id": "fwd-462c79e8e789185c37a0",
+      "selection": "Eispiraten Crimmitschau",
+      "selection_key": "home",
+      "source_event_id": "84095",
+      "source_url": "https://api.openligadb.de/getmatchdata/DEL2/2026/84095",
+      "sport": "ice_hockey",
+      "start_utc": "2026-09-25T17:30:00Z",
+      "strategy_id": "hockey-home-v1",
+      "strategy_name": "Home-ice naive baseline (hockey)"
+    },
+    {
+      "away_team": "Starbulls Rosenheim",
+      "competition": "DEL2 Hauptrunde",
+      "cutoff_utc": "2026-09-22T17:30:06Z",
+      "event": "EV Landshut v Starbulls Rosenheim",
+      "event_id": "ev-bc7e3f1a025a31b50340",
+      "group_name": "3. Spieltag",
+      "group_order": 3,
+      "home_team": "EV Landshut",
+      "issued_at_utc": "2026-09-22T17:30:06Z",
+      "label": "DEL2-2026",
+      "market": "match_winner_2way",
+      "model": {
+        "model_prob": {
+          "away": 0.5,
+          "draw": 0.0,
+          "home": 0.5
+        },
+        "prior": "flat 0.5/0.5 (uninformative by design)",
+        "rule": "always the home side"
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "final",
+      "prediction_id": "fwd-44cc4a5732284ff9e85d",
+      "selection": "EV Landshut",
+      "selection_key": "home",
+      "source_event_id": "84096",
+      "source_url": "https://api.openligadb.de/getmatchdata/DEL2/2026/84096",
+      "sport": "ice_hockey",
+      "start_utc": "2026-09-25T17:30:00Z",
+      "strategy_id": "hockey-home-v1",
+      "strategy_name": "Home-ice naive baseline (hockey)"
+    },
+    {
+      "away_team": "Düsseldorfer EG",
+      "competition": "DEL2 Hauptrunde",
+      "cutoff_utc": "2026-09-22T17:30:06Z",
+      "event": "Ravensburg Towerstars v Düsseldorfer EG",
+      "event_id": "ev-5011704668db7c6a4bb1",
+      "group_name": "3. Spieltag",
+      "group_order": 3,
+      "home_team": "Ravensburg Towerstars",
+      "issued_at_utc": "2026-09-22T17:30:06Z",
+      "label": "DEL2-2026",
+      "market": "match_winner_2way",
+      "model": {
+        "model_prob": {
+          "away": 0.5,
+          "draw": 0.0,
+          "home": 0.5
+        },
+        "prior": "flat 0.5/0.5 (uninformative by design)",
+        "rule": "always the home side"
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "final",
+      "prediction_id": "fwd-01b22b666cce4fe95fba",
+      "selection": "Ravensburg Towerstars",
+      "selection_key": "home",
+      "source_event_id": "84099",
+      "source_url": "https://api.openligadb.de/getmatchdata/DEL2/2026/84099",
+      "sport": "ice_hockey",
+      "start_utc": "2026-09-25T18:00:00Z",
+      "strategy_id": "hockey-home-v1",
+      "strategy_name": "Home-ice naive baseline (hockey)"
+    },
+    {
+      "away_team": "EHC Freiburg",
+      "competition": "DEL2 Hauptrunde",
+      "cutoff_utc": "2026-09-22T17:30:06Z",
+      "event": "ECDC Memmingen v EHC Freiburg",
+      "event_id": "ev-f0fb790346c007219eb5",
+      "group_name": "3. Spieltag",
+      "group_order": 3,
+      "home_team": "ECDC Memmingen",
+      "issued_at_utc": "2026-09-22T17:30:06Z",
+      "label": "DEL2-2026",
+      "market": "match_winner_2way",
+      "model": {
+        "model_prob": {
+          "away": 0.5,
+          "draw": 0.0,
+          "home": 0.5
+        },
+        "prior": "flat 0.5/0.5 (uninformative by design)",
+        "rule": "always the home side"
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "final",
+      "prediction_id": "fwd-11af5ba49a3dde405221",
+      "selection": "ECDC Memmingen",
+      "selection_key": "home",
+      "source_event_id": "84098",
+      "source_url": "https://api.openligadb.de/getmatchdata/DEL2/2026/84098",
+      "sport": "ice_hockey",
+      "start_utc": "2026-09-25T18:00:00Z",
+      "strategy_id": "hockey-home-v1",
+      "strategy_name": "Home-ice naive baseline (hockey)"
+    },
+    {
+      "away_team": "EC Kassel Huskies",
+      "competition": "DEL2 Hauptrunde",
+      "cutoff_utc": "2026-09-22T17:30:06Z",
+      "event": "EHC Freiburg v EC Kassel Huskies",
+      "event_id": "ev-135fad2ec9ce20421f7a",
+      "group_name": "4. Spieltag",
+      "group_order": 4,
+      "home_team": "EHC Freiburg",
+      "issued_at_utc": "2026-09-22T17:30:06Z",
+      "label": "DEL2-2026",
+      "market": "match_winner_2way",
+      "model": {
+        "model_prob": {
+          "away": 0.5,
+          "draw": 0.0,
+          "home": 0.5
+        },
+        "prior": "flat 0.5/0.5 (uninformative by design)",
+        "rule": "always the home side"
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "final",
+      "prediction_id": "fwd-009bc0910db0876e0099",
+      "selection": "EHC Freiburg",
+      "selection_key": "home",
+      "source_event_id": "84100",
+      "source_url": "https://api.openligadb.de/getmatchdata/DEL2/2026/84100",
+      "sport": "ice_hockey",
+      "start_utc": "2026-09-27T14:00:00Z",
+      "strategy_id": "hockey-home-v1",
+      "strategy_name": "Home-ice naive baseline (hockey)"
+    },
+    {
+      "away_team": "Ravensburg Towerstars",
+      "competition": "DEL2 Hauptrunde",
+      "cutoff_utc": "2026-09-22T17:30:06Z",
+      "event": "Dresdner Eislöwen v Ravensburg Towerstars",
+      "event_id": "ev-9908540dc200cf165217",
+      "group_name": "4. Spieltag",
+      "group_order": 4,
+      "home_team": "Dresdner Eislöwen",
+      "issued_at_utc": "2026-09-22T17:30:06Z",
+      "label": "DEL2-2026",
+      "market": "match_winner_2way",
+      "model": {
+        "model_prob": {
+          "away": 0.5,
+          "draw": 0.0,
+          "home": 0.5
+        },
+        "prior": "flat 0.5/0.5 (uninformative by design)",
+        "rule": "always the home side"
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "final",
+      "prediction_id": "fwd-fbe0c7b1cf746eaa8cba",
+      "selection": "Dresdner Eislöwen",
+      "selection_key": "home",
+      "source_event_id": "84101",
+      "source_url": "https://api.openligadb.de/getmatchdata/DEL2/2026/84101",
+      "sport": "ice_hockey",
+      "start_utc": "2026-09-27T14:00:00Z",
+      "strategy_id": "hockey-home-v1",
+      "strategy_name": "Home-ice naive baseline (hockey)"
+    },
+    {
+      "away_team": "Bietigheim Steelers",
+      "competition": "DEL2 Hauptrunde",
+      "cutoff_utc": "2026-09-22T17:30:06Z",
+      "event": "Starbulls Rosenheim v Bietigheim Steelers",
+      "event_id": "ev-8f6c27bf02297b16d581",
+      "group_name": "4. Spieltag",
+      "group_order": 4,
+      "home_team": "Starbulls Rosenheim",
+      "issued_at_utc": "2026-09-22T17:30:06Z",
+      "label": "DEL2-2026",
+      "market": "match_winner_2way",
+      "model": {
+        "model_prob": {
+          "away": 0.5,
+          "draw": 0.0,
+          "home": 0.5
+        },
+        "prior": "flat 0.5/0.5 (uninformative by design)",
+        "rule": "always the home side"
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "final",
+      "prediction_id": "fwd-b5a840603f3785a9154d",
+      "selection": "Starbulls Rosenheim",
+      "selection_key": "home",
+      "source_event_id": "84105",
+      "source_url": "https://api.openligadb.de/getmatchdata/DEL2/2026/84105",
+      "sport": "ice_hockey",
+      "start_utc": "2026-09-27T15:00:00Z",
+      "strategy_id": "hockey-home-v1",
+      "strategy_name": "Home-ice naive baseline (hockey)"
+    },
+    {
+      "away_team": "EC Bad Nauheim",
+      "competition": "DEL2 Hauptrunde",
+      "cutoff_utc": "2026-09-22T17:30:06Z",
+      "event": "Lausitzer Füchse v EC Bad Nauheim",
+      "event_id": "ev-a16258480f1f57c485fd",
+      "group_name": "4. Spieltag",
+      "group_order": 4,
+      "home_team": "Lausitzer Füchse",
+      "issued_at_utc": "2026-09-22T17:30:06Z",
+      "label": "DEL2-2026",
+      "market": "match_winner_2way",
+      "model": {
+        "model_prob": {
+          "away": 0.5,
+          "draw": 0.0,
+          "home": 0.5
+        },
+        "prior": "flat 0.5/0.5 (uninformative by design)",
+        "rule": "always the home side"
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "final",
+      "prediction_id": "fwd-bc365923dcbb911ddcdd",
+      "selection": "Lausitzer Füchse",
+      "selection_key": "home",
+      "source_event_id": "84104",
+      "source_url": "https://api.openligadb.de/getmatchdata/DEL2/2026/84104",
+      "sport": "ice_hockey",
+      "start_utc": "2026-09-27T15:00:00Z",
+      "strategy_id": "hockey-home-v1",
+      "strategy_name": "Home-ice naive baseline (hockey)"
+    },
+    {
+      "away_team": "EV Landshut",
+      "competition": "DEL2 Hauptrunde",
+      "cutoff_utc": "2026-09-22T17:30:06Z",
+      "event": "Eisbären Regensburg v EV Landshut",
+      "event_id": "ev-adcd0374f51289f70685",
+      "group_name": "4. Spieltag",
+      "group_order": 4,
+      "home_team": "Eisbären Regensburg",
+      "issued_at_utc": "2026-09-22T17:30:06Z",
+      "label": "DEL2-2026",
+      "market": "match_winner_2way",
+      "model": {
+        "model_prob": {
+          "away": 0.5,
+          "draw": 0.0,
+          "home": 0.5
+        },
+        "prior": "flat 0.5/0.5 (uninformative by design)",
+        "rule": "always the home side"
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "final",
+      "prediction_id": "fwd-e99225d8a71a7402a6c7",
+      "selection": "Eisbären Regensburg",
+      "selection_key": "home",
+      "source_event_id": "84103",
+      "source_url": "https://api.openligadb.de/getmatchdata/DEL2/2026/84103",
+      "sport": "ice_hockey",
+      "start_utc": "2026-09-27T15:00:00Z",
+      "strategy_id": "hockey-home-v1",
+      "strategy_name": "Home-ice naive baseline (hockey)"
+    },
+    {
+      "away_team": "ECDC Memmingen",
+      "competition": "DEL2 Hauptrunde",
+      "cutoff_utc": "2026-09-22T17:30:06Z",
+      "event": "Düsseldorfer EG v ECDC Memmingen",
+      "event_id": "ev-d2287cec51073c069afb",
+      "group_name": "4. Spieltag",
+      "group_order": 4,
+      "home_team": "Düsseldorfer EG",
+      "issued_at_utc": "2026-09-22T17:30:06Z",
+      "label": "DEL2-2026",
+      "market": "match_winner_2way",
+      "model": {
+        "model_prob": {
+          "away": 0.5,
+          "draw": 0.0,
+          "home": 0.5
+        },
+        "prior": "flat 0.5/0.5 (uninformative by design)",
+        "rule": "always the home side"
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "final",
+      "prediction_id": "fwd-ae730b8fbe312b06a140",
+      "selection": "Düsseldorfer EG",
+      "selection_key": "home",
+      "source_event_id": "84102",
+      "source_url": "https://api.openligadb.de/getmatchdata/DEL2/2026/84102",
+      "sport": "ice_hockey",
+      "start_utc": "2026-09-27T15:00:00Z",
+      "strategy_id": "hockey-home-v1",
+      "strategy_name": "Home-ice naive baseline (hockey)"
+    },
+    {
+      "away_team": "Eispiraten Crimmitschau",
+      "competition": "DEL2 Hauptrunde",
+      "cutoff_utc": "2026-09-22T17:30:06Z",
+      "event": "Blue Devils Weiden v Eispiraten Crimmitschau",
+      "event_id": "ev-3c96048da74d81d34d5a",
+      "group_name": "4. Spieltag",
+      "group_order": 4,
+      "home_team": "Blue Devils Weiden",
+      "issued_at_utc": "2026-09-22T17:30:06Z",
+      "label": "DEL2-2026",
+      "market": "match_winner_2way",
+      "model": {
+        "model_prob": {
+          "away": 0.5,
+          "draw": 0.0,
+          "home": 0.5
+        },
+        "prior": "flat 0.5/0.5 (uninformative by design)",
+        "rule": "always the home side"
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "final",
+      "prediction_id": "fwd-c52aaeefefcf35b0ced6",
+      "selection": "Blue Devils Weiden",
+      "selection_key": "home",
+      "source_event_id": "84106",
+      "source_url": "https://api.openligadb.de/getmatchdata/DEL2/2026/84106",
+      "sport": "ice_hockey",
+      "start_utc": "2026-09-27T16:30:00Z",
+      "strategy_id": "hockey-home-v1",
+      "strategy_name": "Home-ice naive baseline (hockey)"
+    },
+    {
+      "away_team": "Eispiraten Crimmitschau",
+      "competition": "DEL2 Hauptrunde",
+      "cutoff_utc": "2026-09-22T17:30:06Z",
+      "event": "EC Kassel Huskies v Eispiraten Crimmitschau",
+      "event_id": "ev-68c4573b0e149a1a70c1",
+      "group_name": "5. Spieltag",
+      "group_order": 5,
+      "home_team": "EC Kassel Huskies",
+      "issued_at_utc": "2026-09-22T17:30:06Z",
+      "label": "DEL2-2026",
+      "market": "match_winner_2way",
+      "model": {
+        "model_prob": {
+          "away": 0.5,
+          "draw": 0.0,
+          "home": 0.5
+        },
+        "prior": "flat 0.5/0.5 (uninformative by design)",
+        "rule": "always the home side"
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "final",
+      "prediction_id": "fwd-702362fa097f847afeb9",
+      "selection": "EC Kassel Huskies",
+      "selection_key": "home",
+      "source_event_id": "84110",
+      "source_url": "https://api.openligadb.de/getmatchdata/DEL2/2026/84110",
+      "sport": "ice_hockey",
+      "start_utc": "2026-10-02T17:30:00Z",
+      "strategy_id": "hockey-home-v1",
+      "strategy_name": "Home-ice naive baseline (hockey)"
+    },
+    {
+      "away_team": "Bietigheim Steelers",
+      "competition": "DEL2 Hauptrunde",
+      "cutoff_utc": "2026-09-22T17:30:06Z",
+      "event": "Dresdner Eislöwen v Bietigheim Steelers",
+      "event_id": "ev-a68e23356949c949a9f7",
+      "group_name": "5. Spieltag",
+      "group_order": 5,
+      "home_team": "Dresdner Eislöwen",
+      "issued_at_utc": "2026-09-22T17:30:06Z",
+      "label": "DEL2-2026",
+      "market": "match_winner_2way",
+      "model": {
+        "model_prob": {
+          "away": 0.5,
+          "draw": 0.0,
+          "home": 0.5
+        },
+        "prior": "flat 0.5/0.5 (uninformative by design)",
+        "rule": "always the home side"
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "final",
+      "prediction_id": "fwd-8e1ee98d7a7a7c67dad6",
+      "selection": "Dresdner Eislöwen",
+      "selection_key": "home",
+      "source_event_id": "84109",
+      "source_url": "https://api.openligadb.de/getmatchdata/DEL2/2026/84109",
+      "sport": "ice_hockey",
+      "start_utc": "2026-10-02T17:30:00Z",
+      "strategy_id": "hockey-home-v1",
+      "strategy_name": "Home-ice naive baseline (hockey)"
+    },
+    {
+      "away_team": "EV Landshut",
+      "competition": "DEL2 Hauptrunde",
+      "cutoff_utc": "2026-09-22T17:30:06Z",
+      "event": "EHC Freiburg v EV Landshut",
+      "event_id": "ev-be801434a5da69b8622b",
+      "group_name": "5. Spieltag",
+      "group_order": 5,
+      "home_team": "EHC Freiburg",
+      "issued_at_utc": "2026-09-22T17:30:06Z",
+      "label": "DEL2-2026",
+      "market": "match_winner_2way",
+      "model": {
+        "model_prob": {
+          "away": 0.5,
+          "draw": 0.0,
+          "home": 0.5
+        },
+        "prior": "flat 0.5/0.5 (uninformative by design)",
+        "rule": "always the home side"
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "final",
+      "prediction_id": "fwd-7883a9ddd828c7d8c706",
+      "selection": "EHC Freiburg",
+      "selection_key": "home",
+      "source_event_id": "84107",
+      "source_url": "https://api.openligadb.de/getmatchdata/DEL2/2026/84107",
+      "sport": "ice_hockey",
+      "start_utc": "2026-10-02T17:30:00Z",
+      "strategy_id": "hockey-home-v1",
+      "strategy_name": "Home-ice naive baseline (hockey)"
+    },
+    {
+      "away_team": "Düsseldorfer EG",
+      "competition": "DEL2 Hauptrunde",
+      "cutoff_utc": "2026-09-22T17:30:06Z",
+      "event": "Starbulls Rosenheim v Düsseldorfer EG",
+      "event_id": "ev-c7c5a0417c9cd0590f26",
+      "group_name": "5. Spieltag",
+      "group_order": 5,
+      "home_team": "Starbulls Rosenheim",
+      "issued_at_utc": "2026-09-22T17:30:06Z",
+      "label": "DEL2-2026",
+      "market": "match_winner_2way",
+      "model": {
+        "model_prob": {
+          "away": 0.5,
+          "draw": 0.0,
+          "home": 0.5
+        },
+        "prior": "flat 0.5/0.5 (uninformative by design)",
+        "rule": "always the home side"
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "final",
+      "prediction_id": "fwd-d9d47ff692a8678868d8",
+      "selection": "Starbulls Rosenheim",
+      "selection_key": "home",
+      "source_event_id": "84108",
+      "source_url": "https://api.openligadb.de/getmatchdata/DEL2/2026/84108",
+      "sport": "ice_hockey",
+      "start_utc": "2026-10-02T17:30:00Z",
+      "strategy_id": "hockey-home-v1",
+      "strategy_name": "Home-ice naive baseline (hockey)"
+    },
+    {
+      "away_team": "Blue Devils Weiden",
+      "competition": "DEL2 Hauptrunde",
+      "cutoff_utc": "2026-09-22T17:30:06Z",
+      "event": "Bietigheim Steelers v Blue Devils Weiden",
+      "event_id": "ev-23ab06d1a2da26be2e9c",
+      "group_name": "3. Spieltag",
+      "group_order": 3,
+      "home_team": "Bietigheim Steelers",
+      "issued_at_utc": "2026-09-22T17:30:06Z",
+      "label": "DEL2-2026",
+      "market": "regulation_3way",
+      "model": {
+        "lambda_away": 2.9,
+        "lambda_home": 3.1,
+        "league_rates": {
+          "away": 2.9,
+          "home": 3.1,
+          "source": "prior (only 3 released matches)"
+        },
+        "market": "regulation-time 3-way (60 minutes)",
+        "model_prob": {
+          "away": 0.3850832510496155,
+          "draw": 0.16615123827885156,
+          "home": 0.448765510671533
+        },
+        "odds": "none (no permissioned odds path)",
+        "rule": "argmax regulation 3-way",
+        "team_multipliers": {
+          "away": {
+            "attack": 1.0,
+            "defence": 1.0,
+            "matches": 0
+          },
+          "home": {
+            "attack": 1.0,
+            "defence": 1.0,
+            "matches": 0
+          }
+        }
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "regulation_3way",
+      "prediction_id": "fwd-0453062c2315d249676c",
+      "selection": "Bietigheim Steelers",
+      "selection_key": "home",
+      "source_event_id": "84093",
+      "source_url": "https://api.openligadb.de/getmatchdata/DEL2/2026/84093",
+      "sport": "ice_hockey",
+      "start_utc": "2026-09-25T17:30:00Z",
+      "strategy_id": "hockey-reg-poisson-v1",
+      "strategy_name": "Poisson regulation 3-way (hockey)"
+    },
+    {
+      "away_team": "Eisbären Regensburg",
+      "competition": "DEL2 Hauptrunde",
+      "cutoff_utc": "2026-09-22T17:30:06Z",
+      "event": "EC Bad Nauheim v Eisbären Regensburg",
+      "event_id": "ev-2f05f34ea327a9d1fe95",
+      "group_name": "3. Spieltag",
+      "group_order": 3,
+      "home_team": "EC Bad Nauheim",
+      "issued_at_utc": "2026-09-22T17:30:06Z",
+      "label": "DEL2-2026",
+      "market": "regulation_3way",
+      "model": {
+        "lambda_away": 2.9,
+        "lambda_home": 3.2476,
+        "league_rates": {
+          "away": 2.9,
+          "home": 3.1,
+          "source": "prior (only 3 released matches)"
+        },
+        "market": "regulation-time 3-way (60 minutes)",
+        "model_prob": {
+          "away": 0.36386102650587293,
+          "draw": 0.16306911559969503,
+          "home": 0.4730698578944321
+        },
+        "odds": "none (no permissioned odds path)",
+        "rule": "argmax regulation 3-way",
+        "team_multipliers": {
+          "away": {
+            "attack": 1.0,
+            "defence": 1.0476,
+            "matches": 1
+          },
+          "home": {
+            "attack": 1.0,
+            "defence": 1.0,
+            "matches": 0
+          }
+        }
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "regulation_3way",
+      "prediction_id": "fwd-07192a53a8b863861c07",
+      "selection": "EC Bad Nauheim",
+      "selection_key": "home",
+      "source_event_id": "84094",
+      "source_url": "https://api.openligadb.de/getmatchdata/DEL2/2026/84094",
+      "sport": "ice_hockey",
+      "start_utc": "2026-09-25T17:30:00Z",
+      "strategy_id": "hockey-reg-poisson-v1",
+      "strategy_name": "Poisson regulation 3-way (hockey)"
+    },
+    {
+      "away_team": "Lausitzer Füchse",
+      "competition": "DEL2 Hauptrunde",
+      "cutoff_utc": "2026-09-22T17:30:06Z",
+      "event": "EC Kassel Huskies v Lausitzer Füchse",
+      "event_id": "ev-6178274d9a2587af463f",
+      "group_name": "3. Spieltag",
+      "group_order": 3,
+      "home_team": "EC Kassel Huskies",
+      "issued_at_utc": "2026-09-22T17:30:06Z",
+      "label": "DEL2-2026",
+      "market": "regulation_3way",
+      "model": {
+        "lambda_away": 2.9,
+        "lambda_home": 3.1,
+        "league_rates": {
+          "away": 2.9,
+          "home": 3.1,
+          "source": "prior (only 3 released matches)"
+        },
+        "market": "regulation-time 3-way (60 minutes)",
+        "model_prob": {
+          "away": 0.3850832510496155,
+          "draw": 0.16615123827885156,
+          "home": 0.448765510671533
+        },
+        "odds": "none (no permissioned odds path)",
+        "rule": "argmax regulation 3-way",
+        "team_multipliers": {
+          "away": {
+            "attack": 1.0,
+            "defence": 1.0,
+            "matches": 0
+          },
+          "home": {
+            "attack": 1.0,
+            "defence": 1.0,
+            "matches": 0
+          }
+        }
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "regulation_3way",
+      "prediction_id": "fwd-a18401bbd23ef4ec5833",
+      "selection": "EC Kassel Huskies",
+      "selection_key": "home",
+      "source_event_id": "84097",
+      "source_url": "https://api.openligadb.de/getmatchdata/DEL2/2026/84097",
+      "sport": "ice_hockey",
+      "start_utc": "2026-09-25T17:30:00Z",
+      "strategy_id": "hockey-reg-poisson-v1",
+      "strategy_name": "Poisson regulation 3-way (hockey)"
+    },
+    {
+      "away_team": "Dresdner Eislöwen",
+      "competition": "DEL2 Hauptrunde",
+      "cutoff_utc": "2026-09-22T17:30:06Z",
+      "event": "Eispiraten Crimmitschau v Dresdner Eislöwen",
+      "event_id": "ev-63118edd72efb0b8bd45",
+      "group_name": "3. Spieltag",
+      "group_order": 3,
+      "home_team": "Eispiraten Crimmitschau",
+      "issued_at_utc": "2026-09-22T17:30:06Z",
+      "label": "DEL2-2026",
+      "market": "regulation_3way",
+      "model": {
+        "lambda_away": 3.0381,
+        "lambda_home": 2.8048,
+        "league_rates": {
+          "away": 2.9,
+          "home": 3.1,
+          "source": "prior (only 3 released matches)"
+        },
+        "market": "regulation-time 3-way (60 minutes)",
+        "model_prob": {
+          "away": 0.45346403073376457,
+          "draw": 0.16828644509013713,
+          "home": 0.37824952417609825
+        },
+        "odds": "none (no permissioned odds path)",
+        "rule": "argmax regulation 3-way",
+        "team_multipliers": {
+          "away": {
+            "attack": 1.0,
+            "defence": 1.0,
+            "matches": 0
+          },
+          "home": {
+            "attack": 0.9048,
+            "defence": 1.0476,
+            "matches": 1
+          }
+        }
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "regulation_3way",
+      "prediction_id": "fwd-3cd76ad3aa9019c6068a",
+      "selection": "Dresdner Eislöwen",
+      "selection_key": "away",
+      "source_event_id": "84095",
+      "source_url": "https://api.openligadb.de/getmatchdata/DEL2/2026/84095",
+      "sport": "ice_hockey",
+      "start_utc": "2026-09-25T17:30:00Z",
+      "strategy_id": "hockey-reg-poisson-v1",
+      "strategy_name": "Poisson regulation 3-way (hockey)"
+    },
+    {
+      "away_team": "Starbulls Rosenheim",
+      "competition": "DEL2 Hauptrunde",
+      "cutoff_utc": "2026-09-22T17:30:06Z",
+      "event": "EV Landshut v Starbulls Rosenheim",
+      "event_id": "ev-bc7e3f1a025a31b50340",
+      "group_name": "3. Spieltag",
+      "group_order": 3,
+      "home_team": "EV Landshut",
+      "issued_at_utc": "2026-09-22T17:30:06Z",
+      "label": "DEL2-2026",
+      "market": "regulation_3way",
+      "model": {
+        "lambda_away": 3.3143,
+        "lambda_home": 3.3952,
+        "league_rates": {
+          "away": 2.9,
+          "home": 3.1,
+          "source": "prior (only 3 released matches)"
+        },
+        "market": "regulation-time 3-way (60 minutes)",
+        "model_prob": {
+          "away": 0.4092207851490595,
+          "draw": 0.1571050317446916,
+          "home": 0.4336741831062489
+        },
+        "odds": "none (no permissioned odds path)",
+        "rule": "argmax regulation 3-way",
+        "team_multipliers": {
+          "away": {
+            "attack": 1.0,
+            "defence": 1.0,
+            "matches": 0
+          },
+          "home": {
+            "attack": 1.0952,
+            "defence": 1.1429,
+            "matches": 1
+          }
+        }
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "regulation_3way",
+      "prediction_id": "fwd-93a5cebb1369d4830d70",
+      "selection": "EV Landshut",
+      "selection_key": "home",
+      "source_event_id": "84096",
+      "source_url": "https://api.openligadb.de/getmatchdata/DEL2/2026/84096",
+      "sport": "ice_hockey",
+      "start_utc": "2026-09-25T17:30:00Z",
+      "strategy_id": "hockey-reg-poisson-v1",
+      "strategy_name": "Poisson regulation 3-way (hockey)"
+    },
+    {
+      "away_team": "Düsseldorfer EG",
+      "competition": "DEL2 Hauptrunde",
+      "cutoff_utc": "2026-09-22T17:30:06Z",
+      "event": "Ravensburg Towerstars v Düsseldorfer EG",
+      "event_id": "ev-5011704668db7c6a4bb1",
+      "group_name": "3. Spieltag",
+      "group_order": 3,
+      "home_team": "Ravensburg Towerstars",
+      "issued_at_utc": "2026-09-22T17:30:06Z",
+      "label": "DEL2-2026",
+      "market": "regulation_3way",
+      "model": {
+        "lambda_away": 3.3833,
+        "lambda_home": 3.2476,
+        "league_rates": {
+          "away": 2.9,
+          "home": 3.1,
+          "source": "prior (only 3 released matches)"
+        },
+        "market": "regulation-time 3-way (60 minutes)",
+        "model_prob": {
+          "away": 0.4416364899696578,
+          "draw": 0.15794411593529922,
+          "home": 0.40041939409504296
+        },
+        "odds": "none (no permissioned odds path)",
+        "rule": "argmax regulation 3-way",
+        "team_multipliers": {
+          "away": {
+            "attack": 1.1667,
+            "defence": 1.0,
+            "matches": 2
+          },
+          "home": {
+            "attack": 1.0476,
+            "defence": 1.0,
+            "matches": 1
+          }
+        }
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "regulation_3way",
+      "prediction_id": "fwd-9dd9d7ace27b7c6f0e50",
+      "selection": "Düsseldorfer EG",
+      "selection_key": "away",
+      "source_event_id": "84099",
+      "source_url": "https://api.openligadb.de/getmatchdata/DEL2/2026/84099",
+      "sport": "ice_hockey",
+      "start_utc": "2026-09-25T18:00:00Z",
+      "strategy_id": "hockey-reg-poisson-v1",
+      "strategy_name": "Poisson regulation 3-way (hockey)"
+    },
+    {
+      "away_team": "EHC Freiburg",
+      "competition": "DEL2 Hauptrunde",
+      "cutoff_utc": "2026-09-22T17:30:06Z",
+      "event": "ECDC Memmingen v EHC Freiburg",
+      "event_id": "ev-f0fb790346c007219eb5",
+      "group_name": "3. Spieltag",
+      "group_order": 3,
+      "home_team": "ECDC Memmingen",
+      "issued_at_utc": "2026-09-22T17:30:06Z",
+      "label": "DEL2-2026",
+      "market": "regulation_3way",
+      "model": {
+        "lambda_away": 2.9,
+        "lambda_home": 3.1,
+        "league_rates": {
+          "away": 2.9,
+          "home": 3.1,
+          "source": "prior (only 3 released matches)"
+        },
+        "market": "regulation-time 3-way (60 minutes)",
+        "model_prob": {
+          "away": 0.3850832510496155,
+          "draw": 0.16615123827885156,
+          "home": 0.448765510671533
+        },
+        "odds": "none (no permissioned odds path)",
+        "rule": "argmax regulation 3-way",
+        "team_multipliers": {
+          "away": {
+            "attack": 1.0,
+            "defence": 1.0,
+            "matches": 0
+          },
+          "home": {
+            "attack": 1.0,
+            "defence": 1.0,
+            "matches": 0
+          }
+        }
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "regulation_3way",
+      "prediction_id": "fwd-4ec1f8c34eb2735e38f4",
+      "selection": "ECDC Memmingen",
+      "selection_key": "home",
+      "source_event_id": "84098",
+      "source_url": "https://api.openligadb.de/getmatchdata/DEL2/2026/84098",
+      "sport": "ice_hockey",
+      "start_utc": "2026-09-25T18:00:00Z",
+      "strategy_id": "hockey-reg-poisson-v1",
+      "strategy_name": "Poisson regulation 3-way (hockey)"
+    },
+    {
+      "away_team": "EC Kassel Huskies",
+      "competition": "DEL2 Hauptrunde",
+      "cutoff_utc": "2026-09-22T17:30:06Z",
+      "event": "EHC Freiburg v EC Kassel Huskies",
+      "event_id": "ev-135fad2ec9ce20421f7a",
+      "group_name": "4. Spieltag",
+      "group_order": 4,
+      "home_team": "EHC Freiburg",
+      "issued_at_utc": "2026-09-22T17:30:06Z",
+      "label": "DEL2-2026",
+      "market": "regulation_3way",
+      "model": {
+        "lambda_away": 2.9,
+        "lambda_home": 3.1,
+        "league_rates": {
+          "away": 2.9,
+          "home": 3.1,
+          "source": "prior (only 3 released matches)"
+        },
+        "market": "regulation-time 3-way (60 minutes)",
+        "model_prob": {
+          "away": 0.3850832510496155,
+          "draw": 0.16615123827885156,
+          "home": 0.448765510671533
+        },
+        "odds": "none (no permissioned odds path)",
+        "rule": "argmax regulation 3-way",
+        "team_multipliers": {
+          "away": {
+            "attack": 1.0,
+            "defence": 1.0,
+            "matches": 0
+          },
+          "home": {
+            "attack": 1.0,
+            "defence": 1.0,
+            "matches": 0
+          }
+        }
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "regulation_3way",
+      "prediction_id": "fwd-b583dfff0316adfd536e",
+      "selection": "EHC Freiburg",
+      "selection_key": "home",
+      "source_event_id": "84100",
+      "source_url": "https://api.openligadb.de/getmatchdata/DEL2/2026/84100",
+      "sport": "ice_hockey",
+      "start_utc": "2026-09-27T14:00:00Z",
+      "strategy_id": "hockey-reg-poisson-v1",
+      "strategy_name": "Poisson regulation 3-way (hockey)"
+    },
+    {
+      "away_team": "Ravensburg Towerstars",
+      "competition": "DEL2 Hauptrunde",
+      "cutoff_utc": "2026-09-22T17:30:06Z",
+      "event": "Dresdner Eislöwen v Ravensburg Towerstars",
+      "event_id": "ev-9908540dc200cf165217",
+      "group_name": "4. Spieltag",
+      "group_order": 4,
+      "home_team": "Dresdner Eislöwen",
+      "issued_at_utc": "2026-09-22T17:30:06Z",
+      "label": "DEL2-2026",
+      "market": "regulation_3way",
+      "model": {
+        "lambda_away": 3.0381,
+        "lambda_home": 3.1,
+        "league_rates": {
+          "away": 2.9,
+          "home": 3.1,
+          "source": "prior (only 3 released matches)"
+        },
+        "market": "regulation-time 3-way (60 minutes)",
+        "model_prob": {
+          "away": 0.4079278490982751,
+          "draw": 0.1646295737541707,
+          "home": 0.4274425771475542
+        },
+        "odds": "none (no permissioned odds path)",
+        "rule": "argmax regulation 3-way",
+        "team_multipliers": {
+          "away": {
+            "attack": 1.0476,
+            "defence": 1.0,
+            "matches": 1
+          },
+          "home": {
+            "attack": 1.0,
+            "defence": 1.0,
+            "matches": 0
+          }
+        }
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "regulation_3way",
+      "prediction_id": "fwd-94e469513da7dd8ed6d7",
+      "selection": "Dresdner Eislöwen",
+      "selection_key": "home",
+      "source_event_id": "84101",
+      "source_url": "https://api.openligadb.de/getmatchdata/DEL2/2026/84101",
+      "sport": "ice_hockey",
+      "start_utc": "2026-09-27T14:00:00Z",
+      "strategy_id": "hockey-reg-poisson-v1",
+      "strategy_name": "Poisson regulation 3-way (hockey)"
+    },
+    {
+      "away_team": "Bietigheim Steelers",
+      "competition": "DEL2 Hauptrunde",
+      "cutoff_utc": "2026-09-22T17:30:06Z",
+      "event": "Starbulls Rosenheim v Bietigheim Steelers",
+      "event_id": "ev-8f6c27bf02297b16d581",
+      "group_name": "4. Spieltag",
+      "group_order": 4,
+      "home_team": "Starbulls Rosenheim",
+      "issued_at_utc": "2026-09-22T17:30:06Z",
+      "label": "DEL2-2026",
+      "market": "regulation_3way",
+      "model": {
+        "lambda_away": 2.9,
+        "lambda_home": 3.1,
+        "league_rates": {
+          "away": 2.9,
+          "home": 3.1,
+          "source": "prior (only 3 released matches)"
+        },
+        "market": "regulation-time 3-way (60 minutes)",
+        "model_prob": {
+          "away": 0.3850832510496155,
+          "draw": 0.16615123827885156,
+          "home": 0.448765510671533
+        },
+        "odds": "none (no permissioned odds path)",
+        "rule": "argmax regulation 3-way",
+        "team_multipliers": {
+          "away": {
+            "attack": 1.0,
+            "defence": 1.0,
+            "matches": 0
+          },
+          "home": {
+            "attack": 1.0,
+            "defence": 1.0,
+            "matches": 0
+          }
+        }
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "regulation_3way",
+      "prediction_id": "fwd-700dcd0438c4d5b3f0e9",
+      "selection": "Starbulls Rosenheim",
+      "selection_key": "home",
+      "source_event_id": "84105",
+      "source_url": "https://api.openligadb.de/getmatchdata/DEL2/2026/84105",
+      "sport": "ice_hockey",
+      "start_utc": "2026-09-27T15:00:00Z",
+      "strategy_id": "hockey-reg-poisson-v1",
+      "strategy_name": "Poisson regulation 3-way (hockey)"
+    },
+    {
+      "away_team": "EC Bad Nauheim",
+      "competition": "DEL2 Hauptrunde",
+      "cutoff_utc": "2026-09-22T17:30:06Z",
+      "event": "Lausitzer Füchse v EC Bad Nauheim",
+      "event_id": "ev-a16258480f1f57c485fd",
+      "group_name": "4. Spieltag",
+      "group_order": 4,
+      "home_team": "Lausitzer Füchse",
+      "issued_at_utc": "2026-09-22T17:30:06Z",
+      "label": "DEL2-2026",
+      "market": "regulation_3way",
+      "model": {
+        "lambda_away": 2.9,
+        "lambda_home": 3.1,
+        "league_rates": {
+          "away": 2.9,
+          "home": 3.1,
+          "source": "prior (only 3 released matches)"
+        },
+        "market": "regulation-time 3-way (60 minutes)",
+        "model_prob": {
+          "away": 0.3850832510496155,
+          "draw": 0.16615123827885156,
+          "home": 0.448765510671533
+        },
+        "odds": "none (no permissioned odds path)",
+        "rule": "argmax regulation 3-way",
+        "team_multipliers": {
+          "away": {
+            "attack": 1.0,
+            "defence": 1.0,
+            "matches": 0
+          },
+          "home": {
+            "attack": 1.0,
+            "defence": 1.0,
+            "matches": 0
+          }
+        }
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "regulation_3way",
+      "prediction_id": "fwd-ab62ba8feadc232c6d06",
+      "selection": "Lausitzer Füchse",
+      "selection_key": "home",
+      "source_event_id": "84104",
+      "source_url": "https://api.openligadb.de/getmatchdata/DEL2/2026/84104",
+      "sport": "ice_hockey",
+      "start_utc": "2026-09-27T15:00:00Z",
+      "strategy_id": "hockey-reg-poisson-v1",
+      "strategy_name": "Poisson regulation 3-way (hockey)"
+    },
+    {
+      "away_team": "EV Landshut",
+      "competition": "DEL2 Hauptrunde",
+      "cutoff_utc": "2026-09-22T17:30:06Z",
+      "event": "Eisbären Regensburg v EV Landshut",
+      "event_id": "ev-adcd0374f51289f70685",
+      "group_name": "4. Spieltag",
+      "group_order": 4,
+      "home_team": "Eisbären Regensburg",
+      "issued_at_utc": "2026-09-22T17:30:06Z",
+      "label": "DEL2-2026",
+      "market": "regulation_3way",
+      "model": {
+        "lambda_away": 3.3274,
+        "lambda_home": 3.5429,
+        "league_rates": {
+          "away": 2.9,
+          "home": 3.1,
+          "source": "prior (only 3 released matches)"
+        },
+        "market": "regulation-time 3-way (60 minutes)",
+        "model_prob": {
+          "away": 0.3904779157355549,
+          "draw": 0.15476081573103043,
+          "home": 0.4547612685334147
+        },
+        "odds": "none (no permissioned odds path)",
+        "rule": "argmax regulation 3-way",
+        "team_multipliers": {
+          "away": {
+            "attack": 1.0952,
+            "defence": 1.1429,
+            "matches": 1
+          },
+          "home": {
+            "attack": 1.0,
+            "defence": 1.0476,
+            "matches": 1
+          }
+        }
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "regulation_3way",
+      "prediction_id": "fwd-5ec8a0e669c81cfee419",
+      "selection": "Eisbären Regensburg",
+      "selection_key": "home",
+      "source_event_id": "84103",
+      "source_url": "https://api.openligadb.de/getmatchdata/DEL2/2026/84103",
+      "sport": "ice_hockey",
+      "start_utc": "2026-09-27T15:00:00Z",
+      "strategy_id": "hockey-reg-poisson-v1",
+      "strategy_name": "Poisson regulation 3-way (hockey)"
+    },
+    {
+      "away_team": "ECDC Memmingen",
+      "competition": "DEL2 Hauptrunde",
+      "cutoff_utc": "2026-09-22T17:30:06Z",
+      "event": "Düsseldorfer EG v ECDC Memmingen",
+      "event_id": "ev-d2287cec51073c069afb",
+      "group_name": "4. Spieltag",
+      "group_order": 4,
+      "home_team": "Düsseldorfer EG",
+      "issued_at_utc": "2026-09-22T17:30:06Z",
+      "label": "DEL2-2026",
+      "market": "regulation_3way",
+      "model": {
+        "lambda_away": 2.9,
+        "lambda_home": 3.6167,
+        "league_rates": {
+          "away": 2.9,
+          "home": 3.1,
+          "source": "prior (only 3 released matches)"
+        },
+        "market": "regulation-time 3-way (60 minutes)",
+        "model_prob": {
+          "away": 0.31449035795622204,
+          "draw": 0.15389491276987172,
+          "home": 0.5316147292739062
+        },
+        "odds": "none (no permissioned odds path)",
+        "rule": "argmax regulation 3-way",
+        "team_multipliers": {
+          "away": {
+            "attack": 1.0,
+            "defence": 1.0,
+            "matches": 0
+          },
+          "home": {
+            "attack": 1.1667,
+            "defence": 1.0,
+            "matches": 2
+          }
+        }
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "regulation_3way",
+      "prediction_id": "fwd-33d141c2c1c06c2de55f",
+      "selection": "Düsseldorfer EG",
+      "selection_key": "home",
+      "source_event_id": "84102",
+      "source_url": "https://api.openligadb.de/getmatchdata/DEL2/2026/84102",
+      "sport": "ice_hockey",
+      "start_utc": "2026-09-27T15:00:00Z",
+      "strategy_id": "hockey-reg-poisson-v1",
+      "strategy_name": "Poisson regulation 3-way (hockey)"
+    },
+    {
+      "away_team": "Eispiraten Crimmitschau",
+      "competition": "DEL2 Hauptrunde",
+      "cutoff_utc": "2026-09-22T17:30:06Z",
+      "event": "Blue Devils Weiden v Eispiraten Crimmitschau",
+      "event_id": "ev-3c96048da74d81d34d5a",
+      "group_name": "4. Spieltag",
+      "group_order": 4,
+      "home_team": "Blue Devils Weiden",
+      "issued_at_utc": "2026-09-22T17:30:06Z",
+      "label": "DEL2-2026",
+      "market": "regulation_3way",
+      "model": {
+        "lambda_away": 2.6238,
+        "lambda_home": 3.2476,
+        "league_rates": {
+          "away": 2.9,
+          "home": 3.1,
+          "source": "prior (only 3 released matches)"
+        },
+        "market": "regulation-time 3-way (60 minutes)",
+        "model_prob": {
+          "away": 0.3187108753180681,
+          "draw": 0.16354629976102836,
+          "home": 0.5177428249209036
+        },
+        "odds": "none (no permissioned odds path)",
+        "rule": "argmax regulation 3-way",
+        "team_multipliers": {
+          "away": {
+            "attack": 0.9048,
+            "defence": 1.0476,
+            "matches": 1
+          },
+          "home": {
+            "attack": 1.0,
+            "defence": 1.0,
+            "matches": 0
+          }
+        }
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "regulation_3way",
+      "prediction_id": "fwd-0207d13e49a1b50ebc53",
+      "selection": "Blue Devils Weiden",
+      "selection_key": "home",
+      "source_event_id": "84106",
+      "source_url": "https://api.openligadb.de/getmatchdata/DEL2/2026/84106",
+      "sport": "ice_hockey",
+      "start_utc": "2026-09-27T16:30:00Z",
+      "strategy_id": "hockey-reg-poisson-v1",
+      "strategy_name": "Poisson regulation 3-way (hockey)"
+    },
+    {
+      "away_team": "Eispiraten Crimmitschau",
+      "competition": "DEL2 Hauptrunde",
+      "cutoff_utc": "2026-09-22T17:30:06Z",
+      "event": "EC Kassel Huskies v Eispiraten Crimmitschau",
+      "event_id": "ev-68c4573b0e149a1a70c1",
+      "group_name": "5. Spieltag",
+      "group_order": 5,
+      "home_team": "EC Kassel Huskies",
+      "issued_at_utc": "2026-09-22T17:30:06Z",
+      "label": "DEL2-2026",
+      "market": "regulation_3way",
+      "model": {
+        "lambda_away": 2.6238,
+        "lambda_home": 3.2476,
+        "league_rates": {
+          "away": 2.9,
+          "home": 3.1,
+          "source": "prior (only 3 released matches)"
+        },
+        "market": "regulation-time 3-way (60 minutes)",
+        "model_prob": {
+          "away": 0.3187108753180681,
+          "draw": 0.16354629976102836,
+          "home": 0.5177428249209036
+        },
+        "odds": "none (no permissioned odds path)",
+        "rule": "argmax regulation 3-way",
+        "team_multipliers": {
+          "away": {
+            "attack": 0.9048,
+            "defence": 1.0476,
+            "matches": 1
+          },
+          "home": {
+            "attack": 1.0,
+            "defence": 1.0,
+            "matches": 0
+          }
+        }
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "regulation_3way",
+      "prediction_id": "fwd-63f97fdbcbca681da261",
+      "selection": "EC Kassel Huskies",
+      "selection_key": "home",
+      "source_event_id": "84110",
+      "source_url": "https://api.openligadb.de/getmatchdata/DEL2/2026/84110",
+      "sport": "ice_hockey",
+      "start_utc": "2026-10-02T17:30:00Z",
+      "strategy_id": "hockey-reg-poisson-v1",
+      "strategy_name": "Poisson regulation 3-way (hockey)"
+    },
+    {
+      "away_team": "Bietigheim Steelers",
+      "competition": "DEL2 Hauptrunde",
+      "cutoff_utc": "2026-09-22T17:30:06Z",
+      "event": "Dresdner Eislöwen v Bietigheim Steelers",
+      "event_id": "ev-a68e23356949c949a9f7",
+      "group_name": "5. Spieltag",
+      "group_order": 5,
+      "home_team": "Dresdner Eislöwen",
+      "issued_at_utc": "2026-09-22T17:30:06Z",
+      "label": "DEL2-2026",
+      "market": "regulation_3way",
+      "model": {
+        "lambda_away": 2.9,
+        "lambda_home": 3.1,
+        "league_rates": {
+          "away": 2.9,
+          "home": 3.1,
+          "source": "prior (only 3 released matches)"
+        },
+        "market": "regulation-time 3-way (60 minutes)",
+        "model_prob": {
+          "away": 0.3850832510496155,
+          "draw": 0.16615123827885156,
+          "home": 0.448765510671533
+        },
+        "odds": "none (no permissioned odds path)",
+        "rule": "argmax regulation 3-way",
+        "team_multipliers": {
+          "away": {
+            "attack": 1.0,
+            "defence": 1.0,
+            "matches": 0
+          },
+          "home": {
+            "attack": 1.0,
+            "defence": 1.0,
+            "matches": 0
+          }
+        }
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "regulation_3way",
+      "prediction_id": "fwd-8480450ed973cd0a7b87",
+      "selection": "Dresdner Eislöwen",
+      "selection_key": "home",
+      "source_event_id": "84109",
+      "source_url": "https://api.openligadb.de/getmatchdata/DEL2/2026/84109",
+      "sport": "ice_hockey",
+      "start_utc": "2026-10-02T17:30:00Z",
+      "strategy_id": "hockey-reg-poisson-v1",
+      "strategy_name": "Poisson regulation 3-way (hockey)"
+    },
+    {
+      "away_team": "EV Landshut",
+      "competition": "DEL2 Hauptrunde",
+      "cutoff_utc": "2026-09-22T17:30:06Z",
+      "event": "EHC Freiburg v EV Landshut",
+      "event_id": "ev-be801434a5da69b8622b",
+      "group_name": "5. Spieltag",
+      "group_order": 5,
+      "home_team": "EHC Freiburg",
+      "issued_at_utc": "2026-09-22T17:30:06Z",
+      "label": "DEL2-2026",
+      "market": "regulation_3way",
+      "model": {
+        "lambda_away": 3.1762,
+        "lambda_home": 3.5429,
+        "league_rates": {
+          "away": 2.9,
+          "home": 3.1,
+          "source": "prior (only 3 released matches)"
+        },
+        "market": "regulation-time 3-way (60 minutes)",
+        "model_prob": {
+          "away": 0.36700012654980424,
+          "draw": 0.1556158957267544,
+          "home": 0.4773839777234413
+        },
+        "odds": "none (no permissioned odds path)",
+        "rule": "argmax regulation 3-way",
+        "team_multipliers": {
+          "away": {
+            "attack": 1.0952,
+            "defence": 1.1429,
+            "matches": 1
+          },
+          "home": {
+            "attack": 1.0,
+            "defence": 1.0,
+            "matches": 0
+          }
+        }
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "regulation_3way",
+      "prediction_id": "fwd-9695c6affbc49da88e9e",
+      "selection": "EHC Freiburg",
+      "selection_key": "home",
+      "source_event_id": "84107",
+      "source_url": "https://api.openligadb.de/getmatchdata/DEL2/2026/84107",
+      "sport": "ice_hockey",
+      "start_utc": "2026-10-02T17:30:00Z",
+      "strategy_id": "hockey-reg-poisson-v1",
+      "strategy_name": "Poisson regulation 3-way (hockey)"
+    },
+    {
+      "away_team": "Düsseldorfer EG",
+      "competition": "DEL2 Hauptrunde",
+      "cutoff_utc": "2026-09-22T17:30:06Z",
+      "event": "Starbulls Rosenheim v Düsseldorfer EG",
+      "event_id": "ev-c7c5a0417c9cd0590f26",
+      "group_name": "5. Spieltag",
+      "group_order": 5,
+      "home_team": "Starbulls Rosenheim",
+      "issued_at_utc": "2026-09-22T17:30:06Z",
+      "label": "DEL2-2026",
+      "market": "regulation_3way",
+      "model": {
+        "lambda_away": 3.3833,
+        "lambda_home": 3.1,
+        "league_rates": {
+          "away": 2.9,
+          "home": 3.1,
+          "source": "prior (only 3 released matches)"
+        },
+        "market": "regulation-time 3-way (60 minutes)",
+        "model_prob": {
+          "away": 0.4638767838618757,
+          "draw": 0.159111198307365,
+          "home": 0.37701201783075927
+        },
+        "odds": "none (no permissioned odds path)",
+        "rule": "argmax regulation 3-way",
+        "team_multipliers": {
+          "away": {
+            "attack": 1.1667,
+            "defence": 1.0,
+            "matches": 2
+          },
+          "home": {
+            "attack": 1.0,
+            "defence": 1.0,
+            "matches": 0
+          }
+        }
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "regulation_3way",
+      "prediction_id": "fwd-68b7b8a40c3e864950f5",
+      "selection": "Düsseldorfer EG",
+      "selection_key": "away",
+      "source_event_id": "84108",
+      "source_url": "https://api.openligadb.de/getmatchdata/DEL2/2026/84108",
+      "sport": "ice_hockey",
+      "start_utc": "2026-10-02T17:30:00Z",
+      "strategy_id": "hockey-reg-poisson-v1",
+      "strategy_name": "Poisson regulation 3-way (hockey)"
+    },
+    {
+      "away_team": "Blue Devils Weiden",
+      "competition": "DEL2 Hauptrunde",
+      "cutoff_utc": "2026-09-22T17:30:06Z",
+      "event": "Bietigheim Steelers v Blue Devils Weiden",
+      "event_id": "ev-23ab06d1a2da26be2e9c",
+      "group_name": "3. Spieltag",
+      "group_order": 3,
+      "home_team": "Bietigheim Steelers",
+      "issued_at_utc": "2026-09-22T17:30:06Z",
+      "label": "DEL2-2026",
+      "market": "regulation_3way",
+      "model": {
+        "model_prob": {
+          "away": 0.5,
+          "draw": 0.0,
+          "home": 0.5
+        },
+        "odds": "none (no permissioned odds path)",
+        "prior": "flat 0.5/0/0.5 (uninformative by design)",
+        "rule": "always the home side in regulation time"
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "regulation_3way",
+      "prediction_id": "fwd-455fd6b22342b8a163a0",
+      "selection": "Bietigheim Steelers",
+      "selection_key": "home",
+      "source_event_id": "84093",
+      "source_url": "https://api.openligadb.de/getmatchdata/DEL2/2026/84093",
+      "sport": "ice_hockey",
+      "start_utc": "2026-09-25T17:30:00Z",
+      "strategy_id": "hockey-reg-home-v1",
+      "strategy_name": "Regulation home naive baseline (hockey)"
+    },
+    {
+      "away_team": "Eisbären Regensburg",
+      "competition": "DEL2 Hauptrunde",
+      "cutoff_utc": "2026-09-22T17:30:06Z",
+      "event": "EC Bad Nauheim v Eisbären Regensburg",
+      "event_id": "ev-2f05f34ea327a9d1fe95",
+      "group_name": "3. Spieltag",
+      "group_order": 3,
+      "home_team": "EC Bad Nauheim",
+      "issued_at_utc": "2026-09-22T17:30:06Z",
+      "label": "DEL2-2026",
+      "market": "regulation_3way",
+      "model": {
+        "model_prob": {
+          "away": 0.5,
+          "draw": 0.0,
+          "home": 0.5
+        },
+        "odds": "none (no permissioned odds path)",
+        "prior": "flat 0.5/0/0.5 (uninformative by design)",
+        "rule": "always the home side in regulation time"
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "regulation_3way",
+      "prediction_id": "fwd-10b542e109e232333e28",
+      "selection": "EC Bad Nauheim",
+      "selection_key": "home",
+      "source_event_id": "84094",
+      "source_url": "https://api.openligadb.de/getmatchdata/DEL2/2026/84094",
+      "sport": "ice_hockey",
+      "start_utc": "2026-09-25T17:30:00Z",
+      "strategy_id": "hockey-reg-home-v1",
+      "strategy_name": "Regulation home naive baseline (hockey)"
+    },
+    {
+      "away_team": "Lausitzer Füchse",
+      "competition": "DEL2 Hauptrunde",
+      "cutoff_utc": "2026-09-22T17:30:06Z",
+      "event": "EC Kassel Huskies v Lausitzer Füchse",
+      "event_id": "ev-6178274d9a2587af463f",
+      "group_name": "3. Spieltag",
+      "group_order": 3,
+      "home_team": "EC Kassel Huskies",
+      "issued_at_utc": "2026-09-22T17:30:06Z",
+      "label": "DEL2-2026",
+      "market": "regulation_3way",
+      "model": {
+        "model_prob": {
+          "away": 0.5,
+          "draw": 0.0,
+          "home": 0.5
+        },
+        "odds": "none (no permissioned odds path)",
+        "prior": "flat 0.5/0/0.5 (uninformative by design)",
+        "rule": "always the home side in regulation time"
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "regulation_3way",
+      "prediction_id": "fwd-e302fb4ba617c4fd7c82",
+      "selection": "EC Kassel Huskies",
+      "selection_key": "home",
+      "source_event_id": "84097",
+      "source_url": "https://api.openligadb.de/getmatchdata/DEL2/2026/84097",
+      "sport": "ice_hockey",
+      "start_utc": "2026-09-25T17:30:00Z",
+      "strategy_id": "hockey-reg-home-v1",
+      "strategy_name": "Regulation home naive baseline (hockey)"
+    },
+    {
+      "away_team": "Dresdner Eislöwen",
+      "competition": "DEL2 Hauptrunde",
+      "cutoff_utc": "2026-09-22T17:30:06Z",
+      "event": "Eispiraten Crimmitschau v Dresdner Eislöwen",
+      "event_id": "ev-63118edd72efb0b8bd45",
+      "group_name": "3. Spieltag",
+      "group_order": 3,
+      "home_team": "Eispiraten Crimmitschau",
+      "issued_at_utc": "2026-09-22T17:30:06Z",
+      "label": "DEL2-2026",
+      "market": "regulation_3way",
+      "model": {
+        "model_prob": {
+          "away": 0.5,
+          "draw": 0.0,
+          "home": 0.5
+        },
+        "odds": "none (no permissioned odds path)",
+        "prior": "flat 0.5/0/0.5 (uninformative by design)",
+        "rule": "always the home side in regulation time"
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "regulation_3way",
+      "prediction_id": "fwd-0cb65d0981c0145ab1c5",
+      "selection": "Eispiraten Crimmitschau",
+      "selection_key": "home",
+      "source_event_id": "84095",
+      "source_url": "https://api.openligadb.de/getmatchdata/DEL2/2026/84095",
+      "sport": "ice_hockey",
+      "start_utc": "2026-09-25T17:30:00Z",
+      "strategy_id": "hockey-reg-home-v1",
+      "strategy_name": "Regulation home naive baseline (hockey)"
+    },
+    {
+      "away_team": "Starbulls Rosenheim",
+      "competition": "DEL2 Hauptrunde",
+      "cutoff_utc": "2026-09-22T17:30:06Z",
+      "event": "EV Landshut v Starbulls Rosenheim",
+      "event_id": "ev-bc7e3f1a025a31b50340",
+      "group_name": "3. Spieltag",
+      "group_order": 3,
+      "home_team": "EV Landshut",
+      "issued_at_utc": "2026-09-22T17:30:06Z",
+      "label": "DEL2-2026",
+      "market": "regulation_3way",
+      "model": {
+        "model_prob": {
+          "away": 0.5,
+          "draw": 0.0,
+          "home": 0.5
+        },
+        "odds": "none (no permissioned odds path)",
+        "prior": "flat 0.5/0/0.5 (uninformative by design)",
+        "rule": "always the home side in regulation time"
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "regulation_3way",
+      "prediction_id": "fwd-ff54a0b46a7114df58df",
+      "selection": "EV Landshut",
+      "selection_key": "home",
+      "source_event_id": "84096",
+      "source_url": "https://api.openligadb.de/getmatchdata/DEL2/2026/84096",
+      "sport": "ice_hockey",
+      "start_utc": "2026-09-25T17:30:00Z",
+      "strategy_id": "hockey-reg-home-v1",
+      "strategy_name": "Regulation home naive baseline (hockey)"
+    },
+    {
+      "away_team": "Düsseldorfer EG",
+      "competition": "DEL2 Hauptrunde",
+      "cutoff_utc": "2026-09-22T17:30:06Z",
+      "event": "Ravensburg Towerstars v Düsseldorfer EG",
+      "event_id": "ev-5011704668db7c6a4bb1",
+      "group_name": "3. Spieltag",
+      "group_order": 3,
+      "home_team": "Ravensburg Towerstars",
+      "issued_at_utc": "2026-09-22T17:30:06Z",
+      "label": "DEL2-2026",
+      "market": "regulation_3way",
+      "model": {
+        "model_prob": {
+          "away": 0.5,
+          "draw": 0.0,
+          "home": 0.5
+        },
+        "odds": "none (no permissioned odds path)",
+        "prior": "flat 0.5/0/0.5 (uninformative by design)",
+        "rule": "always the home side in regulation time"
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "regulation_3way",
+      "prediction_id": "fwd-e781d7c4dca1c49cc39d",
+      "selection": "Ravensburg Towerstars",
+      "selection_key": "home",
+      "source_event_id": "84099",
+      "source_url": "https://api.openligadb.de/getmatchdata/DEL2/2026/84099",
+      "sport": "ice_hockey",
+      "start_utc": "2026-09-25T18:00:00Z",
+      "strategy_id": "hockey-reg-home-v1",
+      "strategy_name": "Regulation home naive baseline (hockey)"
+    },
+    {
+      "away_team": "EHC Freiburg",
+      "competition": "DEL2 Hauptrunde",
+      "cutoff_utc": "2026-09-22T17:30:06Z",
+      "event": "ECDC Memmingen v EHC Freiburg",
+      "event_id": "ev-f0fb790346c007219eb5",
+      "group_name": "3. Spieltag",
+      "group_order": 3,
+      "home_team": "ECDC Memmingen",
+      "issued_at_utc": "2026-09-22T17:30:06Z",
+      "label": "DEL2-2026",
+      "market": "regulation_3way",
+      "model": {
+        "model_prob": {
+          "away": 0.5,
+          "draw": 0.0,
+          "home": 0.5
+        },
+        "odds": "none (no permissioned odds path)",
+        "prior": "flat 0.5/0/0.5 (uninformative by design)",
+        "rule": "always the home side in regulation time"
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "regulation_3way",
+      "prediction_id": "fwd-f13d47ab383483a76468",
+      "selection": "ECDC Memmingen",
+      "selection_key": "home",
+      "source_event_id": "84098",
+      "source_url": "https://api.openligadb.de/getmatchdata/DEL2/2026/84098",
+      "sport": "ice_hockey",
+      "start_utc": "2026-09-25T18:00:00Z",
+      "strategy_id": "hockey-reg-home-v1",
+      "strategy_name": "Regulation home naive baseline (hockey)"
+    },
+    {
+      "away_team": "EC Kassel Huskies",
+      "competition": "DEL2 Hauptrunde",
+      "cutoff_utc": "2026-09-22T17:30:06Z",
+      "event": "EHC Freiburg v EC Kassel Huskies",
+      "event_id": "ev-135fad2ec9ce20421f7a",
+      "group_name": "4. Spieltag",
+      "group_order": 4,
+      "home_team": "EHC Freiburg",
+      "issued_at_utc": "2026-09-22T17:30:06Z",
+      "label": "DEL2-2026",
+      "market": "regulation_3way",
+      "model": {
+        "model_prob": {
+          "away": 0.5,
+          "draw": 0.0,
+          "home": 0.5
+        },
+        "odds": "none (no permissioned odds path)",
+        "prior": "flat 0.5/0/0.5 (uninformative by design)",
+        "rule": "always the home side in regulation time"
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "regulation_3way",
+      "prediction_id": "fwd-8368dcd7853ef4267f56",
+      "selection": "EHC Freiburg",
+      "selection_key": "home",
+      "source_event_id": "84100",
+      "source_url": "https://api.openligadb.de/getmatchdata/DEL2/2026/84100",
+      "sport": "ice_hockey",
+      "start_utc": "2026-09-27T14:00:00Z",
+      "strategy_id": "hockey-reg-home-v1",
+      "strategy_name": "Regulation home naive baseline (hockey)"
+    },
+    {
+      "away_team": "Ravensburg Towerstars",
+      "competition": "DEL2 Hauptrunde",
+      "cutoff_utc": "2026-09-22T17:30:06Z",
+      "event": "Dresdner Eislöwen v Ravensburg Towerstars",
+      "event_id": "ev-9908540dc200cf165217",
+      "group_name": "4. Spieltag",
+      "group_order": 4,
+      "home_team": "Dresdner Eislöwen",
+      "issued_at_utc": "2026-09-22T17:30:06Z",
+      "label": "DEL2-2026",
+      "market": "regulation_3way",
+      "model": {
+        "model_prob": {
+          "away": 0.5,
+          "draw": 0.0,
+          "home": 0.5
+        },
+        "odds": "none (no permissioned odds path)",
+        "prior": "flat 0.5/0/0.5 (uninformative by design)",
+        "rule": "always the home side in regulation time"
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "regulation_3way",
+      "prediction_id": "fwd-4a7892354f565b11c52c",
+      "selection": "Dresdner Eislöwen",
+      "selection_key": "home",
+      "source_event_id": "84101",
+      "source_url": "https://api.openligadb.de/getmatchdata/DEL2/2026/84101",
+      "sport": "ice_hockey",
+      "start_utc": "2026-09-27T14:00:00Z",
+      "strategy_id": "hockey-reg-home-v1",
+      "strategy_name": "Regulation home naive baseline (hockey)"
+    },
+    {
+      "away_team": "Bietigheim Steelers",
+      "competition": "DEL2 Hauptrunde",
+      "cutoff_utc": "2026-09-22T17:30:06Z",
+      "event": "Starbulls Rosenheim v Bietigheim Steelers",
+      "event_id": "ev-8f6c27bf02297b16d581",
+      "group_name": "4. Spieltag",
+      "group_order": 4,
+      "home_team": "Starbulls Rosenheim",
+      "issued_at_utc": "2026-09-22T17:30:06Z",
+      "label": "DEL2-2026",
+      "market": "regulation_3way",
+      "model": {
+        "model_prob": {
+          "away": 0.5,
+          "draw": 0.0,
+          "home": 0.5
+        },
+        "odds": "none (no permissioned odds path)",
+        "prior": "flat 0.5/0/0.5 (uninformative by design)",
+        "rule": "always the home side in regulation time"
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "regulation_3way",
+      "prediction_id": "fwd-7deb3044a90c6f432bdc",
+      "selection": "Starbulls Rosenheim",
+      "selection_key": "home",
+      "source_event_id": "84105",
+      "source_url": "https://api.openligadb.de/getmatchdata/DEL2/2026/84105",
+      "sport": "ice_hockey",
+      "start_utc": "2026-09-27T15:00:00Z",
+      "strategy_id": "hockey-reg-home-v1",
+      "strategy_name": "Regulation home naive baseline (hockey)"
+    },
+    {
+      "away_team": "EC Bad Nauheim",
+      "competition": "DEL2 Hauptrunde",
+      "cutoff_utc": "2026-09-22T17:30:06Z",
+      "event": "Lausitzer Füchse v EC Bad Nauheim",
+      "event_id": "ev-a16258480f1f57c485fd",
+      "group_name": "4. Spieltag",
+      "group_order": 4,
+      "home_team": "Lausitzer Füchse",
+      "issued_at_utc": "2026-09-22T17:30:06Z",
+      "label": "DEL2-2026",
+      "market": "regulation_3way",
+      "model": {
+        "model_prob": {
+          "away": 0.5,
+          "draw": 0.0,
+          "home": 0.5
+        },
+        "odds": "none (no permissioned odds path)",
+        "prior": "flat 0.5/0/0.5 (uninformative by design)",
+        "rule": "always the home side in regulation time"
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "regulation_3way",
+      "prediction_id": "fwd-73b2fb66ee5a757d465a",
+      "selection": "Lausitzer Füchse",
+      "selection_key": "home",
+      "source_event_id": "84104",
+      "source_url": "https://api.openligadb.de/getmatchdata/DEL2/2026/84104",
+      "sport": "ice_hockey",
+      "start_utc": "2026-09-27T15:00:00Z",
+      "strategy_id": "hockey-reg-home-v1",
+      "strategy_name": "Regulation home naive baseline (hockey)"
+    },
+    {
+      "away_team": "EV Landshut",
+      "competition": "DEL2 Hauptrunde",
+      "cutoff_utc": "2026-09-22T17:30:06Z",
+      "event": "Eisbären Regensburg v EV Landshut",
+      "event_id": "ev-adcd0374f51289f70685",
+      "group_name": "4. Spieltag",
+      "group_order": 4,
+      "home_team": "Eisbären Regensburg",
+      "issued_at_utc": "2026-09-22T17:30:06Z",
+      "label": "DEL2-2026",
+      "market": "regulation_3way",
+      "model": {
+        "model_prob": {
+          "away": 0.5,
+          "draw": 0.0,
+          "home": 0.5
+        },
+        "odds": "none (no permissioned odds path)",
+        "prior": "flat 0.5/0/0.5 (uninformative by design)",
+        "rule": "always the home side in regulation time"
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "regulation_3way",
+      "prediction_id": "fwd-b94b20bd05a766467b9e",
+      "selection": "Eisbären Regensburg",
+      "selection_key": "home",
+      "source_event_id": "84103",
+      "source_url": "https://api.openligadb.de/getmatchdata/DEL2/2026/84103",
+      "sport": "ice_hockey",
+      "start_utc": "2026-09-27T15:00:00Z",
+      "strategy_id": "hockey-reg-home-v1",
+      "strategy_name": "Regulation home naive baseline (hockey)"
+    },
+    {
+      "away_team": "ECDC Memmingen",
+      "competition": "DEL2 Hauptrunde",
+      "cutoff_utc": "2026-09-22T17:30:06Z",
+      "event": "Düsseldorfer EG v ECDC Memmingen",
+      "event_id": "ev-d2287cec51073c069afb",
+      "group_name": "4. Spieltag",
+      "group_order": 4,
+      "home_team": "Düsseldorfer EG",
+      "issued_at_utc": "2026-09-22T17:30:06Z",
+      "label": "DEL2-2026",
+      "market": "regulation_3way",
+      "model": {
+        "model_prob": {
+          "away": 0.5,
+          "draw": 0.0,
+          "home": 0.5
+        },
+        "odds": "none (no permissioned odds path)",
+        "prior": "flat 0.5/0/0.5 (uninformative by design)",
+        "rule": "always the home side in regulation time"
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "regulation_3way",
+      "prediction_id": "fwd-a2e4c45df375db5711fb",
+      "selection": "Düsseldorfer EG",
+      "selection_key": "home",
+      "source_event_id": "84102",
+      "source_url": "https://api.openligadb.de/getmatchdata/DEL2/2026/84102",
+      "sport": "ice_hockey",
+      "start_utc": "2026-09-27T15:00:00Z",
+      "strategy_id": "hockey-reg-home-v1",
+      "strategy_name": "Regulation home naive baseline (hockey)"
+    },
+    {
+      "away_team": "Eispiraten Crimmitschau",
+      "competition": "DEL2 Hauptrunde",
+      "cutoff_utc": "2026-09-22T17:30:06Z",
+      "event": "Blue Devils Weiden v Eispiraten Crimmitschau",
+      "event_id": "ev-3c96048da74d81d34d5a",
+      "group_name": "4. Spieltag",
+      "group_order": 4,
+      "home_team": "Blue Devils Weiden",
+      "issued_at_utc": "2026-09-22T17:30:06Z",
+      "label": "DEL2-2026",
+      "market": "regulation_3way",
+      "model": {
+        "model_prob": {
+          "away": 0.5,
+          "draw": 0.0,
+          "home": 0.5
+        },
+        "odds": "none (no permissioned odds path)",
+        "prior": "flat 0.5/0/0.5 (uninformative by design)",
+        "rule": "always the home side in regulation time"
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "regulation_3way",
+      "prediction_id": "fwd-2f0c4644e832e0ae8dbc",
+      "selection": "Blue Devils Weiden",
+      "selection_key": "home",
+      "source_event_id": "84106",
+      "source_url": "https://api.openligadb.de/getmatchdata/DEL2/2026/84106",
+      "sport": "ice_hockey",
+      "start_utc": "2026-09-27T16:30:00Z",
+      "strategy_id": "hockey-reg-home-v1",
+      "strategy_name": "Regulation home naive baseline (hockey)"
+    },
+    {
+      "away_team": "Eispiraten Crimmitschau",
+      "competition": "DEL2 Hauptrunde",
+      "cutoff_utc": "2026-09-22T17:30:06Z",
+      "event": "EC Kassel Huskies v Eispiraten Crimmitschau",
+      "event_id": "ev-68c4573b0e149a1a70c1",
+      "group_name": "5. Spieltag",
+      "group_order": 5,
+      "home_team": "EC Kassel Huskies",
+      "issued_at_utc": "2026-09-22T17:30:06Z",
+      "label": "DEL2-2026",
+      "market": "regulation_3way",
+      "model": {
+        "model_prob": {
+          "away": 0.5,
+          "draw": 0.0,
+          "home": 0.5
+        },
+        "odds": "none (no permissioned odds path)",
+        "prior": "flat 0.5/0/0.5 (uninformative by design)",
+        "rule": "always the home side in regulation time"
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "regulation_3way",
+      "prediction_id": "fwd-0b8f4bd4199a2969ee30",
+      "selection": "EC Kassel Huskies",
+      "selection_key": "home",
+      "source_event_id": "84110",
+      "source_url": "https://api.openligadb.de/getmatchdata/DEL2/2026/84110",
+      "sport": "ice_hockey",
+      "start_utc": "2026-10-02T17:30:00Z",
+      "strategy_id": "hockey-reg-home-v1",
+      "strategy_name": "Regulation home naive baseline (hockey)"
+    },
+    {
+      "away_team": "Bietigheim Steelers",
+      "competition": "DEL2 Hauptrunde",
+      "cutoff_utc": "2026-09-22T17:30:06Z",
+      "event": "Dresdner Eislöwen v Bietigheim Steelers",
+      "event_id": "ev-a68e23356949c949a9f7",
+      "group_name": "5. Spieltag",
+      "group_order": 5,
+      "home_team": "Dresdner Eislöwen",
+      "issued_at_utc": "2026-09-22T17:30:06Z",
+      "label": "DEL2-2026",
+      "market": "regulation_3way",
+      "model": {
+        "model_prob": {
+          "away": 0.5,
+          "draw": 0.0,
+          "home": 0.5
+        },
+        "odds": "none (no permissioned odds path)",
+        "prior": "flat 0.5/0/0.5 (uninformative by design)",
+        "rule": "always the home side in regulation time"
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "regulation_3way",
+      "prediction_id": "fwd-e063a11385dafc9fe961",
+      "selection": "Dresdner Eislöwen",
+      "selection_key": "home",
+      "source_event_id": "84109",
+      "source_url": "https://api.openligadb.de/getmatchdata/DEL2/2026/84109",
+      "sport": "ice_hockey",
+      "start_utc": "2026-10-02T17:30:00Z",
+      "strategy_id": "hockey-reg-home-v1",
+      "strategy_name": "Regulation home naive baseline (hockey)"
+    },
+    {
+      "away_team": "EV Landshut",
+      "competition": "DEL2 Hauptrunde",
+      "cutoff_utc": "2026-09-22T17:30:06Z",
+      "event": "EHC Freiburg v EV Landshut",
+      "event_id": "ev-be801434a5da69b8622b",
+      "group_name": "5. Spieltag",
+      "group_order": 5,
+      "home_team": "EHC Freiburg",
+      "issued_at_utc": "2026-09-22T17:30:06Z",
+      "label": "DEL2-2026",
+      "market": "regulation_3way",
+      "model": {
+        "model_prob": {
+          "away": 0.5,
+          "draw": 0.0,
+          "home": 0.5
+        },
+        "odds": "none (no permissioned odds path)",
+        "prior": "flat 0.5/0/0.5 (uninformative by design)",
+        "rule": "always the home side in regulation time"
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "regulation_3way",
+      "prediction_id": "fwd-79954f4ead5179c1959e",
+      "selection": "EHC Freiburg",
+      "selection_key": "home",
+      "source_event_id": "84107",
+      "source_url": "https://api.openligadb.de/getmatchdata/DEL2/2026/84107",
+      "sport": "ice_hockey",
+      "start_utc": "2026-10-02T17:30:00Z",
+      "strategy_id": "hockey-reg-home-v1",
+      "strategy_name": "Regulation home naive baseline (hockey)"
+    },
+    {
+      "away_team": "Düsseldorfer EG",
+      "competition": "DEL2 Hauptrunde",
+      "cutoff_utc": "2026-09-22T17:30:06Z",
+      "event": "Starbulls Rosenheim v Düsseldorfer EG",
+      "event_id": "ev-c7c5a0417c9cd0590f26",
+      "group_name": "5. Spieltag",
+      "group_order": 5,
+      "home_team": "Starbulls Rosenheim",
+      "issued_at_utc": "2026-09-22T17:30:06Z",
+      "label": "DEL2-2026",
+      "market": "regulation_3way",
+      "model": {
+        "model_prob": {
+          "away": 0.5,
+          "draw": 0.0,
+          "home": 0.5
+        },
+        "odds": "none (no permissioned odds path)",
+        "prior": "flat 0.5/0/0.5 (uninformative by design)",
+        "rule": "always the home side in regulation time"
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "regulation_3way",
+      "prediction_id": "fwd-5e5dfbbb025958246fce",
+      "selection": "Starbulls Rosenheim",
+      "selection_key": "home",
+      "source_event_id": "84108",
+      "source_url": "https://api.openligadb.de/getmatchdata/DEL2/2026/84108",
+      "sport": "ice_hockey",
+      "start_utc": "2026-10-02T17:30:00Z",
+      "strategy_id": "hockey-reg-home-v1",
+      "strategy_name": "Regulation home naive baseline (hockey)"
+    },
+    {
+      "away_team": "Schwenninger Wild Wings",
+      "competition": "DEL 2026/2027",
+      "cutoff_utc": "2026-09-22T17:30:04Z",
+      "event": "Nürnberg Ice Tigers v Schwenninger Wild Wings",
+      "event_id": "ev-0c3fb982bbdebd9ce603",
+      "group_name": "5. Spieltag",
+      "group_order": 5,
+      "home_team": "Nürnberg Ice Tigers",
+      "issued_at_utc": "2026-09-22T17:30:04Z",
+      "label": "del-2026",
+      "market": "match_winner_2way",
+      "model": {
+        "decision_lag": "start-30min",
+        "model_prob": {
+          "away": 0.3392817120731694,
+          "draw": 0.0,
+          "home": 0.6607182879268306
+        },
+        "odds": "none (no permissioned odds path)",
+        "ratings": {
+          "away": 1427.5956830246469,
+          "home": 1508.3780337320436
+        }
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "final",
+      "prediction_id": "fwd-9cfedd16875f0965f1bf",
+      "selection": "Nürnberg Ice Tigers",
+      "selection_key": "home",
+      "source_event_id": "84350",
+      "source_url": "https://api.openligadb.de/getmatchdata/del/2026/84350",
+      "sport": "ice_hockey",
+      "start_utc": "2026-10-02T17:30:00Z",
+      "strategy_id": "hockey-elo-v1",
+      "strategy_name": "Hockey Elo favourite (no-market pilot)"
+    },
+    {
+      "away_team": "ERC Ingolstadt",
+      "competition": "DEL 2026/2027",
+      "cutoff_utc": "2026-09-22T17:30:04Z",
+      "event": "Krefeld Pinguine v ERC Ingolstadt",
+      "event_id": "ev-4d4aeaa4b6e49116e23e",
+      "group_name": "5. Spieltag",
+      "group_order": 5,
+      "home_team": "Krefeld Pinguine",
+      "issued_at_utc": "2026-09-22T17:30:04Z",
+      "label": "del-2026",
+      "market": "match_winner_2way",
+      "model": {
+        "decision_lag": "start-30min",
+        "model_prob": {
+          "away": 0.618271237252631,
+          "draw": 0.0,
+          "home": 0.381728762747369
+        },
+        "odds": "none (no permissioned odds path)",
+        "ratings": {
+          "away": 1621.65129452467,
+          "home": 1502.8816311792068
+        }
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "final",
+      "prediction_id": "fwd-1300c53c76e04630a912",
+      "selection": "ERC Ingolstadt",
+      "selection_key": "away",
+      "source_event_id": "84349",
+      "source_url": "https://api.openligadb.de/getmatchdata/del/2026/84349",
+      "sport": "ice_hockey",
+      "start_utc": "2026-10-02T17:30:00Z",
+      "strategy_id": "hockey-elo-v1",
+      "strategy_name": "Hockey Elo favourite (no-market pilot)"
+    },
+    {
+      "away_team": "Eisbären Berlin",
+      "competition": "DEL 2026/2027",
+      "cutoff_utc": "2026-09-22T17:30:04Z",
+      "event": "Löwen Frankfurt v Eisbären Berlin",
+      "event_id": "ev-5e96df0d22457f0d778f",
+      "group_name": "5. Spieltag",
+      "group_order": 5,
+      "home_team": "Löwen Frankfurt",
+      "issued_at_utc": "2026-09-22T17:30:04Z",
+      "label": "del-2026",
+      "market": "match_winner_2way",
+      "model": {
+        "decision_lag": "start-30min",
+        "model_prob": {
+          "away": 0.7788260562853079,
+          "draw": 0.0,
+          "home": 0.22117394371469215
+        },
+        "odds": "none (no permissioned odds path)",
+        "ratings": {
+          "away": 1695.4017981719887,
+          "home": 1441.7191937954447
+        }
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "final",
+      "prediction_id": "fwd-07c100b96033a8a68f78",
+      "selection": "Eisbären Berlin",
+      "selection_key": "away",
+      "source_event_id": "84348",
+      "source_url": "https://api.openligadb.de/getmatchdata/del/2026/84348",
+      "sport": "ice_hockey",
+      "start_utc": "2026-10-02T17:30:00Z",
+      "strategy_id": "hockey-elo-v1",
+      "strategy_name": "Hockey Elo favourite (no-market pilot)"
+    },
+    {
+      "away_team": "Pinguins Bremerhaven",
+      "competition": "DEL 2026/2027",
+      "cutoff_utc": "2026-09-22T17:30:04Z",
+      "event": "Straubing Tigers v Pinguins Bremerhaven",
+      "event_id": "ev-9ca9278d85308275b0ad",
+      "group_name": "5. Spieltag",
+      "group_order": 5,
+      "home_team": "Straubing Tigers",
+      "issued_at_utc": "2026-09-22T17:30:04Z",
+      "label": "del-2026",
+      "market": "match_winner_2way",
+      "model": {
+        "decision_lag": "start-30min",
+        "model_prob": {
+          "away": 0.5953427504982118,
+          "draw": 0.0,
+          "home": 0.40465724950178816
+        },
+        "odds": "none (no permissioned odds path)",
+        "ratings": {
+          "away": 1577.1915485193988,
+          "home": 1475.1196507891677
+        }
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "final",
+      "prediction_id": "fwd-9eb2f461d75c361d6d53",
+      "selection": "Pinguins Bremerhaven",
+      "selection_key": "away",
+      "source_event_id": "84346",
+      "source_url": "https://api.openligadb.de/getmatchdata/del/2026/84346",
+      "sport": "ice_hockey",
+      "start_utc": "2026-10-02T17:30:00Z",
+      "strategy_id": "hockey-elo-v1",
+      "strategy_name": "Hockey Elo favourite (no-market pilot)"
+    },
+    {
+      "away_team": "Red Bull München",
+      "competition": "DEL 2026/2027",
+      "cutoff_utc": "2026-09-22T17:30:04Z",
+      "event": "Kölner Haie v Red Bull München",
+      "event_id": "ev-d3efa6fc5355dae8a39a",
+      "group_name": "5. Spieltag",
+      "group_order": 5,
+      "home_team": "Kölner Haie",
+      "issued_at_utc": "2026-09-22T17:30:04Z",
+      "label": "del-2026",
+      "market": "match_winner_2way",
+      "model": {
+        "decision_lag": "start-30min",
+        "model_prob": {
+          "away": 0.365707285390792,
+          "draw": 0.0,
+          "home": 0.634292714609208
+        },
+        "odds": "none (no permissioned odds path)",
+        "ratings": {
+          "away": 1498.5093968570882,
+          "home": 1559.1718412646508
+        }
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "final",
+      "prediction_id": "fwd-b891b18b99d9252ea73a",
+      "selection": "Kölner Haie",
+      "selection_key": "home",
+      "source_event_id": "84347",
+      "source_url": "https://api.openligadb.de/getmatchdata/del/2026/84347",
+      "sport": "ice_hockey",
+      "start_utc": "2026-10-02T17:30:00Z",
+      "strategy_id": "hockey-elo-v1",
+      "strategy_name": "Hockey Elo favourite (no-market pilot)"
+    },
+    {
+      "away_team": "Schwenninger Wild Wings",
+      "competition": "DEL 2026/2027",
+      "cutoff_utc": "2026-09-22T17:30:04Z",
+      "event": "Nürnberg Ice Tigers v Schwenninger Wild Wings",
+      "event_id": "ev-0c3fb982bbdebd9ce603",
+      "group_name": "5. Spieltag",
+      "group_order": 5,
+      "home_team": "Nürnberg Ice Tigers",
+      "issued_at_utc": "2026-09-22T17:30:04Z",
+      "label": "del-2026",
+      "market": "match_winner_2way",
+      "model": {
+        "model_prob": {
+          "away": 0.5,
+          "draw": 0.0,
+          "home": 0.5
+        },
+        "prior": "flat 0.5/0.5 (uninformative by design)",
+        "rule": "always the home side"
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "final",
+      "prediction_id": "fwd-88c9285f9593c08d80c0",
+      "selection": "Nürnberg Ice Tigers",
+      "selection_key": "home",
+      "source_event_id": "84350",
+      "source_url": "https://api.openligadb.de/getmatchdata/del/2026/84350",
+      "sport": "ice_hockey",
+      "start_utc": "2026-10-02T17:30:00Z",
+      "strategy_id": "hockey-home-v1",
+      "strategy_name": "Home-ice naive baseline (hockey)"
+    },
+    {
+      "away_team": "ERC Ingolstadt",
+      "competition": "DEL 2026/2027",
+      "cutoff_utc": "2026-09-22T17:30:04Z",
+      "event": "Krefeld Pinguine v ERC Ingolstadt",
+      "event_id": "ev-4d4aeaa4b6e49116e23e",
+      "group_name": "5. Spieltag",
+      "group_order": 5,
+      "home_team": "Krefeld Pinguine",
+      "issued_at_utc": "2026-09-22T17:30:04Z",
+      "label": "del-2026",
+      "market": "match_winner_2way",
+      "model": {
+        "model_prob": {
+          "away": 0.5,
+          "draw": 0.0,
+          "home": 0.5
+        },
+        "prior": "flat 0.5/0.5 (uninformative by design)",
+        "rule": "always the home side"
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "final",
+      "prediction_id": "fwd-ee127757c59f5a4d9a4a",
+      "selection": "Krefeld Pinguine",
+      "selection_key": "home",
+      "source_event_id": "84349",
+      "source_url": "https://api.openligadb.de/getmatchdata/del/2026/84349",
+      "sport": "ice_hockey",
+      "start_utc": "2026-10-02T17:30:00Z",
+      "strategy_id": "hockey-home-v1",
+      "strategy_name": "Home-ice naive baseline (hockey)"
+    },
+    {
+      "away_team": "Eisbären Berlin",
+      "competition": "DEL 2026/2027",
+      "cutoff_utc": "2026-09-22T17:30:04Z",
+      "event": "Löwen Frankfurt v Eisbären Berlin",
+      "event_id": "ev-5e96df0d22457f0d778f",
+      "group_name": "5. Spieltag",
+      "group_order": 5,
+      "home_team": "Löwen Frankfurt",
+      "issued_at_utc": "2026-09-22T17:30:04Z",
+      "label": "del-2026",
+      "market": "match_winner_2way",
+      "model": {
+        "model_prob": {
+          "away": 0.5,
+          "draw": 0.0,
+          "home": 0.5
+        },
+        "prior": "flat 0.5/0.5 (uninformative by design)",
+        "rule": "always the home side"
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "final",
+      "prediction_id": "fwd-838a3eb8c6fcc1e3ed17",
+      "selection": "Löwen Frankfurt",
+      "selection_key": "home",
+      "source_event_id": "84348",
+      "source_url": "https://api.openligadb.de/getmatchdata/del/2026/84348",
+      "sport": "ice_hockey",
+      "start_utc": "2026-10-02T17:30:00Z",
+      "strategy_id": "hockey-home-v1",
+      "strategy_name": "Home-ice naive baseline (hockey)"
+    },
+    {
+      "away_team": "Grizzlys Wolfsburg",
+      "competition": "DEL 2026/2027",
+      "cutoff_utc": "2026-09-22T17:30:04Z",
+      "event": "Augsburger Panther v Grizzlys Wolfsburg",
+      "event_id": "ev-6cbf874573894b7c90f1",
+      "group_name": "5. Spieltag",
+      "group_order": 5,
+      "home_team": "Augsburger Panther",
+      "issued_at_utc": "2026-09-22T17:30:04Z",
+      "label": "del-2026",
+      "market": "match_winner_2way",
+      "model": {
+        "model_prob": {
+          "away": 0.5,
+          "draw": 0.0,
+          "home": 0.5
+        },
+        "prior": "flat 0.5/0.5 (uninformative by design)",
+        "rule": "always the home side"
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "final",
+      "prediction_id": "fwd-286a4dc2b7acb1a4bc63",
+      "selection": "Augsburger Panther",
+      "selection_key": "home",
+      "source_event_id": "84345",
+      "source_url": "https://api.openligadb.de/getmatchdata/del/2026/84345",
+      "sport": "ice_hockey",
+      "start_utc": "2026-10-02T17:30:00Z",
+      "strategy_id": "hockey-home-v1",
+      "strategy_name": "Home-ice naive baseline (hockey)"
+    },
+    {
+      "away_team": "Pinguins Bremerhaven",
+      "competition": "DEL 2026/2027",
+      "cutoff_utc": "2026-09-22T17:30:04Z",
+      "event": "Straubing Tigers v Pinguins Bremerhaven",
+      "event_id": "ev-9ca9278d85308275b0ad",
+      "group_name": "5. Spieltag",
+      "group_order": 5,
+      "home_team": "Straubing Tigers",
+      "issued_at_utc": "2026-09-22T17:30:04Z",
+      "label": "del-2026",
+      "market": "match_winner_2way",
+      "model": {
+        "model_prob": {
+          "away": 0.5,
+          "draw": 0.0,
+          "home": 0.5
+        },
+        "prior": "flat 0.5/0.5 (uninformative by design)",
+        "rule": "always the home side"
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "final",
+      "prediction_id": "fwd-02f943e2e9acdb7a2fef",
+      "selection": "Straubing Tigers",
+      "selection_key": "home",
+      "source_event_id": "84346",
+      "source_url": "https://api.openligadb.de/getmatchdata/del/2026/84346",
+      "sport": "ice_hockey",
+      "start_utc": "2026-10-02T17:30:00Z",
+      "strategy_id": "hockey-home-v1",
+      "strategy_name": "Home-ice naive baseline (hockey)"
+    },
+    {
+      "away_team": "Red Bull München",
+      "competition": "DEL 2026/2027",
+      "cutoff_utc": "2026-09-22T17:30:04Z",
+      "event": "Kölner Haie v Red Bull München",
+      "event_id": "ev-d3efa6fc5355dae8a39a",
+      "group_name": "5. Spieltag",
+      "group_order": 5,
+      "home_team": "Kölner Haie",
+      "issued_at_utc": "2026-09-22T17:30:04Z",
+      "label": "del-2026",
+      "market": "match_winner_2way",
+      "model": {
+        "model_prob": {
+          "away": 0.5,
+          "draw": 0.0,
+          "home": 0.5
+        },
+        "prior": "flat 0.5/0.5 (uninformative by design)",
+        "rule": "always the home side"
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "final",
+      "prediction_id": "fwd-f933ee54bc524506f293",
+      "selection": "Kölner Haie",
+      "selection_key": "home",
+      "source_event_id": "84347",
+      "source_url": "https://api.openligadb.de/getmatchdata/del/2026/84347",
+      "sport": "ice_hockey",
+      "start_utc": "2026-10-02T17:30:00Z",
+      "strategy_id": "hockey-home-v1",
+      "strategy_name": "Home-ice naive baseline (hockey)"
+    },
+    {
+      "away_team": "Schwenninger Wild Wings",
+      "competition": "DEL 2026/2027",
+      "cutoff_utc": "2026-09-22T17:30:04Z",
+      "event": "Nürnberg Ice Tigers v Schwenninger Wild Wings",
+      "event_id": "ev-0c3fb982bbdebd9ce603",
+      "group_name": "5. Spieltag",
+      "group_order": 5,
+      "home_team": "Nürnberg Ice Tigers",
+      "issued_at_utc": "2026-09-22T17:30:04Z",
+      "label": "del-2026",
+      "market": "regulation_3way",
+      "model": {
+        "lambda_away": 2.7682,
+        "lambda_home": 3.028,
+        "league_rates": {
+          "away": 2.7181,
+          "home": 3.2196,
+          "source": "released (337 matches)"
+        },
+        "market": "regulation-time 3-way (60 minutes)",
+        "model_prob": {
+          "away": 0.37357785015068784,
+          "draw": 0.1688205850792524,
+          "home": 0.45760156477005975
+        },
+        "odds": "none (no permissioned odds path)",
+        "rule": "argmax regulation 3-way",
+        "team_multipliers": {
+          "away": {
+            "attack": 1.0092,
+            "defence": 1.0631,
+            "matches": 44
+          },
+          "home": {
+            "attack": 0.8846,
+            "defence": 1.0091,
+            "matches": 40
+          }
+        }
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "regulation_3way",
+      "prediction_id": "fwd-293d9b51f02960713275",
+      "selection": "Nürnberg Ice Tigers",
+      "selection_key": "home",
+      "source_event_id": "84350",
+      "source_url": "https://api.openligadb.de/getmatchdata/del/2026/84350",
+      "sport": "ice_hockey",
+      "start_utc": "2026-10-02T17:30:00Z",
+      "strategy_id": "hockey-reg-poisson-v1",
+      "strategy_name": "Poisson regulation 3-way (hockey)"
+    },
+    {
+      "away_team": "ERC Ingolstadt",
+      "competition": "DEL 2026/2027",
+      "cutoff_utc": "2026-09-22T17:30:04Z",
+      "event": "Krefeld Pinguine v ERC Ingolstadt",
+      "event_id": "ev-4d4aeaa4b6e49116e23e",
+      "group_name": "5. Spieltag",
+      "group_order": 5,
+      "home_team": "Krefeld Pinguine",
+      "issued_at_utc": "2026-09-22T17:30:04Z",
+      "label": "del-2026",
+      "market": "regulation_3way",
+      "model": {
+        "lambda_away": 3.3577,
+        "lambda_home": 2.6848,
+        "league_rates": {
+          "away": 2.7181,
+          "home": 3.2196,
+          "source": "released (337 matches)"
+        },
+        "market": "regulation-time 3-way (60 minutes)",
+        "model_prob": {
+          "away": 0.5255344144777457,
+          "draw": 0.16044081791897924,
+          "home": 0.314024767603275
+        },
+        "odds": "none (no permissioned odds path)",
+        "rule": "argmax regulation 3-way",
+        "team_multipliers": {
+          "away": {
+            "attack": 1.2321,
+            "defence": 0.7982,
+            "matches": 53
+          },
+          "home": {
+            "attack": 1.0447,
+            "defence": 1.0026,
+            "matches": 2
+          }
+        }
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "regulation_3way",
+      "prediction_id": "fwd-8221ca85fd2823aa152c",
+      "selection": "ERC Ingolstadt",
+      "selection_key": "away",
+      "source_event_id": "84349",
+      "source_url": "https://api.openligadb.de/getmatchdata/del/2026/84349",
+      "sport": "ice_hockey",
+      "start_utc": "2026-10-02T17:30:00Z",
+      "strategy_id": "hockey-reg-poisson-v1",
+      "strategy_name": "Poisson regulation 3-way (hockey)"
+    },
+    {
+      "away_team": "Eisbären Berlin",
+      "competition": "DEL 2026/2027",
+      "cutoff_utc": "2026-09-22T17:30:04Z",
+      "event": "Löwen Frankfurt v Eisbären Berlin",
+      "event_id": "ev-5e96df0d22457f0d778f",
+      "group_name": "5. Spieltag",
+      "group_order": 5,
+      "home_team": "Löwen Frankfurt",
+      "issued_at_utc": "2026-09-22T17:30:04Z",
+      "label": "del-2026",
+      "market": "regulation_3way",
+      "model": {
+        "lambda_away": 3.9074,
+        "lambda_home": 2.459,
+        "league_rates": {
+          "away": 2.7181,
+          "home": 3.2196,
+          "source": "released (337 matches)"
+        },
+        "market": "regulation-time 3-way (60 minutes)",
+        "model_prob": {
+          "away": 0.6449335492937802,
+          "draw": 0.1386329149822378,
+          "home": 0.21643353572398194
+        },
+        "odds": "none (no permissioned odds path)",
+        "rule": "argmax regulation 3-way",
+        "team_multipliers": {
+          "away": {
+            "attack": 1.3353,
+            "defence": 0.8052,
+            "matches": 55
+          },
+          "home": {
+            "attack": 0.9486,
+            "defence": 1.0766,
+            "matches": 44
+          }
+        }
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "regulation_3way",
+      "prediction_id": "fwd-4efa80cd625b1b5d75c6",
+      "selection": "Eisbären Berlin",
+      "selection_key": "away",
+      "source_event_id": "84348",
+      "source_url": "https://api.openligadb.de/getmatchdata/del/2026/84348",
+      "sport": "ice_hockey",
+      "start_utc": "2026-10-02T17:30:00Z",
+      "strategy_id": "hockey-reg-poisson-v1",
+      "strategy_name": "Poisson regulation 3-way (hockey)"
+    },
+    {
+      "away_team": "Grizzlys Wolfsburg",
+      "competition": "DEL 2026/2027",
+      "cutoff_utc": "2026-09-22T17:30:04Z",
+      "event": "Augsburger Panther v Grizzlys Wolfsburg",
+      "event_id": "ev-6cbf874573894b7c90f1",
+      "group_name": "5. Spieltag",
+      "group_order": 5,
+      "home_team": "Augsburger Panther",
+      "issued_at_utc": "2026-09-22T17:30:04Z",
+      "label": "del-2026",
+      "market": "regulation_3way",
+      "model": {
+        "lambda_away": 3.1056,
+        "lambda_home": 2.9443,
+        "league_rates": {
+          "away": 2.7181,
+          "home": 3.2196,
+          "source": "released (337 matches)"
+        },
+        "market": "regulation-time 3-way (60 minutes)",
+        "model_prob": {
+          "away": 0.44277702696257076,
+          "draw": 0.16560856540225471,
+          "home": 0.3916144076351745
+        },
+        "odds": "none (no permissioned odds path)",
+        "rule": "argmax regulation 3-way",
+        "team_multipliers": {
+          "away": {
+            "attack": 0.9621,
+            "defence": 1.0833,
+            "matches": 44
+          },
+          "home": {
+            "attack": 0.8441,
+            "defence": 1.1876,
+            "matches": 45
+          }
+        }
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "regulation_3way",
+      "prediction_id": "fwd-391fea1b3ec7e1d68c84",
+      "selection": "Grizzlys Wolfsburg",
+      "selection_key": "away",
+      "source_event_id": "84345",
+      "source_url": "https://api.openligadb.de/getmatchdata/del/2026/84345",
+      "sport": "ice_hockey",
+      "start_utc": "2026-10-02T17:30:00Z",
+      "strategy_id": "hockey-reg-poisson-v1",
+      "strategy_name": "Poisson regulation 3-way (hockey)"
+    },
+    {
+      "away_team": "Pinguins Bremerhaven",
+      "competition": "DEL 2026/2027",
+      "cutoff_utc": "2026-09-22T17:30:04Z",
+      "event": "Straubing Tigers v Pinguins Bremerhaven",
+      "event_id": "ev-9ca9278d85308275b0ad",
+      "group_name": "5. Spieltag",
+      "group_order": 5,
+      "home_team": "Straubing Tigers",
+      "issued_at_utc": "2026-09-22T17:30:04Z",
+      "label": "del-2026",
+      "market": "regulation_3way",
+      "model": {
+        "lambda_away": 2.9004,
+        "lambda_home": 2.215,
+        "league_rates": {
+          "away": 2.7181,
+          "home": 3.2196,
+          "source": "released (337 matches)"
+        },
+        "market": "regulation-time 3-way (60 minutes)",
+        "model_prob": {
+          "away": 0.5293770978023402,
+          "draw": 0.17398583611430432,
+          "home": 0.29663706608335555
+        },
+        "odds": "none (no permissioned odds path)",
+        "rule": "argmax regulation 3-way",
+        "team_multipliers": {
+          "away": {
+            "attack": 1.028,
+            "defence": 0.7224,
+            "matches": 48
+          },
+          "home": {
+            "attack": 0.9523,
+            "defence": 1.038,
+            "matches": 53
+          }
+        }
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "regulation_3way",
+      "prediction_id": "fwd-f80cc53b07ba54ccf588",
+      "selection": "Pinguins Bremerhaven",
+      "selection_key": "away",
+      "source_event_id": "84346",
+      "source_url": "https://api.openligadb.de/getmatchdata/del/2026/84346",
+      "sport": "ice_hockey",
+      "start_utc": "2026-10-02T17:30:00Z",
+      "strategy_id": "hockey-reg-poisson-v1",
+      "strategy_name": "Poisson regulation 3-way (hockey)"
+    },
+    {
+      "away_team": "Red Bull München",
+      "competition": "DEL 2026/2027",
+      "cutoff_utc": "2026-09-22T17:30:04Z",
+      "event": "Kölner Haie v Red Bull München",
+      "event_id": "ev-d3efa6fc5355dae8a39a",
+      "group_name": "5. Spieltag",
+      "group_order": 5,
+      "home_team": "Kölner Haie",
+      "issued_at_utc": "2026-09-22T17:30:04Z",
+      "label": "del-2026",
+      "market": "regulation_3way",
+      "model": {
+        "lambda_away": 2.7999,
+        "lambda_home": 2.8198,
+        "league_rates": {
+          "away": 2.7181,
+          "home": 3.2196,
+          "source": "released (337 matches)"
+        },
+        "market": "regulation-time 3-way (60 minutes)",
+        "model_prob": {
+          "away": 0.41047398864892326,
+          "draw": 0.17250200408268812,
+          "home": 0.41702400726838856
+        },
+        "odds": "none (no permissioned odds path)",
+        "rule": "argmax regulation 3-way",
+        "team_multipliers": {
+          "away": {
+            "attack": 1.0153,
+            "defence": 0.9326,
+            "matches": 51
+          },
+          "home": {
+            "attack": 0.9392,
+            "defence": 1.0146,
+            "matches": 61
+          }
+        }
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "regulation_3way",
+      "prediction_id": "fwd-9a247074867e5833d93f",
+      "selection": "Kölner Haie",
+      "selection_key": "home",
+      "source_event_id": "84347",
+      "source_url": "https://api.openligadb.de/getmatchdata/del/2026/84347",
+      "sport": "ice_hockey",
+      "start_utc": "2026-10-02T17:30:00Z",
+      "strategy_id": "hockey-reg-poisson-v1",
+      "strategy_name": "Poisson regulation 3-way (hockey)"
+    },
+    {
+      "away_team": "Schwenninger Wild Wings",
+      "competition": "DEL 2026/2027",
+      "cutoff_utc": "2026-09-22T17:30:04Z",
+      "event": "Nürnberg Ice Tigers v Schwenninger Wild Wings",
+      "event_id": "ev-0c3fb982bbdebd9ce603",
+      "group_name": "5. Spieltag",
+      "group_order": 5,
+      "home_team": "Nürnberg Ice Tigers",
+      "issued_at_utc": "2026-09-22T17:30:04Z",
+      "label": "del-2026",
+      "market": "regulation_3way",
+      "model": {
+        "model_prob": {
+          "away": 0.5,
+          "draw": 0.0,
+          "home": 0.5
+        },
+        "odds": "none (no permissioned odds path)",
+        "prior": "flat 0.5/0/0.5 (uninformative by design)",
+        "rule": "always the home side in regulation time"
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "regulation_3way",
+      "prediction_id": "fwd-c3099f857ca8678e525b",
+      "selection": "Nürnberg Ice Tigers",
+      "selection_key": "home",
+      "source_event_id": "84350",
+      "source_url": "https://api.openligadb.de/getmatchdata/del/2026/84350",
+      "sport": "ice_hockey",
+      "start_utc": "2026-10-02T17:30:00Z",
+      "strategy_id": "hockey-reg-home-v1",
+      "strategy_name": "Regulation home naive baseline (hockey)"
+    },
+    {
+      "away_team": "ERC Ingolstadt",
+      "competition": "DEL 2026/2027",
+      "cutoff_utc": "2026-09-22T17:30:04Z",
+      "event": "Krefeld Pinguine v ERC Ingolstadt",
+      "event_id": "ev-4d4aeaa4b6e49116e23e",
+      "group_name": "5. Spieltag",
+      "group_order": 5,
+      "home_team": "Krefeld Pinguine",
+      "issued_at_utc": "2026-09-22T17:30:04Z",
+      "label": "del-2026",
+      "market": "regulation_3way",
+      "model": {
+        "model_prob": {
+          "away": 0.5,
+          "draw": 0.0,
+          "home": 0.5
+        },
+        "odds": "none (no permissioned odds path)",
+        "prior": "flat 0.5/0/0.5 (uninformative by design)",
+        "rule": "always the home side in regulation time"
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "regulation_3way",
+      "prediction_id": "fwd-8511c8476480c8b1f8aa",
+      "selection": "Krefeld Pinguine",
+      "selection_key": "home",
+      "source_event_id": "84349",
+      "source_url": "https://api.openligadb.de/getmatchdata/del/2026/84349",
+      "sport": "ice_hockey",
+      "start_utc": "2026-10-02T17:30:00Z",
+      "strategy_id": "hockey-reg-home-v1",
+      "strategy_name": "Regulation home naive baseline (hockey)"
+    },
+    {
+      "away_team": "Eisbären Berlin",
+      "competition": "DEL 2026/2027",
+      "cutoff_utc": "2026-09-22T17:30:04Z",
+      "event": "Löwen Frankfurt v Eisbären Berlin",
+      "event_id": "ev-5e96df0d22457f0d778f",
+      "group_name": "5. Spieltag",
+      "group_order": 5,
+      "home_team": "Löwen Frankfurt",
+      "issued_at_utc": "2026-09-22T17:30:04Z",
+      "label": "del-2026",
+      "market": "regulation_3way",
+      "model": {
+        "model_prob": {
+          "away": 0.5,
+          "draw": 0.0,
+          "home": 0.5
+        },
+        "odds": "none (no permissioned odds path)",
+        "prior": "flat 0.5/0/0.5 (uninformative by design)",
+        "rule": "always the home side in regulation time"
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "regulation_3way",
+      "prediction_id": "fwd-e4e4723b5b74652e7552",
+      "selection": "Löwen Frankfurt",
+      "selection_key": "home",
+      "source_event_id": "84348",
+      "source_url": "https://api.openligadb.de/getmatchdata/del/2026/84348",
+      "sport": "ice_hockey",
+      "start_utc": "2026-10-02T17:30:00Z",
+      "strategy_id": "hockey-reg-home-v1",
+      "strategy_name": "Regulation home naive baseline (hockey)"
+    },
+    {
+      "away_team": "Grizzlys Wolfsburg",
+      "competition": "DEL 2026/2027",
+      "cutoff_utc": "2026-09-22T17:30:04Z",
+      "event": "Augsburger Panther v Grizzlys Wolfsburg",
+      "event_id": "ev-6cbf874573894b7c90f1",
+      "group_name": "5. Spieltag",
+      "group_order": 5,
+      "home_team": "Augsburger Panther",
+      "issued_at_utc": "2026-09-22T17:30:04Z",
+      "label": "del-2026",
+      "market": "regulation_3way",
+      "model": {
+        "model_prob": {
+          "away": 0.5,
+          "draw": 0.0,
+          "home": 0.5
+        },
+        "odds": "none (no permissioned odds path)",
+        "prior": "flat 0.5/0/0.5 (uninformative by design)",
+        "rule": "always the home side in regulation time"
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "regulation_3way",
+      "prediction_id": "fwd-936d1d6e89452261f471",
+      "selection": "Augsburger Panther",
+      "selection_key": "home",
+      "source_event_id": "84345",
+      "source_url": "https://api.openligadb.de/getmatchdata/del/2026/84345",
+      "sport": "ice_hockey",
+      "start_utc": "2026-10-02T17:30:00Z",
+      "strategy_id": "hockey-reg-home-v1",
+      "strategy_name": "Regulation home naive baseline (hockey)"
+    },
+    {
+      "away_team": "Pinguins Bremerhaven",
+      "competition": "DEL 2026/2027",
+      "cutoff_utc": "2026-09-22T17:30:04Z",
+      "event": "Straubing Tigers v Pinguins Bremerhaven",
+      "event_id": "ev-9ca9278d85308275b0ad",
+      "group_name": "5. Spieltag",
+      "group_order": 5,
+      "home_team": "Straubing Tigers",
+      "issued_at_utc": "2026-09-22T17:30:04Z",
+      "label": "del-2026",
+      "market": "regulation_3way",
+      "model": {
+        "model_prob": {
+          "away": 0.5,
+          "draw": 0.0,
+          "home": 0.5
+        },
+        "odds": "none (no permissioned odds path)",
+        "prior": "flat 0.5/0/0.5 (uninformative by design)",
+        "rule": "always the home side in regulation time"
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "regulation_3way",
+      "prediction_id": "fwd-e2d5584e9238df6fc062",
+      "selection": "Straubing Tigers",
+      "selection_key": "home",
+      "source_event_id": "84346",
+      "source_url": "https://api.openligadb.de/getmatchdata/del/2026/84346",
+      "sport": "ice_hockey",
+      "start_utc": "2026-10-02T17:30:00Z",
+      "strategy_id": "hockey-reg-home-v1",
+      "strategy_name": "Regulation home naive baseline (hockey)"
+    },
+    {
+      "away_team": "Red Bull München",
+      "competition": "DEL 2026/2027",
+      "cutoff_utc": "2026-09-22T17:30:04Z",
+      "event": "Kölner Haie v Red Bull München",
+      "event_id": "ev-d3efa6fc5355dae8a39a",
+      "group_name": "5. Spieltag",
+      "group_order": 5,
+      "home_team": "Kölner Haie",
+      "issued_at_utc": "2026-09-22T17:30:04Z",
+      "label": "del-2026",
+      "market": "regulation_3way",
+      "model": {
+        "model_prob": {
+          "away": 0.5,
+          "draw": 0.0,
+          "home": 0.5
+        },
+        "odds": "none (no permissioned odds path)",
+        "prior": "flat 0.5/0/0.5 (uninformative by design)",
+        "rule": "always the home side in regulation time"
+      },
+      "model_version": "nr-forward-2026-09-22.2",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "outcome": "regulation_3way",
+      "prediction_id": "fwd-db4daea486f2bb6c6bc7",
+      "selection": "Kölner Haie",
+      "selection_key": "home",
+      "source_event_id": "84347",
+      "source_url": "https://api.openligadb.de/getmatchdata/del/2026/84347",
+      "sport": "ice_hockey",
+      "start_utc": "2026-10-02T17:30:00Z",
+      "strategy_id": "hockey-reg-home-v1",
+      "strategy_name": "Regulation home naive baseline (hockey)"
     }
   ],
   "version": "nr-forward-ledger-1"

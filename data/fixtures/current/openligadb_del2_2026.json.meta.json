@@ -1,23 +1,23 @@
 {
-  "captured_at_utc": "2026-09-22T17:30:04Z",
+  "captured_at_utc": "2026-09-22T17:30:06Z",
   "collection_mode": "automated_api",
-  "fixture": "openligadb_del_2026.json",
-  "league_name": "DEL 2026/2027",
+  "fixture": "openligadb_del2_2026.json",
+  "league_name": "DEL2 Hauptrunde",
   "league_season": 2026,
-  "league_shortcut": "del",
+  "league_shortcut": "DEL2",
   "license_id": "odbl-1.0",
   "n_finished": 14,
-  "n_matches": 364,
+  "n_matches": 211,
   "note": "whole-season payload fetched via the permitted automated API (ODbL-1.0); canonical compact JSON; the only edit is the removal of presentation-only team crest URLs (teamIconUrl) - scores, times, ids and names are untouched (raw sha256 recorded)",
-  "sha256": "f065a952abd45511a3337b33505bf370f38b450ec581b057b7fd3d343a2de0eb",
+  "sha256": "e96d2dadf63a8526cff95625c0376ebd017d915f05ebc0365d1c564fe1959227",
   "source_id": "openligadb",
-  "source_sha256_raw": "4967e86efbbaf2ba9ca5f86aa4d34d5810432c6e9bd31708d6ffd1b06e494cd9",
+  "source_sha256_raw": "d90108244e4e239566e3c0c7ab23a0c655e63047768ed8f1941a9b134668e3c5",
   "sport": "ice_hockey",
   "stripped_fields": {
     "team_keys": [
       "teamIconUrl"
     ],
-    "values_removed": 728
+    "values_removed": 422
   },
-  "url": "https://api.openligadb.de/getmatchdata/del/2026"
+  "url": "https://api.openligadb.de/getmatchdata/DEL2/2026"
 }

@@ -1,35 +1,25 @@
 {
   "errors": [],
-  "finished_utc": "2026-09-22T06:38:41Z",
-  "started_utc": "2026-09-22T06:38:34Z",
+  "finished_utc": "2026-09-22T17:29:52Z",
+  "started_utc": "2026-09-22T17:29:52Z",
   "targets": [
     {
-      "captured_at_utc": "2026-09-22T06:38:37Z",
-      "finished": 407,
       "fixture": "/home/runner/work/OLBG-Competition/OLBG-Competition/data/fixtures/openligadb_del_2024.json",
-      "league_name": "DEL Eishockey 2024/2025",
-      "matches": 407,
-      "payload_shortcut": "del",
+      "note": "pilot fixture + sidecar already committed; pilot fixtures are frozen at first capture - a re-capture requires a human to remove the pair (documented exception)",
       "season": 2024,
-      "sha256": "3a6a8e2d1ec6152d35cdaadaab2d7c38a7e218f05f9ea31baff93681b7283eb2",
       "shortcut": "del",
+      "skipped_existing": true,
       "sport": "ice_hockey",
-      "url": "https://api.openligadb.de/getmatchdata/del/2024",
-      "written": true
+      "written": false
     },
     {
-      "captured_at_utc": "2026-09-22T06:38:40Z",
-      "finished": 306,
       "fixture": "/home/runner/work/OLBG-Competition/OLBG-Competition/data/fixtures/openligadb_bl1_2024.json",
-      "league_name": "1. Fußball-Bundesliga 2024/2025",
-      "matches": 306,
-      "payload_shortcut": "bl1",
+      "note": "pilot fixture + sidecar already committed; pilot fixtures are frozen at first capture - a re-capture requires a human to remove the pair (documented exception)",
       "season": 2024,
-      "sha256": "529dbc372ae2fa38de907d973e30f2db6409b8b4298993e5495e211ff66374a7",
       "shortcut": "bl1",
+      "skipped_existing": true,
       "sport": "football",
-      "url": "https://api.openligadb.de/getmatchdata/bl1/2024",
-      "written": true
+      "written": false
     }
   ]
 }
