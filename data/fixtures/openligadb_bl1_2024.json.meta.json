@@ -1,17 +1,17 @@
 {
-  "captured_at_utc": "2026-09-22T06:34:44Z",
+  "captured_at_utc": "2026-09-22T06:34:42Z",
   "collection_mode": "automated_api",
-  "fixture": "openligadb_bl1_2026.json",
-  "league_name": "1. Fußball-Bundesliga 2026/2027",
-  "league_season": 2026,
+  "fixture": "openligadb_bl1_2024.json",
+  "league_name": "1. Fußball-Bundesliga 2024/2025",
+  "league_season": 2024,
   "league_shortcut": "bl1",
   "license_id": "odbl-1.0",
-  "n_finished": 36,
+  "n_finished": 306,
   "n_matches": 306,
   "note": "whole-season payload fetched via the permitted automated API (ODbL-1.0); canonical compact JSON; the only edit is the removal of presentation-only team crest URLs (teamIconUrl) - scores, times, ids and names are untouched (raw sha256 recorded)",
-  "sha256": "5a7848f64776262281bf1f555cbafd8be2cdd7d7ddba3a651908a823acb38651",
+  "sha256": "529dbc372ae2fa38de907d973e30f2db6409b8b4298993e5495e211ff66374a7",
   "source_id": "openligadb",
-  "source_sha256_raw": "67d34d8e749b84fbc7730fb43ab300567e14ad627e4ed2fd08a3b3d03455f6a3",
+  "source_sha256_raw": "f0d86e589f5cccbe0b63e60e4732c85d9843cc0ef6ef507dbab09ec1cbd3107f",
   "sport": "football",
   "stripped_fields": {
     "team_keys": [
@@ -19,5 +19,5 @@
     ],
     "values_removed": 612
   },
-  "url": "https://api.openligadb.de/getmatchdata/bl1/2026"
+  "url": "https://api.openligadb.de/getmatchdata/bl1/2024"
 }
