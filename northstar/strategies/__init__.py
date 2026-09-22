@@ -20,9 +20,12 @@ from .base import (Strategy, market_implied, remove_margin,
                    no_bet)
 from .market import MarketFavourite, MarketLongshot
 from .elo import EloEdge, EloFavourite3Way
+from .decay import EloDecay
+from .dixon_coles import DixonColesValue
 from .draw import DrawNoBet
 from .value import DrawValue, FormValue, HomeEdge
 from .hockey import HockeyElo
+from .hockey_reg import HockeyRegPoisson, HockeyRegHomeBaseline
 from .darts import DartsElo
 from .totals import MarketTotalsFavourite, PoissonTotalsValue
 from .asian import AsianHandicapValue, AsianHandicapFavourite
@@ -32,12 +35,16 @@ REGISTRY = {
     "market-favourite-v1": MarketFavourite,
     "market-longshot-v1": MarketLongshot,
     "elo-edge-v1": EloEdge,
+    "elo-decay-v1": EloDecay,
+    "dixon-coles-v1": DixonColesValue,
     "draw-no-bet-v1": DrawNoBet,
     "draw-value-v1": DrawValue,
     "home-edge-v1": HomeEdge,
     "form-value-v1": FormValue,
     "hockey-elo-v1": HockeyElo,
     "hockey-home-v1": HockeyHomeBaseline,
+    "hockey-reg-poisson-v1": HockeyRegPoisson,
+    "hockey-reg-home-v1": HockeyRegHomeBaseline,
     "darts-elo-v1": DartsElo,
     "darts-listed-first-v1": DartsListedFirstBaseline,
     "elo-favourite-3way-v1": EloFavourite3Way,
@@ -48,10 +55,13 @@ REGISTRY = {
 }
 
 # Backtested on the verified football pilot (permissioned odds exist).
-# 1X2 family, O/U 2.5 family, Asian-handicap family (added 2026-09-22).
+# 1X2 family, O/U 2.5 family, Asian-handicap family (added 2026-09-22),
+# goal-model lineage controls (elo-decay-v1, dixon-coles-v1, added
+# 2026-09-22 - pre-registered, part of the Holm PnL family).
 FOOTBALL_STRATEGIES = [
     "market-favourite-v1", "market-longshot-v1",
-    "elo-edge-v1", "draw-no-bet-v1",
+    "elo-edge-v1", "elo-decay-v1", "dixon-coles-v1",
+    "draw-no-bet-v1",
     "draw-value-v1", "home-edge-v1", "form-value-v1",
     # Second market on the same verified pilot: over/under 2.5 goals.
     "poisson-totals-value-v1", "market-totals-favourite-v1",
@@ -60,8 +70,14 @@ FOOTBALL_STRATEGIES = [
     "ah-poisson-value-v1", "ah-market-favourite-v1",
 ]
 # Prediction-only desks on verified results paths without odds.
-# Each sport carries its Elo model plus a naive baseline for reference.
-HOCKEY_STRATEGIES = ["hockey-elo-v1", "hockey-home-v1"]
+# Each sport carries its model(s) plus a naive baseline for reference.
+# The regulation-time 3-way pair (added 2026-09-22) is graded on the
+# 3-period outcome, not the OT/SO-aware final (market_outcome=
+# "regulation_3way" in the strategy + evaluation/forward grading).
+HOCKEY_STRATEGIES = [
+    "hockey-elo-v1", "hockey-home-v1",
+    "hockey-reg-poisson-v1", "hockey-reg-home-v1",
+]
 DARTS_STRATEGIES = ["darts-elo-v1", "darts-listed-first-v1"]
 
 # Strategies whose source path lacks permissioned odds: run prediction-only.
@@ -72,7 +88,8 @@ PREDICTION_ONLY_STRATEGIES = HOCKEY_STRATEGIES + DARTS_STRATEGIES
 # strategies: the current season has no permissioned odds path.
 FORWARD_STRATEGIES = {
     "football": ["elo-favourite-3way-v1"],
-    "ice_hockey": ["hockey-elo-v1", "hockey-home-v1"],
+    "ice_hockey": ["hockey-elo-v1", "hockey-home-v1",
+                   "hockey-reg-poisson-v1", "hockey-reg-home-v1"],
     "darts": ["darts-elo-v1", "darts-listed-first-v1"],
 }
 
@@ -86,8 +103,10 @@ def build(strategy_id: str, **kwargs):
 __all__ = [
     "Strategy", "market_implied", "remove_margin", "no_bet",
     "MarketFavourite", "MarketLongshot", "EloEdge", "EloFavourite3Way",
+    "EloDecay", "DixonColesValue",
     "DrawNoBet", "DrawValue", "HomeEdge", "FormValue",
-    "HockeyElo", "DartsElo", "PoissonTotalsValue", "MarketTotalsFavourite",
+    "HockeyElo", "HockeyRegPoisson", "HockeyRegHomeBaseline",
+    "DartsElo", "PoissonTotalsValue", "MarketTotalsFavourite",
     "AsianHandicapValue", "AsianHandicapFavourite",
     "HockeyHomeBaseline", "DartsListedFirstBaseline",
     "REGISTRY", "FOOTBALL_STRATEGIES", "HOCKEY_STRATEGIES",

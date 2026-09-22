@@ -44,6 +44,13 @@ jobs:
           python-version: "3.11"
       - name: Install test dependencies
         run: python -m pip install --upgrade pip pytest
+      - name: Capture historical pilot seasons (idempotent; permitted API)
+        # Fetches the frozen whole-season pilot payloads (del/2024, bl1/2024)
+        # on first run; later runs skip them (frozen fixtures).  The DEL
+        # full season widens the hockey prediction pilot; the bl1 full
+        # season is forward-desk rating history only (PnL pilot pinned to
+        # matchdays 1/10/20 in code + tests).
+        run: python -m northstar.cli capture-pilot --out data/fixtures
       - name: Capture current-season fixtures (permitted automated API)
         run: python -m northstar.cli capture-current --out data/fixtures/current
       - name: Rebuild store + forward ledger + site data (offline replay)
@@ -56,10 +63,12 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/fixtures/current data/forward/ledger.json site-data/site.json
+          # data/fixtures = historical pilot seasons (frozen after first
+          # capture); data/fixtures/current = live-season payloads.
+          git add data/fixtures data/fixtures/current data/forward/ledger.json site-data/site.json
           if git diff --cached --quiet; then
             echo "No capture changes this run."
           else
-            git commit -m "chore(capture): refresh current-season fixtures + forward ledger ($(date -u +%Y-%m-%d))"
+            git commit -m "chore(capture): refresh pilot + current-season fixtures + forward ledger ($(date -u +%Y-%m-%d))"
             git push
           fi

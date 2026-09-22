@@ -48,6 +48,13 @@ class Strategy:
     # walk-forward engine offers only that market's snapshots and stores
     # the tip under it (settlement then applies the matching rule set).
     market: Optional[str] = None
+    # Which stored result row defines "actual" when this desk is graded
+    # (prediction-only sports, forward test): "final" (the decisive
+    # OT/SO-aware score) or "regulation_3way" (the 3-period score for
+    # hockey; regulation draws are real outcomes that a 2-way final grade
+    # would count as misses).  Frozen into forward ledger entries at issue
+    # time; grading of old entries defaults to "final".
+    market_outcome: str = "final"
 
     def predict(self, event: Dict[str, Any], tbs: "TimeBoundedStore",
                 start: datetime,

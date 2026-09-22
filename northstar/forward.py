@@ -35,7 +35,7 @@ from . import models
 from .adapters.openligadb import availability_for
 from .backtest import TimeBoundedStore, TimeLeakageError
 from .db import Store
-from .evaluation import OUTCOMES, brier_three, outcome_key
+from .evaluation import OUTCOMES, brier_three, outcome_key, regulation_outcome
 from .models import (
     EVENT_STATUS_FINISHED, EVENT_STATUS_SCHEDULED, MARKET_MATCH_WINNER_2WAY,
     MARKET_MATCH_WINNER_3WAY, TIP_STATUS_UNSETTLEABLE, Tip,
@@ -55,7 +55,13 @@ OVERDUE_GRACE = {
 }
 DEFAULT_GRACE = timedelta(hours=54)
 
-MODEL_VERSION = "nr-forward-2026-09-20.1"
+# .2 (2026-09-22): forward desks now warm up on earlier seasons of the
+# SAME league committed to the store (e.g. del/2024 full season feeding
+# del/2026 desks; bl1/2024 feeding bl1/2026) - results released at their
+# stored availability times, all strictly before as_of (leak-guarded),
+# plus per-desk outcome modes for regulation-time 3-way desks. Frozen
+# ledger entries keep the version they were issued under.
+MODEL_VERSION = "nr-forward-2026-09-22.2"
 
 # Forward desks only issue predictions inside this horizon from the capture
 # instant (roughly one matchweek + slack).  Predicting a fixture months
@@ -100,21 +106,86 @@ def save_ledger(path: str, ledger: Dict[str, Any]) -> bool:
 
 # ----------------------------------------------------------------- issuing
 
-def _sport_market(sport: Optional[str]) -> str:
+def _sport_market(sport: Optional[str],
+                  market_outcome: str = "final") -> str:
+    # The hockey regulation desks trade the 3-period outcome, not the
+    # incl.-OT/SO final; stamp the market id so the site labels the call
+    # correctly (the outcome mode itself is frozen alongside it).
+    if market_outcome == "regulation_3way":
+        return models.MARKET_REGULATION_3WAY
     return MARKET_MATCH_WINNER_3WAY if sport == models.SPORT_FOOTBALL \
         else MARKET_MATCH_WINNER_2WAY
+
+
+def _release_history(store: Store, history_events: Sequence[Dict[str, Any]],
+                     strategy, tbs: TimeBoundedStore, as_of) -> int:
+    """Release finished SAME-LEAGUE earlier-season results into the pool.
+
+    Cross-season rating warm-up (docs/FORWARD-TEST.md): a forward desk
+    issuing DEL 2026/27 calls in October may legitimately use the DEL
+    2024/25 season's results (same clubs, released long before ``as_of``).
+    Events are released chronologically at their STORED availability
+    times; the TimeBoundedStore read audit still enforces that nothing is
+    visible past ``as_of``.  Refuses (ValueError) on any history event
+    starting at/after ``as_of`` - that would be a data bug, not history.
+    Disputed rows (conflicting scores) are skipped: the review queue owns
+    them, exactly as in the walk-forward.  Returns the count released.
+    """
+    flagged = {a["entity_id"] for a in store.anomalies(status="open")
+               if a["kind"] == models.ANOMALY_RESULT_KIND_INCONSISTENT}
+    n = 0
+    ordered = sorted(history_events,
+                     key=lambda e: (e["scheduled_start_utc"],
+                                    e.get("group_order") or 0,
+                                    e["event_id"]))
+    for h in ordered:
+        start_h = parse_utc(h["scheduled_start_utc"])
+        if start_h >= as_of:
+            raise ValueError(
+                f"history event {h['event_id']} starts at/after as_of "
+                f"{as_of} - rating-pool data bug")
+        if h["status"] != EVENT_STATUS_FINISHED:
+            continue
+        if h["event_id"] in flagged:
+            continue  # review queue owns disputed results
+        results = [r for r in store.results(h["event_id"])
+                   if r["final_status"] == "finished"]
+        if not results:
+            continue
+        scores = {(r["home_goals"], r["away_goals"]) for r in results}
+        if len(scores) != 1 or None in next(iter(scores)):
+            continue
+        primary = max(results,
+                      key=lambda r: parse_utc(r["officially_final_at_utc"]))
+        final_at = parse_utc(primary["officially_final_at_utc"])
+        tbs.add_result(h, primary["home_goals"], primary["away_goals"],
+                       available_at=final_at)
+        ratings = strategy.ratings_after(h, primary["home_goals"],
+                                         primary["away_goals"], tbs,
+                                         final_at)
+        if ratings:
+            tbs.update_ratings(ratings, available_at=final_at)
+        n += 1
+    return n
 
 
 def issue_forward(store: Store, events: Sequence[Dict[str, Any]],
                   as_of, strategy_ids: Sequence[str],
                   ledger: Dict[str, Any], label: str = "forward",
-                  horizon: timedelta = ISSUE_HORIZON) -> Dict[str, Any]:
+                  horizon: timedelta = ISSUE_HORIZON,
+                  history_events: Optional[Sequence[Dict[str, Any]]] = None
+                  ) -> Dict[str, Any]:
     """Walk the current-season events and append new predictions.
 
     ``events``: stored event dicts from the *current-season* captures
     (finished + scheduled).  Ratings are released from finished events at
     their stored availability time; scheduled events starting after
     ``as_of`` are offered to each strategy at ``as_of``.
+
+    ``history_events``: finished events from EARLIER seasons of the same
+    league (see :func:`_release_history`) released into the desk's rating
+    pool before the current-season walk.  None by default (backwards
+    compatible).
 
     Ledger entries already issued (by prediction_id) are never re-issued:
     the first capture that saw the fixture froze the call forever.
@@ -123,10 +194,13 @@ def issue_forward(store: Store, events: Sequence[Dict[str, Any]],
         raise ValueError("as_of must be a timezone-aware datetime")
     issued_ids = {e["prediction_id"] for e in ledger["issued"]}
     stats = {"issued": 0, "already_ledgered": 0, "out_of_horizon": 0,
-             "skipped": [], "leak_violations": []}
+             "skipped": [], "leak_violations": [],
+             "history_released": 0}
 
     ordered = sorted(events, key=lambda e: (e["scheduled_start_utc"],
                                             e["event_id"]))
+    flagged = {a["entity_id"] for a in store.anomalies(status="open")
+               if a["kind"] == models.ANOMALY_RESULT_KIND_INCONSISTENT}
     for sid in strategy_ids:
         strategy = build(sid)
         sport = getattr(strategy, "sport", None)
@@ -137,10 +211,18 @@ def issue_forward(store: Store, events: Sequence[Dict[str, Any]],
         tbs = TimeBoundedStore()
         for e in ordered_s:
             tbs.register_event(e)
+        if history_events:
+            stats["history_released"] += _release_history(
+                store, history_events, strategy, tbs, as_of)
         entrant_id = f"fwd-{sid}"
         for e in ordered_s:
             start = parse_utc(e["scheduled_start_utc"])
             if e["status"] == EVENT_STATUS_FINISHED:
+                # Results under review (RESULT_KIND_INCONSISTENT) are held
+                # out of the rating pool, exactly as in the walk-forward -
+                # the review queue owns the verdict.
+                if e["event_id"] in flagged:
+                    continue
                 # Release the result to the feature timeline at its stored
                 # availability time (never earlier, never later).
                 results = [r for r in store.results(e["event_id"])
@@ -223,7 +305,10 @@ def issue_forward(store: Store, events: Sequence[Dict[str, Any]],
                 "selection": decision.get("selection_text",
                                           decision["selection_key"]),
                 "selection_key": decision["selection_key"],
-                "market": _sport_market(e.get("sport") or sport),
+                "market": _sport_market(e.get("sport") or sport,
+                                        getattr(strategy, "market_outcome",
+                                                "final")),
+                "outcome": getattr(strategy, "market_outcome", "final"),
                 "model": decision.get("model", {}),
                 "model_version": MODEL_VERSION,
                 "source_url": e.get("source_url"),
@@ -313,12 +398,43 @@ def grade_forward(store: Store, ledger: Dict[str, Any],
         scores = {(r["home_goals"], r["away_goals"]) for r in results}
         if results and len(scores) == 1 and None not in next(iter(scores)):
             hg, ag = next(iter(scores))
-            actual = outcome_key(hg, ag)
+            # Per-desk outcome mode, frozen into the entry at issue time
+            # (old entries have no key and grade on the final, exactly as
+            # before).  Regulation desks grade the 3-period outcome: a
+            # regulation draw that loses in OT/SO is a HIT for the desk
+            # that called it - never a 2-way-final miss.
+            outcome_mode = entry.get("outcome", "final")
+            if outcome_mode == "regulation_3way":
+                primary = max(
+                    results,
+                    key=lambda r: parse_utc(r["officially_final_at_utc"]))
+                actual = regulation_outcome(primary, hg, ag)
+                if actual is None:
+                    row.update({
+                        "status": "awaiting_result",
+                        "note": ("regulation outcome not resolvable from "
+                                 "the stored final row's kind - review "
+                                 "queue owns it")})
+                    awaiting.append(row)
+                    rows.append(row)
+                    continue
+            else:
+                actual = outcome_key(hg, ag)
             probs = (entry.get("model") or {}).get("model_prob") or {}
+            if outcome_mode == "regulation_3way":
+                if (primary.get("result_type_kind")
+                        == models.RESULT_KIND_AFTER_90):
+                    result_display = f"{hg}-{ag} (regulation)"
+                else:
+                    result_display = (f"regulation draw (final {hg}-{ag} "
+                                      f"incl. OT/SO)")
+            else:
+                result_display = f"{hg}-{ag}"
             row.update({
                 "status": "graded",
-                "result": f"{hg}-{ag}",
+                "result": result_display,
                 "actual": actual,
+                "outcome_mode": outcome_mode,
                 "hit": bool(entry["selection_key"] == actual),
                 "brier": (round(brier_three(probs, actual), 6)
                           if all(k in probs for k in OUTCOMES) else None),

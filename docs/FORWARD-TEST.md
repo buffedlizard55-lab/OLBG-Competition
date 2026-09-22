@@ -16,10 +16,14 @@ tests: `tests/test_forward.py`; site: the **Forward** view.
   today that is OpenLigaDB (ODbL, automated API allowed). OLBG itself is
   **manual-only** (ToS): no automation exists or is permitted; manual OLBG
   snapshots go to `data/raw/` and the drift detector already handles them.
-- The workflow captures current-season fixtures (`data/fixtures/current/`
-  with `.meta.json` sha256 sidecars + `capture-log.json` recording every
-  probe, error and refusal), commits them with the bot identity, then runs
-  the full pipeline and commits `site-data/site.json` + the ledger.
+- The workflow **first** runs `capture-pilot` (frozen whole-season
+  historical payloads in `data/fixtures/` — `openligadb_del_2024.json`,
+  `openligadb_bl1_2024.json` + sha256 sidecars; fetched once, skipped
+  forever after, so the pilot can never be silently re-rolled), then
+  captures current-season fixtures (`data/fixtures/current/` with
+  `.meta.json` sha256 sidecars + `capture-log.json` recording every probe,
+  error and refusal), commits them with the bot identity, then runs the
+  full pipeline and commits `site-data/site.json` + the ledger.
 - Darts capture is discovery-driven with **upcoming-first priority** and
   abandoned-league demotion (`docs/DARTS-AUDIT.md` §1), so a starting
   tournament is never crowded out by finished history — and stale
@@ -39,15 +43,31 @@ For each captured fixture group, with that capture's own `as_of`:
    with `as_of` — it may only read ratings/results available at the capture
    instant (the same `TimeBoundedStore` leakage guard as backtests;
    `TimeLeakageError` aborts issuance).
-3. **Selectivity:** the strategy's own pre-registered threshold (e.g.
+3. **Cross-season history warm-up (added 2026-09-22):** before the
+   current-season walk, the desk's pool is warmed with **finished earlier-
+   season events of the same league** (selected by `cli._history_events_for_
+   group` from the per-match source URL: same shortcut, smaller season
+   number; darts excluded — its pool already spans events; flagged or
+   score-conflicting events excluded — the review queue owns them). Each
+   history result is released into the `TimeBoundedStore` at its own stored
+   `officially_final_at`, in chronological order, so the visibility audit
+   still applies: a history event whose start is at/after the desk's `as_of`
+   is a data bug and is **refused loudly** (the run fails — it is never
+   silently used, since that would leak, nor silently dropped). No history
+   is ever *issued on*: calls are only made for the group's own events.
+   This is why the bl1 2024/25 full season (see below) warms the bl1 2026/27
+   desk, and why the del 2024/25 full season will warm the del 2026/27 desk.
+4. **Selectivity:** the strategy's own pre-registered threshold (e.g.
    hockey prob ≥ 0.55, darts ≥ 0.60, football 3-way Elo favourite).
    Below-threshold matches issue nothing — silence is a valid desk output.
-4. **Freeze:** each issued call is appended to the ledger with model
+5. **Freeze:** each issued call is appended to the ledger with model
    version, strategy id, sport, event id, teams, start, cutoff, full model
-   probabilities, the pick, the source URL and the capture's `as_of`.
-   Entries are **never mutated**; re-running issuance is idempotent
-   (`already_ledgered`), and grading never rewrites an entry.
-5. **Paper tips:** every ledger entry also lands in the store as an
+   probabilities, the pick, **the desk's outcome mode** (`outcome`, added
+   2026-09-22: `final` for the 2/3-way game outcome, `regulation_3way` for
+   the hockey regulation-time desks), the source URL and the capture's
+   `as_of`. Entries are **never mutated**; re-running issuance is
+   idempotent (`already_ledgered`), and grading never rewrites an entry.
+6. **Paper tips:** every ledger entry also lands in the store as an
    `unsettleable` prediction-only tip (never in PnL — hockey/darts have no
    permissioned odds path; that is shown as unavailable, never zero).
 
@@ -56,6 +76,17 @@ For each captured fixture group, with that capture's own `as_of`:
 - A call grades when the event has a finished, **mutually consistent**
   stored result: `graded` with hit/miss and 3-way Brier from the frozen
   probabilities.
+- **Outcome mode is frozen per call** (`docs/STRATEGIES.md`, hockey
+  section). The entry's `outcome` key decides what "the result" means:
+  - `final` (default, all pre-2026-09-22 entries): the stored final
+    scoreline, 2-way or 3-way by the desk's market.
+  - `regulation_3way` (hockey regulation desks): the 3-period outcome,
+    resolved from the stored final-priority row's `resultTypeKind` —
+    `After90Minutes` → the stored scoreline **is** regulation;
+    `AfterExtraTime`/`AfterPenalties` → regulation was **drawn** (a
+    regulation-draw call then *hits* even though the team lost the game in
+    OT/SO). A kind the resolver does not recognise refuses to grade
+    (`awaiting_result`, review queue owns it) — never guessed.
 - Results under review (`RESULT_KIND_INCONSISTENT` — disputed duplicates or
   impossible layering) are **held ungraded**; the review queue owns the
   verdict (audit 2026-09-20, `docs/DARTS-AUDIT.md` §3.1).
@@ -68,20 +99,28 @@ For each captured fixture group, with that capture's own `as_of`:
 
 ## Current state (2026-09-22, live)
 
-- **Desk `hockey-elo-v1`: 9 frozen calls** on real DEL games 2026-09-22 →
-  09-27 (probabilities 0.552–0.639), issued from the committed capture,
-  0 graded yet, 0 leaks. These grade automatically at the next capture
-  after results land.
-- **Desk `hockey-home-v1` (added 2026-09-22): 15 frozen calls** on the
-  same DEL window — a naive always-home baseline has no selectivity
-  threshold, so it issues for *every* upcoming game. Its graded hit rate
-  is the live reference the Elo desk's calls must beat; flat 0.5/0.5
-  prior, Brier 0.5 by construction.
+- **Sixty-three frozen calls, all DEL 2026/27** (16 upcoming games inside
+  the horizon at the capture instant), 0 graded yet, 0 leaks; they grade
+  automatically at the next capture after results land:
+  - `hockey-elo-v1` — **15 calls** (selectivity ≥ 0.55; the warmed pool —
+    17 clean del/2024 history events now in the store — pushes one more
+    match over the threshold than the 2026-09-22 01:43Z cold run, which
+    had frozen 10).
+  - `hockey-home-v1`, `hockey-reg-home-v1`, `hockey-reg-poisson-v1` —
+    **16 calls each** (no selectivity; the reg pair is the regulation 3-way
+    desk + its always-home baseline, added 2026-09-22). The reg desks'
+    graded hit rate is the live reference for the hockey model desks.
+  - First grading happens automatically; the regulation 3-way desks grade
+    on the regulation outcome (a regulation draw that loses in OT/SO is a
+    hit — see grading rules above).
 - **Desk `elo-favourite-3way-v1` (football): dormant by design.** At the
   capture instant, Bundesliga MD1–4 were finished and MD5 starts
   **2026-10-09** (international break) — outside the horizon. First
-  football calls issue at the Monday capture once MD5 enters the window.
-  This is the horizon rule working, not a bug.
+  football calls issue at the Monday capture once MD5 enters the window —
+  and they will issue from a pool warmed by the full 2024/25 season
+  (27 released history events at this writing; the CI-captured whole
+  season will widen that to ~560). This is the horizon rule working, not a
+  bug.
 - **2026-09-21 — football coverage widened to four leagues.** The capture
   now also fetches Premier League (`pl`, 380 fixtures, 40 finished),
   2. Bundesliga (`bl2`, 306 / 54) and LaLiga (`la1`, 380 / 62) 2026/27 —

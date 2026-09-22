@@ -20,7 +20,7 @@ from __future__ import annotations
 
 from typing import Any, Dict, List
 
-REGISTRY_VERSION = "nr-hypothesis-registry-2026-09-22.1"
+REGISTRY_VERSION = "nr-hypothesis-registry-2026-09-22.2"
 
 HYPOTHESES: List[Dict[str, Any]] = [
     # ------------------------------------------------ football: backtested
@@ -156,23 +156,29 @@ HYPOTHESES: List[Dict[str, Any]] = [
     },
     {
         "sport": "Football", "name": "Dixon-Coles low-score correction",
-        "status": "Ready to source",
+        "status": "Pilot-tested", "tested": "dixon-coles-v1",
         "description": "The independent-Poisson model mis-estimates "
                        "low-score dependencies (0-0, 1-0, 0-1, 1-1); "
-                       "Dixon-Coles add a tau correction. Implement as a "
-                       "new strategy with pre-registered rho prior; same "
-                       "verified pilot fixtures.",
+                       "Dixon-Coles add a tau correction. Implemented as "
+                       "a 1X2 value desk with a pre-registered rho=-0.10 "
+                       "prior (not fitted); negative score cells reject "
+                       "the bet outright. Same verified pilot fixtures "
+                       "and released-data construction as the totals "
+                       "desk; enters the Holm PnL family.",
         "data": "Verified pilot fixtures/results - same odds columns",
-        "test": "Walk-forward 1X2 + O/U 2.5", "refs": [],
+        "test": "Walk-forward 1X2", "refs": [],
     },
     {
         "sport": "Football", "name": "Elo recency decay",
-        "status": "Ready to source",
-        "description": "Current football/hockey Elo weights every match "
-                       "equally; a time-decay weighting (older matches "
-                       "count less) is the standard extension. Pre-register "
-                       "the decay half-life before grading; never tune it "
-                       "on pilot outcomes.",
+        "status": "Pilot-tested", "tested": "elo-decay-v1",
+        "description": "The frozen elo-edge-v1 desk weights every past "
+                       "match forever once it has moved a rating. "
+                       "Implemented as a control desk sharing the SAME "
+                       "rating history (elo_update) but reading ratings "
+                       "relaxed toward 1500 with a pre-registered "
+                       "365-day half-life (stated before grading, never "
+                       "tuned on pilot outcomes). Same 3-way mapping and "
+                       "edge rule; enters the Holm PnL family.",
         "data": "Verified pilot fixtures/results - time-stamped odds",
         "test": "Walk-forward 1X2 (vs elo-edge-v1 as control)",
         "refs": [],
@@ -228,15 +234,41 @@ HYPOTHESES: List[Dict[str, Any]] = [
     },
     {
         "sport": "Ice Hockey", "name": "Regulation-time 3-way model",
-        "status": "Ready to source",
-        "description": "A 3-way (regulation) hockey model needs reliable "
-                       "regulation-score rows; the DEL pilot already "
-                       "flagged 4 matches with impossible "
-                       "regulation+OT/SO layering (review queue), so a "
-                       "schema audit + FINAL_KIND rule with tests is the "
-                       "gate before any grading.",
-        "data": "OpenLigaDB DEL period rows - schema audit gate",
-        "test": "Walk-forward 3-way accuracy", "refs": [],
+        "status": "Pilot-tested", "tested": "hockey-reg-poisson-v1",
+        "description": "Independent-Poisson goal model (Maher/Dixon-"
+                       "Coles lineage, released-data league rates + shrunk "
+                       "team multipliers, generic prior 3.1/2.9 until "
+                       "10 released matches - all pre-registered) stating "
+                       "the regulation-time (3-period) 3-way view for "
+                       "every match. Grading needed reliable regulation "
+                       "outcomes: the adapter's stored final row carries "
+                       "the result kind, so After90Minutes finals give "
+                       "the regulation scoreline and AfterExtraTime/"
+                       "AfterPenalties finals are proof of a drawn "
+                       "regulation (evaluation.regulation_outcome); the "
+                       "4 DEL matches with impossible regulation+OT/SO "
+                       "layering stay flagged and excluded from grading "
+                       "by the review queue. Prediction-only - no "
+                       "permissioned DEL odds path.",
+        "data": "OpenLigaDB DEL season payloads (ODbL) - kind-based "
+                "regulation outcomes, no period-row audit needed",
+        "test": "Walk-forward regulation 3-way accuracy/Brier",
+        "refs": [],
+    },
+    {
+        "sport": "Ice Hockey", "name": "Regulation home naive baseline",
+        "status": "Pilot-tested", "tested": "hockey-reg-home-v1",
+        "data": "OpenLigaDB DEL season payloads (ODbL) - no "
+                "permissioned odds",
+        "test": "Walk-forward regulation 3-way accuracy (flat prior)",
+        "description": "Always predicts HOME in regulation time with a "
+                       "flat 0.5/0/0.5 prior (uninformative by design). "
+                       "The regulation analogue of hockey-home-v1: the "
+                       "Poisson 3-way desk must beat the share of "
+                       "regulation home wins on the same pool or its "
+                       "numbers are not evidence of information. "
+                       "Prediction-only, never PnL.",
+        "refs": [],
     },
     {
         "sport": "Ice Hockey", "name": "Goalie-adjusted expected goals",

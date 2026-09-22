@@ -58,6 +58,13 @@ LEDGER_PATH = os.path.join(ROOT, "data", "forward", "ledger.json")
 CAPTURE_DATE = "2026-09-19"
 HOCKEY_CAPTURE_DATE = "2026-09-20"
 
+# The frozen football PnL pilot is matchdays 1/10/20 of bl1/2024.  The
+# full-season bl1/2024 payload (capture_pilot) ingests the SAME events
+# (idempotent) plus the other 533 matches for forward-desk rating history;
+# the scope must stay pinned to these three matchdays so the frozen 27-match
+# pilot numbers (docs/STRATEGIES.md) can never silently widen.
+FOOTBALL_PILOT_MATCHDAYS = frozenset({1, 10, 20})
+
 
 def _sha256_file(path: str) -> str:
     h = hashlib.sha256()
@@ -108,32 +115,108 @@ def ingest_pilot(store: Store) -> Dict[str, Any]:
     return stats
 
 
+def _read_sidecar(path: str) -> Optional[Dict[str, Any]]:
+    """Read a capture sidecar (.meta.json) if present, else None."""
+    meta_path = path + ".meta.json"
+    if not os.path.exists(meta_path):
+        return None
+    with open(meta_path, "r", encoding="utf-8") as fh:
+        return json.load(fh)
+
+
+def _pilot_fixture_files(prefix: str) -> List[str]:
+    """All committed pilot fixtures for a league-season prefix, sorted.
+
+    Discovers both the hand-assembled matchday files (e.g.
+    openligadb_del_2024_sd1.json) and whole-season files (e.g.
+    openligadb_del_2024.json) captured by ``capture-pilot``.  Sidecars
+    (.meta.json) are excluded.  Sorted for deterministic ingest order.
+    """
+    if not os.path.isdir(FIXTURES):
+        return []
+    out = []
+    for name in sorted(os.listdir(FIXTURES)):
+        if not name.startswith(prefix) or not name.endswith(".json"):
+            continue
+        if name.endswith(".meta.json"):
+            continue
+        out.append(name)
+    return out
+
+
 def ingest_hockey_pilot(store: Store) -> Dict[str, Any]:
-    """DEL 2024/25 matchdays 1/20/40 (OpenLigaDB, ODbL-1.0).
+    """DEL 2024/25 (OpenLigaDB, ODbL-1.0): matchdays 1/20/40 + full season.
 
     Single-source results: identity stays 'probable' (no independent
     cross-check exists for DEL in this repo), so hockey never produces
-    verified PnL - only predictions graded on accuracy.
+    verified PnL - only predictions graded on accuracy.  The full-season
+    payload (when captured) re-ingests the matchday events idempotently and
+    adds the rest of the season, so the prediction desks grade on the whole
+    season instead of 21 matches.
     """
-    stats: Dict[str, Any] = {"events": 0, "results": 0, "anomalies": 0}
-    for name in ("openligadb_del_2024_sd1.json",
-                 "openligadb_del_2024_sd20.json",
-                 "openligadb_del_2024_sd40.json"):
+    stats: Dict[str, Any] = {"events": 0, "results": 0, "anomalies": 0,
+                             "full_season": False}
+    for name in _pilot_fixture_files("openligadb_del_2024"):
         path = os.path.join(FIXTURES, name)
         text = _read(path)
+        meta = _read_sidecar(path)
+        if name == "openligadb_del_2024.json":
+            stats["full_season"] = True
+        if meta:
+            captured_at = models.parse_utc(meta["captured_at_utc"])
+            note = (f"DEL 2024/25 whole-season payload captured "
+                    f"{meta['captured_at_utc']} via permitted automated API "
+                    f"(ODbL-1.0); sha256 {meta['sha256'][:16]}...")
+        else:
+            captured_at = models.parse_utc(HOCKEY_CAPTURE_DATE + "T00:00:00Z")
+            note = ("DEL 2024/25 matchday payload fetched via permitted "
+                    "automated API (ODbL-1.0) on 2026-09-20, chunk-assembled "
+                    "with strict JSON validation (scripts/assemble_fixture.py)")
         store.register_capture(
             "cap-" + name, "openligadb",
             os.path.relpath(path, ROOT), _sha256_file(path),
-            models.parse_utc(HOCKEY_CAPTURE_DATE + "T00:00:00Z"),
-            MODE_AUTO_API,
-            "DEL 2024/25 matchday payload fetched via permitted automated "
-            "API (ODbL-1.0) on 2026-09-20, chunk-assembled with strict JSON "
-            "validation (scripts/assemble_fixture.py)")
+            captured_at, MODE_AUTO_API, note)
         out = openligadb.ingest_matchday(store, text, verify_identity=True,
                                          sport="ice_hockey")
         stats["events"] += out["events"]
         stats["results"] += out["results"]
         stats["anomalies"] += out["anomalies"]
+    return stats
+
+
+def ingest_pilot_warmup(store: Store) -> Dict[str, Any]:
+    """Whole-season bl1/2024 payload (when captured) as forward warm-up.
+
+    Feeds the football forward desk's rating history (same Bundesliga clubs
+    as bl1/2026).  Does NOT enter the frozen 27-match PnL pilot: the pilot
+    scope is pinned to FOOTBALL_PILOT_MATCHDAYS in run_backtests.  No-op
+    until ``capture-pilot`` has committed the payload.
+    """
+    stats: Dict[str, Any] = {"events": 0, "results": 0, "anomalies": 0}
+    name = "openligadb_bl1_2024.json"
+    path = os.path.join(FIXTURES, name)
+    if not os.path.exists(path):
+        return stats
+    meta = _read_sidecar(path)
+    if not meta:
+        # A full-season payload without its sidecar has no capture instant -
+        # refuse rather than guess (missing sidecar == missing provenance).
+        return stats
+    text = _read(path)
+    store.register_capture(
+        "cap-" + name, "openligadb",
+        os.path.relpath(path, ROOT), _sha256_file(path),
+        models.parse_utc(meta["captured_at_utc"]), MODE_AUTO_API,
+        f"Bundesliga 1 2024/25 whole-season payload captured "
+        f"{meta['captured_at_utc']} via permitted automated API (ODbL-1.0); "
+        f"forward-desk rating history only - the frozen PnL pilot stays on "
+        f"matchdays {sorted(FOOTBALL_PILOT_MATCHDAYS)}; "
+        f"sha256 {meta['sha256'][:16]}...")
+    out = openligadb.ingest_matchday(store, text, verify_identity=True,
+                                     sport="football")
+    stats["events"] = out["events"]
+    stats["results"] = out["results"]
+    stats["anomalies"] = out["anomalies"]
     return stats
 
 
@@ -196,21 +279,33 @@ def ingest_current(store: Store) -> Dict[str, Any]:
     return {"groups": groups, "anomalies": anomalies}
 
 
-def _pilot_scope(events: List[Dict[str, Any]], sport: str,
-                 url_part: str) -> List[Dict[str, Any]]:
+def _pilot_scope(events: List[Dict[str, Any]], sport: str, url_part: str,
+                 matchdays: Optional[frozenset] = None
+                 ) -> List[Dict[str, Any]]:
     """Pilot backtests run ONLY on the frozen pilot fixtures.
 
     Current-season captures feed the forward desk and prediction-only
     walk-forwards, never the settled-PnL pilot tables (their events have
     no permissioned odds and only 'probable' identity).
+
+    ``matchdays`` (optional): pin the scope to specific group_order values.
+    Used for the frozen football PnL pilot (matchdays 1/10/20) so that the
+    whole-season bl1/2024 warm-up payload ingesting the same event ids can
+    never widen the 27-match pilot.
     """
-    return [e for e in events
-            if e["sport"] == sport and url_part in (e.get("source_url") or "")]
+    out = [e for e in events
+           if e["sport"] == sport and url_part in (e.get("source_url") or "")]
+    if matchdays is not None:
+        out = [e for e in out if e.get("group_order") in matchdays]
+    return out
 
 
 def run_backtests(store: Store) -> Dict[str, Any]:
     finished = [e for e in store.events() if e["status"] == "finished"]
-    football_events = _pilot_scope(finished, "football", "/bl1/2024/")
+    # The PnL pilot stays pinned to the frozen 27-match scope even when the
+    # whole-season bl1/2024 warm-up payload is ingested (same event ids).
+    football_events = _pilot_scope(finished, "football", "/bl1/2024/",
+                                   matchdays=FOOTBALL_PILOT_MATCHDAYS)
     hockey_events = _pilot_scope(finished, "ice_hockey", "/del/2024/")
     darts_events = [e for e in finished if e["sport"] == "darts"]
     reports: Dict[str, Any] = {}
@@ -224,8 +319,12 @@ def run_backtests(store: Store) -> Dict[str, Any]:
         reports[sid] = run_walk_forward(store, hockey_events, strategy, sid,
                                         label="hockey-pilot",
                                         allow_no_odds=True)
+        # Regulation-time 3-way desks grade the 3-period outcome (their
+        # own market_outcome), not the OT/SO-aware final - a regulation
+        # draw that loses in OT/SO is a hit for them.
         reports[sid]["evaluation"] = prediction_accuracy(
-            store, reports[sid]["bets"], sport="ice_hockey")
+            store, reports[sid]["bets"], sport="ice_hockey",
+            outcome=getattr(strategy, "market_outcome", "final"))
     for sid in DARTS_STRATEGIES:
         if not darts_events:
             continue  # no darts capture committed yet: desk stays closed
@@ -239,12 +338,51 @@ def run_backtests(store: Store) -> Dict[str, Any]:
     return reports
 
 
+def _history_events_for_group(store: Store, group: Dict[str, Any],
+                              current_ids: set) -> List[Dict[str, Any]]:
+    """Finished same-league EARLIER-season events for rating warm-up.
+
+    A forward desk issuing del/2026 calls may legitimately use the
+    del/2024 full season's results (same clubs, all released long before
+    ``as_of``); the TimeBoundedStore audit in issue_forward still enforces
+    visibility at ``as_of``.  Excluded: the group's own events, darts
+    (its pool already spans multiple events), and any event whose result is
+    disputed (review queue owns it) or inconsistent (conflicting scores).
+    """
+    import re
+    shortcut = group["shortcut"]
+    season = group["season"]
+    if group["sport"] == "darts" or not shortcut or not season:
+        return []
+    flagged = {a["entity_id"] for a in store.anomalies(status="open")
+               if a["kind"] == models.ANOMALY_RESULT_KIND_INCONSISTENT}
+    pattern = re.compile(rf"/getmatchdata/{re.escape(shortcut)}/(\d+)/")
+    out: List[Dict[str, Any]] = []
+    for e in store.events():
+        if e["sport"] != group["sport"] or e["status"] != "finished":
+            continue
+        if e["event_id"] in current_ids or e["event_id"] in flagged:
+            continue
+        m = pattern.search(e.get("source_url") or "")
+        if not m or int(m.group(1)) >= season:
+            continue
+        results = [r for r in store.results(e["event_id"])
+                   if r["final_status"] == "finished"]
+        scores = {(r["home_goals"], r["away_goals"]) for r in results}
+        if not results or len(scores) != 1 or None in next(iter(scores)):
+            continue
+        out.append(e)
+    return out
+
+
 def run_forward_desks(store: Store, current: Dict[str, Any],
                       ledger: Dict[str, Any]) -> Dict[str, Any]:
     """Issue (append-only) and grade forward-test predictions.
 
     One desk call per captured fixture group with that capture's own
     ``as_of`` - the desk can only see what the capture saw, when it saw it.
+    Each group's desks additionally warm up on earlier seasons of the same
+    league committed to the store (see _history_events_for_group).
     """
     issue_stats: List[Dict[str, Any]] = []
     latest_as_of = None
@@ -257,8 +395,11 @@ def run_forward_desks(store: Store, current: Dict[str, Any],
         sids = FORWARD_STRATEGIES.get(group["sport"], [])
         if not sids:
             continue
+        history = _history_events_for_group(
+            store, group, set(group["events"]))
         stats = issue_forward(store, events, as_of, sids, ledger,
-                              label=f"{group['shortcut']}-{group['season']}")
+                              label=f"{group['shortcut']}-{group['season']}",
+                              history_events=history)
         issue_stats.append({"fixture": group["fixture"],
                             "sport": group["sport"], **stats})
     report = grade_forward(store, ledger, latest_as_of=latest_as_of)
@@ -493,10 +634,35 @@ def main(argv: List[str] = None) -> int:
     p_cap.add_argument("--out", default=os.path.join(
         "data", "fixtures", "current"))
     p_cap.add_argument("--season", type=int, default=2026)
+    p_pilot = sub.add_parser(
+        "capture-pilot",
+        help="CI: fetch the historical pilot seasons (del/2024 + bl1/2024 "
+             "full seasons) from the permitted OpenLigaDB automated API "
+             "(network; idempotent - frozen fixtures are skipped, not "
+             "re-fetched)")
+    p_pilot.add_argument("--out", default=os.path.join("data", "fixtures"))
     args = parser.parse_args(argv)
 
     if args.cmd == "ingest-fullseason":
         return ingest_fullseason(args.out, args.league)
+
+    if args.cmd == "capture-pilot":
+        from . import capture
+        out_dir = args.out if os.path.isabs(args.out) \
+            else os.path.join(ROOT, args.out)
+        log = capture.capture_pilot(out_dir)
+        for row in log["targets"]:
+            if row.get("skipped_existing"):
+                print(f"  [SKIP] {row.get('shortcut')}/"
+                      f"{row.get('season')}: frozen fixture already "
+                      "committed (idempotent)")
+            else:
+                state = "WROTE" if row.get("written") else "REFUSED"
+                print(f"  [{state}] {row.get('shortcut')}/"
+                      f"{row.get('season')}: {row.get('matches', 0)} matches "
+                      f"({row.get('error', '')})")
+        return 1 if log["errors"] and not any(
+            r.get("written") for r in log["targets"]) else 0
 
     if args.cmd == "capture-current":
         from . import capture
@@ -529,6 +695,12 @@ def main(argv: List[str] = None) -> int:
     store.kv_set("hockey_pilot_events", str(hockey_stats["events"]))
     store.kv_set("hockey_pilot_source_anomalies",
                  str(hockey_stats["anomalies"]))
+    store.kv_set("hockey_pilot_full_season",
+                 "1" if hockey_stats.get("full_season") else "0")
+    # Whole-season bl1/2024 warm-up (forward-desk rating history only; the
+    # frozen PnL pilot scope is pinned in run_backtests, never widened).
+    warmup_stats = ingest_pilot_warmup(store)
+    store.kv_set("bl1_warmup_events", str(warmup_stats["events"]))
     current = ingest_current(store)
     olbg_stats = ingest_olbg(store)
     # Cross-check the manual OLBG snapshot events against the permitted
@@ -558,10 +730,16 @@ def main(argv: List[str] = None) -> int:
         if sid in PREDICTION_ONLY_STRATEGIES:
             evaln = rep.get("evaluation")
             sport = getattr(build(sid), "sport", None) or "ice_hockey"
+            # Regulation desks trade the 3-period market, not the
+            # incl.-OT/SO final (same id as the forward ledger entries).
+            desk_market = (models.MARKET_REGULATION_3WAY
+                           if getattr(build(sid), "market_outcome", "final")
+                           == "regulation_3way"
+                           else models.MARKET_MATCH_WINNER_2WAY)
             backtest_meta[sid] = {
                 "label": rep["label"],
                 "sport": sport,
-                "market": models.MARKET_MATCH_WINNER_2WAY,
+                "market": desk_market,
                 "pnl_available": False,
                 "bets": len(entries),
                 "settled": len(settled),
@@ -642,6 +820,10 @@ def main(argv: List[str] = None) -> int:
           f"results={hockey_stats['results']} "
           f"source anomalies={hockey_stats['anomalies']} (single-source, "
           f"identity probable)")
+    if warmup_stats["events"]:
+        print(f"  bl1 2024/25 warm-up (forward rating history): "
+              f"{warmup_stats['events']} events "
+              "(frozen PnL pilot unchanged: matchdays 1/10/20)")
     print(f"  current-season fixtures: groups={len(current['groups'])} "
           f"anomalies={current['anomalies']}")
     for g in current["groups"]:

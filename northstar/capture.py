@@ -76,6 +76,28 @@ DARTS_SHORTCUT_CANDIDATES = ["PDCWSDF", "PDCWC", "pdc", "PDC", "darts"]
 MIN_REQUEST_GAP_S = 1.1          # << 60 req/min documented limit
 CANONICAL_SEPARATORS = (",", ":")
 
+# Historical pilot targets: whole *past* seasons, one permitted API request
+# each, committed as frozen fixtures next to the hand-assembled matchday
+# pilot files (data/fixtures/, NOT data/fixtures/current/).
+#
+#   del 2024/25  full season  - expands the hockey prediction-only pilot
+#         from the three committed matchdays (1/20/40) to the complete
+#         season, so the accuracy desks are graded on the whole season
+#         instead of 21 matches. Single source (identity 'probable'), no
+#         odds path: accuracy/Brier only, never PnL.
+#   bl1 2024/25 full season  - feeds the football forward desk's rating
+#         history (same Bundesliga clubs as bl1/2026). It does NOT enter
+#         the frozen 27-match PnL pilot: the pilot scope is pinned to
+#         matchdays 1/10/20 (see cli.ingest_pilot / FOOTBALL_PILOT_MATCHDAYS).
+#
+# Every target was live-verified before listing (same rule as
+# CURRENT_TARGETS): getmatchdata/del/2024 and getmatchdata/bl1/2024 both
+# return complete season payloads (probed 2026-09-22).
+PILOT_TARGETS: List[Tuple[str, int, str]] = [
+    ("del", 2024, "ice_hockey"),
+    ("bl1", 2024, "football"),
+]
+
 
 def _canonical(payload: Any) -> str:
     return json.dumps(payload, ensure_ascii=False,
@@ -422,6 +444,56 @@ def capture_current(out_dir: str, season: int = 2026,
     os.makedirs(out_dir, exist_ok=True)
     with open(os.path.join(out_dir, "capture-log.json"), "w",
               encoding="utf-8") as fh:
+        json.dump(log, fh, indent=2, ensure_ascii=False, sort_keys=True)
+        fh.write("\n")
+    return log
+
+
+def capture_pilot(out_dir: str,
+                  fetch=openligadb.fetch_url) -> Dict[str, Any]:
+    """Fetch the historical pilot seasons (network; runs in CI).
+
+    Same licensing and validation as ``capture_current`` (permitted
+    automated API, ODbL-1.0, strict schema checks, canonical compact JSON,
+    sha256 sidecar, crest-URL stripping recorded) with one difference:
+    pilot fixtures are FROZEN.  A target whose fixture + sidecar already
+    exist on disk is skipped (recorded as ``skipped_existing``), so repeat
+    CI runs never re-fetch or re-commit them and the capture instant stays
+    the one recorded in the sidecar.  A genuine re-capture (e.g. after the
+    source corrects a season) requires a human to remove the fixture pair
+    first - the skip is the safe default.
+
+    Log receipt: ``<out_dir>/pilot-capture-log.json`` (committed, like the
+    current-season capture log).
+    """
+    log: Dict[str, Any] = {
+        "started_utc": models.fmt_utc(models.utcnow()),
+        "targets": [], "errors": [],
+    }
+    for shortcut, season, sport in PILOT_TARGETS:
+        name = f"openligadb_{shortcut.lower()}_{season}.json"
+        fixture_path = os.path.join(out_dir, name)
+        meta_path = fixture_path + ".meta.json"
+        if os.path.exists(fixture_path) and os.path.exists(meta_path):
+            log["targets"].append({
+                "shortcut": shortcut, "season": season, "sport": sport,
+                "written": False, "skipped_existing": True,
+                "fixture": fixture_path,
+                "note": ("pilot fixture + sidecar already committed; pilot "
+                         "fixtures are frozen at first capture - a re-capture "
+                         "requires a human to remove the pair (documented "
+                         "exception)"),
+            })
+            continue
+        row = capture_season(shortcut, season, sport, out_dir, fetch=fetch)
+        log["targets"].append(row)
+        if not row.get("written"):
+            log["errors"].append(row)
+        time.sleep(MIN_REQUEST_GAP_S)
+    log["finished_utc"] = models.fmt_utc(models.utcnow())
+    os.makedirs(out_dir, exist_ok=True)
+    log_path = os.path.join(out_dir, "pilot-capture-log.json")
+    with open(log_path, "w", encoding="utf-8") as fh:
         json.dump(log, fh, indent=2, ensure_ascii=False, sort_keys=True)
         fh.write("\n")
     return log
