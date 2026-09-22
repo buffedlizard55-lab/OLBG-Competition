@@ -28,6 +28,8 @@ jobs:
         run: python -m northstar.cli run-pipeline --fresh
       - name: Verify fixtures
         run: python -m northstar.cli verify
+      - name: Render the site against the fresh payload (node smoke test)
+        run: node scripts/site-smoke.mjs
       - name: Assemble site artifact
         run: |
           mkdir -p site-dist/site-data
@@ -36,6 +38,10 @@ jobs:
           cp README.md site-dist/
           mkdir -p site-dist/docs
           cp docs/*.md site-dist/docs/
+          # The Sport-coverage view links the raw evidence registry, so the
+          # JSON ships with the site (links are relative, no absolute URLs).
+          mkdir -p site-dist/data/sources
+          cp data/sources/*.json site-dist/data/sources/
       - name: Upload site artifact
         uses: actions/upload-pages-artifact@v3
         with:

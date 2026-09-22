@@ -26,6 +26,7 @@ committed real fixtures) · `forward` (frozen live predictions in
 | R8 | Dixon & Coles (1997), *Modelling Association Football Scores and Inefficiencies in the Football Betting Market*, JRSS-C 46(2), 265–280 — <https://research-information.bris.ac.uk/en/publications/modelling-association-football-scores-and-inefficiencies-in-the-f/> (checked 2026-09-21: Bristol record confirms journal/volume/pages) | Poisson goal-model family for totals; attack/defence multipliers × league rates |
 | R9 | Hvattum & Arntzen (2010), *Using ELO ratings for match result prediction in association football*, Int. J. Forecasting 26(3), 460–470 — <https://doi.org/10.1016/j.ijforecast.2009.10.002> (checked 2026-09-21: abstract + intro read; cites Maher 1982 as origin of the independent-Poisson attack/defence model) | Elo-covariate prior; literature lineage Maher → Dixon-Coles |
 | R10 | football-data.co.uk, *Notes for Football Data* — <https://www.football-data.co.uk/notes.txt> (fetched and read in full 2026-09-22; quoted verbatim in the Market-3 section) | Asian-handicap column semantics (`AHh`, `AvgAHH/AvgAHA`); window-close collection schedule |
+| R11 | World Football Elo Ratings, *About Elo Ratings* — <https://www.eloratings.net/about> (fetched 2026-09-22; the goal-difference weighting is quoted verbatim in `strategies/hockey_more.py` and `strategies/darts_more.py`) | Margin-of-victory weighting for Elo updates: "It is increased by half if a game is won by two goals, by 3/4 if a game is won by three goals, and by 3/4 + (N-3)/8 if the game is won by four or more goals, where N is the goal difference." Implemented as g = 1 / 1.5 / (11+margin)/8 |
 
 References motivate hypotheses; **none of them is evidence about this
 repository's results**. Our own numbers come only from committed fixtures
@@ -33,9 +34,12 @@ repository's results**. Our own numbers come only from committed fixtures
 
 ## Football (Bundesliga pilot — 27 matches, dual-source verified)
 
-Thirteen strategies now ran walk-forward with strict cutoffs, level 1.0-unit
+Thirteen football strategies now ran walk-forward with strict cutoffs, level
+1.0-unit
 stakes, bootstrap 95% CIs, and Holm correction across the family (m=13,
-R2). **Twelve of thirteen are negative; the one positive desk (Asian-handicap
+R2); ten further desks run prediction-only on hockey (7) and darts (3) and
+are deliberately excluded from that family (no odds path → no PnL
+hypothesis). **Twelve of thirteen are negative; the one positive desk (Asian-handicap
 value) is NOT significant after correction (Holm-adjusted p = 0.0715) and
 no edge is claimed.** Raw p-values 0.0055–0.9435. Sample size (27 matches
 / 3–27 bets) is the binding limitation (`docs/STATUS.md` #1).
@@ -113,49 +117,127 @@ predictions; dormant at the 2026-09-20 capture because Bundesliga MD5
 starts 2026-10-09 — outside the 10-day issue horizon; first calls issue
 automatically once MD5 enters the window).
 
-## Ice hockey (DEL — results pilot, prediction-only)
+## Ice hockey (DEL — full-season results pilot, prediction-only)
 
-The pilot is 21 committed matchday events (SD 1/20/40) as of this writing;
-`capture-pilot` fetches the **whole 2024/25 season** (ODbL-1.0, committed
-hash-verified on first fetch) and the pipeline re-grades on all of it —
-every number below on the 21-event slice will widen automatically. Four
-match rows are flagged `RESULT_KIND_INCONSISTENT` (impossible OT layering
-in the community source) and are held out of grading by the review queue.
+The pilot now grades **the whole committed 2024/25 DEL season**: 428 events
+(407 finished results, 428 hash-verified fixtures), re-graded on every
+pipeline run. Four match rows are flagged `RESULT_KIND_INCONSISTENT`
+(impossible OT layering in the community source) and are held out of
+grading by the review queue; the flagged rows are counted in
+`docs/FACTS.md`, never smoothed. DEL has **no permissioned odds path** in
+this repository, so every hockey desk is prediction-only: accuracy and
+Brier, never PnL.
 
-Two new desks answer a sharper question: the 2-way desks grade the *final
-game*, but DEL games are won or lost in regulation — the regulation-time
-**3-way** (home win / draw / away win) is a proper, better-defined outcome
-and is derivable from the stored data without any new source: the ingest
-stores the final-priority row, and its `resultTypeKind` tells the story —
-`After90Minutes` means the stored scoreline **is** regulation;
+Two outcome refinements matter here. The 2-way desks grade the *final game*
+(incl. OT/shootout), but DEL games are won or lost in regulation — the
+regulation-time **3-way** (home win / draw / away win) is a better-defined
+outcome and is derivable from the stored data without a new source: the
+ingest stores the final-priority row and its `resultTypeKind` tells the
+story — `After90Minutes` means the stored scoreline **is** regulation;
 `AfterExtraTime`/`AfterPenalties` mean regulation was drawn
 (`evaluation.regulation_outcome`). A regulation draw that then loses in OT
-or the shootout is a **hit** for a regulation-draw call, never a 2-way
-miss — the forward grader and the walk-forward both resolve it this way
-(`docs/FORWARD-TEST.md`).
+or the shootout is a **hit** for a regulation-draw call, never a 2-way miss
+— the forward grader and the walk-forward both resolve it this way
+(`docs/FORWARD-TEST.md`). The totals desks grade the binary over/under 5.5
+line on the final scoreline (`evaluation.totals_outcome`).
 
-| id | research question | prior | rule | result (21-event slice, 17 gradable) |
+| id | research question | prior | rule | result (full DEL 2024/25 season) |
 |---|---|---|---|---|
-| `hockey-elo-v1` | Does a 2-way Elo (incl. OT/shootout) beat a coin flip on DEL? | R6: home-ice ≈ 54.5% → venue matters but is modest; rating-family prior R7 | Elo K=32, home adv 35 pts, 2-way; select when prob ≥ 0.55; results released start+3h (documented inference) | **11 graded predictions, 7 hits = 63.6%, mean Brier 0.4737** — the desk picks 11 of the 17 non-flagged rows; the 4 flagged rows are excluded from the rating pool and never picked (review queue owns them). No PnL: no permissioned DEL odds path; shown as unavailable, never zero. Single source → identity `probable`. |
-| `hockey-home-v1` | What does "always predict home" score on the same pool? (no-information reference, added 2026-09-22) | none — deliberate naive baseline, flat 0.5/0.5 prior (Brier 0.5 by construction) | predict HOME every eligible match, final 2-way; no selectivity | **17 graded, 11 hits = 64.7%** — i.e. the Elo desk's 63.6% does **not** beat always-home on this pilot. Honest reading: on 11 vs 17 picks the difference is far inside the noise band; the value of the baseline is that the Elo number can no longer be quoted without its naive reference. |
-| `hockey-reg-poisson-v1` | Does a goal-rate model beat the naive baseline on the better-defined **regulation 3-way**? | R8 lineage (Maher → Dixon-Coles, independent Poisson with the hockey twist that draws are *expected*, not an under-stated artefact); league home/away regulation goal rates 3.1/2.9 generic until ≥10 released; team multipliers with the same 6-match shrinkage as the football O/U desk | P(reg home/draw/away) from the bivariate Poisson matrix (no ρ — the low-score correction is a football draw artefact, not pre-registered here); always issue the argmax (the 3-way needs every observation; selectivity comes later, if ever) | **17 graded, 8 hits = 47.1%, mean Brier 0.5672 — below the always-home baseline (64.7%) on this slice.** Cold-start is the suspected cause: the pool is generic for the first half of the walk. The full-season run is the pre-registered next step; if it stays under the baseline the desk gets reported as negative and left. No edge claim, no PnL. |
-| `hockey-reg-home-v1` | The no-information reference for the regulation 3-way (always-home on a 3-outcome market) | none — flat baseline; the 3-way home share on this slice is the number the model desk must beat | predict regulation HOME every eligible match | **17 graded, 11 hits = 64.7%, mean Brier 0.5** — the 3-way's naive bar. Identical hit count to the 2-way home baseline: on this slice every home *win* was a regulation home win. |
+| `hockey-elo-v1` | Does a 2-way Elo (incl. OT/shootout) beat a coin flip on DEL? | R6: home-ice ≈ 54.5% → venue matters but is modest; rating-family prior R7 | Elo K=32, home adv 35 pts, 2-way; selectivity ≥ 0.55 | **243 graded, 66.3%, Brier 0.4462** — clears the always-home baseline (59.8%) |
+| `hockey-home-v1` | What does "always predict home" score on the same pool? (no-information reference) | none — deliberate naive baseline, flat 0.5/0.5 prior (Brier 0.5 by construction) | always HOME | 323 graded, 59.8%, Brier 0.5000 |
+| `hockey-reg-poisson-v1` | Does a goal-rate model beat the naive baseline on the better-defined **regulation 3-way**? | R8 lineage (Maher → Dixon-Coles, independent Poisson; draws are *expected* here, not an artefact); league regulation rates 3.1/2.9 generic until ≥10 released; 6-match shrinkage | P(reg home/draw/away) from the independent-Poisson matrix; always issue the argmax | **323 graded, 64.7%, Brier 0.4883** — clears its regulation baseline (59.4%) |
+| `hockey-reg-home-v1` | The no-information reference for the regulation 3-way (always-home) | none — flat 0.50/0.25/0.25 prior, only the hit rate is a reference | always HOME on the regulation 3-way | 323 graded, 59.4%, Brier 0.5062 |
+| `hockey-elo-mov-v1` | Does the **size** of a win carry information the plain W/L update throws away? | R11 World-Football-Elo margin weights, applied with the hockey Elo constants | same model as `hockey-elo-v1`, update scaled by g = 1 / 1.5 / (11+margin)/8 | **255 graded, 65.5%, Brier 0.4540 — does *not* beat plain Elo (66.3%)**; the refinement found nothing on this pool |
+| `hockey-totals-poisson-v1` | Does the football totals model transfer to DEL **total goals**? | R8 lineage, explicit cross-sport transfer test; generic prior 3.1/2.9 until ≥10 released | P(total ≥ 6) vs P(total ≤ 5); states a side for every match (no selectivity) | **323 graded, 52.3%, Brier 0.5153 — *below* the always-over baseline (53.6%)**; reported as negative |
+| `hockey-totals-over-v1` | Reference point for the totals market: how often does the 5.5 line go over? | none — flat 0.5/0.5 prior (Brier 0.5) | always OVER 5.5 | 323 graded, 53.6%, Brier 0.5000 |
 
-Forward desks (live): the four desks issue on the same DEL 2026/27 fixture
-window (as of the 2026-09-22 capture: 16 upcoming games inside the 10-day
-horizon — `hockey-elo-v1` 15 calls with selectivity ≥ 0.55, and the other
-three desks 16 each, no threshold). All 63 ledger calls are frozen, 0
-graded yet, 0 leaks. The desks warm from earlier-season history when it is
-committed (see the bl1 warm-up note in the football section; the same
-mechanism applies to del/2026 once the full del/2024 season lands).
-11–17 graded historical predictions is not evidence of skill
-(`docs/STATUS.md` #12); the forward test is what will speak.
+Forward desks (live): **seven** desks issue on the same DEL 2026/27 fixture
+window — as of the 2026-09-22 capture the ledger holds **263 frozen calls**
+(33 Elo, 32 MoV Elo, 40 home baseline, 40 regulation home, 40 regulation
+Poisson, 39 totals Poisson, 39 totals-over), 0 graded, 0 overdue, 0 leaks;
+each call freezes its desk's outcome mode. They warm from earlier-season
+history when it is committed (the whole del/2024 season, leak-audited). The
+graded history is not evidence of skill (`docs/STATUS.md` #12); the forward
+test is what will speak, and the full-season numbers above stay attached to
+their sample sizes.
+
+## Full-season football accuracy desks (added 2026-09-22, pass 3)
+
+The frozen PnL pilot is 27 matches; the whole 2024/25 Bundesliga season
+(306 finished results, OpenLigaDB ODbL) is committed for rating warm-up.
+These four desks therefore run over **all 306** matches and read **no odds
+at all** — accuracy and Brier only, no PnL, no Holm membership. They are
+the same pre-registered models as the pilot and forward desks: this block
+buys sample size, not a new hypothesis.
+
+| desk | rule (pre-registered) | result |
+|---|---|---|
+| `elo-favourite-3way-v1` | the forward desk's 3-way Elo argmax with its 45% selectivity floor | **52.1% on 167 calls**, Brier 0.611 |
+| `football-home-baseline-v1` | always home, flat 0.50/0.25/0.25 prior (uninformative by design) | 38.6% on 306 — the Elo desk clears it |
+| `football-totals-poisson-v1` | the pilot's Poisson construction with no price input: more likely side of the 2.5 line for every match | **61.1% on 306**, Brier 0.471 |
+| `football-totals-over-v1` | always over 2.5, flat 0.5/0.5 (Brier 0.5 by construction) | 59.8% on 306 — the model clears it by 1.3 points |
+
+Both margins are thin, both pools are single-source (`probable`), and
+neither carries a significance claim: a 1.3-point accuracy edge on one
+season is exactly the size of effect that noise produces. They are listed
+because the request is for tested strategies, and a pre-registered desk
+that fails to clear its baseline is a result too.
+
+## Second-generation prediction desks (added 2026-09-22)
+
+All four live on **already committed** ODbL result fixtures — no new source,
+no new licence question, no refit. Each states its prior before grading and
+each carries a naive baseline so no accuracy number is quoted alone.
+
+### Ice hockey — margin-of-victory Elo (`hockey-elo-mov-v1`)
+
+*Question:* does the *size* of a win carry information the plain W/L Elo
+update discards? *Prior:* margin-scaled Elo is a standard refinement (R9),
+with the World-Football-Elo weights quoted in R11. *Rule (pre-registered):*
+identical expected-score function and home advantage to `hockey-elo-v1`,
+update scaled by `K × g` with `g = 1 / 1.5 / (11+margin)/8`.
+*Result (whole DEL 2024/25 season, single-source `probable`, no odds path):*
+**65.5% on 255 calls, Brier 0.454** — *lower* than plain Elo's 66.3% on 243
+calls and above the always-home baseline (59.8%). Reported as-is: on this
+pool the refinement found nothing.
+
+### Ice hockey — total goals over/under 5.5 (`hockey-totals-poisson-v1`)
+
+*Question:* does the Maher → Dixon-Coles independent-Poisson totals model
+transfer from football to DEL total goals? *Prior:* the Poisson family is
+this repository's only cited goal model (R8/R9); this is an explicit
+cross-sport transfer test, so no hockey-specific fitted prior is claimed.
+*Rule (pre-registered):* the same league-rate + shrunk attack/defence
+construction as the regulation 3-way desk (generic prior 3.1/2.9 until ≥ 10
+released matches), then P(total ≥ 6) vs P(total ≤ 5); the desk states the
+more likely side of the **5.5** line for *every* match, which is what makes
+it comparable to `hockey-totals-over-v1` (always over, flat 0.5/0.5 prior).
+This is the repository's **second prediction-only market**
+(`total_goals_over_under_5_5`), graded through a new binary-outcome path in
+`northstar/evaluation.py` and frozen into the forward ledger the same way.
+*Result:* the desk grades **52.3% (Brier 0.515)** — **below** the always-over
+baseline's **53.6% (Brier 0.5 by construction)**. On this season the model
+did not beat "always over"; the full-season verdict stands as reported, and
+no PnL exists either way (no odds path).
+
+### Darts — margin-of-victory Elo (`darts-mov-elo-v1`)
+
+*Question:* the same question as the hockey MoV desk, on the PDC pool.
+*Prior:* identical weights (R11). *Stated weakness (not hidden):* the margin
+unit differs by event format (legs in ProTour/EuroTour, sets in World
+Championships) and the source does not label which unit a row carries; the
+desk therefore uses the raw stored count difference, and says so in every
+prediction's model trail. *Result:* **78.4% on 111 calls, Brier 0.358** —
+more selections than the plain darts desk (48 calls, 81.25%) at lower
+accuracy, still well above the listed-first baseline (66.3% on 421). No
+PnL is possible for darts in this repository.
 
 ## Darts (PDC — audited 2026-09-20, prediction-only)
 
 | id | research question | prior | rule | result |
 |---|---|---|---|---|
 | `darts-elo-v1` | Does a player-level Elo select winners in PDC knockouts? | individual-sport Elo conventions; HOME_ADV=0 (listed-first is presentation order); K=24, MIN_PROB=0.60 — priors stated before grading | 2-way player Elo on the decisive leg/set count; select when prob ≥ 0.60; availability start+12h (audit-derived) | **Cold 2025 pool (141 matches): 0 selections** — max observed probability 0.551; the desk stayed silent rather than force bets. **Full pool as captured 2026-09-20 (423 matches, eight events): 48 selections, 39 hits = 81.25%, Brier 0.3489, 0 leaks** — same priors, no refit; large error bar (95% ≈ 68–90%) and no market baseline, so no skill or PnL claim. Full audit: `docs/DARTS-AUDIT.md`. |
+| `darts-mov-elo-v1` | Does the **margin** of a darts win (legs/sets) carry information the plain W/L Elo update discards? | R11 margin weights, applied with the darts Elo constants (K=24, no venue adjustment) | update scaled by g = 1 / 1.5 / (11+margin)/8 on the raw stored count difference (units differ by event format — stated weakness, recorded in every prediction trail) | **111 graded, 78.4%, Brier 0.3575** — more selections than `darts-elo-v1` (48) at *lower* accuracy, still above the listed-first baseline (66.3%) |
 | `darts-listed-first-v1` | Does listing order carry any signal? (no-information reference, added 2026-09-22) | none — deliberate naive baseline, flat 0.5/0.5 prior (Brier 0.5 by construction); the audit found listed-first is presentation order | predict the listed-first player every eligible match | **421 graded, 279 hits = 66.3%** — listing order correlates with winning in this pool (a genuine data finding; why — e.g. whether the source lists the favourite/seed first — is **not** verified). This is why the Elo desk's 81.25% must be compared against 66.3%, not against 50%; the Elo desk does clear that bar on this sample, with all the error-bar caveats above. |
 
 Known darts limitations found by the audit: player-name identity splits
