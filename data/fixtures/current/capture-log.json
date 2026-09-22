@@ -1173,12 +1173,12 @@
     }
   ],
   "errors": [],
-  "finished_utc": "2026-09-22T23:24:09Z",
+  "finished_utc": "2026-09-22T23:33:02Z",
   "season": 2026,
-  "started_utc": "2026-09-22T23:20:40Z",
+  "started_utc": "2026-09-22T23:29:44Z",
   "targets": [
     {
-      "captured_at_utc": "2026-09-22T23:20:42Z",
+      "captured_at_utc": "2026-09-22T23:29:45Z",
       "finished": 36,
       "fixture": "/home/runner/work/OLBG-Competition/OLBG-Competition/data/fixtures/current/openligadb_bl1_2026.json",
       "league_name": "1. Fußball-Bundesliga 2026/2027",
@@ -1192,7 +1192,7 @@
       "written": true
     },
     {
-      "captured_at_utc": "2026-09-22T23:20:45Z",
+      "captured_at_utc": "2026-09-22T23:29:48Z",
       "finished": 40,
       "fixture": "/home/runner/work/OLBG-Competition/OLBG-Competition/data/fixtures/current/openligadb_pl_2026.json",
       "league_name": "Premier League 2026/2027",
@@ -1206,7 +1206,7 @@
       "written": true
     },
     {
-      "captured_at_utc": "2026-09-22T23:20:47Z",
+      "captured_at_utc": "2026-09-22T23:29:50Z",
       "finished": 54,
       "fixture": "/home/runner/work/OLBG-Competition/OLBG-Competition/data/fixtures/current/openligadb_bl2_2026.json",
       "league_name": "2. Fußball-Bundesliga 2026/2027",
@@ -1220,7 +1220,7 @@
       "written": true
     },
     {
-      "captured_at_utc": "2026-09-22T23:20:49Z",
+      "captured_at_utc": "2026-09-22T23:29:52Z",
       "finished": 62,
       "fixture": "/home/runner/work/OLBG-Competition/OLBG-Competition/data/fixtures/current/openligadb_la1_2026.json",
       "league_name": "LaLiga EA Sports 2026/2027",
@@ -1234,7 +1234,7 @@
       "written": true
     },
     {
-      "captured_at_utc": "2026-09-22T23:20:52Z",
+      "captured_at_utc": "2026-09-22T23:29:54Z",
       "finished": 14,
       "fixture": "/home/runner/work/OLBG-Competition/OLBG-Competition/data/fixtures/current/openligadb_del_2026.json",
       "league_name": "DEL 2026/2027",
@@ -1248,7 +1248,7 @@
       "written": true
     },
     {
-      "captured_at_utc": "2026-09-22T23:20:54Z",
+      "captured_at_utc": "2026-09-22T23:29:56Z",
       "finished": 14,
       "fixture": "/home/runner/work/OLBG-Competition/OLBG-Competition/data/fixtures/current/openligadb_del2_2026.json",
       "league_name": "DEL2 Hauptrunde",
@@ -1262,7 +1262,7 @@
       "written": true
     },
     {
-      "captured_at_utc": "2026-09-22T23:20:56Z",
+      "captured_at_utc": "2026-09-22T23:29:58Z",
       "finished": 48,
       "fixture": "/home/runner/work/OLBG-Competition/OLBG-Competition/data/fixtures/current/openligadb_chl_2026.json",
       "league_name": "Champions Hockey League 2026/2027",
@@ -1276,7 +1276,7 @@
       "written": true
     },
     {
-      "captured_at_utc": "2026-09-22T23:24:02Z",
+      "captured_at_utc": "2026-09-22T23:32:56Z",
       "finished": 127,
       "fixture": "/home/runner/work/OLBG-Competition/OLBG-Competition/data/fixtures/current/openligadb_pdcwm_2026.json",
       "league_name": "PDC Darts-WM",
@@ -1290,7 +1290,7 @@
       "written": true
     },
     {
-      "captured_at_utc": "2026-09-22T23:24:04Z",
+      "captured_at_utc": "2026-09-22T23:32:58Z",
       "finished": 47,
       "fixture": "/home/runner/work/OLBG-Competition/OLBG-Competition/data/fixtures/current/openligadb_pdcfdt_2026.json",
       "league_name": "Flanders Darts Trophy 2026",
@@ -1304,7 +1304,7 @@
       "written": true
     },
     {
-      "captured_at_utc": "2026-09-22T23:24:06Z",
+      "captured_at_utc": "2026-09-22T23:33:00Z",
       "finished": 47,
       "fixture": "/home/runner/work/OLBG-Competition/OLBG-Competition/data/fixtures/current/openligadb_pdccdo_2026.json",
       "league_name": "Czech Darts Open 2026",
@@ -1318,7 +1318,7 @@
       "written": true
     },
     {
-      "captured_at_utc": "2026-09-22T23:24:07Z",
+      "captured_at_utc": "2026-09-22T23:33:01Z",
       "finished": 31,
       "fixture": "/home/runner/work/OLBG-Competition/OLBG-Competition/data/fixtures/current/openligadb_pdcwoma_2026.json",
       "league_name": "PDC World Masters 2026",
