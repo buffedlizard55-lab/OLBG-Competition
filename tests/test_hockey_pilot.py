@@ -27,6 +27,7 @@ from northstar.backtest import run_walk_forward
 from northstar.db import Store
 from northstar.evaluation import brier_three, outcome_key, prediction_accuracy
 from northstar.leaderboard import build_leaderboard
+from conftest import hockey_store
 from northstar.models import parse_utc
 from northstar.strategies import build as build_strategy
 
@@ -56,13 +57,6 @@ def _read(path: str) -> str:
         return fh.read()
 
 
-@pytest.fixture()
-def hockey_store(tmp_path) -> Store:
-    s = Store(str(tmp_path / "hockey.db"))
-    for path in (SD1, SD20, SD40):
-        openligadb.ingest_matchday(s, _read(path), sport="ice_hockey")
-    yield s
-    s.close()
 
 
 # -------------------------------------------------------------- parse layer

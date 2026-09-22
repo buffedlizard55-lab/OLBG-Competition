@@ -16,7 +16,7 @@ from northstar.db import Store
 from northstar.timeutil import odds_collection_window_utc
 from northstar.models import parse_utc
 
-from conftest import RAW, read_fixture
+from conftest import RAW, pilot_store, read_fixture
 
 
 OLDB_FILES = [
@@ -24,19 +24,6 @@ OLDB_FILES = [
     "openligadb_bl1_2024_sd10.json",
     "openligadb_bl1_2024_sd20.json",
 ]
-
-
-@pytest.fixture(scope="module")
-def pilot_store(tmp_path_factory):
-    """A store with the full pilot ingested (OLDB + football-data CSV)."""
-    s = Store(str(tmp_path_factory.mktemp("pilot") / "pilot.db"))
-    for name in OLDB_FILES:
-        openligadb.ingest_matchday(s, read_fixture(name))
-    stats = football_data.ingest_csv_text(s, read_fixture(
-        "football_data_d1_2425_pilot.csv"))
-    s.commit()
-    yield s, stats
-    s.close()
 
 
 class TestOpenLigaDb:
@@ -94,10 +81,14 @@ class TestFootballDataCrossCheck:
         """1X2: 27 matches x 3 selections x 5 providers = 405 snapshots
         (Pinnacle excluded per the source's 2025-07-23 notice).
         O/U 2.5: 27 x 2 x 3 full providers (B365/Avg/Max) + 23 x 2 BFE
-        (four rows have blank BFE totals columns) = 208. Total 613."""
+        (four rows have blank BFE totals columns) = 208.
+        Asian handicap (since 2026-09-22): 27 x 2 x 4 providers
+        (B365/Avg/Max/BFE - all present on every pilot row) = 216.
+        Total 829."""
         s, stats = pilot_store
-        assert stats["odds_snapshots"] == 613
+        assert stats["odds_snapshots"] == 829
         assert stats["totals_snapshots"] == 208
+        assert stats["ah_snapshots"] == 216
         by_provider = {}
         for snap in s.odds_snapshots():
             if snap["market_key"] != "match_winner_3way":
@@ -116,6 +107,23 @@ class TestFootballDataCrossCheck:
             totals[snap["provider"]] = totals.get(snap["provider"], 0) + 1
         assert totals == {"b365": 54, "market_avg": 54, "market_max": 54,
                           "betfair_exchange": 46}
+        ah = {}
+        for snap in s.odds_snapshots():
+            if snap["market_key"] != "asian_handicap":
+                continue
+            assert snap["selection_key"] in ("home", "away")
+            # every AH snapshot carries its row's quarter-grid line
+            assert snap["line"] is not None
+            assert float(snap["line"] * 4).is_integer()
+            ah[snap["provider"]] = ah.get(snap["provider"], 0) + 1
+        assert ah == {"b365": 54, "market_avg": 54, "market_max": 54,
+                      "betfair_exchange": 54}
+        # Line markets only: AH snapshots carry a line, others must not.
+        for snap in s.odds_snapshots():
+            if snap["market_key"] == "asian_handicap":
+                assert snap["line"] is not None
+            else:
+                assert snap["line"] is None
         # Pinnacle must be absent (source notice: unreliable, excluded)
         assert "pinacle" not in by_provider
         assert "pinnacle" not in by_provider

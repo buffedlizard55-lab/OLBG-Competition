@@ -25,6 +25,7 @@ committed real fixtures) · `forward` (frozen live predictions in
 | R7 | FiveThirtyEight, *How Our Club Soccer Projections Work* — <https://fivethirtyeight.com/features/how-our-club-soccer-projections-work/> | Rating-based match projection design (Elo/SPI family) |
 | R8 | Dixon & Coles (1997), *Modelling Association Football Scores and Inefficiencies in the Football Betting Market*, JRSS-C 46(2), 265–280 — <https://research-information.bris.ac.uk/en/publications/modelling-association-football-scores-and-inefficiencies-in-the-f/> (checked 2026-09-21: Bristol record confirms journal/volume/pages) | Poisson goal-model family for totals; attack/defence multipliers × league rates |
 | R9 | Hvattum & Arntzen (2010), *Using ELO ratings for match result prediction in association football*, Int. J. Forecasting 26(3), 460–470 — <https://doi.org/10.1016/j.ijforecast.2009.10.002> (checked 2026-09-21: abstract + intro read; cites Maher 1982 as origin of the independent-Poisson attack/defence model) | Elo-covariate prior; literature lineage Maher → Dixon-Coles |
+| R10 | football-data.co.uk, *Notes for Football Data* — <https://www.football-data.co.uk/notes.txt> (fetched and read in full 2026-09-22; quoted verbatim in the Market-3 section) | Asian-handicap column semantics (`AHh`, `AvgAHH/AvgAHA`); window-close collection schedule |
 
 References motivate hypotheses; **none of them is evidence about this
 repository's results**. Our own numbers come only from committed fixtures
@@ -32,12 +33,12 @@ repository's results**. Our own numbers come only from committed fixtures
 
 ## Football (Bundesliga pilot — 27 matches, dual-source verified)
 
-All nine ran walk-forward with strict cutoffs, level 1.0-unit stakes,
-bootstrap 95% CIs, and Holm correction across the family (m=9, R2).
-**All nine are negative; every Holm-adjusted p-value is 1.0; no edge is
-claimed.** Raw p-values 0.2675–0.9435 — nothing is remotely significant, in
-either direction. Sample size (27 matches / 3–27 bets) is the binding
-limitation (`docs/STATUS.md` #1).
+Eleven strategies now ran walk-forward with strict cutoffs, level 1.0-unit
+stakes, bootstrap 95% CIs, and Holm correction across the family (m=11,
+R2). **Ten of eleven are negative; the one positive desk (Asian-handicap
+value) is NOT significant after correction (Holm-adjusted p = 0.0605) and
+no edge is claimed.** Raw p-values 0.0055–0.9435. Sample size (27 matches
+/ 3–27 bets) is the binding limitation (`docs/STATUS.md` #1).
 
 ### Market 1 — 1X2 (`match_winner_3way`, seven strategies)
 
@@ -59,18 +60,42 @@ columns (208 snapshots — BFE is blank on four rows), same collection-window
 close timestamp as the 1X2 prices, so no new leakage surface. Settlement
 rule `settlement.match_outcome_totals`: 90-minute total ≥ 3 → over wins,
 ≤ 2 → under wins; a half-goal line cannot push and integer lines are
-refused (no guessed push rule). Rule version bumped to
-`nr-settlement-2026-09-21.1`. Actual pilot base rate: 13/27 matches over.
+refused (no guessed push rule; rule version at the time:
+`nr-settlement-2026-09-21.1`, superseded 2026-09-22 by the AH rule set).
+Actual pilot base rate: 13/27 matches over.
 
 | id | research question | prior | rule (pre-registered) | result |
 |---|---|---|---|---|
 | `poisson-totals-value-v1` | Does a plain independent-Poisson goal model find value in the O/U 2.5 price? | R8/R9 lineage (Maher → Dixon-Coles): league rate × attack × defence | league home/away rates from released matches (generic prior 1.60/1.30 until ≥10 released), team multipliers shrunk with a 6-match prior weight, P(total ≤ 2) Poisson; bet the side with ≥ 3-pt edge over the margin-removed Avg price | −0.48 u, ROI −1.9%, strike 40.0% (25 bets, 2 no-bets), p_raw 0.9435, CI [−0.51, +0.52] — closest to zero of all nine, still not distinguishable from noise |
 | `market-totals-favourite-v1` | Baseline: does the market's favoured side of O/U 2.5 beat the vig? | none — reference | always back the margin-removed favourite side of O/U 2.5 | −4.19 u, ROI −15.5%, strike 55.6% (27 bets), p_raw 0.29 |
 
-Not run: **Asian handicap** — the pilot file has `AHh / AvgAHH / AvgAHA`,
-but quarter lines (±0.25/±0.75) split the stake and integer lines push;
-that rule set is not written or tested, so it stays `Ready to source`
-in the registry rather than being graded with a guessed rule.
+### Market 3 — Asian handicap (`asian_handicap`, added 2026-09-22)
+
+The pilot file's Asian-handicap columns became the third settleable
+market. Column semantics were verified against the source's own key
+(R10): `AHh = Market size of handicap (home team)`,
+`AvgAHH/AvgAHA = Market average Asian handicap home/away team odds`
+(negative AHh handicaps the home team; the away side's handicap is the
+mirror). All 27 rows carry a quarter-grid line (−3.25 … +1.75) and all
+four permitted price pairs (B365/Avg/Max/BFE = 216 snapshots; Pinnacle
+excluded per the source notice, closing columns excluded per the
+no-leakage rule).
+
+Settlement rule `settlement.match_outcome_asian_handicap` (rule version
+`nr-settlement-2026-09-22.1`): integer lines push (stake refunded, not
+counted in turnover); quarter lines split the stake half/half across the
+two neighbouring component lines — win+push settles `half_won`
+(pnl = ½·stake·(odds−1)), lose+push `half_lost` (pnl = −½·stake), both
+push `push`. Lines off the quarter grid are refused — never guessed. The
+leaderboard counts half stakes as half a win / half a loss (weighted
+strike rate). All 52 pilot settlements of the two desks below were
+re-derived independently from the raw CSV bytes (FTHG/FTAG + AHh +
+AvgAHH/AvgAHA) during implementation: 0 mismatches.
+
+| id | research question | prior | rule (pre-registered) | result |
+|---|---|---|---|---|
+| `ah-poisson-value-v1` | Does the Poisson goal model find value in the AH price? | R8/R9 lineage (same goal model as the totals desk, applied to the margin distribution) | full P(win)/P(push)/P(lose) on the priced line (quarter lines blended exactly as they settle); bet the side whose model EV beats the de-margined market EV by ≥ 3% per unit staked, only with positive model EV | **+9.835 u, ROI +44.7%, strike 68.2% (25 bets, 3 pushes), p_raw 0.0055 → Holm-adjusted 0.0605 — NOT significant at 5%** (family m=11). First positive pilot result in the repository; exploratory only. It is the best of 11 strategies on one 27-match sample (exactly the selection effect Holm guards against), its CIs come from the same tiny sample, and it shares the O/U desk's window-close-inferred odds and unfitted generic priors. Treat as a hypothesis for out-of-sample forward testing — which needs a permissioned current-season odds path that does not exist yet. |
+| `ah-market-favourite-v1` | Baseline: does the market's favoured side of the AH line beat the vig? | none — reference | always back the margin-removed favourite side of the priced line | −1.595 u, ROI −6.6%, strike 41.7% (27 bets, 3 pushes), p_raw 0.684 |
 
 Forward desk: `elo-favourite-3way-v1` (3-way Elo favourite, frozen live
 predictions; dormant at the 2026-09-20 capture because Bundesliga MD5
@@ -82,17 +107,21 @@ automatically once MD5 enters the window).
 | id | research question | prior | rule | result |
 |---|---|---|---|---|
 | `hockey-elo-v1` | Does a 2-way Elo (incl. OT/shootout) beat a coin flip on DEL? | R6: home-ice ≈ 54.5% → venue matters but is modest; rating-family prior R7 | Elo K=32, home adv 35 pts, 2-way; select when prob ≥ 0.55; results released start+3h (documented inference) | **11 graded predictions, 7 hits = 63.6%, mean Brier 0.4737** (2 disputed DEL rows excluded from grading — review queue owns them). No PnL: no permissioned DEL odds path; shown as unavailable, never zero. Single source → identity `probable`. |
+| `hockey-home-v1` | What does "always predict home" score on the same pool? (no-information reference, added 2026-09-22) | none — deliberate naive baseline, flat 0.5/0.5 prior (Brier 0.5 by construction) | predict HOME every eligible match; no selectivity | **17 graded, 11 hits = 64.7%** — i.e. the Elo desk's 63.6% does **not** beat always-home on this pilot. Honest reading: on 11 vs 17 picks the difference is far inside the noise band; the value of the baseline is that the Elo number can no longer be quoted without its naive reference. |
 
-Forward desk: `hockey-elo-v1` — **live**: 9 frozen calls on DEL games
-2026-09-22 → 09-27 from the real committed capture (append-only ledger,
-0 graded yet, 0 leaks). 13 graded historical predictions is not evidence
-of skill (`docs/STATUS.md` #12); the forward test is what will speak.
+Forward desks (live): `hockey-elo-v1` (9 frozen calls, DEL 2026-09-22 →
+09-27, selectivity ≥ 0.55) and `hockey-home-v1` (15 frozen calls on the
+same fixture window — every upcoming DEL game, because a naive baseline
+has no threshold). Append-only ledger, 0 graded yet, 0 leaks. 11–17 graded
+historical predictions is not evidence of skill (`docs/STATUS.md` #12);
+the forward test is what will speak.
 
 ## Darts (PDC — audited 2026-09-20, prediction-only)
 
 | id | research question | prior | rule | result |
 |---|---|---|---|---|
 | `darts-elo-v1` | Does a player-level Elo select winners in PDC knockouts? | individual-sport Elo conventions; HOME_ADV=0 (listed-first is presentation order); K=24, MIN_PROB=0.60 — priors stated before grading | 2-way player Elo on the decisive leg/set count; select when prob ≥ 0.60; availability start+12h (audit-derived) | **Cold 2025 pool (141 matches): 0 selections** — max observed probability 0.551; the desk stayed silent rather than force bets. **Full pool as captured 2026-09-20 (423 matches, eight events): 48 selections, 39 hits = 81.25%, Brier 0.3489, 0 leaks** — same priors, no refit; large error bar (95% ≈ 68–90%) and no market baseline, so no skill or PnL claim. Full audit: `docs/DARTS-AUDIT.md`. |
+| `darts-listed-first-v1` | Does listing order carry any signal? (no-information reference, added 2026-09-22) | none — deliberate naive baseline, flat 0.5/0.5 prior (Brier 0.5 by construction); the audit found listed-first is presentation order | predict the listed-first player every eligible match | **421 graded, 279 hits = 66.3%** — listing order correlates with winning in this pool (a genuine data finding; why — e.g. whether the source lists the favourite/seed first — is **not** verified). This is why the Elo desk's 81.25% must be compared against 66.3%, not against 50%; the Elo desk does clear that bar on this sample, with all the error-bar caveats above. |
 
 Known darts limitations found by the audit: player-name identity splits
 (`R. van Barneveld` vs `Raymond van Barneveld`, `Mickey/Michael Mansell`)
@@ -101,8 +130,9 @@ mapping. An abandoned duplicate league (`darts-wm-26`, 52 rows stale since
 December 2025, duplicating the complete `PDCWM`) was detected, removed and
 excluded by discovery rule; two matches with conflicting duplicate result
 entries (matchIDs 79962, 80237) are excluded from grading until reviewed.
-Forward desk activates when an upcoming event — realistically the next
-World Championship, December 2026 — enters the 10-day horizon.
+Forward desks (both darts desks, added 2026-09-22) activate when an
+upcoming event — realistically the next World Championship, December 2026
+— enters the 10-day horizon.
 
 ## Design-stage hypotheses (21-sport catalog, verification-gated)
 
@@ -119,11 +149,17 @@ the repository's core anti-hallucination rule.
 
 ## Multiple comparisons & reporting rules
 
-- Holm step-down (R2) across the PnL-capable family (m=9 football
-  strategies). Adjusted p-values: all 1.0. Implementation + tests:
-  `northstar/stats.py`, `tests/test_stats.py`.
-- Prediction-only desks (hockey, darts) are excluded from the PnL family
-  (they have no PnL) and report accuracy/Brier with explicit
-  `pnl_available: false`.
+- Holm step-down (R2) across the PnL-capable family (m=11 football
+  strategies since 2026-09-22: 7 × 1X2 + 2 × O/U 2.5 + 2 × AH).
+  Adjusted p-values: all 1.0 except `ah-poisson-value-v1` at 0.0605 —
+  still above 0.05, so **nothing is significant after correction**.
+  Implementation + tests: `northstar/stats.py`, `tests/test_stats.py`.
+- Prediction-only desks (hockey, darts — models and naive baselines) are
+  excluded from the PnL family (they have no PnL) and report
+  accuracy/Brier with explicit `pnl_available: false`.
 - Every quoted number on the site carries its sample-size warning; CIs are
   bootstrap over the settled sequence; unavailable ≠ zero everywhere.
+- The repo's reporting rule for the AH desk, stated once and binding: a
+  raw p below 0.05 in a family of 11 on one 27-match sample is an
+  exploratory signal, never a claim. Only out-of-sample forward grading
+  (which needs a permissioned odds path) can promote it.

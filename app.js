@@ -24,9 +24,15 @@ const fmtDate = (iso) => {
   return Number.isNaN(d.getTime()) ? escapeHtml(iso) :
     d.toISOString().slice(0, 16).replace("T", " ");
 };
+/* Quarter-line Asian handicaps settle half stakes: W/L counts can be
+   x.5. Show them without trailing zeros. */
+const fmtCount = (v) =>
+  v === null || v === undefined ? "—" :
+    Number.isInteger(Number(v)) ? String(v) : Number(v).toFixed(1);
 
 /* ------------------------------------------------------------------ */
-/* Untested hypothesis registry (design documentation, no results).   */
+/* Fallback hypothesis registry (used only if the generated site data   */
+/* cannot be loaded; the live list always comes from site-data JSON).   */
 /* Status values: "Pilot-tested" entries are linked to a real backtest. */
 /* ------------------------------------------------------------------ */
 const hypothesisRegistry = [
@@ -34,7 +40,10 @@ const hypothesisRegistry = [
   { sport: "Football", name: "Market favourite (baseline)", status: "Pilot-tested", data: "Same verified pilot odds", test: "Walk-forward 1X2", tested: "market-favourite-v1" },
   { sport: "Football", name: "Market longshot (baseline probe)", status: "Pilot-tested", data: "Same verified pilot odds", test: "Walk-forward 1X2", tested: "market-longshot-v1" },
   { sport: "Football", name: "Draw-No-Bet decisive form", status: "Pilot-tested", data: "Same verified pilot odds", test: "Walk-forward 2-way", tested: "draw-no-bet-v1" },
-  { sport: "Football", name: "Poisson goal totals", description: "Estimate home and away scoring rates from pre-match history and test totals without information published after kick-off.", status: "Ready to source", data: "Verified scores · line-up/time gate · licensed odds", test: "Walk-forward totals" },
+  { sport: "Football", name: "Poisson goal totals (O/U 2.5)", status: "Pilot-tested", data: "Verified pilot fixtures/results · O/U 2.5 odds", test: "Walk-forward O/U 2.5", tested: "poisson-totals-value-v1" },
+  { sport: "Football", name: "Market totals favourite (O/U baseline)", status: "Pilot-tested", data: "Same verified pilot over/under prices", test: "Walk-forward O/U 2.5", tested: "market-totals-favourite-v1" },
+  { sport: "Football", name: "Poisson Asian-handicap value", status: "Pilot-tested", data: "Verified pilot fixtures/results · AH line + prices (AHh/AvgAHH/AvgAHA)", test: "Walk-forward Asian handicap (quarter-line split, integer push)", tested: "ah-poisson-value-v1" },
+  { sport: "Football", name: "Market AH favourite (baseline)", status: "Pilot-tested", data: "Same verified pilot Asian-handicap prices", test: "Walk-forward Asian handicap", tested: "ah-market-favourite-v1" },
   { sport: "Horse Racing", name: "Place probability by field size", description: "Calibrate place probability separately by race type, field size, going, jurisdiction and declared non-runners; define dead heats before testing.", status: "Blocked", data: "Organizer result · runner archive · licensed odds", test: "Jurisdiction-specific" },
   { sport: "Tennis", name: "Surface-adjusted Elo", description: "Use player ratings split by surface and enforce a match-start cutoff before comparing the forecast with the captured price; define retirements.", status: "Blocked", data: "Governing-body/organizer results · licensed odds", test: "Match-level Brier + ROI" },
   { sport: "Golf", name: "Strokes-gained and course fit", description: "Test pre-tournament player form and course-fit features against a dated outright price; define ties and dead heats before running anything.", status: "Blocked", data: "Tour organizer leaderboards · licensed odds", test: "Outright / place" },
@@ -44,11 +53,13 @@ const hypothesisRegistry = [
   { sport: "Cricket", name: "Venue and innings-state model", description: "Model format-specific run rates by venue and innings; handle rain-reduced matches, declarations and abandoned games explicitly.", status: "Blocked", data: "Competition scorecards · format rules · licensed odds", test: "Match / innings markets" },
   { sport: "Cycling", name: "Course-fit performance delta", description: "Separate time trials from mass-start events and use governing-body classifications with a pre-start feature cutoff.", status: "Blocked", data: "Organizer classifications · licensed odds", test: "Outright / placement" },
   { sport: "Darts", name: "Throw rate plus checkout profile", description: "Compare dated player rates while keeping format, leg distance and event rules consistent; walkovers are not losses.", status: "Blocked", data: "Organizer results · format rules · licensed odds", test: "Match / handicap" },
+  { sport: "Darts", name: "Listed-first naive baseline", description: "Always predicts the listed-first player with a flat 0.5/0.5 prior; a hit rate far from 50% would itself be a data finding. Prediction-only, never PnL.", status: "Pilot-tested", data: "OpenLigaDB PDC captures (ODbL) · no permissioned odds", test: "Walk-forward 2-way accuracy", tested: "darts-listed-first-v1" },
   { sport: "Gaelic Football", name: "Score-difference rating", description: "Keep Gaelic football separate from rugby; model competition, venue and scoring rules with postponed and replayed fixtures explicit.", status: "Blocked", data: "Competition organizer results · licensed odds", test: "Match / handicap" },
   { sport: "Greyhounds", name: "Box/track pace profile", description: "Freeze trap, distance, going, field and non-runner state at selection time; define voids and photo-finish revisions.", status: "Blocked", data: "Track/organizer results · licensed odds", test: "Win / place" },
   { sport: "Handball", name: "Possession and pace split", description: "Separate league and tournament rules, extra time and seven-metre shootouts before any model result is graded.", status: "Blocked", data: "Federation results · licensed odds", test: "Match / total" },
   { sport: "Hurling", name: "Venue-adjusted scoring rate", description: "Use competition-specific scoring and replay rules; do not pool with Gaelic football or association football.", status: "Blocked", data: "Competition organizer results · licensed odds", test: "Match / handicap" },
   { sport: "Ice Hockey", name: "Hockey Elo favourite (no-market pilot)", description: "2-way Elo (final incl. OT/shootout) used as a no-price baseline; predictions only - graded on accuracy/Brier because no permissioned DEL odds path exists.", status: "Pilot-tested", data: "OpenLigaDB DEL pilot fixtures/results (ODbL) · no permissioned odds", test: "Walk-forward 2-way accuracy", tested: "hockey-elo-v1" },
+  { sport: "Ice Hockey", name: "Home-ice naive baseline", description: "Always predicts HOME with a flat 0.5/0.5 prior; the no-information reference the hockey accuracy desks must beat. Prediction-only, never PnL.", status: "Pilot-tested", data: "OpenLigaDB DEL pilot fixtures/results (ODbL) · no permissioned odds", test: "Walk-forward 2-way accuracy", tested: "hockey-home-v1" },
   { sport: "Ice Hockey", name: "Goalie-adjusted expected goals", description: "Estimate shot quality and goalie availability before puck drop; separate regulation, overtime and shootout settlement.", status: "Blocked", data: "Federation/league results · licensed odds", test: "Moneyline / totals" },
   { sport: "Motor Racing", name: "Qualifying-to-finish delta", description: "Use only pre-race information and define retirements, classified finish, penalties, podium and each-way places per series.", status: "Blocked", data: "Series organizer results · licensed odds", test: "Finish / podium" },
   { sport: "Rugby Union", name: "Set-piece and territory rating", description: "Keep union and league separate; model competition rules, extra time and abandoned matches explicitly.", status: "Blocked", data: "Union organizer results · licensed odds", test: "Match / handicap" },
@@ -166,7 +177,7 @@ function renderLeaderboard() {
       <td>${r.rank}</td>
       <td><strong>${escapeHtml(r.name)}</strong><br /><small style="opacity:.7">${escapeHtml(r.description || "")}</small></td>
       <td>${r.settled_bets}</td>
-      <td>${r.wins} / ${r.losses}</td>
+      <td>${fmtCount(r.wins)} / ${fmtCount(r.losses)}</td>
       <td>${r.voids}</td>
       <td><strong>${fmtUnits(r.profit_units)}</strong></td>
       <td>${fmtPct(r.roi)}</td>
@@ -251,6 +262,9 @@ const marketLabel = (b) => {
     return "match winner (incl. OT/SO)";
   if (b.market === "total_goals_over_under_2_5")
     return "total goals O/U 2.5 (90 min)";
+  if (b.market === "asian_handicap")
+    return `Asian handicap${b.line !== null && b.line !== undefined ?
+      ` (line ${Number(b.line) >= 0 ? "+" : ""}${b.line} home, 90 min)` : " (90 min)"}`;
   if (b.market === "match_winner_3way") return "1X2 (90 min)";
   return b.market;
 };

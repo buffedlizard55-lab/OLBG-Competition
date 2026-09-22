@@ -32,8 +32,9 @@ SPORT_COVERAGE = [
         ),
         "note": (
             "27-match hand-audited pilot (matchdays 1/10/20), 27/27 "
-            "dual-source result agreement; two markets backtested (1X2 + "
-            "over/under 2.5, both from the same pilot file). Forward-test "
+            "dual-source result agreement; three markets backtested (1X2, "
+            "over/under 2.5 and Asian handicap - all from the same pilot "
+            "file). Forward-test "
             "desk live on the current season for Bundesliga, Premier "
             "League, 2. Bundesliga and LaLiga 2026/27 (prediction-only: "
             "no permissioned odds path for 2026/27; single-source, "

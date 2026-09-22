@@ -28,6 +28,13 @@ MARKET_MATCH_WINNER_2WAY = "match_winner_2way"
 # can never push. Rule set: settlement.match_outcome_totals.
 MARKET_TOTALS_2_5 = "total_goals_over_under_2_5"
 TOTALS_2_5_LINE = 2.5
+# Asian handicap (football). The line is stored per snapshot/tip (the
+# handicap varies per event); ``home`` is the team the (negative) line is
+# quoted on per the football-data.co.uk key "AHh = Market size of handicap
+# (home team)". Quarter lines split the stake in half across the two
+# neighbouring integer/half lines; integer lines can push (stake refunded).
+# Rule set: settlement.match_outcome_asian_handicap.
+MARKET_ASIAN_HANDICAP = "asian_handicap"
 
 EVENT_STATUS_SCHEDULED = "scheduled"
 EVENT_STATUS_LIVE = "live"
@@ -51,7 +58,7 @@ RESULT_KIND_AFTER_EXTRA = "AfterExtraTime"
 RESULT_KIND_AFTER_PENALTIES = "AfterPenalties"
 RESULT_KIND_HALF_TIME = "HalfTime"
 
-SETTLEMENT_RULE_VERSION = "nr-settlement-2026-09-21.1"
+SETTLEMENT_RULE_VERSION = "nr-settlement-2026-09-22.1"
 
 # Anomaly taxonomy (superset of docs/data-contract.md section 4).
 ANOMALY_MISSING_ODDS = "MISSING_ODDS"
@@ -154,6 +161,9 @@ class Tip:
     odds_decimal: Optional[float] = None
     odds_source: Optional[str] = None
     stake_units: float = 1.0
+    # Market line for line markets (e.g. the Asian-handicap line carried by
+    # the priced snapshot the desk bet). ``None`` for line-less markets.
+    line: Optional[float] = None
     source_url: Optional[str] = None
     raw_payload_hash: Optional[str] = None
     status: str = TIP_STATUS_OPEN
@@ -175,6 +185,11 @@ class OddsSnapshot:
     market_key: str
     selection_key: str
     decimal_odds: float
+    # Handicap/total line when the market is line-quoted (Asian handicap).
+    # The football-data AH key is a per-event value (AHh), so it belongs on
+    # the snapshot, not on the market constant. ``None`` for line-less
+    # markets (1X2, O/U 2.5 has a fixed 2.5 line by definition).
+    line: Optional[float] = None
     # Provider-side event id is retained so a later replay can prove which
     # external object was joined to the internal event.  It is not used as
     # the internal identity because providers can change ids across feeds.

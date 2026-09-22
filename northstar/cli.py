@@ -318,7 +318,8 @@ def _pick_predictions(store: Store,
         rows = [b for b in reversed(rep["bets"])
                 if (b.get("model") or {}).get("model_prob")
                 and (b.get("model") or {}).get("fair_prob")
-                and (b.get("model") or {}).get("edge") is not None]
+                and ((b.get("model") or {}).get("edge") is not None
+                     or (b.get("model") or {}).get("edge_ev") is not None)]
         if rows:
             candidates[sid] = rows
     while len(out) < 6 and any(candidates.values()):
@@ -339,9 +340,12 @@ def _pick_predictions(store: Store,
                     event,
                     model={"ratings": model.get("ratings"),
                            "model_prob": model["model_prob"],
-                           "lambda": lam},
+                           "lambda": lam,
+                           "line": model.get("line")},
                     fair=model.get("fair_prob"),
-                    edge=model.get("edge"),
+                    edge=(model.get("edge")
+                          if model.get("edge") is not None
+                          else model.get("edge_ev")),
                     selection=sel,
                     odds=bet.get("odds"),
                     source_links=[event.get("source_url") or "",
@@ -643,18 +647,16 @@ def main(argv: List[str] = None) -> int:
     for g in current["groups"]:
         print(f"    - {g['fixture']}: {g['league_name']} sport={g['sport']} "
               f"as_of={models.fmt_utc(g['as_of'])}")
-    hockey_acc = backtest_meta.get("hockey-elo-v1", {}).get("accuracy") or {}
-    print(f"  hockey predictions: graded={hockey_acc.get('n_graded')} "
-          f"accuracy={hockey_acc.get('accuracy')} "
-          f"mean_brier={hockey_acc.get('mean_brier')} (no PnL: no "
-          f"permissioned odds path)")
-    darts_meta = backtest_meta.get("darts-elo-v1") or {}
-    if darts_meta:
-        dacc = darts_meta.get("accuracy") or {}
-        print(f"  darts predictions: graded={dacc.get('n_graded')} "
-              f"accuracy={dacc.get('accuracy')} "
-              f"mean_brier={dacc.get('mean_brier')} (no PnL: no "
-              f"permissioned odds path)")
+    for sport, prefix in (("ice_hockey", "hockey"), ("darts", "darts")):
+        for sid, meta in sorted(backtest_meta.items()):
+            if meta.get("sport") != sport or not meta.get("accuracy"):
+                continue
+            acc = meta["accuracy"]
+            print(f"  {prefix} predictions [{sid}]: "
+                  f"graded={acc.get('n_graded')} "
+                  f"accuracy={acc.get('accuracy')} "
+                  f"mean_brier={acc.get('mean_brier')} (no PnL: no "
+                  f"permissioned odds path)")
     print(f"  forward test: state={forward_report['state']} "
           f"issued={forward_report['n_issued']} "
           f"graded={forward_report['n_graded']} "

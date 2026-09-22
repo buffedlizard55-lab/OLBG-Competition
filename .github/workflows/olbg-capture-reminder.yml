@@ -1,0 +1,70 @@
+# Weekly reminder for the MANUAL OLBG capture cadence.
+#
+# This workflow NEVER accesses olbg.com (its ToS forbids automated access;
+# see docs/OLBG-CAPTURE-RUNBOOK.md and docs/LICENSING.md). It only opens
+# and refreshes a checklist issue in this repository so a human performs
+# the manual snapshot. No scraping, no API calls to OLBG, no OLBG content
+# is ever fetched here.
+name: olbg-manual-capture-reminder
+
+on:
+  schedule:
+    # Mondays 07:10 UTC - 40 min after capture.yml has refreshed the
+    # permitted OpenLigaDB fixtures the reconciliation step needs.
+    - cron: "10 7 * * 1"
+  workflow_dispatch:
+
+permissions:
+  issues: write
+
+concurrency:
+  group: olbg-manual-capture-reminder
+  cancel-in-progress: false
+
+jobs:
+  remind:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Open or refresh the manual-capture checklist issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          LABEL: olbg-manual-capture
+        run: |
+          set -euo pipefail
+          WEEK=$(date -u +%G-W%V)
+          TITLE="OLBG manual snapshot due — week of $(date -u +%Y-%m-%d)"
+          BODY=$(cat <<'MD'
+          ## Manual OLBG snapshot — this week's checklist
+
+          This issue is a **reminder for a human**. It is not, and must
+          never become, automated access to olbg.com (ToS forbids it).
+
+          - [ ] Open https://www.olbg.com/betting-tips in a browser (manual review only)
+          - [ ] Save the page render to `data/raw/olbg_betting_tips_index_<date>.md` with the provenance header
+          - [ ] Save 1–2 event pages (prefer events that also exist in the OpenLigaDB fixture lists) as `data/raw/olbg_event_<slug>_<date>.md`
+          - [ ] Do not edit previously captured bytes
+          - [ ] Run `python -m northstar.cli run-pipeline --fresh`
+          - [ ] Review new anomalies (consensus drift, time conflicts) on the Integrity view
+          - [ ] Commit snapshots + regenerated `site-data/site.json`; close this issue with a one-line summary
+
+          Full protocol: [docs/OLBG-CAPTURE-RUNBOOK.md](../blob/main/docs/OLBG-CAPTURE-RUNBOOK.md)
+          MD
+          )
+          # Ensure the tracking label exists (idempotent; ignore if it does)
+          gh api -X POST "repos/$REPO/labels" \
+            -f name="$LABEL" -f color="d4c5f9" \
+            -f description="Weekly manual OLBG snapshot checklist (ToS: manual only)" \
+            >/dev/null 2>&1 || true
+          # Close any still-open reminder issues from previous weeks
+          for num in $(gh api "repos/$REPO/issues?labels=$LABEL&state=open" \
+              --jq '.[].number'); do
+            gh api -X POST "repos/$REPO/issues/$num/comments" \
+              -f body="Superseded by the $WEEK reminder; closing. If the snapshot was taken, note it here first." >/dev/null
+            gh api -X PATCH "repos/$REPO/issues/$num" -f state=closed >/dev/null
+          done
+          gh api -X POST "repos/$REPO/issues" \
+            -f title="$TITLE" \
+            -f body="$BODY" \
+            -F "labels[]=$LABEL" >/dev/null
+          echo "reminder issue opened for $WEEK"

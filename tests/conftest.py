@@ -69,7 +69,8 @@ def mk_tip(store: Store, tip_id: str = "tip-t1", *,
            published: str = PUBLISHED,
            cutoff: Optional[str] = None,
            status: str = models.TIP_STATUS_OPEN,
-           tipster: str = "tester") -> Dict[str, Any]:
+           tipster: str = "tester",
+           line: Optional[float] = None) -> Dict[str, Any]:
     tip = Tip(
         tip_id=tip_id,
         tipster_id=tipster,
@@ -84,6 +85,7 @@ def mk_tip(store: Store, tip_id: str = "tip-t1", *,
         odds_decimal=odds,
         odds_source="testbook",
         stake_units=stake,
+        line=line,
         source_url="https://example.org/tip",
         raw_payload_hash="deadbeef",
         status=status,
@@ -142,3 +144,43 @@ def mk_odds(store: Store, event_id: str = "ev-t1", *,
 def read_fixture(name: str) -> str:
     with open(os.path.join(FIXTURES, name), "r", encoding="utf-8") as fh:
         return fh.read()
+
+
+PILOT_OLDB_FILES = [
+    "openligadb_bl1_2024_sd1.json",
+    "openligadb_bl1_2024_sd10.json",
+    "openligadb_bl1_2024_sd20.json",
+]
+
+
+@pytest.fixture(scope="module")
+def pilot_store(tmp_path_factory):
+    """A store with the full football pilot ingested (OpenLigaDB matchdays
+    1/10/20 + the football-data manual-import CSV excerpt).  Shared by the
+    adapter tests and the Asian-handicap walk-forward tests."""
+    from northstar.adapters import football_data, openligadb
+    s = Store(str(tmp_path_factory.mktemp("pilot") / "pilot.db"))
+    for name in PILOT_OLDB_FILES:
+        openligadb.ingest_matchday(s, read_fixture(name))
+    stats = football_data.ingest_csv_text(s, read_fixture(
+        "football_data_d1_2425_pilot.csv"))
+    s.commit()
+    yield s, stats
+    s.close()
+
+
+DEL_SD1 = os.path.join(FIXTURES, "openligadb_del_2024_sd1.json")
+DEL_SD20 = os.path.join(FIXTURES, "openligadb_del_2024_sd20.json")
+DEL_SD40 = os.path.join(FIXTURES, "openligadb_del_2024_sd40.json")
+
+
+@pytest.fixture()
+def hockey_store(tmp_path) -> Store:
+    """A store with the DEL 2024/25 pilot ingested (matchdays 1/20/40)."""
+    from northstar.adapters import openligadb
+    s = Store(str(tmp_path / "hockey.db"))
+    for path in (DEL_SD1, DEL_SD20, DEL_SD40):
+        with open(path, encoding="utf-8") as fh:
+            openligadb.ingest_matchday(s, fh.read(), sport="ice_hockey")
+    yield s
+    s.close()

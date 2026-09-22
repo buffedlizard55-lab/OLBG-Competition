@@ -20,7 +20,7 @@ from __future__ import annotations
 
 from typing import Any, Dict, List
 
-REGISTRY_VERSION = "nr-hypothesis-registry-2026-09-21.1"
+REGISTRY_VERSION = "nr-hypothesis-registry-2026-09-22.1"
 
 HYPOTHESES: List[Dict[str, Any]] = [
     # ------------------------------------------------ football: backtested
@@ -125,15 +125,68 @@ HYPOTHESES: List[Dict[str, Any]] = [
         "refs": [],
     },
     {
-        "sport": "Football", "name": "Asian handicap value",
+        "sport": "Football", "name": "Poisson Asian-handicap value",
+        "status": "Pilot-tested", "tested": "ah-poisson-value-v1",
+        "data": "Same verified pilot file - its Asian-handicap columns "
+                "(AHh line + AvgAHH/AHA prices; the B365/Max/BFE columns "
+                "are stored too), same collection window. Column semantics "
+                "verified against the source's notes.txt 2026-09-22: "
+                "'AHh = Market size of handicap (home team)'.",
+        "test": "Walk-forward Asian handicap (quarter-line split, "
+                "integer-line push)",
+        "description": "The totals desk's independent-Poisson goal model "
+                       "evaluated on the priced handicap line: full "
+                       "P(win)/P(push)/P(lose) margin distribution, "
+                       "quarter lines split half/half exactly as they "
+                       "settle. Bets the side whose model EV beats the "
+                       "de-margined market EV by >=3% per unit staked, "
+                       "only with positive model EV. Pre-registered "
+                       "priors, not fitted.",
+        "refs": [],
+    },
+    {
+        "sport": "Football", "name": "Market AH favourite (baseline)",
+        "status": "Pilot-tested", "tested": "ah-market-favourite-v1",
+        "data": "Same verified pilot Asian-handicap prices",
+        "test": "Walk-forward Asian handicap",
+        "description": "Always backs the margin-removed market favourite "
+                       "side of the priced Asian handicap. Baseline for "
+                       "the AH family, not a claimed edge.",
+        "refs": [],
+    },
+    {
+        "sport": "Football", "name": "Dixon-Coles low-score correction",
         "status": "Ready to source",
-        "description": "Same Poisson goal model applied to the stored "
-                       "Asian-handicap line (AHh / AvgAHH / AvgAHA columns "
-                       "exist in the pilot file). Needs a quarter-line "
-                       "split/push settlement rule with tests before it "
-                       "can be graded - not guessed.",
-        "data": "Verified scores + pilot AH columns - settlement rule gate",
-        "test": "Walk-forward AH", "refs": [],
+        "description": "The independent-Poisson model mis-estimates "
+                       "low-score dependencies (0-0, 1-0, 0-1, 1-1); "
+                       "Dixon-Coles add a tau correction. Implement as a "
+                       "new strategy with pre-registered rho prior; same "
+                       "verified pilot fixtures.",
+        "data": "Verified pilot fixtures/results - same odds columns",
+        "test": "Walk-forward 1X2 + O/U 2.5", "refs": [],
+    },
+    {
+        "sport": "Football", "name": "Elo recency decay",
+        "status": "Ready to source",
+        "description": "Current football/hockey Elo weights every match "
+                       "equally; a time-decay weighting (older matches "
+                       "count less) is the standard extension. Pre-register "
+                       "the decay half-life before grading; never tune it "
+                       "on pilot outcomes.",
+        "data": "Verified pilot fixtures/results - time-stamped odds",
+        "test": "Walk-forward 1X2 (vs elo-edge-v1 as control)",
+        "refs": [],
+    },
+    {
+        "sport": "Football", "name": "Both teams to score (BTTS)",
+        "status": "Blocked",
+        "description": "Derived yes/no market from the goal model; "
+                       "requires BTTS prices, which the pilot file does "
+                       "not carry (no B365>BTTS-style columns exist in "
+                       "football-data exports) - a priced BTTS source is "
+                       "the gate, not the model.",
+        "data": "BTTS odds source - verified results",
+        "test": "Walk-forward BTTS", "refs": [],
     },
     # ------------------------------------------------ ice hockey
     {
@@ -156,6 +209,34 @@ HYPOTHESES: List[Dict[str, Any]] = [
                        "predictions for upcoming DEL fixtures once the "
                        "current-season capture lands.",
         "refs": [],
+    },
+    {
+        "sport": "Ice Hockey", "name": "Home-ice naive baseline",
+        "status": "Pilot-tested", "tested": "hockey-home-v1",
+        "data": "OpenLigaDB DEL pilot fixtures/results (ODbL) - no "
+                "permissioned odds",
+        "test": "Walk-forward 2-way accuracy (flat 0.5/0.5 prior)",
+        "description": "Always predicts HOME with a flat 0.5/0.5 prior "
+                       "(uninformative by design: Brier stays 0.5; the hit "
+                       "rate is the point). Gives the hockey accuracy "
+                       "desks their no-information reference: if the Elo "
+                       "desk does not beat the home share, its hit rate is "
+                       "not evidence of information. Prediction-only, "
+                       "never PnL. Also runs as a forward desk so the live "
+                       "calls have a live naive benchmark.",
+        "refs": [],
+    },
+    {
+        "sport": "Ice Hockey", "name": "Regulation-time 3-way model",
+        "status": "Ready to source",
+        "description": "A 3-way (regulation) hockey model needs reliable "
+                       "regulation-score rows; the DEL pilot already "
+                       "flagged 4 matches with impossible "
+                       "regulation+OT/SO layering (review queue), so a "
+                       "schema audit + FINAL_KIND rule with tests is the "
+                       "gate before any grading.",
+        "data": "OpenLigaDB DEL period rows - schema audit gate",
+        "test": "Walk-forward 3-way accuracy", "refs": [],
     },
     {
         "sport": "Ice Hockey", "name": "Goalie-adjusted expected goals",
@@ -209,6 +290,32 @@ HYPOTHESES: List[Dict[str, Any]] = [
         "data": "Organizer results - format rules - licensed odds",
         "test": "Match / handicap",
         "refs": [],
+    },
+    {
+        "sport": "Darts", "name": "Listed-first naive baseline",
+        "status": "Pilot-tested", "tested": "darts-listed-first-v1",
+        "data": "OpenLigaDB PDC captures (ODbL), schema-audited - no "
+                "permissioned odds",
+        "test": "Walk-forward 2-way accuracy (flat 0.5/0.5 prior)",
+        "description": "Always predicts the listed-first player with a "
+                       "flat 0.5/0.5 prior (uninformative by design). The "
+                       "audit found listing order carries no "
+                       "home-advantage meaning, so a hit rate far from 50% "
+                       "would itself be a data finding about the pool. "
+                       "Reference point for the darts Elo accuracy "
+                       "numbers. Prediction-only, never PnL.",
+        "refs": [],
+    },
+    {
+        "sport": "Darts", "name": "Leg-margin rating",
+        "status": "Ready to source",
+        "description": "pointsTeam1/2 are decisive leg/set counts "
+                       "(audit-verified), so a margin-of-victory rating "
+                       "(winning 7-0 says more than 7-6) is sourceable "
+                       "from the committed payloads. Pre-register the "
+                       "margin transform before grading.",
+        "data": "OpenLigaDB PDC captures (ODbL) - leg counts audited",
+        "test": "Walk-forward 2-way accuracy", "refs": [],
     },
     # ------------------------------------------------ blocked sports
     {

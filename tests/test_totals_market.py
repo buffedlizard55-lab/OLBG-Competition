@@ -47,8 +47,11 @@ class TestTotalsRule:
 
     def test_rule_table(self):
         assert set(MARKET_RULES) == {MARKET_MATCH_WINNER_3WAY,
-                                     MARKET_TOTALS_2_5}
+                                     MARKET_TOTALS_2_5,
+                                     models.MARKET_ASIAN_HANDICAP}
         assert MARKET_RULES[MARKET_TOTALS_2_5][0] == ("over", "under")
+        assert MARKET_RULES[models.MARKET_ASIAN_HANDICAP][0] == \
+            ("home", "away")
 
 
 class TestTotalsSettlement:

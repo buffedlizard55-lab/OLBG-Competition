@@ -66,12 +66,17 @@ For each captured fixture group, with that capture's own `as_of`:
   `cutoff < start`, `issued_at ≤ as_of`, and ledger monotonicity;
   violations would fail the pipeline (`leak_violations` must stay empty).
 
-## Current state (2026-09-20, live)
+## Current state (2026-09-22, live)
 
 - **Desk `hockey-elo-v1`: 9 frozen calls** on real DEL games 2026-09-22 →
   09-27 (probabilities 0.552–0.639), issued from the committed capture,
   0 graded yet, 0 leaks. These grade automatically at the next capture
   after results land.
+- **Desk `hockey-home-v1` (added 2026-09-22): 15 frozen calls** on the
+  same DEL window — a naive always-home baseline has no selectivity
+  threshold, so it issues for *every* upcoming game. Its graded hit rate
+  is the live reference the Elo desk's calls must beat; flat 0.5/0.5
+  prior, Brier 0.5 by construction.
 - **Desk `elo-favourite-3way-v1` (football): dormant by design.** At the
   capture instant, Bundesliga MD1–4 were finished and MD5 starts
   **2026-10-09** (international break) — outside the horizon. First
@@ -89,13 +94,14 @@ For each captured fixture group, with that capture's own `as_of`:
   `postponed` (unresolved) in the review queue until the next capture, and
   pl matchID 86559 (Villa v Forest) is flagged for duplicate conflicting
   result rows — see `docs/STATUS.md`.
-- **Desk `darts-elo-v1`: no upcoming darts payload yet.** The captured
-  darts events are finished; the WSDF 2026 final (Smith v Price) was
-  **in play** at the 19:33Z capture and is held `postponed` in the review
-  queue until the next capture resolves it — the first genuinely live event
-  the pipeline has met, handled without guessing. Activation is expected
-  with the next World Championship (December 2026) via the upcoming-first
-  discovery.
+- **Desk `darts-elo-v1` (+ `darts-listed-first-v1` baseline, both added to
+  the forward desk set 2026-09-22): no upcoming darts payload yet.** The
+  captured darts events are finished; the WSDF 2026 final (Smith v Price)
+  was **in play** at the 19:33Z capture and is held `postponed` in the
+  review queue until the next capture resolves it — the first genuinely
+  live event the pipeline has met, handled without guessing. Activation is
+  expected with the next World Championship (December 2026) via the
+  upcoming-first discovery.
 
 ## What would make forward numbers PnL-capable
 
