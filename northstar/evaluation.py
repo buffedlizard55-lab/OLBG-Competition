@@ -11,6 +11,7 @@ from __future__ import annotations
 
 from typing import Any, Dict, List, Optional
 
+from . import models
 from .db import Store
 from .models import ANOMALY_RESULT_KIND_INCONSISTENT, parse_utc
 
@@ -25,6 +26,30 @@ def outcome_key(home_goals: int, away_goals: int) -> str:
     return "draw"
 
 
+def regulation_outcome(result_row: Dict[str, Any],
+                       home_goals: int, away_goals: int
+                       ) -> Optional[str]:
+    """Regulation-time (3-period) 3-way outcome for hockey, or None.
+
+    The stored result row is the FINAL (OT/SO-aware) row chosen by the
+    adapter's priority rule (AfterPenalties > AfterExtraTime >
+    After90Minutes):
+    - kind ``After90Minutes``: the final was decided in regulation, so the
+      stored scoreline IS the regulation scoreline;
+    - kind ``AfterExtraTime`` / ``AfterPenalties``: the game went to
+      overtime/penalties, which is only possible after a DRAWN regulation.
+    Unknown/missing kind -> None (refuse to guess; the row stays
+    ungraded).
+    """
+    kind = result_row.get("result_type_kind")
+    if kind == models.RESULT_KIND_AFTER_90:
+        return outcome_key(home_goals, away_goals)
+    if kind in (models.RESULT_KIND_AFTER_EXTRA,
+                models.RESULT_KIND_AFTER_PENALTIES):
+        return "draw"
+    return None
+
+
 def brier_three(probs: Dict[str, float], actual: str) -> float:
     if actual not in OUTCOMES:
         raise ValueError(f"unknown outcome {actual}")
@@ -33,13 +58,23 @@ def brier_three(probs: Dict[str, float], actual: str) -> float:
 
 
 def prediction_accuracy(store: Store, bets: List[Dict[str, Any]],
-                        sport: Optional[str] = None) -> Dict[str, Any]:
+                        sport: Optional[str] = None,
+                        outcome: str = "final") -> Dict[str, Any]:
     """Measure a walk-forward report's prediction quality from the store.
 
     ``bets`` are engine decision logs (event_id, selection, model). Only
     rows whose event has a finished, mutually-consistent stored result are
     graded; everything else is listed under ``ungraded`` with a reason.
+
+    ``outcome``: which stored result row defines "actual".
+    - ``"final"`` (default): the decisive final score (OT/SO-aware for
+      hockey) -> 2-way/3-way as scored by ``outcome_key``.
+    - ``"regulation_3way"``: the regulation-time (3-period) 3-way outcome
+      for hockey, resolved via :func:`regulation_outcome` from the stored
+      final row's kind.  Rows whose kind cannot be resolved stay ungraded.
     """
+    if outcome not in ("final", "regulation_3way"):
+        raise ValueError(f"unknown outcome mode: {outcome}")
     graded: List[Dict[str, Any]] = []
     ungraded: List[Dict[str, Any]] = []
     # Results under review (RESULT_KIND_INCONSISTENT) are never graded on -
@@ -66,7 +101,18 @@ def prediction_accuracy(store: Store, bets: List[Dict[str, Any]],
                              "reason": "conflicting or incomplete result"})
             continue
         hg, ag = next(iter(scores))
-        actual = outcome_key(hg, ag)
+        if outcome == "regulation_3way":
+            primary = max(results,
+                          key=lambda r: parse_utc(r["officially_final_at_utc"]))
+            actual = regulation_outcome(primary, hg, ag)
+            if actual is None:
+                ungraded.append({
+                    "event_id": eid,
+                    "reason": ("regulation outcome not resolvable from the "
+                               "stored final row's kind")})
+                continue
+        else:
+            actual = outcome_key(hg, ag)
         probs = (bet.get("model") or {}).get("model_prob") or {}
         graded.append({
             "event_id": eid,
@@ -78,6 +124,7 @@ def prediction_accuracy(store: Store, bets: List[Dict[str, Any]],
             "brier": (brier_three(probs, actual)
                       if all(k in probs for k in OUTCOMES) else None),
             "result_kind": results[0].get("result_type_kind"),
+            "outcome_mode": outcome,
             "single_source_providers": [r["provider"] for r in results],
         })
 
@@ -94,6 +141,7 @@ def prediction_accuracy(store: Store, bets: List[Dict[str, Any]],
         d["accuracy"] = round(d["hits"] / d["n"], 6) if d["n"] else None
     return {
         "sport": sport,
+        "outcome_mode": outcome,
         "n_graded": n,
         "hits": hits,
         "accuracy": round(hits / n, 6) if n else None,

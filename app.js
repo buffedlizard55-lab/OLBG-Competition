@@ -255,6 +255,8 @@ const STATUS_TITLES = {
 const statusCell = (s) =>
   `<span${STATUS_TITLES[s] ? ` title="${STATUS_TITLES[s]}"` : ""}>${escapeHtml(s)}</span>`;
 const marketLabel = (b) => {
+  if (b.market === "regulation_3way")
+    return "1X2 (regulation, 3-period)";
   if (b.market === "match_winner_2way")
     return b.sport === "darts" ? "match winner (sets)"
       : "match winner (incl. OT/SO)";

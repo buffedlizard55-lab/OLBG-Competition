@@ -42,18 +42,9 @@ SPORT_COVERAGE = [
             "feed."
         ),
     },
-    {
-        "sport": "Ice Hockey", "scope": "olbg", "status": "results_pilot",
-        "results_path": (
-            "OpenLigaDB DEL 2024/25 pilot, 21 events (matchdays 1/20/40), "
-            "ODbL-1.0; single source, identity stays 'probable'"),
-        "odds_path": "none verified - no permissioned DEL odds in this repo",
-        "note": (
-            "End-to-end result ingest with OT/shootout-aware finals: 3 OT "
-            "games, 1 shootout, 4 source-data irregularities flagged for "
-            "review. Predictions are graded on accuracy/Brier only - PnL is "
-            "unavailable, not zero."),
-    },
+    # Ice Hockey is built dynamically in _hockey_coverage_row(store) so
+    # the row always reflects what is actually in the store (the full
+    # season once capture-pilot has committed it).
 ]
 
 # Darts coverage is built dynamically (see build_coverage): the row is
@@ -95,6 +86,40 @@ for _sport in (
     })
 
 
+def _hockey_coverage_row(store: Store) -> Dict[str, Any]:
+    """Ice hockey coverage row, built from the store (evidence-based).
+
+    The row reports the actual ingested pilot: the three hand-audited
+    matchdays plus the full season when ``capture-pilot`` has committed
+    the whole-season payload (kv hockey_pilot_full_season).
+    """
+    events = store.kv_get("hockey_pilot_events")
+    full_season = store.kv_get("hockey_pilot_full_season") == "1"
+    if full_season:
+        scope = (f"OpenLigaDB DEL 2024/25 full season, {events} events "
+                 f"(plus hand-audited matchdays 1/20/40), ODbL-1.0; "
+                 "single source, identity stays 'probable'")
+        note = ("Full-season result ingest with OT/shootout-aware finals; "
+                "prediction desks graded on the whole season (accuracy/"
+                "Brier incl. the regulation-time 3-way pair) - PnL is "
+                "unavailable, not zero. The 4 impossible-layering DEL "
+                "matches stay flagged for review.")
+    else:
+        scope = ("OpenLigaDB DEL 2024/25 pilot, 21 events (matchdays "
+                 "1/20/40), ODbL-1.0; single source, identity stays "
+                 "'probable'")
+        note = ("End-to-end result ingest with OT/shootout-aware finals: "
+                "3 OT games, 1 shootout, 4 source-data irregularities "
+                "flagged for review. Predictions are graded on "
+                "accuracy/Brier only - PnL is unavailable, not zero.")
+    return {
+        "sport": "Ice Hockey", "scope": "olbg", "status": "results_pilot",
+        "results_path": scope,
+        "odds_path": "none verified - no permissioned DEL odds in this repo",
+        "note": note,
+    }
+
+
 def build_coverage(store: Store) -> List[Dict[str, Any]]:
     """Sport coverage rows, with Darts promoted only on real pilot data.
 
@@ -123,7 +148,7 @@ def build_coverage(store: Store) -> List[Dict[str, Any]]:
         }
     else:
         darts_row = dict(DARTS_COVERAGE_PENDING)
-    return [SPORT_COVERAGE[0], darts_row, SPORT_COVERAGE[1]] + \
+    return [SPORT_COVERAGE[0], darts_row, _hockey_coverage_row(store)] + \
         BLOCKED_SPORT_COVERAGE
 
 
@@ -174,6 +199,8 @@ def build_site_data(store: Store, raw_dir: str,
             "hockey": {
                 "competition": "DEL Eishockey 2024/2025",
                 "matchdays": [1, 20, 40],
+                "full_season": store.kv_get("hockey_pilot_full_season")
+                               == "1",
                 "events": store.kv_get("hockey_pilot_events"),
                 "source_anomalies": store.kv_get(
                     "hockey_pilot_source_anomalies"),
@@ -185,6 +212,19 @@ def build_site_data(store: Store, raw_dir: str,
                     "end of season; documented in docs/STATUS.md. No "
                     "permissioned odds path - predictions only, graded on "
                     "accuracy/Brier; PnL unavailable (not zero)."
+                    + (" The full 2024/25 season is ingested, so the "
+                       "prediction desks grade on the whole season."
+                       if store.kv_get("hockey_pilot_full_season") == "1"
+                       else "")
+                ),
+            },
+            "bl1_warmup": {
+                "competition": "Bundesliga 1 2024/2025 (full season)",
+                "events": store.kv_get("bl1_warmup_events"),
+                "note": (
+                    "Forward-desk rating history only (same Bundesliga "
+                    "clubs as bl1/2026). NOT part of the frozen 27-match "
+                    "PnL pilot, which stays pinned to matchdays 1/10/20."
                 ),
             },
         },

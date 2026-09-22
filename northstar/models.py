@@ -23,6 +23,11 @@ MARKET_MATCH_WINNER_3WAY = "match_winner_3way"
 # Prediction-only desks use it; the settlement engine has no rule set for it
 # yet (settlement would flag MARKET_RULE_UNKNOWN), which is intentional.
 MARKET_MATCH_WINNER_2WAY = "match_winner_2way"
+# Regulation-time 3-way (ice hockey): home win / draw / away win over the
+# three regulation periods. Prediction-only (no permissioned odds path);
+# the 3-period outcome is derived from the stored final-priority row's
+# ``resultTypeKind`` (evaluation.regulation_outcome) - never settled.
+MARKET_REGULATION_3WAY = "regulation_3way"
 # Total goals over/under 2.5 (football). Settled on the 90-minute score:
 # ``over`` wins when home+away >= 3, ``under`` when <= 2; a half-goal line
 # can never push. Rule set: settlement.match_outcome_totals.
