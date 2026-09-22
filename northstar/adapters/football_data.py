@@ -84,6 +84,23 @@ TOTALS_COLUMNS = [
     ("betfair_exchange", "BFE>2.5", "BFE<2.5"),
 ]
 
+# Asian handicap columns.  Column semantics verified against the source's
+# own notes.txt (fetched 2026-09-22): "AHh = Market size of handicap (home
+# team) (since 2019/2020)", "AvgAHH = Market average Asian handicap home
+# team odds", "AvgAHA = Market average Asian handicap away team odds",
+# "B365AHH = Bet365 Asian handicap home team odds".  A negative AHh is a
+# handicap on the home team (the favourite gives goals).  Pinnacle
+# (PAHH/PAHA) is excluded per the source's 2025-07-23 reliability notice;
+# closing columns (AHCh/…CAHH/…CAHA) are excluded for the same no-leakage
+# reason as the totals closing prices.
+AH_LINE_COLUMN = "AHh"
+AH_COLUMNS = [
+    ("b365", "B365AHH", "B365AHA"),
+    ("market_avg", "AvgAHH", "AvgAHA"),
+    ("market_max", "MaxAHH", "MaxAHA"),
+    ("betfair_exchange", "BFEAHH", "BFEAHA"),
+]
+
 
 def parse_csv_text(text: str) -> List[Dict]:
     """Parse football-data CSV text into normalized rows (no I/O)."""
@@ -233,6 +250,28 @@ def ingest_csv_text(store: Store, text: str,
             (MARKET_TOTALS_2_5, provider, (("over", co), ("under", cu)))
             for provider, co, cu in TOTALS_COLUMNS
         ]
+        # Asian-handicap prices share the row's AHh line; a row without a
+        # usable quarter-grid line cannot be priced as a line market, so it
+        # is flagged (never silently dropped, never guessed).
+        ah_line = _num(row["raw"].get(AH_LINE_COLUMN))
+        if ah_line is not None:
+            try:
+                from ..settlement import asian_handicap_components
+                asian_handicap_components(ah_line)
+                column_sets += [
+                    (models.MARKET_ASIAN_HANDICAP, provider,
+                     (("home", ch), ("away", ca)))
+                    for provider, ch, ca in AH_COLUMNS
+                ]
+            except ValueError:
+                store.add_anomaly(models.Anomaly(
+                    anomaly_id=stable_id("an", "AH_LINE_INVALID", eid),
+                    kind="MISSING_ODDS", entity_type="odds",
+                    entity_id=eid, detected_at_utc=utcnow(),
+                    detail=f"AHh {ah_line!r} is not a quarter-grid "
+                           "Asian-handicap line; AH prices not imported",
+                    source_urls=[FILE_URL]))
+                stats["anomalies"].append("AH_LINE_INVALID")
         for market_key, provider, columns in column_sets:
             for sel, col in columns:
                 v = _num(row["raw"].get(col))
@@ -250,11 +289,15 @@ def ingest_csv_text(store: Store, text: str,
                         source_urls=[FILE_URL]))
                     continue
                 # Snapshot ids for the 1X2 market are unchanged (stable
-                # across versions); totals ids carry the market key.
+                # across versions); totals/AH ids carry the market key and
+                # the AH ones also the line (a re-quoted line must never
+                # collide with an old snapshot id).
                 sid_parts = ([eid, provider, sel, window.isoformat()]
                              if market_key == MARKET_MATCH_WINNER_3WAY
                              else [eid, market_key, provider, sel,
                                    window.isoformat()])
+                if market_key == models.MARKET_ASIAN_HANDICAP:
+                    sid_parts.append(str(ah_line))
                 snap = OddsSnapshot(
                     snapshot_id=stable_id("os", *sid_parts),
                     event_id=eid,
@@ -263,6 +306,8 @@ def ingest_csv_text(store: Store, text: str,
                     market_key=market_key,
                     selection_key=sel,
                     decimal_odds=odds,
+                    line=(float(ah_line) if market_key ==
+                          models.MARKET_ASIAN_HANDICAP else None),
                     timestamp_precision="window_close_inferred",
                     raw_row_hash=row_hash,
                     source_url=FILE_URL,
@@ -273,5 +318,8 @@ def ingest_csv_text(store: Store, text: str,
                 if market_key == MARKET_TOTALS_2_5:
                     stats["totals_snapshots"] = \
                         stats.get("totals_snapshots", 0) + 1
+                if market_key == models.MARKET_ASIAN_HANDICAP:
+                    stats["ah_snapshots"] = \
+                        stats.get("ah_snapshots", 0) + 1
     store.commit()
     return stats

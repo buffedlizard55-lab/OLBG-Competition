@@ -57,6 +57,7 @@ CREATE TABLE IF NOT EXISTS tips (
   odds_decimal REAL,
   odds_source TEXT,
   stake_units REAL NOT NULL DEFAULT 1.0,
+  line REAL,
   source_url TEXT,
   raw_payload_hash TEXT,
   status TEXT NOT NULL,
@@ -72,6 +73,7 @@ CREATE TABLE IF NOT EXISTS odds_snapshots (
   market_key TEXT NOT NULL,
   selection_key TEXT NOT NULL,
   decimal_odds REAL NOT NULL,
+  line REAL,
   source_event_id TEXT,
   timestamp_precision TEXT NOT NULL,
   raw_row_hash TEXT,
@@ -343,14 +345,14 @@ class Store:
             """INSERT INTO tips (tip_id, tipster_id, strategy_id, event_id,
                market, selection, selection_key, published_at_utc,
                collected_at_utc, cutoff_at_utc, odds_decimal, odds_source,
-               stake_units, source_url, raw_payload_hash, status, notes)
-               VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+               stake_units, line, source_url, raw_payload_hash, status, notes)
+               VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
             (tip.tip_id, tip.tipster_id, tip.strategy_id, tip.event_id,
              tip.market, tip.selection, tip.selection_key,
              models.fmt_utc(tip.published_at_utc),
              models.fmt_utc(tip.collected_at_utc),
              models.fmt_utc(tip.cutoff_at_utc), tip.odds_decimal,
-             tip.odds_source, tip.stake_units, tip.source_url,
+             tip.odds_source, tip.stake_units, tip.line, tip.source_url,
              tip.raw_payload_hash, tip.status, tip.notes))
         outcome["created"] = True
         outcome["tip_id"] = tip.tip_id
@@ -407,13 +409,14 @@ class Store:
                 existing["event_id"], existing["observed_at_utc"],
                 existing["provider"], existing["market_key"],
                 existing["selection_key"], existing["decimal_odds"],
-                existing["source_event_id"], existing["timestamp_precision"],
+                existing["line"], existing["source_event_id"],
+                existing["timestamp_precision"],
                 existing["raw_row_hash"],
             )
             incoming = (
                 snap.event_id, models.fmt_utc(snap.observed_at_utc),
                 snap.provider, snap.market_key, snap.selection_key,
-                snap.decimal_odds, snap.source_event_id,
+                snap.decimal_odds, snap.line, snap.source_event_id,
                 snap.timestamp_precision, snap.raw_row_hash,
             )
             if comparable != incoming:
@@ -432,13 +435,13 @@ class Store:
         self.conn.execute(
             """INSERT OR IGNORE INTO odds_snapshots (snapshot_id, event_id,
                observed_at_utc, provider, market_key, selection_key,
-               decimal_odds, source_event_id, timestamp_precision,
+               decimal_odds, line, source_event_id, timestamp_precision,
                raw_row_hash, source_url, notes)
-               VALUES (?,?,?,?,?,?,?,?,?,?,?,?)""",
+               VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)""",
             (snap.snapshot_id, snap.event_id,
              models.fmt_utc(snap.observed_at_utc), snap.provider,
              snap.market_key, snap.selection_key, snap.decimal_odds,
-             snap.source_event_id, snap.timestamp_precision,
+             snap.line, snap.source_event_id, snap.timestamp_precision,
              snap.raw_row_hash, snap.source_url, snap.notes))
 
     def odds_snapshots(self, event_id: Optional[str] = None

@@ -21,8 +21,8 @@ from typing import Any, Callable, Dict, List, Optional, Sequence
 from . import models
 from .db import Store
 from .models import (
-    EVENT_STATUS_FINISHED, MARKET_MATCH_WINNER_3WAY, MARKET_TOTALS_2_5,
-    TIP_STATUS_OPEN, TIP_STATUS_UNSETTLEABLE, Tip,
+    EVENT_STATUS_FINISHED, MARKET_ASIAN_HANDICAP, MARKET_MATCH_WINNER_3WAY,
+    MARKET_TOTALS_2_5, TIP_STATUS_OPEN, TIP_STATUS_UNSETTLEABLE, Tip,
     parse_utc, stable_id, utcnow,
 )
 from .settlement import settle_tip
@@ -219,8 +219,12 @@ def run_walk_forward(store: Store, events: Sequence[Dict[str, Any]],
     # market are offered as the market view / entry price, and the tip is
     # stored under it so settlement applies the matching rule set.
     market_key = getattr(strategy, "market", None) or MARKET_MATCH_WINNER_3WAY
-    market_selections = ("over", "under") if market_key == MARKET_TOTALS_2_5 \
-        else ("home", "draw", "away")
+    if market_key == MARKET_TOTALS_2_5:
+        market_selections = ("over", "under")
+    elif market_key == MARKET_ASIAN_HANDICAP:
+        market_selections = ("home", "away")
+    else:
+        market_selections = ("home", "draw", "away")
     # Deterministic total order: same-start games (a whole hockey matchday
     # can share a puck-drop time) must not depend on input order - the
     # event_id tiebreak makes any shuffle of the input list equivalent.
@@ -283,12 +287,16 @@ def run_walk_forward(store: Store, events: Sequence[Dict[str, Any]],
 
         # Market view the desk could see: earliest stored market_avg
         # snapshot strictly before start (same window for every strategy).
+        # A line market (Asian handicap) additionally carries the priced
+        # line; if the stored snapshots disagree on the line the view is
+        # withheld (a desk must never guess which line it traded).
         market_odds = None
         odds_observed_at = None
         snaps = [s for s in store.odds_snapshots(e["event_id"])
                  if s["provider"] == "market_avg"
                  and s["market_key"] == market_key
                  and parse_utc(s["observed_at_utc"]) < start]
+        market_line = None
         if snaps:
             first = min(snaps, key=lambda s: s["observed_at_utc"])
             first_at = parse_utc(first["observed_at_utc"])
@@ -299,6 +307,14 @@ def run_walk_forward(store: Store, events: Sequence[Dict[str, Any]],
                            and parse_utc(s["observed_at_utc"]) <= first_at),
                           None)
                 for sel in market_selections}
+            if market_key == MARKET_ASIAN_HANDICAP:
+                lines = {s.get("line") for s in snaps
+                         if parse_utc(s["observed_at_utc"]) <= first_at}
+                if len(lines) == 1 and None not in lines:
+                    market_line = next(iter(lines))
+                    market_odds["line"] = market_line
+                else:
+                    market_odds = None
         else:
             market_odds = None
 
@@ -368,6 +384,8 @@ def run_walk_forward(store: Store, events: Sequence[Dict[str, Any]],
         if decision is not None:
             # Entry price: earliest stored snapshot at/before cutoff (the
             # price the desk actually saw) - never a later 'better' price.
+            # A line market additionally pins the snapshot's line to the
+            # line the desk declared (a re-quoted line is a different bet).
             odds = None
             provider = None
             prediction_only = False
@@ -380,6 +398,9 @@ def run_walk_forward(store: Store, events: Sequence[Dict[str, Any]],
                          and s["market_key"] == market_key
                          and s["selection_key"] == decision["selection_key"]
                          and parse_utc(s["observed_at_utc"]) <= cutoff]
+                if market_key == MARKET_ASIAN_HANDICAP:
+                    snaps = [s for s in snaps
+                             if s.get("line") == decision.get("line")]
                 if snaps:
                     snap = min(snaps, key=lambda s: s["observed_at_utc"])
                     odds = snap["decimal_odds"]
@@ -421,6 +442,7 @@ def run_walk_forward(store: Store, events: Sequence[Dict[str, Any]],
                 odds_decimal=odds,
                 odds_source=provider,
                 stake_units=stake,
+                line=decision.get("line"),
                 source_url=e.get("source_url"),
                 raw_payload_hash=None,
                 status=(TIP_STATUS_UNSETTLEABLE if prediction_only

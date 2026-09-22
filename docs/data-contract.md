@@ -101,6 +101,15 @@ For a level-stakes decimal-odds bet with stake `s` and odds `o`:
 - Lost: `pnl = -s`
 - Void: `pnl = 0` and remove the stake from turnover according to the market rules
 - Push: `pnl = 0` and retain the sport-specific market interpretation
+- Asian-handicap quarter lines (rule version `nr-settlement-2026-09-22.1`,
+  `settlement.match_outcome_asian_handicap`): the stake splits half/half
+  across the two neighbouring component lines. Half-won (win + push):
+  `pnl = ½·s·(o − 1)`; half-lost (lose + push): `pnl = −½·s`; both
+  components push: `push`. The line is stored on the priced snapshot and on
+  the tip (`line` column); a line market settles only against a
+  90-minute result and a quarter-grid line — anything else is blocked,
+  never guessed. W/L display counts half stakes as half a win / half a
+  loss (weighted strike rate).
 
 Report both `profit_units` and `turnover_units`. Never infer ROI from strike rate. Default leaderboard metrics:
 

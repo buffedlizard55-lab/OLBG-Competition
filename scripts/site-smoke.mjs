@@ -105,6 +105,23 @@ setTimeout(() => {
   const preds = elements["prediction-grid"];
   if (!preds || preds.innerHTML === "") problems.push("prediction grid empty");
 
+  // third market + baseline desks must actually render (2026-09-22 pass):
+  // Asian-handicap rows with their line, and the naive baseline desks.
+  const placedHtml = placed.innerHTML;
+  if (!placedHtml.includes("Asian handicap")) {
+    problems.push("no Asian-handicap market rows rendered");
+  }
+  if (!/Asian handicap \(line [-+]?\d/.test(placedHtml)) {
+    problems.push("Asian-handicap rows do not show the priced line");
+  }
+  for (const entrantId of ["ah-poisson-value-v1", "ah-market-favourite-v1",
+                           "hockey-home-v1", "darts-listed-first-v1"]) {
+    const haystack = (desk.innerHTML || "") + placedHtml;
+    if (!haystack.includes(entrantId)) {
+      problems.push(`entrant ${entrantId} not rendered anywhere`);
+    }
+  }
+
   // every rendered cell must be HTML-escaped: no raw '<' from data
   for (const [id, el] of Object.entries(elements)) {
     if (el.innerHTML && el.innerHTML.includes("undefined")) {

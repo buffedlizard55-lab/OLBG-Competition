@@ -53,7 +53,8 @@ def entrant_metrics(store: Store, entrant_id: str) -> Dict[str, Any]:
         # settlement; that PnL is counted but demoted, never ranked as
         # verified.
         s = store.latest_settlement(tip["tip_id"])
-        if s is not None and s["outcome"] in ("won", "lost", "void", "push"):
+        if s is not None and s["outcome"] in ("won", "half_won", "lost",
+                                              "half_lost", "void", "push"):
             settled += 1
             if s["verification_state"] == "review":
                 any_review = True
@@ -62,14 +63,17 @@ def entrant_metrics(store: Store, entrant_id: str) -> Dict[str, Any]:
             if s["outcome"] in ("void", "push"):
                 voids += 1
                 continue
-            # counted bets (won/lost):
+            # counted bets (won/lost, incl. quarter-line half outcomes):
+            # pnl is the exact blended figure from the settlement row; the
+            # W/L display counts half stakes as half a win / half a loss
+            # (weighted), so strike rate stays an honest probability.
             profit_units += s["pnl_units"]
             turnover_units += s["stake_units"]
             pnl_seq.append(s["pnl_units"])
-            if s["outcome"] == "won":
-                wins += 1
+            if s["outcome"] in ("won", "half_won"):
+                wins += 1.0 if s["outcome"] == "won" else 0.5
             else:
-                losses += 1
+                losses += 1.0 if s["outcome"] == "lost" else 0.5
             continue
         status = tip["status"]
         if status == TIP_STATUS_PENDING:
@@ -163,9 +167,11 @@ def placed_bets(store: Store,
             "event_start_utc": event.get("scheduled_start_utc"),
             "market": tip["market"],
             "selection": tip["selection"],
+            "selection_key": tip["selection_key"],
             "odds": tip["odds_decimal"],
             "odds_source": tip["odds_source"],
             "stake_units": tip["stake_units"],
+            "line": tip.get("line"),
             "published_at_utc": tip["published_at_utc"],
             "cutoff_at_utc": tip["cutoff_at_utc"],
             "source_url": tip.get("source_url"),
