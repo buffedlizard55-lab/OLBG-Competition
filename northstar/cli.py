@@ -27,6 +27,7 @@ import argparse
 import hashlib
 import json
 import os
+import re
 import sys
 from typing import Any, Dict, List, Optional
 
@@ -34,7 +35,8 @@ from . import models
 from .adapters import football_data, olbg, openligadb
 from .backtest import run_walk_forward
 from .db import Store
-from .evaluation import naive_baseline_comparison, prediction_accuracy
+from .evaluation import (TOTALS_OUTCOME_MODES, naive_baseline_comparison,
+                         prediction_accuracy)
 from .forward import grade_forward, issue_forward, load_ledger, save_ledger
 from .leaderboard import build_leaderboard
 from .predictor import render_forward_prediction, render_prediction
@@ -43,7 +45,8 @@ from .registry import registry_payload
 from .report import build_site_data
 from .stats import bootstrap_p_two_sided, holm_bonferroni
 from .strategies import (
-    DARTS_STRATEGIES, FOOTBALL_STRATEGIES, FORWARD_STRATEGIES,
+    DARTS_STRATEGIES, FOOTBALL_ACCURACY_STRATEGIES, FOOTBALL_STRATEGIES,
+    FORWARD_STRATEGIES,
     HOCKEY_STRATEGIES, NAIVE_BASELINE_FOR, PREDICTION_ONLY_STRATEGIES,
     build,
 )
@@ -325,6 +328,20 @@ def run_backtests(store: Store) -> Dict[str, Any]:
         # draw that loses in OT/SO is a hit for them.
         reports[sid]["evaluation"] = prediction_accuracy(
             store, reports[sid]["bets"], sport="ice_hockey",
+            outcome=getattr(strategy, "market_outcome", "final"))
+    # Full-season football accuracy desks: the whole committed 2024/25
+    # Bundesliga season (306 finished results), NOT the pinned 27-match PnL
+    # pilot.  No odds are read at all (allow_no_odds), so nothing here can
+    # touch PnL or the Holm family.
+    football_season = _pilot_scope(finished, "football", "/bl1/2024/")
+    for sid in FOOTBALL_ACCURACY_STRATEGIES:
+        strategy = build(sid)
+        strategy.sport = "football"
+        reports[sid] = run_walk_forward(store, football_season, strategy, sid,
+                                        label="football-season",
+                                        allow_no_odds=True)
+        reports[sid]["evaluation"] = prediction_accuracy(
+            store, reports[sid]["bets"], sport="football",
             outcome=getattr(strategy, "market_outcome", "final"))
     for sid in DARTS_STRATEGIES:
         if not darts_events:
@@ -635,6 +652,20 @@ def main(argv: List[str] = None) -> int:
     p_cap.add_argument("--out", default=os.path.join(
         "data", "fixtures", "current"))
     p_cap.add_argument("--season", type=int, default=2026)
+    sub.add_parser(
+        "sources",
+        help="print the OLBG sport source registry (21 sports, evidence "
+             "links, automation gates)")
+    p_facts = sub.add_parser(
+        "facts",
+        help="regenerate docs/FACTS.md from the generated site payload "
+             "(anti-drift fact sheet)")
+    p_facts.add_argument("--check", action="store_true",
+                         help="exit 1 if docs/FACTS.md is stale")
+    p_facts.add_argument("--sync-readme", action="store_true",
+                         help="also rewrite the counted test-function "
+                              "number quoted in README.md (the count is "
+                              "still read from source, never typed)")
     p_pilot = sub.add_parser(
         "capture-pilot",
         help="CI: fetch the historical pilot seasons (del/2024 + bl1/2024 "
@@ -646,6 +677,60 @@ def main(argv: List[str] = None) -> int:
 
     if args.cmd == "ingest-fullseason":
         return ingest_fullseason(args.out, args.league)
+
+    if args.cmd == "sources":
+        from .sources import sport_source_payload
+        payload = sport_source_payload()
+        print(f"OLBG sport source registry {payload['version']} "
+              f"(verified {payload['verified_at']})")
+        print(f"  {payload['counts']['sports']} sports · "
+              f"{payload['counts']['designs']} registered designs "
+              f"({payload['counts']['graded_designs']} graded)")
+        for sport in payload["sports"]:
+            primary = (sport.get("results_candidates") or [{}])[0]
+            print(f"  - {sport['sport']}: gate={sport['automation_gate']} "
+                  f"({primary.get('name', 'no candidate')})")
+            for cand in sport.get("results_candidates", []):
+                mark = "verified" if cand.get("link_verified") else "unverified"
+                print(f"      source [{mark} link]: {cand['url']}")
+                print(f"      robots: {cand['robots_url']} "
+                      f"({cand['robots_verdict']}, checked "
+                      f"{cand['robots_checked_at']})")
+            print(f"      next: {sport.get('next_action')}")
+        return 0
+
+    if args.cmd == "facts":
+        from .facts import FACTS_PATH, facts_are_current, write_facts
+        from .sources import (REGISTER_PATH, register_is_current,
+                              write_register)
+        if args.check:
+            stale = facts_are_current() or register_is_current()
+            if stale:
+                print(f"STALE: {stale}")
+                return 1
+            print("docs/FACTS.md and docs/SOURCE-REGISTRY.md are current")
+            return 0
+        facts = write_facts()
+        payload = write_register()
+        if args.sync_readme:
+            count = facts["tests"]["count"]
+            readme = os.path.join(ROOT, "README.md")
+            with open(readme, "r", encoding="utf-8") as fh:
+                text = fh.read()
+            synced = re.sub(r"\b\d+ test functions\b",
+                            f"{count} test functions", text)
+            if synced != text:
+                with open(readme, "w", encoding="utf-8") as fh:
+                    fh.write(synced)
+                print(f"synced README.md to the counted {count} test functions")
+        print(f"wrote {os.path.relpath(FACTS_PATH, ROOT)} "
+              f"({len(facts['desks'])} desks, "
+              f"{facts['anomalies']['open']} open anomalies, "
+              f"{facts['tests']['count']} tests)")
+        print(f"wrote {os.path.relpath(REGISTER_PATH, ROOT)} "
+              f"({payload['counts']['sports']} sports, "
+              f"{payload['counts']['designs']} designs)")
+        return 0
 
     if args.cmd == "capture-pilot":
         from . import capture
@@ -732,11 +817,21 @@ def main(argv: List[str] = None) -> int:
             evaln = rep.get("evaluation")
             sport = getattr(build(sid), "sport", None) or "ice_hockey"
             # Regulation desks trade the 3-period market, not the
-            # incl.-OT/SO final (same id as the forward ledger entries).
-            desk_market = (models.MARKET_REGULATION_3WAY
-                           if getattr(build(sid), "market_outcome", "final")
-                           == "regulation_3way"
-                           else models.MARKET_MATCH_WINNER_2WAY)
+            # incl.-OT/SO final; the totals desks trade the second
+            # prediction-only market (over/under 5.5 on the final score).
+            # Same market ids as the forward ledger entries.
+            outcome_mode = getattr(build(sid), "market_outcome", "final")
+            desk_line = TOTALS_OUTCOME_MODES.get(outcome_mode)
+            if outcome_mode == "regulation_3way":
+                desk_market = models.MARKET_REGULATION_3WAY
+            elif desk_line is not None:
+                desk_market = (models.MARKET_TOTALS_5_5
+                               if desk_line >= 5.0
+                               else models.MARKET_TOTALS_2_5)
+            elif sport == "football":
+                desk_market = models.MARKET_MATCH_WINNER_3WAY
+            else:
+                desk_market = models.MARKET_MATCH_WINNER_2WAY
             backtest_meta[sid] = {
                 "label": rep["label"],
                 "sport": sport,
@@ -758,11 +853,12 @@ def main(argv: List[str] = None) -> int:
                 "profit_ci95": None,
                 "accuracy": evaln,
                 "sample_warning": (
-                    f"Prediction-only pilot: {sport_names.get(sport, sport)} "
+                    f"Prediction-only desk: {sport_names.get(sport, sport)} "
                     "has no permissioned odds path, so profit is unavailable "
                     f"(never shown as zero). "
-                    f"{evaln['n_graded'] if evaln else 0} graded predictions "
-                    "is far too few to claim skill."),
+                    f"{evaln['n_graded'] if evaln else 0} graded predictions, "
+                    "single-source identity 'probable', no market baseline: "
+                    "treat the margin as provisional, not as skill."),
             }
             continue
         ci = bootstrap_ci(m["pnl_sequence"]) if m["pnl_sequence"] else None
@@ -821,6 +917,12 @@ def main(argv: List[str] = None) -> int:
                     backtest_meta=backtest_meta, out_path=SITE_OUT,
                     forward_report=forward_report,
                     registry=registry_payload())
+    # Regenerate the fact sheet from the just-written payload so prose
+    # numbers (README/STATUS/site) can never drift from the data.
+    from .facts import write_facts
+    from .sources import write_register
+    facts = write_facts()
+    write_register()
     store.commit()
 
     print("pipeline complete")
@@ -877,6 +979,9 @@ def main(argv: List[str] = None) -> int:
               f"profit={row['profit_units']} units "
               f"roi={row['roi']} state={row['verification_state']}")
     print(f"  site data -> {os.path.relpath(SITE_OUT, ROOT)}")
+    print(f"  fact sheet -> docs/FACTS.md "
+          f"({facts['anomalies']['open']} open anomalies, "
+          f"{facts['tests']['count']} tests counted from source)")
     return verify(store)
 
 

@@ -14,6 +14,7 @@ from typing import Any, Dict, List, Optional
 from .db import Store
 from .leaderboard import build_leaderboard, placed_bets, upcoming_bets
 from .policy import all_policies
+from .sources import sport_source_payload
 from . import models
 
 # The inventory is taken from the public OLBG betting-tips page manually
@@ -265,6 +266,9 @@ def build_site_data(store: Store, raw_dir: str,
             "terms_version": p.terms_version,
         } for p in all_policies()],
         "coverage": build_coverage(store),
+        # Evidence-gated source registry for all 21 OLBG sport families
+        # (data/sources/olbg_sports.json, validated by northstar.sources).
+        "sport_sources": sport_source_payload(),
         "captures": captures,
         "entrants": store.entrants(),
     }

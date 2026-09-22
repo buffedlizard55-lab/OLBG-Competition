@@ -1,0 +1,1124 @@
+{
+  "version": "nr-sport-sources-2026-09-22.1",
+  "verified_at": "2026-09-22",
+  "note": "Source registry for the 21 sport families OLBG lists (catalogue manually reviewed 2026-09-20, docs/OLBG-RESEARCH.md). This file records what the candidate sources' robots.txt and licences ACTUALLY say, with the fetched text, the fetch date and a link a human can open. It is not a coverage claim: the automation gate is computed from those facts (northstar/sources.py::gate_for) and only 'permitted_open_licence' (a licence already recorded and tested in northstar/policy.py) allows a collector to run.",
+  "method": {
+    "robots": "robots.txt fetched over HTTPS through the agent's read-only fetch tool on 2026-09-22; the quoted text is verbatim from that fetch. A 404 (no robots file served) is recorded as 'no_robots_file' and is NOT permission. Line endings are normalised to LF when the quote is rendered (the CR/LF characters are the source's own line endings; the text is otherwise verbatim).",
+    "licence": "'open_licence_verified' is only ever set when the source already appears in northstar/policy.py (the tested licensing registry) with a collection mode that permits it. Everything else is 'not_reviewed' and stays behind a licence gate - robots.txt is not a licence.",
+    "links": "links with link_verified=true returned the expected page content when fetched on 2026-09-22. Unverified deep links are marked false and point at the domain root that was actually fetched.",
+    "strategy_designs": "design-stage entries are pre-registered hypotheses with no graded result; an entry may only be marked graded/forward-live if it names a strategy id that exists in northstar/strategies/REGISTRY.py and is unit-tested."
+  },
+  "sports": [
+    {
+      "sport": "Horse Racing",
+      "olbg_scope": "olbg",
+      "coverage_today": "none - verification_blocked",
+      "results_candidates": [
+        {
+          "name": "British Horseracing Authority (BHA) - official regulator",
+          "url": "https://www.britishhorseracing.com/",
+          "link_verified": false,
+          "link_checked_at": "2026-09-22",
+          "robots_url": "https://www.britishhorseracing.com/robots.txt",
+          "robots_checked_at": "2026-09-22",
+          "robots_quote": "User-agent: *\r\nDisallow: /wp-admin/\r\nDisallow: /feeds/\r\ncrawl-delay: 10",
+          "robots_verdict": "partial",
+          "robots_blocks": [
+            "/wp-admin/",
+            "/feeds/"
+          ],
+          "licence": "not_reviewed",
+          "licence_evidence_url": "https://www.britishhorseracing.com/terms-and-conditions/",
+          "notes": "robots.txt allows general crawling with a 10s crawl-delay, but the site terms have not been read and no open licence exists for racecard/result data. Race results are also published by the sport's own data-rights holders, so this gate needs a commercial/legal decision, not a scraper."
+        }
+      ],
+      "strategy_designs": [
+        {
+          "design_id": "hr-market-favourite-baseline",
+          "name": "Market-favourite baseline (reference desk)",
+          "status": "design-stage",
+          "hypothesis": "Favourites in UK/IRE flat and jumps races are systematically underbet relative to longshots; the desk must first reproduce the documented favourite-longshot bias on this jurisdiction's data before any fade is tested.",
+          "rule": "Level-stake the margin-removed market favourite in every race of the selected jurisdiction; report strike rate, ROI and the longshot half of the same sample as the control.",
+          "refs": [
+            "https://www.nber.org/papers/w15923"
+          ],
+          "gate": "Needs a permissioned race-result source (declared runners, going, dead heats) plus a licensed odds archive; dead heats and non-runners must be defined before the first bet."
+        },
+        {
+          "design_id": "hr-place-fieldsize-calibration",
+          "name": "Place-probability calibration by field size",
+          "status": "design-stage",
+          "hypothesis": "Place probability is mis-modelled when field size and each-way terms are pooled; calibration by field size will show where the market's place prices drift.",
+          "rule": "Fit place probabilities separately for each field-size band and race type, then grade calibration (reliability curve) against official placings; no bet is placed until calibration beats the pooled model out of sample.",
+          "refs": [],
+          "gate": "Same result-source gate as above, plus official each-way terms per race."
+        }
+      ],
+      "next_action": "Human decision on a licensed racing-results/odds provider (e.g. an official race-data licence); nothing may be collected from the regulator's site without a licence review."
+    },
+    {
+      "sport": "Football",
+      "olbg_scope": "olbg",
+      "coverage_today": "pilot_verified for the 27-match Bundesliga 1 2024/25 PnL pilot (dual-source result check), prediction-only forward desks on bl1/pl/bl2/la1 2026/27",
+      "results_candidates": [
+        {
+          "name": "OpenLigaDB (community results database)",
+          "url": "https://api.openligadb.de/getmatchdata/bl1/2024",
+          "link_verified": true,
+          "link_checked_at": "2026-09-20",
+          "robots_url": "https://api.openligadb.de/robots.txt",
+          "robots_checked_at": "2026-09-20",
+          "robots_quote": "No robots restrictions are imposed by the API host; the documented limit is 60 requests/minute/IP (api.openligadb.de front page).",
+          "robots_verdict": "allows_results",
+          "licence": "open_licence_verified",
+          "policy_source_id": "openligadb",
+          "licence_evidence_url": "https://openligadb.de/lizenz",
+          "notes": "ODbL-1.0 with attribution and share-alike on derived databases; automated API collection is permitted by the policy gate (MODE_AUTO_API). This is a community-entered database, NOT a DFL/PL/LaLiga official feed - identity stays 'probable' except in the dual-source 27-match pilot."
+        },
+        {
+          "name": "League/organizer official sites (DFL, Premier League, LaLiga) as cross-check",
+          "url": "https://www.bundesliga.com/",
+          "link_verified": false,
+          "link_checked_at": "2026-09-22",
+          "robots_url": "https://www.bundesliga.com/robots.txt",
+          "robots_checked_at": "2026-09-22",
+          "robots_quote": "not fetched - recorded here only as the human-review candidate for an independent cross-check",
+          "robots_verdict": "unknown",
+          "robots_blocks": [],
+          "licence": "not_reviewed",
+          "licence_evidence_url": "https://www.bundesliga.com/en/bundesliga/service/terms-of-use",
+          "notes": "An official-organizer export adapter exists in code (adapters/official_results.py) but is inactive: it requires written permission from the governing body. Until then football identity in this repository is either dual-source (27-match pilot) or single-source 'probable'."
+        }
+      ],
+      "strategy_designs": [
+        {
+          "design_id": "fb-market-favourite",
+          "name": "Market favourite (baseline)",
+          "status": "graded",
+          "strategy_id": "market-favourite-v1",
+          "hypothesis": "Bookmaker favourites are the least-losing naive strategy on the verified pilot.",
+          "rule": "Level-stake the market-average favourite every match.",
+          "refs": [
+            "https://www.nber.org/papers/w15923"
+          ],
+          "gate": "passed (football-data.co.uk manual pilot import + OpenLigaDB ODbL results)"
+        },
+        {
+          "design_id": "fb-elo-edge",
+          "name": "Elo value edge",
+          "status": "graded",
+          "strategy_id": "elo-edge-v1",
+          "hypothesis": "A plain Elo rating finds value against the margin-removed market average.",
+          "rule": "Elo K=40, home advantage 60, 3-way logistic; bet only with a >= 3-point model edge.",
+          "refs": [
+            "https://doi.org/10.1016/j.ijforecast.2009.10.002"
+          ],
+          "gate": "passed"
+        },
+        {
+          "design_id": "fb-dixon-coles",
+          "name": "Dixon-Coles 1X2 value",
+          "status": "graded",
+          "strategy_id": "dixon-coles-v1",
+          "hypothesis": "The Dixon-Coles low-score correction finds 1X2 value the independent Poisson misses.",
+          "rule": "Bivariate score matrix with the tau correction (rho=-0.10 pre-registered); bet the argmax with a >= 3-point edge.",
+          "refs": [
+            "https://research-information.bris.ac.uk/en/publications/modelling-association-football-scores-and-inefficiencies-in-the-f/"
+          ],
+          "gate": "passed"
+        },
+        {
+          "design_id": "fb-poisson-totals",
+          "name": "Poisson totals value (O/U 2.5)",
+          "status": "graded",
+          "strategy_id": "poisson-totals-value-v1",
+          "hypothesis": "A league-rate Poisson goal model finds value in the over/under 2.5 price.",
+          "rule": "League rates + shrunk attack/defence multipliers from released matches; bet a >= 3-point edge.",
+          "refs": [],
+          "gate": "passed"
+        },
+        {
+          "design_id": "fb-ah-poisson",
+          "name": "Poisson Asian-handicap value",
+          "status": "graded",
+          "strategy_id": "ah-poisson-value-v1",
+          "hypothesis": "The Poisson goal model finds value on the priced Asian handicap line.",
+          "rule": "Same Poisson model evaluated on the stored AH line; quarter lines split the stake; positive EV and a >= 3% edge required.",
+          "refs": [],
+          "gate": "passed"
+        },
+        {
+          "design_id": "fb-forward-elo",
+          "name": "Football Elo favourite (forward desk)",
+          "status": "forward-live",
+          "strategy_id": "elo-favourite-3way-v1",
+          "hypothesis": "No-market Elo picks beat the home baseline on the current season's results.",
+          "rule": "3-way Elo argmax with a 45% selectivity floor; frozen pre-start in the append-only forward ledger.",
+          "refs": [
+            "https://doi.org/10.1016/j.ijforecast.2009.10.002"
+          ],
+          "gate": "results-only (OpenLigaDB 2026/27 captures); no permissioned odds path, so accuracy/Brier only"
+        },
+        {
+          "design_id": "fb-market-longshot",
+          "name": "Market longshot (baseline probe)",
+          "status": "graded",
+          "strategy_id": "market-longshot-v1",
+          "hypothesis": "If the documented favourite-longshot bias is present, backing the longest shot should lose heavily - a direction check on the pilot data, not a strategy.",
+          "rule": "Level-stake the longest-priced outcome in every match.",
+          "refs": [
+            "https://www.nber.org/papers/w15923"
+          ],
+          "gate": "passed (baseline probe)"
+        },
+        {
+          "design_id": "fb-elo-decay",
+          "name": "Recency-decay Elo control",
+          "status": "graded",
+          "strategy_id": "elo-decay-v1",
+          "hypothesis": "Older matches carry less information; ratings that relax toward the 1500 seed on a 365-day half-life improve on plain Elo.",
+          "rule": "Identical to elo-edge-v1 with R_eff(t) = 1500 + (R-1500)*2^(-dt/365d).",
+          "refs": [
+            "https://doi.org/10.1016/j.ijforecast.2009.10.002"
+          ],
+          "gate": "passed (control desk)"
+        },
+        {
+          "design_id": "fb-draw-value",
+          "name": "Draw mispricing probe",
+          "status": "graded",
+          "strategy_id": "draw-value-v1",
+          "hypothesis": "Draws are systematically over-priced as longshots in some samples (returning value when the model's draw probability exceeds the fair price).",
+          "rule": "Bet DRAW when model draw probability minus margin-removed price >= 3 points.",
+          "refs": [
+            "https://www.sciencedirect.com/science/article/pii/S0169207024000670"
+          ],
+          "gate": "passed"
+        },
+        {
+          "design_id": "fb-home-edge",
+          "name": "Home-advantage value probe",
+          "status": "graded",
+          "strategy_id": "home-edge-v1",
+          "hypothesis": "Home advantage is mispriced when crowd effects change (ghost games), in either direction.",
+          "rule": "Bet HOME only with a >= 5-point model edge over the fair price.",
+          "refs": [
+            "https://www.researchgate.net/publication/358982251_Home_advantage_in_professional_soccer_and_betting_market_efficiency_The_role_of_spectator_crowds"
+          ],
+          "gate": "passed"
+        },
+        {
+          "design_id": "fb-form-value",
+          "name": "Form + price floor",
+          "status": "graded",
+          "strategy_id": "form-value-v1",
+          "hypothesis": "Recent-form information is undervalued by odds (tipster rule, made auditable).",
+          "rule": "Back the better recent-form side (>= 1.0 pts/match gap over last 3 released matches) only at price >= 1.80.",
+          "refs": [
+            "https://research-api.cbs.dk/ws/portalfiles/portal/60750333/237159_final_digital.pdf"
+          ],
+          "gate": "passed"
+        },
+        {
+          "design_id": "fb-dnb",
+          "name": "Draw-No-Bet decisive form",
+          "status": "graded",
+          "strategy_id": "draw-no-bet-v1",
+          "hypothesis": "Removing the draw from a 3-way price is a testable construction, not automatically an edge.",
+          "rule": "Elo edge on the 2-way DNB projection, decisive matches only.",
+          "refs": [],
+          "gate": "passed"
+        },
+        {
+          "design_id": "fb-market-totals-baseline",
+          "name": "Market totals favourite (baseline)",
+          "status": "graded",
+          "strategy_id": "market-totals-favourite-v1",
+          "hypothesis": "Reference desk for the O/U 2.5 market: does the market's own favourite beat a goal model?",
+          "rule": "Always back the margin-removed market favourite side of the 2.5 line.",
+          "refs": [],
+          "gate": "passed (baseline)"
+        },
+        {
+          "design_id": "fb-ah-market-baseline",
+          "name": "Market AH favourite (baseline)",
+          "status": "graded",
+          "strategy_id": "ah-market-favourite-v1",
+          "hypothesis": "Reference desk for the Asian-handicap market.",
+          "rule": "Always back the margin-removed market favourite side of the priced AH line (quarter lines split the stake).",
+          "refs": [],
+          "gate": "passed (baseline)"
+        },
+        {
+          "design_id": "fb-home-baseline-season",
+          "name": "Always-home season baseline",
+          "status": "graded",
+          "strategy_id": "football-home-baseline-v1",
+          "hypothesis": "The full-season no-market desks must beat 'always home' on the same 306 matches or their hit rate is not information.",
+          "rule": "Always predict the home side; flat 0.50/0.25/0.25 prior stated before grading (never fitted).",
+          "refs": [],
+          "gate": "passed (baseline, added 2026-09-22)"
+        },
+        {
+          "design_id": "fb-totals-poisson-season",
+          "name": "Poisson totals season desk",
+          "status": "graded",
+          "strategy_id": "football-totals-poisson-v1",
+          "hypothesis": "The independent-Poisson totals model's 2.5-line argmax beats the always-over baseline over a whole committed season.",
+          "rule": "Same Poisson construction as the pilot totals desk with no price input; states the more likely side of 2.5 for every match.",
+          "refs": [
+            "https://www.researchgate.net/publication/222532726"
+          ],
+          "gate": "passed (added 2026-09-22); no odds path, accuracy/Brier only"
+        },
+        {
+          "design_id": "fb-totals-over-season",
+          "name": "Always-over 2.5 season baseline",
+          "status": "graded",
+          "strategy_id": "football-totals-over-v1",
+          "hypothesis": "The share of over-2.5 matches in the pool is the bar the totals model must clear; if it does not, the model has shown no information.",
+          "rule": "Always predict OVER 2.5; flat 0.5/0.5 prior (Brier 0.5 by construction).",
+          "refs": [],
+          "gate": "passed (baseline, added 2026-09-22)"
+        }
+      ],
+      "next_action": "Keep the forward desks running; add a second independent result source for the current season and a licensed odds path before any 2026/27 PnL exists."
+    },
+    {
+      "sport": "Tennis",
+      "olbg_scope": "olbg",
+      "coverage_today": "none - verification_blocked",
+      "results_candidates": [
+        {
+          "name": "ITF (International Tennis Federation) - official",
+          "url": "https://www.itftennis.com/",
+          "link_verified": false,
+          "link_checked_at": "2026-09-22",
+          "robots_url": "https://www.itftennis.com/robots.txt",
+          "robots_checked_at": "2026-09-22",
+          "robots_quote": "#robots.txt\r\nUser-agent: *\r\nDisallow: /umbraco/\r\nAllow: /\r\nSitemap: https://www.itftennis.com/en/sitemap/general-xml-sitemap/",
+          "robots_verdict": "allows_results",
+          "licence": "not_reviewed",
+          "licence_evidence_url": "https://www.itftennis.com/en/terms-and-conditions/",
+          "notes": "robots.txt explicitly allows crawling (only /umbraco/ blocked), but the terms of use for ITF data have not been read and no open licence exists. Retirements, walkovers and 'dead rubber' withdrawals must be defined before any tennis settlement rule is written."
+        }
+      ],
+      "strategy_designs": [
+        {
+          "design_id": "tn-surface-elo",
+          "name": "Surface-adjusted Elo",
+          "status": "design-stage",
+          "hypothesis": "Player strength is surface-specific; a surface-split Elo beats a single-rating Elo on match-winner accuracy and on price value.",
+          "rule": "Maintain separate hard/clay/grass ratings updated from completed matches only; bet the model favourite only when the model edge over the margin-removed price exceeds a pre-registered threshold; grade accuracy and (with odds) ROI.",
+          "refs": [
+            "https://doi.org/10.1016/j.ijforecast.2009.10.002"
+          ],
+          "gate": "Needs a permissioned ATP/WTA/ITF result feed with a documented retirement/walkover rule and a licensed odds archive."
+        }
+      ],
+      "next_action": "Read the ITF/ATP/WTA terms and decide on a licensed results+odds path; nothing is collected today."
+    },
+    {
+      "sport": "Golf",
+      "olbg_scope": "olbg",
+      "coverage_today": "none - verification_blocked",
+      "results_candidates": [
+        {
+          "name": "DP World Tour (European Tour) - official",
+          "url": "https://www.europeantour.com/",
+          "link_verified": false,
+          "link_checked_at": "2026-09-22",
+          "robots_url": "https://www.europeantour.com/robots.txt",
+          "robots_checked_at": "2026-09-22",
+          "robots_quote": "User-Agent: *\nAllow: /api/images/\n...\nDisallow: /dist/\nDisallow: /api/\nDisallow: /mobile/\nDisallow: /search/\nDisallow: /test/\nDisallow: /library/\nSitemap: https://www.europeantour.com/sitemap-index.xml",
+          "robots_verdict": "partial",
+          "robots_blocks": [
+            "/api/",
+            "/search/",
+            "/dist/",
+            "/library/"
+          ],
+          "licence": "not_reviewed",
+          "licence_evidence_url": "https://www.europeantour.com/terms-of-use/",
+          "notes": "Leaderboards render on standard pages (allowed) while the site's own API is disallowed by robots.txt; the terms have not been read. Tournament formats differ (stroke play with cuts, playoffs, foursomes), so settlement rules must be written per format."
+        }
+      ],
+      "strategy_designs": [
+        {
+          "design_id": "gf-course-fit-strokes-gained",
+          "name": "Course-fit and strokes-gained form",
+          "status": "design-stage",
+          "hypothesis": "Strokes-gained approach/putting form plus course fit predicts outright and place finishes better than world ranking alone.",
+          "rule": "Build pre-tournament features only from rounds completed before the entry cutoff; grade calibration on outright win and place markets; ties and dead heats defined by the organizer's published result (playoff vs shared place).",
+          "refs": [],
+          "gate": "Needs a permissioned leaderboard feed with the organizer's official final classification and a licensed odds archive."
+        }
+      ],
+      "next_action": "Licence review of the tour's leaderboard terms; define tie/playoff settlement rules first."
+    },
+    {
+      "sport": "American Football",
+      "olbg_scope": "olbg",
+      "coverage_today": "none - verification_blocked",
+      "results_candidates": [
+        {
+          "name": "NFL - official",
+          "url": "https://www.nfl.com/",
+          "link_verified": false,
+          "link_checked_at": "2026-09-22",
+          "robots_url": "https://www.nfl.com/robots.txt",
+          "robots_checked_at": "2026-09-22",
+          "robots_quote": "User-agent: *\nDisallow: /_ctv/\nDisallow: /_fantasy-app/\nDisallow: /_libraries/\nDisallow: /_mobile-app/\nDisallow: /_mobileview/\nDisallow: /_phs/\nDisallow: /_sponsors/\nDisallow: /account/\nDisallow: /nfl-films-beta/\nDisallow: /search/\nSitemap: https://www.nfl.com/sitemap-index.xml",
+          "robots_verdict": "partial",
+          "robots_blocks": [
+            "/account/",
+            "/search/",
+            "/_libraries/"
+          ],
+          "licence": "not_reviewed",
+          "licence_evidence_url": "https://www.nfl.com/legal/terms",
+          "notes": "Standard page crawling is not disallowed, but the NFL's terms are unfetched and no open licence exists. Ties, overtime and safety scoring must be part of the settlement rule set (the repository's settlement engine has no NFL rule set)."
+        }
+      ],
+      "strategy_designs": [
+        {
+          "design_id": "nfl-efficiency-injury-freshness",
+          "name": "Efficiency differential with injury freshness",
+          "status": "design-stage",
+          "hypothesis": "Dated injury reports and rest differential move spread/total outcomes beyond a pure rating model.",
+          "rule": "Freeze injury state at the published report deadline; never use post-selection information; grade against margin and total settlements including overtime rules.",
+          "refs": [],
+          "gate": "Needs a permissioned result + dated injury feed and a licensed odds archive."
+        }
+      ],
+      "next_action": "Licence review; then a dedicated NFL settlement rule set (ties/OT) before any grading."
+    },
+    {
+      "sport": "Baseball",
+      "olbg_scope": "olbg",
+      "coverage_today": "none - verification_blocked",
+      "results_candidates": [
+        {
+          "name": "MLB - official",
+          "url": "https://www.mlb.com/",
+          "link_verified": false,
+          "link_checked_at": "2026-09-22",
+          "robots_url": "https://www.mlb.com/robots.txt",
+          "robots_checked_at": "2026-09-22",
+          "robots_quote": "User-agent: *\nDisallow: /test/\nDisallow: /api/\nDisallow: /app/\nDisallow: /embed/\nDisallow: /en/\nDisallow: /mlb/\nDisallow: /share/\nDisallow: /tokens/\nDisallow: /tv/\nDisallow: /web/\n...",
+          "robots_verdict": "partial",
+          "robots_blocks": [
+            "/api/",
+            "/en/",
+            "/mlb/",
+            "/app/",
+            "/embed/"
+          ],
+          "licence": "not_reviewed",
+          "licence_evidence_url": "https://www.mlb.com/official-information/terms-of-use",
+          "notes": "MLB's robots.txt disallows the paths that carry machine-readable data (/api/, /en/, /mlb/) while leaving general pages; the terms are unfetched. Doubleheaders, suspended games, extra innings and rain-shortened games all need explicit rules."
+        }
+      ],
+      "strategy_designs": [
+        {
+          "design_id": "bb-pitcher-bullpen-split",
+          "name": "Starting pitcher and bullpen split",
+          "status": "design-stage",
+          "hypothesis": "Pre-game announced starters plus bullpen availability explain moneyline/total value beyond team rating.",
+          "rule": "Only pre-game information (announced starter, park, weather cutoff); grade on final score including extra innings, with suspended games excluded.",
+          "refs": [],
+          "gate": "Needs a permissioned schedule/lineup/result feed and a licensed odds archive."
+        }
+      ],
+      "next_action": "Licence review of an official MLB data path (the public stats API is disallowed by robots.txt for automated use)."
+    },
+    {
+      "sport": "Basketball",
+      "olbg_scope": "olbg",
+      "coverage_today": "none - verification_blocked",
+      "results_candidates": [
+        {
+          "name": "NBA - official",
+          "url": "https://www.nba.com/",
+          "link_verified": false,
+          "link_checked_at": "2026-09-22",
+          "robots_url": "https://www.nba.com/robots.txt",
+          "robots_checked_at": "2026-09-22",
+          "robots_quote": "User-Agent: *\nDisallow: /amp/\nDisallow: /api/*\nDisallow: /mediacentral/*\nDisallow: /search\n...\nUser-agent: anthropic-ai\nDisallow: /",
+          "robots_verdict": "partial",
+          "robots_blocks": [
+            "/api/*",
+            "/search",
+            "/mediacentral/*"
+          ],
+          "licence": "not_reviewed",
+          "licence_evidence_url": "https://www.nba.com/termsofuse",
+          "notes": "The NBA robots.txt disallows its API and blocks a list of AI/generative agents outright (including 'anthropic-ai' and 'ClaudeBot'), which this project must respect: no automated NBA collection. OpenLigaDB's basketball leagues were probed 2026-09-20 and carry no current season."
+        }
+      ],
+      "strategy_designs": [
+        {
+          "design_id": "bk-rest-travel-rating",
+          "name": "Rest and travel-adjusted rating",
+          "status": "design-stage",
+          "hypothesis": "Rest days, travel distance and back-to-back spots are under-priced relative to pure team strength.",
+          "rule": "Features frozen at tip-off; grade against spread/total with overtime included; back-to-backs flagged explicitly.",
+          "refs": [],
+          "gate": "Needs a permissioned result/schedule feed (NBA's own API is robots-disallowed for this project) and a licensed odds archive."
+        }
+      ],
+      "next_action": "Only a licensed data provider (or written permission) can open this sport - the site's robots.txt blocks AI agents explicitly."
+    },
+    {
+      "sport": "Boxing",
+      "olbg_scope": "olbg",
+      "coverage_today": "none - verification_blocked",
+      "results_candidates": [
+        {
+          "name": "BoxRec (record archive)",
+          "url": "https://boxrec.com/",
+          "link_verified": false,
+          "link_checked_at": "2026-09-22",
+          "robots_url": "https://boxrec.com/robots.txt",
+          "robots_checked_at": "2026-09-22",
+          "robots_quote": "User-agent: *\nUser-agent: AdsBot-Google\nDisallow: /v6branch/\nDisallow: /v3/\nDisallow: /v51static/\n...\nDisallow: /list_bouts.php\nDisallow: /show_display.php\nDisallow: /schedule.php\nDisallow: /search.php\nDisallow: /ratings.php\nDisallow: /title_search.php",
+          "robots_verdict": "blocks_results",
+          "robots_blocks": [
+            "/list_bouts.php",
+            "/show_display.php",
+            "/schedule.php",
+            "/search.php",
+            "/ratings.php",
+            "/title_search.php"
+          ],
+          "licence": "not_reviewed",
+          "licence_evidence_url": "https://boxrec.com/en/terms",
+          "notes": "The dynamic bout/schedule/ratings pages are explicitly disallowed; the comment in the file says friendly low-speed bots are welcome on wiki article pages but 'not dynamically-generated pages'. This repository will not collect boxing records from BoxRec."
+        }
+      ],
+      "strategy_designs": [
+        {
+          "design_id": "bx-opponent-adjusted",
+          "name": "Opponent-adjusted performance",
+          "status": "design-stage",
+          "hypothesis": "Adjusting a fighter's record for opponent quality and inactivity beats raw win-loss record at predicting bout winners.",
+          "rule": "Freeze record/weight class/rounds at the announced bout; a no-contest, draw, retirement or disqualification is never silently mapped to a loss.",
+          "refs": [],
+          "gate": "Needs a permissioned boxing result source (commission or promoter export) - the public archive is robots-disallowed."
+        }
+      ],
+      "next_action": "Approach a sanctioning body/promoter for a written result feed; nothing is collectable from BoxRec."
+    },
+    {
+      "sport": "Cricket",
+      "olbg_scope": "olbg",
+      "coverage_today": "none - verification_blocked",
+      "results_candidates": [
+        {
+          "name": "Cricsheet (ball-by-ball archive, CC-licensed project)",
+          "url": "https://cricsheet.org/",
+          "link_verified": true,
+          "link_checked_at": "2026-09-22",
+          "robots_url": "https://cricsheet.org/robots.txt",
+          "robots_checked_at": "2026-09-22",
+          "robots_quote": "# robotstxt.org/\n\n# Don't index the actual data files.\nUser-agent: *\nAllow: /\nDisallow: /data/\n\n# Where does the sitemap file live?\nSitemap: https://cricsheet.org/sitemap.xml",
+          "robots_verdict": "allows_results",
+          "licence": "not_reviewed",
+          "licence_evidence_url": "https://cricsheet.org/downloads/",
+          "notes": "The downloads page was fetched 2026-09-22 and lists 22,983 matches (ZIP archives, JSON/YAML/CSV), with 377 matches withheld for policy reasons. The licence statement on that page has NOT been transcribed or legally reviewed here, so the gate stays closed: robots.txt only says which paths crawlers may index. Data files themselves are excluded from indexing by robots.txt, so any use must be a human/licensed download."
+        },
+        {
+          "name": "ICC - official",
+          "url": "https://www.icc-cricket.com/",
+          "link_verified": false,
+          "link_checked_at": "2026-09-22",
+          "robots_url": "https://www.icc-cricket.com/robots.txt",
+          "robots_checked_at": "2026-09-22",
+          "robots_quote": "not fetched - listed as the official-body candidate for a human licence review",
+          "robots_verdict": "unknown",
+          "robots_blocks": [],
+          "licence": "not_reviewed",
+          "licence_evidence_url": "https://www.icc-cricket.com/about/cricket/terms",
+          "notes": "No ICC page was fetched; listed for completeness only."
+        }
+      ],
+      "strategy_designs": [
+        {
+          "design_id": "ck-venue-innings-rate",
+          "name": "Venue and innings-state run-rate model",
+          "status": "design-stage",
+          "hypothesis": "Format-specific run rates by venue and innings state predict match winners and totals; rain-reduced matches need explicit rules.",
+          "rule": "Per-format models (T20/ODI/Test), Duckworth-Lewis-Stern-adjusted targets recorded as official, abandoned matches void (never graded as losses).",
+          "refs": [],
+          "gate": "Needs the Cricsheet licence decision (or an ICC/board feed) plus a licensed odds archive."
+        }
+      ],
+      "next_action": "Transcribe and legally review the Cricsheet licence; if it permits research use, ingest ball-by-ball data for a match-winner model. This is the most promising new sport path in the registry."
+    },
+    {
+      "sport": "Cycling",
+      "olbg_scope": "olbg",
+      "coverage_today": "none - verification_blocked",
+      "results_candidates": [
+        {
+          "name": "UCI - official governing body",
+          "url": "https://www.uci.org/",
+          "link_verified": false,
+          "link_checked_at": "2026-09-22",
+          "robots_url": "https://www.uci.org/robots.txt",
+          "robots_checked_at": "2026-09-22",
+          "robots_quote": "User-agent: *\nAllow: /",
+          "robots_verdict": "allows_results",
+          "licence": "not_reviewed",
+          "licence_evidence_url": "https://www.uci.org/terms-of-use",
+          "notes": "uci.org allows crawling, but UCI publishes calendars/rankings rather than full result classifications per race; the terms are unfetched."
+        },
+        {
+          "name": "ProCyclingStats (results archive)",
+          "url": "https://www.procyclingstats.com/",
+          "link_verified": false,
+          "link_checked_at": "2026-09-22",
+          "robots_url": "https://www.procyclingstats.com/robots.txt",
+          "robots_checked_at": "2026-09-22",
+          "robots_quote": "User-agent: *\nContent-Signal: search=yes,ai-train=no,use=reference\nAllow: /\n...\nUser-agent: ClaudeBot\nDisallow: /",
+          "robots_verdict": "partial",
+          "robots_blocks": [
+            "AI-training/agent crawlers (e.g. ClaudeBot, anthropic-ai, GPTBot) are disallowed site-wide"
+          ],
+          "licence": "not_reviewed",
+          "licence_evidence_url": "https://www.procyclingstats.com/info.php?id=terms",
+          "notes": "The robots.txt carries an explicit Content-Signal reservation of rights (ai-train=no) and disallows this project's own agent family. No cycling result data may be collected here."
+        }
+      ],
+      "strategy_designs": [
+        {
+          "design_id": "cy-course-fit-delta",
+          "name": "Course-fit performance delta",
+          "status": "design-stage",
+          "hypothesis": "Climber/sprinter/time-trialist profile fit predicts one-day and stage outcomes better than overall ranking.",
+          "rule": "Separate time trials from mass-start races; official classifications (including relegations/penalties) are the settlement source; abandons are never graded as losses in outright markets unless the market rule says so.",
+          "refs": [],
+          "gate": "Needs a permissioned classification feed (organizer/UCI export) and a licensed odds archive."
+        }
+      ],
+      "next_action": "Ask UCI/race organizers for a permitted classification feed; the public archive forbids this project's collection."
+    },
+    {
+      "sport": "Darts",
+      "olbg_scope": "olbg",
+      "coverage_today": "results_pilot - prediction-only (accuracy/Brier), no odds path",
+      "results_candidates": [
+        {
+          "name": "OpenLigaDB PDC darts endpoints (ODbL-1.0)",
+          "url": "https://api.openligadb.de/getmatchdata/PDCWM/2025",
+          "link_verified": true,
+          "link_checked_at": "2026-09-22",
+          "robots_url": "https://api.openligadb.de/robots.txt",
+          "robots_checked_at": "2026-09-20",
+          "robots_quote": "No robots restrictions are imposed by the API host; the documented limit is 60 requests/minute/IP (api.openligadb.de front page).",
+          "robots_verdict": "allows_results",
+          "licence": "open_licence_verified",
+          "policy_source_id": "openligadb",
+          "licence_evidence_url": "https://openligadb.de/lizenz",
+          "notes": "8 real PDC events 2025-26 are committed (423 finished matches) and schema-audited in docs/DARTS-AUDIT.md; discovery-driven because getavailableseasons 404s for darts shortcuts."
+        },
+        {
+          "name": "PDC (Professional Darts Corporation) - official",
+          "url": "https://www.pdc.tv/tournaments/",
+          "link_verified": true,
+          "link_checked_at": "2026-09-22",
+          "robots_url": "https://www.pdc.tv/robots.txt",
+          "robots_checked_at": "2026-09-22",
+          "robots_quote": "User-agent: meta-externalagent\nAllow: /\n\nUser-agent: ozone/1.0\nAllow: /",
+          "robots_verdict": "partial",
+          "robots_blocks": [],
+          "licence": "not_reviewed",
+          "licence_evidence_url": "https://www.pdc.tv/terms-conditions/",
+          "notes": "Checked 2026-09-22: after a ~6-chunk cookie-consent preamble the page returns the real tournaments index ('No Active Tournament(s) for Event Takeover', 'Premier Events', 'ProTour Events', 'World Series Events', 'Secondary Tour Events'). It is an index of events, not a results table, and https://www.pdc.tv/tournaments/results/ could only be seen as the consent page - so this stays a manual cross-check candidate (open it in a browser, compare one finished match by hand), never an ingest path. robots.txt has no general disallow; PDC terms are unfetched and there is no open licence."
+        }
+      ],
+      "strategy_designs": [
+        {
+          "design_id": "dt-elo",
+          "name": "Player Elo favourite",
+          "status": "graded",
+          "strategy_id": "darts-elo-v1",
+          "hypothesis": "A plain player Elo beats the listed-first baseline on PDC match winners.",
+          "rule": "K=24, no venue adjustment, selectivity floor 0.60; graded on accuracy/Brier only.",
+          "refs": [],
+          "gate": "passed (OpenLigaDB ODbL darts captures); no odds path"
+        },
+        {
+          "design_id": "dt-listed-first",
+          "name": "Listed-first naive baseline",
+          "status": "graded",
+          "strategy_id": "darts-listed-first-v1",
+          "hypothesis": "The source's listing order carries no home-advantage meaning, so it should score near 50%; a large deviation would itself be a data finding.",
+          "rule": "Always the listed-first player, flat 0.5/0.5 prior.",
+          "refs": [],
+          "gate": "passed (baseline)"
+        },
+        {
+          "design_id": "dt-mov-elo",
+          "name": "Margin-of-victory Elo",
+          "status": "graded",
+          "strategy_id": "darts-mov-elo-v1",
+          "hypothesis": "Scaling the Elo update by the stored leg/set margin beats the plain W/L update.",
+          "rule": "K x g with the World-Football-Elo margin weights; raw stored count difference as margin (stated weakness).",
+          "refs": [
+            "https://www.eloratings.net/about"
+          ],
+          "gate": "passed (added 2026-09-22); no odds path"
+        }
+      ],
+      "next_action": "Wait for the next PDC event inside the 10-day forward horizon (World Championship, December 2026); no odds path exists, so darts stays accuracy-only."
+    },
+    {
+      "sport": "Gaelic Football",
+      "olbg_scope": "olbg",
+      "coverage_today": "none - verification_blocked",
+      "results_candidates": [
+        {
+          "name": "GAA (Gaelic Athletic Association) - official fixtures & results",
+          "url": "https://www.gaa.ie/fixtures-results/",
+          "link_verified": true,
+          "link_checked_at": "2026-09-22",
+          "robots_url": "https://www.gaa.ie/robots.txt",
+          "robots_checked_at": "2026-09-22",
+          "robots_quote": "User-agent: *\nDisallow: /_libraries/\nDisallow: /_test/",
+          "robots_verdict": "allows_results",
+          "licence": "not_reviewed",
+          "licence_evidence_url": "https://www.gaa.ie/terms-and-conditions/",
+          "notes": "The official fixtures/results page loaded (link verified) with tables and a month filter; robots.txt blocks only /_libraries/ and /_test/. GAA terms are unfetched and no open licence exists. Replays, extra time (two 10-minute periods) and the 'first to 2-6' rules of some competitions must be modelled explicitly."
+        }
+      ],
+      "strategy_designs": [
+        {
+          "design_id": "gaa-scorediff-rating",
+          "name": "Score-difference rating",
+          "status": "design-stage",
+          "hypothesis": "Gaelic football scoring (goals = 3 points) makes score-difference ratings informative beyond win/loss, especially across counties in different divisions.",
+          "rule": "Model separately from hurling and from association football; competition-specific rules (replay/extra time) defined before grading; provincial and All-Ireland series kept separate.",
+          "refs": [],
+          "gate": "Needs GAA terms review + a licensed odds archive; results page link is verified for manual review."
+        }
+      ],
+      "next_action": "Human review of GAA terms; if permitted for research use, start a fixture/result capture for one competition only."
+    },
+    {
+      "sport": "Greyhounds",
+      "olbg_scope": "olbg",
+      "coverage_today": "none - verification_blocked",
+      "results_candidates": [
+        {
+          "name": "GBGB (Greyhound Board of Great Britain) - official regulator",
+          "url": "https://www.gbgb.org.uk/",
+          "link_verified": false,
+          "link_checked_at": "2026-09-22",
+          "robots_url": "https://www.gbgb.org.uk/robots.txt",
+          "robots_checked_at": "2026-09-22",
+          "robots_quote": "User-Agent: *\nAllow: /wp-content/uploads/\nDisallow: /wp-content/plugins/\nDisallow: /wp-admin/\nDisallow: /readme.html\nDisallow: /refer/",
+          "robots_verdict": "partial",
+          "robots_blocks": [
+            "/wp-admin/",
+            "/wp-content/plugins/",
+            "/refer/"
+          ],
+          "licence": "not_reviewed",
+          "licence_evidence_url": "https://www.gbgb.org.uk/terms-and-conditions/",
+          "notes": "Standard WordPress restrictions only; terms unfetched. Trap draw, going, seeding, non-runners and photo-finish revisions must all be part of the settlement rule set."
+        }
+      ],
+      "strategy_designs": [
+        {
+          "design_id": "gh-trap-pace",
+          "name": "Trap and track pace profile",
+          "status": "design-stage",
+          "hypothesis": "Trap bias plus recent sectional speed predicts race outcomes beyond the market's own trap adjustment.",
+          "rule": "Freeze trap/distance/going/non-runners at the pre-race declaration; voids for abandoned races; photo-finish revisions are source edits and must be flagged.",
+          "refs": [],
+          "gate": "Needs a permissioned race-result feed (GBGB or track operator) and a licensed odds archive."
+        }
+      ],
+      "next_action": "Ask GBGB/ARC for a permitted result feed; terms review first."
+    },
+    {
+      "sport": "Handball",
+      "olbg_scope": "olbg",
+      "coverage_today": "none - verification_blocked",
+      "results_candidates": [
+        {
+          "name": "IHF (International Handball Federation) - official",
+          "url": "https://www.ihf.info/",
+          "link_verified": false,
+          "link_checked_at": "2026-09-22",
+          "robots_url": "https://www.ihf.info/robots.txt",
+          "robots_checked_at": "2026-09-22",
+          "robots_quote": "User-agent: *\n# CSS, JS, Images\nAllow: /core/*.css$\n...\nDisallow: /core/\nDisallow: /profiles/\nDisallow: /search/\nDisallow: /user/register/\nDisallow: /user/login/",
+          "robots_verdict": "partial",
+          "robots_blocks": [
+            "/core/",
+            "/profiles/",
+            "/search/",
+            "/user/login/"
+          ],
+          "licence": "not_reviewed",
+          "licence_evidence_url": "https://www.ihf.info/legal-notice",
+          "notes": "Standard Drupal restrictions (the file is the Drupal default); terms unfetched. OpenLigaDB 'hbl' data was probed 2026-09-20 and covers 2011-2016 plus 2023 only - no current permitted results path there either."
+        }
+      ],
+      "strategy_designs": [
+        {
+          "design_id": "hb-possession-pace",
+          "name": "Possession and pace split",
+          "status": "design-stage",
+          "hypothesis": "Fast-break rate and seven-metre conversion predict totals and handicaps better than league position.",
+          "rule": "League and tournament rules separated; extra time and seven-metre shootouts never graded as regulation outcomes; a shootout loss is not a match loss where the market is regulation-only.",
+          "refs": [],
+          "gate": "Needs a permissioned federation/league result feed and a licensed odds archive."
+        }
+      ],
+      "next_action": "Licence review of IHF/EHF/league data; define extra-time and shootout settlement rules first."
+    },
+    {
+      "sport": "Hurling",
+      "olbg_scope": "olbg",
+      "coverage_today": "none - verification_blocked",
+      "results_candidates": [
+        {
+          "name": "GAA (Gaelic Athletic Association) - official fixtures & results",
+          "url": "https://www.gaa.ie/fixtures-results/",
+          "link_verified": true,
+          "link_checked_at": "2026-09-22",
+          "robots_url": "https://www.gaa.ie/robots.txt",
+          "robots_checked_at": "2026-09-22",
+          "robots_quote": "User-agent: *\nDisallow: /_libraries/\nDisallow: /_test/",
+          "robots_verdict": "allows_results",
+          "licence": "not_reviewed",
+          "licence_evidence_url": "https://www.gaa.ie/terms-and-conditions/",
+          "notes": "Same official page and robots.txt as Gaelic football (the GAA publishes both codes); hurling must never be pooled with Gaelic football - scoring profiles differ materially."
+        }
+      ],
+      "strategy_designs": [
+        {
+          "design_id": "hu-venue-scoring-rate",
+          "name": "Venue-adjusted scoring rate",
+          "status": "design-stage",
+          "hypothesis": "Hurling's high scoring and wind-exposed venues (e.g. Thurles/Ennis) create venue-specific totals effects that the market under-adjusts.",
+          "rule": "Competition-specific scoring rules; replays and extra time explicit; never pooled with Gaelic football.",
+          "refs": [],
+          "gate": "Needs GAA terms review + a licensed odds archive; results page link is verified for manual review."
+        }
+      ],
+      "next_action": "Same as Gaelic football: terms review, then a single-competition capture."
+    },
+    {
+      "sport": "Ice Hockey",
+      "olbg_scope": "olbg",
+      "coverage_today": "results_pilot - prediction-only (accuracy/Brier) on the whole DEL 2024/25 season plus DEL2/CHL 2026/27 forward captures; no odds path",
+      "results_candidates": [
+        {
+          "name": "OpenLigaDB DEL/DEL2/CHL endpoints (ODbL-1.0)",
+          "url": "https://api.openligadb.de/getmatchdata/del/2024",
+          "link_verified": true,
+          "link_checked_at": "2026-09-20",
+          "robots_url": "https://api.openligadb.de/robots.txt",
+          "robots_checked_at": "2026-09-20",
+          "robots_quote": "No robots restrictions are imposed by the API host; the documented limit is 60 requests/minute/IP (api.openligadb.de front page).",
+          "robots_verdict": "allows_results",
+          "licence": "open_licence_verified",
+          "policy_source_id": "openligadb",
+          "licence_evidence_url": "https://openligadb.de/lizenz",
+          "notes": "Whole DEL 2024/25 season committed and schema-audited (docs/HOCKEY-SCHEMA-AUDIT.md); period rows arrive under football-era result-kind labels, and 84 season rows are flagged (83 impossible layering + 1 goal-list disagreement) rather than smoothed."
+        },
+        {
+          "name": "IIHF - official governing body",
+          "url": "https://www.iihf.info/",
+          "link_verified": false,
+          "link_checked_at": "2026-09-22",
+          "robots_url": "https://www.iihf.info/robots.txt",
+          "robots_checked_at": "2026-09-22",
+          "robots_quote": "not fetched - listed as the candidate independent cross-check for DEL identity (the pilot is single-source 'probable')",
+          "robots_verdict": "unknown",
+          "robots_blocks": [],
+          "licence": "not_reviewed",
+          "licence_evidence_url": "https://www.iihf.com/en/statichub/legal",
+          "notes": "A second independent source is the single most valuable addition for this sport: it would upgrade identity from 'probable' toward 'verified'."
+        }
+      ],
+      "strategy_designs": [
+        {
+          "design_id": "ih-elo",
+          "name": "2-way Elo favourite",
+          "status": "graded",
+          "strategy_id": "hockey-elo-v1",
+          "hypothesis": "A 2-way Elo beats the always-home baseline on the OT/SO-aware final.",
+          "rule": "K=32, home advantage 35 Elo pts, floor 0.55.",
+          "refs": [
+            "https://www.sfu.ca/~tswartz/papers/hca.pdf"
+          ],
+          "gate": "passed (ODbL results); no odds path"
+        },
+        {
+          "design_id": "ih-home",
+          "name": "Home-ice naive baseline",
+          "status": "graded",
+          "strategy_id": "hockey-home-v1",
+          "hypothesis": "Home ice is worth about 54.5% of regular-season wins (reference bar for every hockey desk).",
+          "rule": "Always home, flat 0.5/0.5 prior.",
+          "refs": [
+            "https://www.sfu.ca/~tswartz/papers/hca.pdf"
+          ],
+          "gate": "passed (baseline)"
+        },
+        {
+          "design_id": "ih-reg-poisson",
+          "name": "Poisson regulation 3-way",
+          "status": "graded",
+          "strategy_id": "hockey-reg-poisson-v1",
+          "hypothesis": "An independent-Poisson goal model adds information about the 60-minute 3-way outcome.",
+          "rule": "League rates + shrunk multipliers; argmax of the regulation 3-way.",
+          "refs": [],
+          "gate": "passed"
+        },
+        {
+          "design_id": "ih-mov-elo",
+          "name": "Margin-of-victory Elo",
+          "status": "graded",
+          "strategy_id": "hockey-elo-mov-v1",
+          "hypothesis": "Scaling the Elo update by the goal margin beats the plain W/L update (added 2026-09-22).",
+          "rule": "K x g with the World-Football-Elo margin weights; same ratings pool as the plain desk.",
+          "refs": [
+            "https://www.eloratings.net/about",
+            "https://doi.org/10.1016/j.ijforecast.2009.10.002"
+          ],
+          "gate": "passed"
+        },
+        {
+          "design_id": "ih-totals",
+          "name": "Poisson totals O/U 5.5",
+          "status": "graded",
+          "strategy_id": "hockey-totals-poisson-v1",
+          "hypothesis": "The Maher/Dixon-Coles Poisson totals model transfers to DEL total goals over/under 5.5 (second prediction-only market, added 2026-09-22).",
+          "rule": "P(total >= 6) from the same league-rate/attack/defence construction; states the more likely side for every match.",
+          "refs": [],
+          "gate": "passed"
+        },
+        {
+          "design_id": "ih-totals-baseline",
+          "name": "Always-over baseline",
+          "status": "graded",
+          "strategy_id": "hockey-totals-over-v1",
+          "hypothesis": "Reference point for the totals desk: the share of DEL games over 5.5 goals.",
+          "rule": "Always over, flat 0.5/0.5 prior.",
+          "refs": [],
+          "gate": "passed (baseline)"
+        },
+        {
+          "design_id": "ih-reg-home",
+          "name": "Regulation home naive baseline",
+          "status": "graded",
+          "strategy_id": "hockey-reg-home-v1",
+          "hypothesis": "Reference bar for the regulation 3-way desks: the share of 60-minute home wins.",
+          "rule": "Always home in regulation, flat 0.5/0/0.5 prior.",
+          "refs": [],
+          "gate": "passed (baseline)"
+        }
+      ],
+      "next_action": "Add an independent cross-check source (IIHF or a league export) and a licensed odds path; until then hockey can never show PnL."
+    },
+    {
+      "sport": "Motor Racing",
+      "olbg_scope": "olbg",
+      "coverage_today": "none - verification_blocked",
+      "results_candidates": [
+        {
+          "name": "Formula 1 - official results",
+          "url": "https://www.formula1.com/en/results/2026/races",
+          "link_verified": true,
+          "link_checked_at": "2026-09-22",
+          "robots_url": "https://www.formula1.com/robots.txt",
+          "robots_checked_at": "2026-09-22",
+          "robots_quote": "Sitemap: https://www.formula1.com/sitemap.xml\nUser-Agent: *\nDisallow: /en/latest/tags/*\nAllow: /",
+          "robots_verdict": "allows_results",
+          "licence": "not_reviewed",
+          "licence_evidence_url": "https://www.formula1.com/en/information/terms-and-conditions",
+          "notes": "The 2026 race-results index returned a full season table (every race with winner, team, laps, time), which is exactly the shape a settlement rule needs; robots.txt allows general crawling. F1's terms are unfetched and no open licence exists, so no collection is enabled."
+        }
+      ],
+      "strategy_designs": [
+        {
+          "design_id": "mr-quali-to-finish",
+          "name": "Qualifying-to-finish delta",
+          "status": "design-stage",
+          "hypothesis": "Grid position plus track-specific overtaking difficulty explains finishing position better than recent form alone.",
+          "rule": "Pre-race information only (qualifying classification, grid penalties); retirements/pit incidents classified per the official result; each-way/podium places defined per market.",
+          "refs": [],
+          "gate": "Needs a licence decision on F1 result data + a licensed odds archive; the results link is verified for manual review."
+        }
+      ],
+      "next_action": "Terms review, then (if permitted) a per-race result capture with the official classification as the settlement source."
+    },
+    {
+      "sport": "Rugby Union",
+      "olbg_scope": "olbg",
+      "coverage_today": "none - verification_blocked",
+      "results_candidates": [
+        {
+          "name": "World Rugby - official fixtures & results",
+          "url": "https://www.world.rugby/tournaments/fixtures-results/results",
+          "link_verified": true,
+          "link_checked_at": "2026-09-22",
+          "robots_url": "https://www.world.rugby/robots.txt",
+          "robots_checked_at": "2026-09-22",
+          "robots_quote": "# All robots allowed\nUser-agent: *\nDisallow:\n\n# Sitemap files\nSitemap: https://www.world.rugby/en/news/sitemap.xml",
+          "robots_verdict": "allows_results",
+          "licence": "not_reviewed",
+          "licence_evidence_url": "https://www.world.rugby/organisation/legal/terms-of-use",
+          "notes": "robots.txt states 'All robots allowed' and the results page resolved (redirected to /tournaments/fixtures-results/results); terms unfetched. Bonus-point and draw rules, plus abandoned-match handling, must be explicit before grading."
+        }
+      ],
+      "strategy_designs": [
+        {
+          "design_id": "ru-setpiece-territory",
+          "name": "Set-piece and territory rating",
+          "status": "design-stage",
+          "hypothesis": "Scrum/lineout dominance and territory/possession predict handicaps beyond league position.",
+          "rule": "Union kept separate from league; competition-specific bonus points and abandoned-match rules explicit; a match abandoned before 60 minutes is void unless the competition declares a result.",
+          "refs": [],
+          "gate": "Needs a permissioned union result feed (World Rugby or league export) + a licensed odds archive; the results link is verified for manual review."
+        }
+      ],
+      "next_action": "Terms review; pick one competition (e.g. Six Nations) for a first capture."
+    },
+    {
+      "sport": "Rugby League",
+      "olbg_scope": "olbg",
+      "coverage_today": "none - verification_blocked",
+      "results_candidates": [
+        {
+          "name": "NRL - official",
+          "url": "https://www.nrl.com/",
+          "link_verified": false,
+          "link_checked_at": "2026-09-22",
+          "robots_url": "https://www.nrl.com/robots.txt",
+          "robots_checked_at": "2026-09-22",
+          "robots_quote": "User-agent: *\r\n\r\n#Sitemap\r\nSitemap: https://www.nrl.com/sitemap/sitemap.xml",
+          "robots_verdict": "allows_results",
+          "licence": "not_reviewed",
+          "licence_evidence_url": "https://www.nrl.com/terms-and-conditions/",
+          "notes": "robots.txt contains no disallow rules; the terms are unfetched. Golden point, eight-point tries and the NRL's 'no result' edge cases must be modelled; Super League (UK) would be a separate candidate."
+        },
+        {
+          "name": "Super League (UK) - official",
+          "url": "https://www.superleague.co.uk/",
+          "link_verified": false,
+          "link_checked_at": "2026-09-22",
+          "robots_url": "https://www.superleague.co.uk/robots.txt",
+          "robots_checked_at": "2026-09-22",
+          "robots_quote": "not fetched - listed as the UK-league alternative for a human licence review",
+          "robots_verdict": "unknown",
+          "robots_blocks": [],
+          "licence": "not_reviewed",
+          "licence_evidence_url": "https://www.superleague.co.uk/terms",
+          "notes": "No page fetched; listed for completeness."
+        }
+      ],
+      "strategy_designs": [
+        {
+          "design_id": "rl-tackle-territory",
+          "name": "Tackle/territory rating",
+          "status": "design-stage",
+          "hypothesis": "Completion rate and metres-per-set differentials predict margins better than ladder position late in the season.",
+          "rule": "Rugby codes never pooled; golden-point and abandoned-match rules explicit.",
+          "refs": [],
+          "gate": "Needs a permissioned league result feed + a licensed odds archive."
+        }
+      ],
+      "next_action": "Terms review (NRL/Super League); nothing collected today."
+    },
+    {
+      "sport": "Snooker",
+      "olbg_scope": "olbg",
+      "coverage_today": "none - verification_blocked",
+      "results_candidates": [
+        {
+          "name": "WST (World Snooker Tour) - official",
+          "url": "https://www.wst.tv/matches",
+          "link_verified": false,
+          "link_checked_at": "2026-09-22",
+          "robots_url": "https://www.wst.tv/robots.txt",
+          "robots_checked_at": "2026-09-22",
+          "robots_quote": "HTTP 404 - no robots.txt is served; the fetched URL returned the site's 404 page ('Sorry, it looks like the page you are looking for isn't available right now').",
+          "robots_verdict": "no_robots_file",
+          "licence": "not_reviewed",
+          "licence_evidence_url": "https://www.wst.tv/terms-conditions",
+          "notes": "No robots.txt exists. That is explicitly NOT permission: the absence of a robots file removes one signal, not the terms gate. Frame handicaps, walkovers and best-of-format changes per round must be modelled before grading."
+        },
+        {
+          "name": "WPBSA (World Professional Billiards and Snooker Association)",
+          "url": "https://wpbsa.com/",
+          "link_verified": false,
+          "link_checked_at": "2026-09-22",
+          "robots_url": "https://wpbsa.com/robots.txt",
+          "robots_checked_at": "2026-09-22",
+          "robots_quote": "not fetched - listed as the governing-body candidate for a licence review",
+          "robots_verdict": "unknown",
+          "robots_blocks": [],
+          "licence": "not_reviewed",
+          "licence_evidence_url": "https://wpbsa.com/terms-of-use/",
+          "notes": "No page fetched; listed for completeness."
+        }
+      ],
+      "strategy_designs": [
+        {
+          "design_id": "sn-frame-strength",
+          "name": "Frame-strength and break profile",
+          "status": "design-stage",
+          "hypothesis": "Frame-winning rate and century frequency predict match winners and frame handicaps better than world ranking alone.",
+          "rule": "Match format (best-of-N) and walkovers recorded explicitly; features frozen before the first frame.",
+          "refs": [],
+          "gate": "Needs a permissioned result feed (WST/WPBSA export) + a licensed odds archive."
+        }
+      ],
+      "next_action": "Licence review; the missing robots.txt must not be treated as consent."
+    },
+    {
+      "sport": "Volleyball",
+      "olbg_scope": "olbg",
+      "coverage_today": "none - verification_blocked",
+      "results_candidates": [
+        {
+          "name": "Volleyball World (FIVB commercial arm) - official",
+          "url": "https://en.volleyballworld.com/",
+          "link_verified": false,
+          "link_checked_at": "2026-09-22",
+          "robots_url": "https://en.volleyballworld.com/robots.txt",
+          "robots_checked_at": "2026-09-22",
+          "robots_quote": "User-Agent: *\nDisallow: /assets/\nDisallow: /addon/\nDisallow: /_libraries/\nDisallow: /errors/\nDisallow: /sitecore/\nDisallow: /login/\nDisallow: /mobileapp/\nDisallow: /test/\nDisallow: */images/download/\nDisallow: *?id=\nDisallow: */en/*\nDisallow: */api/*\nSitemap: https://en.volleyballworld.com/sitemap-index.xml",
+          "robots_verdict": "partial",
+          "robots_blocks": [
+            "*/api/*",
+            "*/en/*",
+            "*?id="
+          ],
+          "licence": "not_reviewed",
+          "licence_evidence_url": "https://en.volleyballworld.com/legal/",
+          "notes": "The site's API paths and */en/* deep pages are disallowed; terms unfetched. OpenLigaDB VBL rows sit under sportId 44 ('Test') with no season probed with data (registry note 2026-09-20). Best-of-five formats and golden sets need explicit settlement rules."
+        }
+      ],
+      "strategy_designs": [
+        {
+          "design_id": "vb-set-differential",
+          "name": "Set differential rating",
+          "status": "design-stage",
+          "hypothesis": "Set-level differentials carry information that match-level win/loss ratings discard, especially across pools.",
+          "rule": "Best-of format, golden-set and walkover rules explicit; a missing set is never a loss.",
+          "refs": [],
+          "gate": "Needs a permissioned federation/league result feed + a licensed odds archive."
+        }
+      ],
+      "next_action": "Licence review; check whether the CEV or a national league publishes an open result feed."
+    }
+  ]
+}
