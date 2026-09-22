@@ -3,6 +3,14 @@ name: Deploy static site to GitHub Pages
 on:
   push:
     branches: [main]
+  # A capture run commits its refreshed data with GITHUB_TOKEN, and such a
+  # push does NOT trigger other workflows - so without this, the site would
+  # keep serving last week's payload until some other push happened.  The
+  # capture workflow itself runs the full test chain before it commits.
+  workflow_run:
+    workflows: ["Current-season capture + forward ledger (OpenLigaDB)"]
+    types: [completed]
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -16,10 +24,20 @@ concurrency:
 
 jobs:
   build:
+    # On the workflow_run trigger, only deploy a capture that passed its
+    # own test chain.
+    if: >-
+      github.event_name != 'workflow_run' ||
+      github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          # This workflow only ever deploys main; being explicit matters on
+          # the workflow_run trigger, where the default ref is the branch
+          # that contains the workflow file.
+          ref: main
       - name: Set up Python
         uses: actions/setup-python@v5
         with:

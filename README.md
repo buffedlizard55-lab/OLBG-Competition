@@ -57,7 +57,7 @@ are checked.
 > * **153 open anomalies** are flagged, never smoothed
 >   (`RESULT_KIND_INCONSISTENT` 98, `SOURCE_EDITED` 48, `TIME_CONFLICT`
 >   5, `MISSING_METADATA` 1).
-> * **433 test functions** (`docs/FACTS.md` counts them from source;
+> * **440 test functions** (`docs/FACTS.md` counts them from source;
 >   pytest expands parametrised cases, so CI prints a larger collected
 >   total).
 >
@@ -125,7 +125,7 @@ are checked.
   significant, reported as exploratory only** (the Dixon-Coles desk's
   +5.0 u / p_raw 0.475 is likewise not significant). Research priors +
   citations: `docs/STRATEGIES.md`.
-- **433 test functions** (offline, `python -m pytest`; counted from
+- **440 test functions** (offline, `python -m pytest`; counted from
   source in `docs/FACTS.md`) covering the
   required matrix: postponements, voids, duplicate tips, time leakage,
   disputed results, settlement arithmetic — plus adapter parsing of the
@@ -235,7 +235,7 @@ are checked.
 ```bash
 python3 -m venv .venv && .venv/bin/pip install pytest
 
-python -m pytest                      # 433 test functions, offline
+python -m pytest                      # 440 test functions, offline
 python -m northstar.cli run-pipeline --fresh   # rebuild store + site data
 python -m northstar.cli verify              # fixture hashes + 27/27 agreement
 python -m northstar.cli facts --check       # generated docs match the data
