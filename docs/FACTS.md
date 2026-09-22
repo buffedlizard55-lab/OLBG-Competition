@@ -5,8 +5,8 @@ Written by `python -m northstar.cli run-pipeline` / `facts` (nr-facts-2026-09-22
 - **Fixtures:** 17 hash-verified payloads, aggregate sha256 `2dfbb756c66a771d2cb4a47797bdb02b8343165ba6911f893dd942cc2e68b9af` (computed from the committed sidecars; reproducible, so a diff here always means the evidence changed)
 
 Nothing above is a clock reading: the sheet is a pure function of the committed fixture hashes and the payload built from them, so a diff always means the evidence changed (never that time passed).
-- **440** test functions are counted from the test sources (never remembered); pytest additionally expands parametrised cases.
-- **Python lines:** northstar 11446, tests 6811, scripts 53
+- **441** test functions are counted from the test sources (never remembered); pytest additionally expands parametrised cases.
+- **Python lines:** northstar 11446, tests 6826, scripts 53
 
 ## Evidence base (what the numbers below are computed from)
 

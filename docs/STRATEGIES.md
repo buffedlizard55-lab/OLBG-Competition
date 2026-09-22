@@ -152,9 +152,10 @@ line on the final scoreline (`evaluation.totals_outcome`).
 | `hockey-totals-over-v1` | Reference point for the totals market: how often does the 5.5 line go over? | none — flat 0.5/0.5 prior (Brier 0.5) | always OVER 5.5 | 323 graded, 53.6%, Brier 0.5000 |
 
 Forward desks (live): **seven** desks issue on the same DEL 2026/27 fixture
-window — as of the 2026-09-22 capture the ledger holds **263 frozen calls**
-(33 Elo, 32 MoV Elo, 40 home baseline, 40 regulation home, 40 regulation
-Poisson, 39 totals Poisson, 39 totals-over), 0 graded, 0 overdue, 0 leaks;
+window — after the 2026-09-22 captures the ledger holds **284 frozen
+calls** (36 Elo, 35 MoV Elo, 43 home baseline, 43 regulation home, 43
+regulation Poisson, 42 totals Poisson, 42 totals-over), 0 graded, 0
+overdue, 0 leaks;
 each call freezes its desk's outcome mode. They warm from earlier-season
 history when it is committed (the whole del/2024 season, leak-audited). The
 graded history is not evidence of skill (`docs/STATUS.md` #12); the forward

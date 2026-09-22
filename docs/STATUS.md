@@ -42,8 +42,9 @@ and [`docs/SOURCE-REGISTRY.md`](SOURCE-REGISTRY.md) (generated, guarded by
 nothing on this pool; `hockey-totals-poisson-v1` 52.3% (323, Brier 0.515)
 — **below** its always-over baseline (53.6%); `darts-mov-elo-v1` 78.4%
 (111, Brier 0.358) — more selections than `darts-elo-v1` (48, 81.25%) at
-lower accuracy. The forward ledger holds 263 frozen calls across 7 desks
-with 0 graded yet.
+lower accuracy. The forward ledger held 263 frozen calls across 7 desks
+at the end of the pass and 284 after the next capture, still with 0 graded
+yet - the payload is the number of record (`docs/FACTS.md`).
 
 **Where the live numbers are.** Everything above and below is a record of
 a pass; the *current* values (desk table, anomaly counts, forward counts,
@@ -326,9 +327,8 @@ Licensing claims were re-fetched and re-confirmed verbatim (see the
   against a coin flip — it clears that bar on this sample, error bars
   and all.** Numbers re-grade at every capture — the site is the live
   view.
-- **Forward test is LIVE** (`docs/FORWARD-TEST.md`): **263 frozen calls
-  across seven DEL desks** as of this pass (the 63-call figure below is the
-  earlier pass's snapshot)
+- **Forward test is LIVE** (`docs/FORWARD-TEST.md`): **284 frozen calls
+  across seven DEL desks** (the 263/63 figures below are earlier snapshots)
   — `hockey-elo-v1` (15, selectivity ≥ 0.55) + `hockey-home-v1`,
   `hockey-reg-home-v1`, `hockey-reg-poisson-v1` (16 each, no selectivity)
   on real DEL games 2026-09-22 → 09-27, issued from the committed capture
@@ -507,9 +507,10 @@ Licensing claims were re-fetched and re-confirmed verbatim (see the
    its evidence link, so the next session can pick the ones whose licence
    review is cheapest (ITF/ATP tennis, World Rugby, GAA, F1 all have
    permissive robots.txt but unreviewed terms).
-1. **Let the forward test speak.** Watch the Monday captures grade the 63
-   frozen DEL calls (15 Elo + 16 home + 16 regulation-home + 16
-   regulation-Poisson; and resolve the in-play WSDF darts final); the
+1. **Let the forward test speak.** Watch the Monday captures grade the
+   frozen DEL calls (now 284 across the seven desks: 36 Elo, 35 Elo-MoV,
+   43 home, 43 regulation-home, 43 regulation-Poisson, 42 totals-Poisson,
+   42 totals-over; and resolve the in-play WSDF darts final); the
    regulation 3-way desks grade the 3-period outcome — a regulation draw
    that loses in OT/SO counts as a hit; football MD5 issues automatically
    from the 2026-10-09 window, warmed by the whole 2024/25 season; the

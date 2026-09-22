@@ -117,6 +117,21 @@ class TestQuotedNumbers:
             f"README quotes {sorted(quoted)}, ledger holds "
             f"{facts['forward']['issued']} issued calls")
 
+    def test_forward_test_doc_quotes_the_live_ledger_total(self):
+        """docs/FORWARD-TEST.md is the live-state document: its 'Current
+        state' total must equal the ledger the payload carries.  Historical
+        pass records elsewhere may (and should) keep their old numbers."""
+        facts = self._facts()
+        path = os.path.join(ROOT, "docs", "FORWARD-TEST.md")
+        with open(path, "r", encoding="utf-8") as fh:
+            text = fh.read()
+        quoted = {int(n) for n in re.findall(r"\*\*(\d+) frozen calls",
+                                             text)}
+        assert quoted, "FORWARD-TEST.md must quote the frozen-call total"
+        assert quoted == {facts["forward"]["issued"]}, (
+            f"FORWARD-TEST.md quotes {sorted(quoted)} frozen calls, ledger "
+            f"holds {facts['forward']['issued']}")
+
     def test_desk_count_claims_match_the_payload(self):
         """Every desk catalogued on the site belongs to a covered sport, and
         the README quotes the same total it renders."""
