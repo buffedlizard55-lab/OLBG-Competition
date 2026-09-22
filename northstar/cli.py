@@ -34,7 +34,7 @@ from . import models
 from .adapters import football_data, olbg, openligadb
 from .backtest import run_walk_forward
 from .db import Store
-from .evaluation import prediction_accuracy
+from .evaluation import naive_baseline_comparison, prediction_accuracy
 from .forward import grade_forward, issue_forward, load_ledger, save_ledger
 from .leaderboard import build_leaderboard
 from .predictor import render_forward_prediction, render_prediction
@@ -44,7 +44,8 @@ from .report import build_site_data
 from .stats import bootstrap_p_two_sided, holm_bonferroni
 from .strategies import (
     DARTS_STRATEGIES, FOOTBALL_STRATEGIES, FORWARD_STRATEGIES,
-    HOCKEY_STRATEGIES, PREDICTION_ONLY_STRATEGIES, build,
+    HOCKEY_STRATEGIES, NAIVE_BASELINE_FOR, PREDICTION_ONLY_STRATEGIES,
+    build,
 )
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -804,6 +805,17 @@ def main(argv: List[str] = None) -> int:
             "family_size": corr["family_size"],
             "significant_after_correction": corr["significant_05"],
         })
+    # Accuracy desks carry their naive baseline's numbers side by side and
+    # a point-estimate "beats_baseline" flag (site card).  Never a
+    # significance claim - the payload carries both pools' sizes so the
+    # renderer can keep the error-bar caveat attached.
+    for sid, baseline_id in NAIVE_BASELINE_FOR.items():
+        meta = backtest_meta.get(sid)
+        if meta is None or meta.get("pnl_available") is not False:
+            continue
+        base_meta = backtest_meta.get(baseline_id) or {}
+        meta["naive_baseline"] = naive_baseline_comparison(
+            meta.get("accuracy"), base_meta.get("accuracy"), baseline_id)
 
     build_site_data(store, RAW, predictions=predictions,
                     backtest_meta=backtest_meta, out_path=SITE_OUT,

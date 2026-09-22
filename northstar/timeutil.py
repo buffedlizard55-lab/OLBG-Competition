@@ -75,6 +75,52 @@ def cet_offset_at_utc(dt_utc: datetime) -> int:
     return 2 if start <= dt_utc < end else 1
 
 
+def cet_local_to_utc(local) -> datetime:
+    """Convert a naive CET/CEST wall time to an aware UTC instant.
+
+    Verified source fact (docs/DARTS-AUDIT.md §3.2, reproduced 2026-09-22
+    on 2,921 committed OpenLigaDB rows): ``lastUpdateDateTime`` and
+    ``matchDateTime`` carry no timezone suffix and are German local time
+    (CET/CEST) — a capture at 2026-09-20T20:08:53Z contained a row stamped
+    ``22:07:50.923``, impossible if the stamp were UTC (22:07 > 20:08
+    cannot be a retrieval time inside the capture that retrieved it).
+
+    Reading rules (deterministic, tested):
+    - an already-aware input is returned as UTC (nothing to resolve);
+    - a naive wall time with exactly one self-consistent reading is exact;
+    - the autumn fold-back hour (local 02:00–03:00 on the last Sunday of
+      October, when it occurs twice) has two self-consistent readings and
+      the spring-forward gap (the same local window on the last Sunday of
+      March, when it occurs never) has none.  Both cases take the later
+      (CET) algebraic reading: it is never *earlier* than the true
+      instant, the conservative direction for every leakage-relevant use
+      (availability/retrieval must not move earlier than provable).
+
+    ``uk_local_to_utc`` refuses the clock-change days outright (human-
+    entered OLBG times can simply ask a human again); this function serves
+    bulk source ingestion where aborting a payload over one stamp would
+    lose the whole matchday, so it degrades to the never-earlier bound
+    instead of guessing the exact instant.  No committed OpenLigaDB stamp
+    falls in either edge window (checked 2026-09-22).
+    """
+    if isinstance(local, str):
+        local = datetime.fromisoformat(local)
+    if local.tzinfo is not None:
+        return local.astimezone(UTC)
+    consistent = []
+    for offset in (1, 2):  # CET (UTC+1), CEST (UTC+2)
+        candidate = (local - timedelta(hours=offset)).replace(tzinfo=UTC)
+        if cet_offset_at_utc(candidate) == offset:
+            consistent.append(candidate)
+    if len(consistent) == 2:      # fold-back hour: later (CET) reading
+        return max(consistent)
+    if consistent:                # unique reading: exact
+        return consistent[0]
+    # Spring-forward gap: the wall time cannot exist; take the later
+    # (CET) algebraic reading — never earlier than the true instant.
+    return (local - timedelta(hours=1)).replace(tzinfo=UTC)
+
+
 def openligadb_local_matches_utc(local_iso: str, utc_iso: str) -> bool:
     """True when the source's local wall time equals UTC + CET/CEST."""
     local = datetime.fromisoformat(local_iso)

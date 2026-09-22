@@ -36,7 +36,11 @@ def main() -> int:
         print(f"ID mismatch: missing={sorted(missing)} extra={sorted(extra)}")
         return 1
     for m in payload:
-        assert m["leagueShortcut"] in ("del", "bl1"), m["leagueShortcut"]
+        # Verified probe targets (docs/HOCKEY-SCHEMA-AUDIT.md): del/bl1
+        # pilots, plus the DEL2/CHL schema-audit matchday probes
+        # (2026-09-22).
+        assert m["leagueShortcut"] in ("del", "bl1", "DEL2", "CHL"), \
+            m["leagueShortcut"]
         assert isinstance(m["matchIsFinished"], bool)
     with open(out_path, "w", encoding="utf-8") as fh:
         json.dump(payload, fh, ensure_ascii=False, separators=(",", ":"))

@@ -7,6 +7,7 @@ fixtures) is committed for review.
 from __future__ import annotations
 
 import json
+import os
 
 import pytest
 
@@ -100,12 +101,21 @@ class TestCaptureSeason:
             (tmp_path / "openligadb_pl_2026.json").read_text())
 
     def test_current_targets_are_probed_leagues_only(self):
-        """Only shortcuts probed live (docs in capture.py) may be listed;
-        DEL2 stays out until its period-row schema is audited."""
+        """Only shortcuts probed live (docs in capture.py) may be listed.
+        DEL2/CHL joined on 2026-09-22 behind the gate the previous
+        version of this test stated: their period-row schema is audited
+        (docs/HOCKEY-SCHEMA-AUDIT.md) and the goals-vs-results anomaly
+        rule quarantines DEL2's disagreeing rows."""
         shortcuts = [t[0] for t in capture.CURRENT_TARGETS]
-        assert shortcuts == ["bl1", "pl", "bl2", "la1", "del"]
-        assert "DEL2" not in shortcuts and "del2" not in shortcuts
+        assert shortcuts == ["bl1", "pl", "bl2", "la1", "del", "DEL2",
+                             "CHL"]
         assert all(t[1] == 2026 for t in capture.CURRENT_TARGETS)
+        assert all(t[2] in ("football", "ice_hockey")
+                   for t in capture.CURRENT_TARGETS)
+        audit = os.path.join(os.path.dirname(capture.__file__), "..",
+                             "docs", "HOCKEY-SCHEMA-AUDIT.md")
+        assert os.path.exists(audit), \
+            "DEL2/CHL may only be captured behind the schema audit"
 
     def test_invalid_json_refused(self, tmp_path):
         url = capture.openligadb.league_url("bl1", 2026)

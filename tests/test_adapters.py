@@ -368,3 +368,22 @@ def test_darts_availability_is_start_plus_12h():
     avail = openligadb.availability_for(
         "darts", start, "2025-11-23T20:57:18.03")
     assert avail == start + timedelta(hours=12)
+
+
+def test_football_availability_is_the_exact_local_stamp():
+    """The football fall-through reads `lastUpdateDateTime` as German local
+    wall time and converts exactly (docs/HOCKEY-SCHEMA-AUDIT.md §5); the
+    naive stamp must never be parsed as UTC (that released results 1-2h
+    late)."""
+    start = parse_utc("2024-11-09T14:30:00Z")
+    # winter CET (UTC+1): 16:32 local = 15:32:00Z, right after full time
+    assert openligadb.availability_for(
+        "football", start, "2024-11-09T16:32:00.5") == \
+        parse_utc("2024-11-09T15:32:00Z").replace(microsecond=500000)
+    # summer CEST (UTC+2): 21:30:19.807 local = 19:30:19.807Z
+    assert openligadb.availability_for(
+        "football", start, "2025-04-07T21:30:19.807") == \
+        parse_utc("2025-04-07T19:30:19Z").replace(microsecond=807000)
+    # non-ISO or missing stamps still fall back to the start
+    assert openligadb.availability_for("football", start, None) == start
+    assert openligadb.availability_for("football", start, "v3") == start

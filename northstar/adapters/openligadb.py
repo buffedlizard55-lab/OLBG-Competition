@@ -112,12 +112,18 @@ INFERRED_GAME_DURATION = {
 
 def availability_for(sport: Optional[str], start_utc,
                      source_version) -> "models.datetime":
-    """officially_final_at_utc per sport (see INFERRED_GAME_DURATION)."""
+    """officially_final_at_utc per sport (see INFERRED_GAME_DURATION).
+
+    Football rows fall through to their exact ``lastUpdateDateTime``
+    instant: the stamp is German local wall time and is converted with
+    ``cet_local_to_utc`` (docs/HOCKEY-SCHEMA-AUDIT.md §5) - parsing it as
+    UTC would release the result 1-2h late.
+    """
     dur = INFERRED_GAME_DURATION.get(sport or "")
     if dur is not None:
         return start_utc + dur
     if source_version and _is_iso(source_version):
-        return parse_utc(source_version)
+        return timeutil.cet_local_to_utc(source_version)
     return start_utc
 
 
@@ -172,8 +178,39 @@ def parse_matchday(text: str, sport: Optional[str] = None) -> List[Dict]:
         kind_inconsistent = bool(duplicate_conflict or (
             reg_entry is not None and has_post_reg
             and reg_entry.get("pointsTeam1") != reg_entry.get("pointsTeam2")))
+        # Goal-list cross-check (docs/HOCKEY-SCHEMA-AUDIT.md): the goal
+        # list is the second representation of the same final score.  Its
+        # running scores (scoreTeam1/scoreTeam2 on each goal row) are
+        # cumulative, but the rows are community-entered OUT of
+        # chronological order (12 matches across the committed fixtures),
+        # so the goal-list final is the elementwise MAXIMUM over the
+        # running scores - never the last row.  When that maximum exists
+        # and disagrees with the selected final row, the stored score
+        # itself is in doubt: flag it, keep the priority row's score, and
+        # let the review queue own the verdict (same contract as
+        # duplicate_conflict / impossible_layering).  A missing goal list
+        # (or goals without running scores) is UNKNOWN, never a
+        # disagreement - the check is skipped silently.
+        goal_scored = [(g.get("scoreTeam1"), g.get("scoreTeam2"))
+                       for g in m.get("goals", [])
+                       if g.get("scoreTeam1") is not None
+                       and g.get("scoreTeam2") is not None]
+        goal_list_final = ((max(s[0] for s in goal_scored),
+                            max(s[1] for s in goal_scored))
+                           if goal_scored else None)
+        goals_vs_results = bool(
+            final is not None and goal_list_final is not None
+            and goal_list_final != (final.get("pointsTeam1"),
+                                    final.get("pointsTeam2")))
+        kind_inconsistent = bool(kind_inconsistent or goals_vs_results)
+        # Reason priority when several defects co-occur: the duplicate-
+        # conflict pattern is the most specific (documented stale-0-0
+        # duplication), then the goal-list disagreement (the final itself
+        # is contradicted), then the impossible layering.  The goal-list
+        # evidence is appended to every detail text when it disagrees.
         inconsistency_reason = (
             "duplicate_conflict" if duplicate_conflict
+            else "goals_vs_results" if goals_vs_results
             else "impossible_layering" if kind_inconsistent else None)
         out.append({
             "match_id": m["matchID"],
@@ -198,6 +235,8 @@ def parse_matchday(text: str, sport: Optional[str] = None) -> List[Dict]:
             "home_goals": final["pointsTeam1"] if final else None,
             "away_goals": final["pointsTeam2"] if final else None,
             "final_kind": final["resultTypeKind"] if final else None,
+            "goal_list_final": goal_list_final,
+            "goals_vs_results": goals_vs_results,
             "kind_inconsistent": kind_inconsistent,
             "inconsistency_reason": inconsistency_reason,
             "source_version": m.get("lastUpdateDateTime"),
@@ -314,8 +353,9 @@ def ingest_matchday(store: Store, text: str,
                                     m["source_version"] or "v0"),
                 event_id=eid,
                 provider=PROVIDER_ID,
-                retrieved_at_utc=parse_utc(m["source_version"])
-                if _is_iso(m["source_version"]) else m["start_utc"],
+                retrieved_at_utc=(timeutil.cet_local_to_utc(m["source_version"])
+                                 if _is_iso(m["source_version"])
+                                 else m["start_utc"]),
                 source_url=url,
                 raw_payload_hash=sha256_text(
                     json.dumps(m["raw_match"], sort_keys=True)),
@@ -344,6 +384,20 @@ def ingest_matchday(store: Store, text: str,
                     "NOT trusted silently: flagged for manual review against "
                     "the official source, outcome kept "
                     f"{m['home_goals']}-{m['away_goals']} ({m['final_kind']})")
+            elif m.get("inconsistency_reason") == "goals_vs_results":
+                gl = m.get("goal_list_final")
+                detail = (
+                    "the selected final row disagrees with the goal list: "
+                    f"row {m['final_kind']} says "
+                    f"{m['home_goals']}-{m['away_goals']} but the goal "
+                    "list's running-score maximum is "
+                    f"{gl[0]}-{gl[1]} ({m['league_name']} matchID="
+                    f"{m['match_id']}; pattern first seen on del/2024 "
+                    "matchID 76236 and the 2026-09-22 DEL2 probe - see "
+                    "docs/HOCKEY-SCHEMA-AUDIT.md). The priority row's score "
+                    "is kept but NOT trusted silently: flagged for manual "
+                    "review against the official source; period-row sum "
+                    "and goal list are the reviewer's evidence")
             else:
                 detail = (
                     "decisive 'after regulation' entry coexists with an "
@@ -354,6 +408,13 @@ def ingest_matchday(store: Store, text: str,
                     "review, outcome kept "
                     f"{m['home_goals']}-{m['away_goals']} "
                     f"({m['final_kind']})")
+            if m.get("goals_vs_results") and \
+                    m.get("inconsistency_reason") != "goals_vs_results":
+                gl = m.get("goal_list_final")
+                detail += (
+                    f"; additionally the goal list's running-score maximum "
+                    f"{gl[0]}-{gl[1]} disagrees with the kept row "
+                    f"{m['home_goals']}-{m['away_goals']}")
             store.add_anomaly(models.Anomaly(
                 anomaly_id=aid,
                 kind=models.ANOMALY_RESULT_KIND_INCONSISTENT,
