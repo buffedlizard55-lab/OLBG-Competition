@@ -13,6 +13,12 @@ const escapeHtml = (value) =>
     "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;",
   }[char]));
 
+// Only http(s) URLs may become clickable hrefs. Registry entries are
+// http(s), but a link a human is told to trust must never be able to carry
+// another scheme (javascript:, data:, ...) if the data file is ever edited.
+const safeUrl = (value) =>
+  /^https?:\/\//i.test(String(value ?? "")) ? String(value) : "#";
+
 const fmtUnits = (v) =>
   v === null || v === undefined ? "—" :
   (v > 0 ? "+" : "") + Number(v).toFixed(2);
@@ -91,10 +97,13 @@ function renderOverview() {
   $("m-agree").textContent = p.dual_source_agreement ?? "—";
   $("m-snapshots").textContent = snaps ?? "—";
   const cov = DATA.coverage || [];
-  const verified = cov.filter((c) => c.status === "pilot_verified").length;
-  const open = cov.filter((c) => c.status === "results_path_available").length;
+  const gateCounts = (DATA.sport_sources || { counts: {} }).counts || {};
+  const resultsPilot = cov.filter((c) => c.status === "results_pilot").length;
   $("m-coverage").textContent = `${cov.length}`;
-  $("m-coverage-sub").textContent = `${verified} pilot-verified · ${open} results-path ready`;
+  $("m-coverage-sub").textContent =
+    `${gateCounts.permitted_open_licence ?? "—"} permitted source(s) · ` +
+    `${gateCounts.blocked_pending_licence_review ?? "—"} awaiting licence review · ` +
+    `${resultsPilot} results pilots`;
   $("pilot-note").textContent =
     (p.note || "") +
     ` Competition: ${p.competition || "—"}, matchdays ${(p.matchdays || []).join("/")}.` +
@@ -293,9 +302,24 @@ function renderBets() {
   sel.innerHTML = `<option>All entrants</option>` +
     ids.map((i) => `<option${i === current ? " selected" : ""}>${escapeHtml(i)}</option>`).join("");
   const pick = (b) => sel.value === "All entrants" || b.entrant === sel.value;
-  const placed = (DATA.bets.placed || []).filter(pick)
-    .sort((a, b) => String(b.published_at_utc).localeCompare(String(a.published_at_utc)));
-  $("placed-bets-body").innerHTML = placed.map((b) => `
+  const byNewest = (a, b) =>
+    String(b.published_at_utc).localeCompare(String(a.published_at_utc));
+  const placed = (DATA.bets.placed || []).filter(pick).sort(byNewest);
+  // Two groups, so the auditable PnL record is never buried under
+  // prediction-only calls: (1) rows that actually settled through a
+  // permissioned odds path (pnl_units present - the PnL record);
+  // (2) every call without an odds path (PnL unavailable, never zero).
+  // Each group renders at most 300 rows and the header states the true
+  // total - truncation is never silent.
+  const settledRows = placed.filter((b) => b.pnl_units !== null && b.pnl_units !== undefined);
+  const paperRows = placed.filter((b) => b.pnl_units === null || b.pnl_units === undefined);
+  const settledShown = settledRows.slice(0, 300);
+  const paperShown = paperRows.slice(0, 300);
+  const groupHeader = (label, count) =>
+    `<tr class="group-row"><td colspan="7"><strong>${escapeHtml(label)}</strong> · ${count}</td></tr>`;
+  const bodyRows = [];
+  if (settledShown.length) bodyRows.push(groupHeader("Settled with a permissioned odds path (the PnL record)", settledRows.length));
+  bodyRows.push(...settledShown.map((b) => `
     <tr>
       <td>${escapeHtml(b.event)}<br /><small style="opacity:.7">${fmtDate(b.event_start_utc)} UTC</small>
         ${b.source_url ? `<br /><a href="${escapeHtml(b.source_url)}" target="_blank" rel="noreferrer">source ↗</a>` : ""}</td>
@@ -305,9 +329,23 @@ function renderBets() {
       <td>${statusCell(b.status)}</td>
       <td>${b.pnl_units === null ? "—" : fmtUnits(b.pnl_units)}</td>
       <td>${b.settlement ? `${b.settlement.outcome} · ${b.settlement.verification_state}` : "—"}</td>
-    </tr>`).join("") || emptyRow(7);
+    </tr>`));
+  if (paperShown.length) bodyRows.push(groupHeader("Calls without an odds path (PnL unavailable, never zero)", paperRows.length));
+  bodyRows.push(...paperShown.map((b) => `
+    <tr>
+      <td>${escapeHtml(b.event)}<br /><small style="opacity:.7">${fmtDate(b.event_start_utc)} UTC</small>
+        ${b.source_url ? `<br /><a href="${escapeHtml(b.source_url)}" target="_blank" rel="noreferrer">source ↗</a>` : ""}</td>
+      <td>${escapeHtml(b.entrant)}</td>
+      <td>${escapeHtml(marketLabel(b))} · <strong>${escapeHtml(b.selection)}</strong></td>
+      <td>${b.odds === null ? "—" : b.odds}</td>
+      <td>${statusCell(b.status)}</td>
+      <td>${b.pnl_units === null ? "—" : fmtUnits(b.pnl_units)}</td>
+      <td>${b.settlement ? `${b.settlement.outcome} · ${b.settlement.verification_state}` : "—"}</td>
+    </tr>`));
+  $("placed-bets-body").innerHTML = bodyRows.join("") || emptyRow(7);
   const upcoming = (DATA.bets.upcoming || []).filter(pick);
-  $("upcoming-bets-body").innerHTML = upcoming.map((b) => `
+  const upcomingShown = upcoming.slice(0, 300);
+  $("upcoming-bets-body").innerHTML = upcomingShown.map((b) => `
     <tr>
       <td>${escapeHtml(b.event)}</td>
       <td>${fmtDate(b.event_start_utc)}</td>
@@ -316,6 +354,16 @@ function renderBets() {
       <td>${b.odds === null ? "—" : b.odds}</td>
       <td><small>${escapeHtml(b.notes || "")}</small></td>
     </tr>`).join("") || emptyRow(6);
+  $("placed-count").textContent =
+    (settledRows.length + paperRows.length) >
+    (settledShown.length + paperShown.length)
+      ? `showing ${settledShown.length} priced + ${paperShown.length} unpriced ` +
+        `of ${settledRows.length + paperRows.length} placed calls`
+      : `${settledRows.length} priced + ${paperRows.length} unpriced calls`;
+  $("upcoming-count").textContent =
+    upcoming.length > upcomingShown.length
+      ? `showing soonest ${upcomingShown.length} of ${upcoming.length} upcoming bets`
+      : `${upcoming.length} upcoming bets`;
   $("bets-count").textContent =
     `${DATA.bets.total_placed} placed · ${DATA.bets.total_upcoming} upcoming`;
   $("nav-count-bets").textContent =
@@ -544,6 +592,104 @@ function renderSources() {
     </tr>`).join("") || emptyRow(5);
 }
 
+/* ------------------------------------------------------------------ */
+/* Sport coverage (all 21 OLBG sport families + their evidence gates)   */
+/* ------------------------------------------------------------------ */
+
+const GATE_LABEL = {
+  permitted_open_licence: ["green", "permitted (open licence)"],
+  blocked_pending_licence_review: ["review", "blocked · licence review"],
+  blocked_by_robots: ["blocked", "blocked by robots.txt"],
+  blocked_no_permissioned_source: ["blocked", "no permissioned source"],
+};
+
+function gateBadge(gate) {
+  const [cls, label] = GATE_LABEL[gate] || ["muted", gate || "unknown"];
+  return `<span class="badge ${cls}">${escapeHtml(label)}</span>`;
+}
+
+function robotsBadge(verdict) {
+  const map = {
+    allows_results: ["green", "robots: allows"],
+    partial: ["review", "robots: partial"],
+    blocks_results: ["blocked", "robots: blocks"],
+    no_robots_file: ["review", "robots: none served"],
+    unknown: ["muted", "robots: not checked"],
+  };
+  const [cls, label] = map[verdict] || ["muted", verdict || "unknown"];
+  return `<span class="badge ${cls}">${escapeHtml(label)}</span>`;
+}
+
+function candidateBlock(c) {
+  const linkMark = c.link_verified
+    ? `<span class="badge green">link verified ${escapeHtml(c.link_checked_at || "")}</span>`
+    : `<span class="badge muted">deep link unverified</span>`;
+  const blocks = (c.robots_blocks || []).length
+    ? `<div class="sport-line"><strong>robots-disallowed</strong> <code>${c.robots_blocks.map(escapeHtml).join("</code> <code>")}</code></div>`
+    : "";
+  return `<div class="sport-candidate">
+    <div class="sport-line"><strong>${escapeHtml(c.name)}</strong> ${linkMark}
+      <span class="badge ${c.licence === "open_licence_verified" ? "green" : "muted"}">licence: ${escapeHtml(c.licence)}</span></div>
+    <div class="sport-line"><a href="${safeUrl(c.url)}" target="_blank" rel="noreferrer">${escapeHtml(c.url)} ↗</a> ·
+      <a href="${safeUrl(c.robots_url)}" target="_blank" rel="noreferrer">robots.txt ↗</a> ${robotsBadge(c.robots_verdict)}</div>
+    <div class="sport-quote"><code>${escapeHtml((c.robots_quote || "").slice(0, 400))}${(c.robots_quote || "").length > 400
+      ? ' … <em>(truncated in this view - the full verbatim text is in docs/SOURCE-REGISTRY.md)</em>' : ""}</code></div>
+    ${blocks}
+    ${c.notes ? `<p class="sport-note">${escapeHtml(c.notes)}</p>` : ""}
+    <div class="sport-line"><small>licence evidence for manual review:
+      <a href="${safeUrl(c.licence_evidence_url)}" target="_blank" rel="noreferrer">${escapeHtml(c.licence_evidence_url)} ↗</a></small></div>
+  </div>`;
+}
+
+function designBlock(d) {
+  const status = d.status === "graded" || d.status === "forward-live"
+    ? `<span class="badge green">${escapeHtml(d.status)}${d.strategy_id ? ` · ${escapeHtml(d.strategy_id)}` : ""}</span>`
+    : `<span class="badge muted">design-stage</span>`;
+  const refs = (d.refs || []).map((r) =>
+    `<a href="${safeUrl(r)}" target="_blank" rel="noreferrer">prior ↗</a>`).join(" ");
+  return `<li><strong>${escapeHtml(d.name)}</strong> ${status}
+    <p class="sport-note">${escapeHtml(d.hypothesis || "")}</p>
+    <p class="sport-note"><em>Rule:</em> ${escapeHtml(d.rule || "")}</p>
+    <p class="sport-note"><em>Gate:</em> ${escapeHtml(d.gate || "")} ${refs}</p></li>`;
+}
+
+function renderSportCoverage() {
+  const src = DATA.sport_sources || { sports: [], counts: {} };
+  const c = src.counts || {};
+  $("coverage-topline").innerHTML = `
+    <div class="strategy-stat"><span>Sport families</span><strong>${c.sports ?? "—"}</strong></div>
+    <div class="strategy-stat"><span>Permitted today</span><strong>${c.permitted_open_licence ?? "—"}</strong>
+      <small>OpenLigaDB ODbL only</small></div>
+    <div class="strategy-stat"><span>Awaiting licence review</span><strong>${c.blocked_pending_licence_review ?? "—"}</strong>
+      <small>robots.txt is not a licence</small></div>
+    <div class="strategy-stat"><span>Blocked by robots.txt</span><strong>${c.blocked_by_robots ?? "—"}</strong></div>
+    <div class="strategy-stat"><span>Registered designs</span><strong>${c.designs ?? "—"}</strong>
+      <small>${c.graded_designs ?? 0} graded</small></div>`;
+  $("coverage-count").textContent =
+    `${(src.sports || []).length} sport families · registry ${src.version || "—"} · verified ${src.verified_at || "—"}`;
+  $("nav-count-coverage").textContent = (src.sports || []).length;
+
+  $("sport-cards").innerHTML = (src.sports || []).map((s) => {
+    const designs = s.strategy_designs || [];
+    return `<details class="sport-card">
+      <summary>
+        <span class="sport-name">${escapeHtml(s.sport)}</span>
+        ${gateBadge(s.automation_gate)}
+        <span class="badge muted">${s.graded_design_count || 0} graded · ${s.design_count || 0} designs</span>
+        <span class="sport-summary-note">${escapeHtml(s.coverage_today || "")}</span>
+      </summary>
+      <div class="sport-body">
+        <div class="sport-line"><strong>Results candidates</strong></div>
+        ${(s.results_candidates || []).map(candidateBlock).join("")}
+        <div class="sport-line" style="margin-top:14px"><strong>Pre-registered strategy designs</strong>
+          <span class="badge muted">${designs.length}</span></div>
+        <ul class="sport-designs">${designs.map(designBlock).join("") || "<li><em>none registered yet</em></li>"}</ul>
+        <div class="sport-line"><strong>Next action</strong> ${escapeHtml(s.next_action || "")}</div>
+      </div>
+    </details>`;
+  }).join("");
+}
+
 function setView(viewName) {
   document.querySelectorAll("[data-view-panel]").forEach((panel) =>
     panel.classList.toggle("active", panel.dataset.viewPanel === viewName));
@@ -572,6 +718,7 @@ function init(data) {
   renderForward();
   renderIntegrity();
   renderSources();
+  renderSportCoverage();
 
   document.querySelectorAll(".nav-item[data-view]").forEach((item) =>
     item.addEventListener("click", () => setView(item.dataset.view)));

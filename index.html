@@ -33,12 +33,15 @@
           <button class="nav-item" data-view="strategies" type="button"><span class="nav-icon">⌁</span> Strategy lab</button>
           <button class="nav-item" data-view="forward" type="button"><span class="nav-icon">⏱</span> Forward test <span class="nav-count accent" id="nav-count-forward">0</span></button>
           <button class="nav-item" data-view="integrity" type="button"><span class="nav-icon">⚑</span> Integrity</button>
+          <button class="nav-item" data-view="coverage" type="button"><span class="nav-icon">✦</span> Sport coverage <span class="nav-count" id="nav-count-coverage">0</span></button>
           <button class="nav-item" data-view="sources" type="button"><span class="nav-icon">⌘</span> Source registry</button>
           <p class="nav-label second">Read first</p>
           <a class="nav-item nav-link" href="README.md"><span class="nav-icon">▤</span> Project brief <span class="external">↗</span></a>
           <a class="nav-item nav-link" href="docs/data-contract.md"><span class="nav-icon">◈</span> Data contract <span class="external">↗</span></a>
           <a class="nav-item nav-link" href="docs/LICENSING.md"><span class="nav-icon">§</span> Licensing <span class="external">↗</span></a>
           <a class="nav-item nav-link" href="docs/STATUS.md"><span class="nav-icon">⚑</span> Status &amp; limits <span class="external">↗</span></a>
+          <a class="nav-item nav-link" href="docs/FACTS.md"><span class="nav-icon">#</span> Generated facts <span class="external">↗</span></a>
+          <a class="nav-item nav-link" href="docs/SOURCE-REGISTRY.md"><span class="nav-icon">§</span> OLBG source register <span class="external">↗</span></a>
         </nav>
 
         <div class="sidebar-foot">
@@ -130,11 +133,11 @@
             <div class="page-intro"><p class="eyebrow green">Full audit trail</p><h1 id="bets-title">Placed &amp; upcoming bets</h1><p>Every bet the desk has placed and every bet currently held. Placed bets show their settlement and PnL; upcoming bets are open positions that are waiting on a permissioned final result.</p></div>
             <div class="toolbar"><div class="filter-group"><label for="bets-entrant">Entrant</label><select id="bets-entrant"><option>All entrants</option></select></div><span class="toolbar-note" id="bets-count">—</span></div>
             <div class="panel table-panel" style="margin-bottom:24px">
-              <div class="table-heading"><div><h2>All placed bets</h2><p>Settled and open, newest first</p></div></div>
+              <div class="table-heading"><div><h2>All placed bets</h2><p>Settled and open, newest first · every row links to its source</p></div><span class="badge muted" id="placed-count">—</span></div>
               <div class="source-table-wrap"><table class="source-table"><thead><tr><th>Event</th><th>Entrant</th><th>Market / selection</th><th>Odds</th><th>Status</th><th>PnL</th><th>Settled</th></tr></thead><tbody id="placed-bets-body"></tbody></table></div>
             </div>
             <div class="panel table-panel">
-              <div class="table-heading"><div><h2>Upcoming bets</h2><p>Open positions the strategies / imports currently hold</p></div></div>
+              <div class="table-heading"><div><h2>Upcoming bets</h2><p>Open positions the strategies / imports currently hold</p></div><span class="badge muted" id="upcoming-count">—</span></div>
               <div class="source-table-wrap"><table class="source-table"><thead><tr><th>Event</th><th>Kickoff (UTC)</th><th>Entrant</th><th>Market / selection</th><th>Odds</th><th>Notes</th></tr></thead><tbody id="upcoming-bets-body"></tbody></table></div>
             </div>
           </section>
@@ -178,6 +181,16 @@
             <div class="two-col-note"><section class="panel"><div class="definition-list"><div><strong>verified</strong><span>identity confirmed by an independent second source agreeing on the final result (27/27 on the football pilot)</span></div><div><strong>probable</strong><span>single permissioned source only — graded on accuracy, never ranked as verified PnL</span></div><div><strong>review</strong><span>a settlement or desk carrying an unresolved irregularity; shown, demoted, never hidden</span></div><div><strong>blocked</strong><span>no permissioned results path exists for this sport in this repository</span></div></div></section><section class="panel"><div class="panel-heading"><div><p class="eyebrow">Protocol</p><h2>Settlement gates</h2></div></div><p class="panel-copy">Seven gates run before any settlement: identity, pre-start time, market rule set, final result existence, single consistent scoreline, provider permission, and rule version. Postponed → pending, cancelled/abandoned → void, disputed → withheld with anomalies. There is no force-settle path.</p><a class="source-link" href="docs/data-contract.md" target="_blank" rel="noreferrer">Full data contract ↗</a></section></div>
           </section>
 
+          <section class="view" data-view-panel="coverage" aria-labelledby="coverage-title">
+            <div class="page-intro"><p class="eyebrow green">All 21 OLBG sport families</p><h1 id="coverage-title">Sport coverage &amp; source gates</h1><p>Every sport family OLBG publishes, with the candidate official result source, the exact robots.txt text that was fetched (and when), the licence state, and the pre-registered strategy designs waiting behind the gate. A gate is computed from those facts in code - it cannot be promoted by editing prose. Nothing here is a coverage claim: the only sports with a live results path today are the three the OpenLigaDB ODbL licence permits.</p></div>
+            <div class="strategy-topline" id="coverage-topline"></div>
+            <div class="notice-banner"><span class="notice-symbol">i</span><div><strong>How to read this page.</strong><p>“robots.txt allows/partial/blocks” is the site's own crawling policy, fetched verbatim - it is <em>not</em> a licence. “Licence: not reviewed” means exactly that: no permission, no collection. Only <span class="mono-note">permitted_open_licence</span> (a licence already recorded and tested in the code's policy registry) lets a collector run.</p></div><a href="docs/SOURCE-REGISTRY.md">Full register ↗</a></div>
+            <div class="section-heading"><div><p class="eyebrow">Evidence gates</p><h2>Sport families</h2></div><span class="mono-note" id="coverage-count">—</span></div>
+            <div class="sport-card-list" id="sport-cards"></div>
+            <div class="section-heading" style="margin-top:28px"><div><p class="eyebrow">Anti-hallucination</p><h2>How the numbers are checked</h2></div><span class="mono-note">generated, not typed</span></div>
+            <div class="two-col-note"><section class="panel"><div class="panel-heading"><div><p class="eyebrow">Fact sheet</p><h2>Every headline number is generated</h2></div><span class="badge green">docs/FACTS.md</span></div><p class="panel-copy">The pipeline writes a fact sheet from the same payload this page renders, and the test suite fails if it goes stale. Prose cannot drift away from the data.</p><a class="source-link" href="docs/FACTS.md" target="_blank" rel="noreferrer">Open the generated fact sheet ↗</a></section><section class="panel"><div class="panel-heading"><div><p class="eyebrow">Registry</p><h2>Evidence, not recollection</h2></div><span class="badge source">json</span></div><p class="panel-copy">Each entry stores the fetched robots.txt quote, the fetch date, the licence state and whether the link itself returned the expected page. Unverified deep links are marked as unverified rather than assumed.</p><a class="source-link" href="data/sources/olbg_sports.json" target="_blank" rel="noreferrer">Open the source registry JSON ↗</a></section></div>
+          </section>
+
           <section class="view" data-view-panel="sources" aria-labelledby="sources-title">
             <div class="page-intro"><p class="eyebrow green">Chain of custody</p><h1 id="sources-title">Source registry</h1><p>Every number traces to a source with a license, a permitted collection mode, and evidence links you can verify manually. Nothing is scraped that the source does not allow.</p></div>
             <div id="source-cards"></div>
@@ -189,7 +202,7 @@
           </section>
         </div>
 
-        <footer class="site-footer"><span>Northstar Competition Lab · paper trading only</span><span><a href="README.md">Project brief</a><span class="footer-dot">·</span><a href="docs/data-contract.md">Data contract</a><span class="footer-dot">·</span><a href="docs/LICENSING.md">Licensing</a><span class="footer-dot">·</span><a href="https://www.olbg.com" target="_blank" rel="noreferrer">OLBG source</a></span></footer>
+        <footer class="site-footer"><span>Northstar Competition Lab · paper trading only</span><span><a href="README.md">Project brief</a><span class="footer-dot">·</span><a href="docs/data-contract.md">Data contract</a><span class="footer-dot">·</span><a href="docs/LICENSING.md">Licensing</a><span class="footer-dot">·</span><a href="docs/FACTS.md">Generated facts</a><span class="footer-dot">·</span><a href="docs/SOURCE-REGISTRY.md">Source register</a><span class="footer-dot">·</span><a href="https://www.olbg.com" target="_blank" rel="noreferrer">OLBG source</a></span></footer>
       </main>
     </div>
     <script src="app.js"></script>

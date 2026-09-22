@@ -17,6 +17,23 @@ from .models import ANOMALY_RESULT_KIND_INCONSISTENT, parse_utc
 
 OUTCOMES = ("home", "draw", "away")
 
+# Binary totals markets graded by this module (prediction-only sports).
+# The line is half-goal by construction, so there is never a push: strictly
+# more than the line = "over", strictly fewer = "under".
+TOTALS_OUTCOMES = ("over", "under")
+TOTALS_OUTCOME_MODES = {
+    "total_goals_over_under_5_5": 5.5,   # hockey (added 2026-09-22)
+    "total_goals_over_under_2_5": 2.5,   # football no-market desks
+}
+
+
+def totals_outcome(goals: int, line: float) -> str:
+    """Half-goal totals outcome; a whole-number line would be a bug
+    (pushes are not modelled here - the caller must use a half line)."""
+    if float(line) == int(line):
+        raise ValueError(f"totals line must be a half line, got {line}")
+    return "over" if goals > line else "under"
+
 
 def outcome_key(home_goals: int, away_goals: int) -> str:
     if home_goals > away_goals:
@@ -88,6 +105,14 @@ def brier_three(probs: Dict[str, float], actual: str) -> float:
                for k in OUTCOMES)
 
 
+def brier_binary(probs: Dict[str, float], actual: str) -> float:
+    """Two-outcome Brier score (over/under totals markets)."""
+    if actual not in TOTALS_OUTCOMES:
+        raise ValueError(f"unknown totals outcome {actual}")
+    return sum((float(probs.get(k, 0.0)) - (1.0 if k == actual else 0.0)) ** 2
+               for k in TOTALS_OUTCOMES)
+
+
 def prediction_accuracy(store: Store, bets: List[Dict[str, Any]],
                         sport: Optional[str] = None,
                         outcome: str = "final") -> Dict[str, Any]:
@@ -103,9 +128,15 @@ def prediction_accuracy(store: Store, bets: List[Dict[str, Any]],
     - ``"regulation_3way"``: the regulation-time (3-period) 3-way outcome
       for hockey, resolved via :func:`regulation_outcome` from the stored
       final row's kind.  Rows whose kind cannot be resolved stay ungraded.
+    - a key of :data:`TOTALS_OUTCOME_MODES` (e.g.
+      ``"total_goals_over_under_5_5"``): a binary totals outcome on the
+      stored final score (half-goal line, so never a push).  Added
+      2026-09-22 with the hockey totals desks.
     """
-    if outcome not in ("final", "regulation_3way"):
+    if outcome not in ("final", "regulation_3way",
+                       *TOTALS_OUTCOME_MODES.keys()):
         raise ValueError(f"unknown outcome mode: {outcome}")
+    totals_line = TOTALS_OUTCOME_MODES.get(outcome)
     graded: List[Dict[str, Any]] = []
     ungraded: List[Dict[str, Any]] = []
     # Results under review (RESULT_KIND_INCONSISTENT) are never graded on -
@@ -132,7 +163,9 @@ def prediction_accuracy(store: Store, bets: List[Dict[str, Any]],
                              "reason": "conflicting or incomplete result"})
             continue
         hg, ag = next(iter(scores))
-        if outcome == "regulation_3way":
+        if totals_line is not None:
+            actual = totals_outcome(hg + ag, totals_line)
+        elif outcome == "regulation_3way":
             primary = max(results,
                           key=lambda r: parse_utc(r["officially_final_at_utc"]))
             actual = regulation_outcome(primary, hg, ag)
@@ -145,6 +178,12 @@ def prediction_accuracy(store: Store, bets: List[Dict[str, Any]],
         else:
             actual = outcome_key(hg, ag)
         probs = (bet.get("model") or {}).get("model_prob") or {}
+        if totals_line is not None:
+            brier = (brier_binary(probs, actual)
+                     if all(k in probs for k in TOTALS_OUTCOMES) else None)
+        else:
+            brier = (brier_three(probs, actual)
+                     if all(k in probs for k in OUTCOMES) else None)
         graded.append({
             "event_id": eid,
             "group_order": event.get("group_order") if event else None,
@@ -152,8 +191,7 @@ def prediction_accuracy(store: Store, bets: List[Dict[str, Any]],
             "selection": bet["selection"],
             "actual": actual,
             "hit": bet["selection"] == actual,
-            "brier": (brier_three(probs, actual)
-                      if all(k in probs for k in OUTCOMES) else None),
+            "brier": brier,
             "result_kind": results[0].get("result_type_kind"),
             "outcome_mode": outcome,
             "single_source_providers": [r["provider"] for r in results],
@@ -185,5 +223,8 @@ def prediction_accuracy(store: Store, bets: List[Dict[str, Any]],
                  "results (identity 'probable' until an independent "
                  "cross-check is attached). Not PnL: no entry price exists "
                  "for this sport, so profit cannot be computed and is shown "
-                 "as unavailable, never as zero."),
+                 "as unavailable, never as zero."
+                 + (f" Market: total goals over/under {totals_line} on the "
+                    "stored final score (half-goal line: never a push)."
+                    if totals_line is not None else "")),
     }

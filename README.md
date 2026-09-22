@@ -8,53 +8,61 @@ gates, and backtests sport-specific strategies **walk-forward with strict
 time cutoffs** — all on data whose licensing is documented and whose hashes
 are checked.
 
-> **Honesty status (2026-09-22 — strategy-family + whole-season +
-> history-warm-up pass):** the pipeline is verified on a **27-match
-> football pilot** (Bundesliga 1 2024/25) with **27/27 dual-source result
-> agreement**; **thirteen strategies on three markets (1X2, O/U 2.5, Asian
-> handicap)** run on that tiny sample — twelve negative, and the one
-> positive desk (`ah-poisson-value-v1`, +9.8 u, ROI +44.7%) is **not
-> significant after Holm correction (p = 0.0715, family m = 13)** — the
-> adjusted p *grew* when two 1X2 desks joined the family, which is the
-> correction working. The new desks: the **Dixon-Coles 1X2 value desk**
-> (+5.0 u / p_raw 0.475 — not significant) and a **recency-decay Elo
-> control** (reproduces plain Elo on this ~7-month sample, as
-> pre-registered). Sport #2 is
-> **ice hockey** (DEL 2024/25; the whole season is now committed and
-> widens the pilot at the next CI capture — local runs grade the 21-event
-> slice) and sport #3 is **darts**
-> (eight real PDC events 2025–26, 423 finished matches — schema audit in
-> [`docs/DARTS-AUDIT.md`](docs/DARTS-AUDIT.md)); both are
-> **prediction-only**: hockey Elo grades **7/11 = 63.6% (Brier 0.474)**;
-> the new **regulation-time 3-way** desks (derivable from the stored final
-> row's kind — a regulation draw that loses in OT/SO is a hit for a
-> regulation-draw call) grade **8/17 = 47.1%** (Poisson desk) *below* the
-> always-home 3-way baseline at **64.7%** — reported as-is, the full
-> season is the pre-registered verdict; the darts desk stayed silent on
-> the cold 2025 pool (**0 selections in 141
-> matches**, max probability 0.551 vs its pre-registered 0.60 threshold)
-> and graded **39/48 = 81.25% (Brier 0.349)** once the 2025–26 pool warmed
-> — same priors throughout, nothing refitted, large error bars and no
-> market baseline, so no skill or PnL claim.
-> **Naive baselines anchor those accuracy numbers**: hockey always-home
-> (2-way) **64.7%**, always-home (regulation 3-way) **64.7%** — the Elo
-> desk does *not* beat it on this pilot; darts listed-first scores
-> **66.3%** — the darts Elo desk (81.25%) does clear its real reference
-> bar. **The forward test is LIVE**: CI-captured real 2026/27 fixtures are
-> committed under `data/fixtures/current/`, and **63 frozen DEL calls
-> (Sep 22–27: 15 Elo + 16 home + 16 regulation-home + 16 regulation-
-> Poisson)** sit in the append-only ledger, each freezing its desk's
-> outcome mode; the desks warm from **cross-season history** (the whole
-> 2024/25 bl1 season already released, leak-audited, data bugs refused
-> loudly) (`docs/FORWARD-TEST.md`). The weekly **manual OLBG capture
-> cadence** has a written runbook (`docs/OLBG-CAPTURE-RUNBOOK.md`) and a
-> Monday reminder workflow that never touches olbg.com. Hockey/darts PnL
-> is unavailable (no permissioned odds path) and shown as unavailable,
-> never as zero. **13 real source irregularities** are flagged, not
-> smoothed — including conflicting duplicate result rows on two PDC
-> matches (matchIDs 79962, 80237), excluded from grading until reviewed,
-> and an abandoned duplicate darts league that discovery now demotes. Read
-> [`docs/STATUS.md`](docs/STATUS.md) for limitations and remaining work.
+> **Honesty status (2026-09-22 — third pass: full-season football
+> accuracy, all-21-sport source registry, generated fact sheet):** every
+> number below is produced by the pipeline. The generated
+> [`docs/FACTS.md`](docs/FACTS.md) is the canonical list and
+> `tests/test_facts.py` fails if it goes stale, so prose cannot drift from
+> the data.
+>
+> * **27 graded desks on real, committed results** — 17 football
+>   (13 with a permissioned odds path and real paper PnL, 4 no-market
+>   accuracy desks), 7 ice hockey, 3 darts. None of them claims an edge
+>   that survives correction.
+> * **Football** — the frozen PnL pilot is still 27 matches (Bundesliga 1
+>   2024/25 pilot scope, 27/27 dual-source result agreement). Twelve of the
+>   13 PnL desks lose; the one positive desk (`ah-poisson-value-v1`,
+>   +9.8 u, ROI +44.7%) is **not significant after Holm correction**
+>   (adjusted p = 0.0715, family m = 13) and is reported as a hypothesis
+>   for out-of-sample testing, not an edge. **New this pass:** because the
+>   whole 2024/25 Bundesliga season is committed (306 finished results,
+>   11× the pilot), three further desks are graded on it with no odds
+>   input at all: the 3-way Elo desk `elo-favourite-3way-v1` clears its
+>   always-home baseline (**52.1% on 167 selective calls vs 38.6% on all
+>   306**) and the Poisson totals desk clears always-over-2.5
+>   (**61.1% vs 59.8%, Brier 0.471 vs 0.500**) — both marginal, both
+>   reported with their baselines and sample sizes.
+> * **Ice hockey (whole DEL 2024/25 season, 428 events)** — 7
+>   prediction-only desks. Plain Elo **66.3% (243 calls)** and the
+>   margin-of-victory Elo control **65.5% (255)**; regulation 3-way
+>   Poisson **64.7%** vs its regulation-home baseline **59.4%**; the
+>   total-goals O/U 5.5 desk **52.3%** *below* the always-over baseline
+>   **53.6%** — reported as-is. No odds path, so no PnL exists (never
+>   shown as zero).
+> * **Darts (8 PDC events 2025–26, 423 finished matches)** — 3 desks:
+>   Elo **81.25% (48 calls)**, listed-first baseline **66.3% (421)**,
+>   margin-of-victory Elo control **78.4% (111)**.
+> * **All 21 OLBG sport families carry an evidence-gated source row**
+>   ([`docs/SOURCE-REGISTRY.md`](docs/SOURCE-REGISTRY.md), regenerated
+>   from `data/sources/olbg_sports.json`, validated by
+>   `tests/test_sources.py`). 46 pre-registered designs (27 graded) sit
+>   behind those gates: **3 sports are permitted** (OpenLigaDB ODbL-1.0:
+>   football, ice hockey, darts), **17 await a licence review** and **1 is
+>   blocked by the source's own robots.txt** (BoxRec boxing). A robots.txt
+>   verdict is not a licence, a missing robots.txt is not permission, and
+>   the gate is computed in code — it cannot be promoted by editing prose.
+> * **Forward test is LIVE**: 284 frozen calls across 7 hockey desks,
+>   issued before kick-off, each freezing its desk's outcome mode; 0
+>   graded, 0 overdue, 0 time-leak violations.
+> * **153 open anomalies** are flagged, never smoothed
+>   (`RESULT_KIND_INCONSISTENT` 98, `SOURCE_EDITED` 48, `TIME_CONFLICT`
+>   5, `MISSING_METADATA` 1).
+> * **433 test functions** (`docs/FACTS.md` counts them from source;
+>   pytest expands parametrised cases, so CI prints a larger collected
+>   total).
+>
+> Read [`docs/STATUS.md`](docs/STATUS.md) for limitations and the
+> prioritised remaining work.
 
 ## What is built (this pass)
 
@@ -90,7 +98,11 @@ are checked.
   `TimeBoundedStore` that raises `TimeLeakageError` on post-cutoff reads,
   pre-start cutoff enforcement, entry price = earliest stored snapshot ≤
   cutoff, ordering invariance, deterministic bootstrap CIs.
-- **Thirteen football strategies on three markets** (level 1.0 units).
+- **Thirteen football PnL strategies on three markets** (level 1.0
+  units, real settled paper PnL); **ten more desks are accuracy-only**
+  (4 on the whole committed football season, 7 on ice hockey, 3 on darts)
+  because their sources have no permissioned odds path — their PnL is
+  shown as unavailable, never zero.
   1X2 (nine): market favourite, market longshot probe, Elo value edge
   (K=40, home adv 60, 3% edge threshold), **recency-decay Elo control
   (`elo-decay-v1`: ratings relax toward 1500 on a 365-day half-life —
@@ -113,7 +125,8 @@ are checked.
   significant, reported as exploratory only** (the Dixon-Coles desk's
   +5.0 u / p_raw 0.475 is likewise not significant). Research priors +
   citations: `docs/STRATEGIES.md`.
-- **384 automated tests** (offline, `python -m pytest`) covering the
+- **433 test functions** (offline, `python -m pytest`; counted from
+  source in `docs/FACTS.md`) covering the
   required matrix: postponements, voids, duplicate tips, time leakage,
   disputed results, settlement arithmetic — plus adapter parsing of the
   real fixtures, the 27/27 cross-check, policy gates, leaderboard math,
@@ -164,8 +177,9 @@ are checked.
   + a capture log, and re-runs the pipeline. The forward desk freezes
   predictions **at capture time** into the append-only
   `data/forward/ledger.json` (10-day issue horizon, start−30min cutoffs,
-  leakage guards, idempotent issuance) — currently **24 live hockey calls
-  (9 Elo + 15 home-baseline)**; protocol:
+  leakage guards, idempotent issuance) — currently **284 live calls across
+  seven hockey desks** (see `docs/FACTS.md` for the per-desk split);
+  protocol:
   [`docs/FORWARD-TEST.md`](docs/FORWARD-TEST.md). A second workflow
   (`olbg-capture-reminder.yml`) opens the weekly **manual** OLBG snapshot
   checklist issue ( Mondays 07:10 UTC) — it never touches olbg.com; the
@@ -180,6 +194,32 @@ are checked.
   frozen ledger: per-desk issued/graded/awaiting with accuracy + Brier) and
   an **Integrity** view (hypothesis registry, verification states, anomaly
   review queue, Holm-adjusted p-values per card).
+- **All-21-sport source registry with evidence gates**
+  (`data/sources/olbg_sports.json` → `northstar/sources.py` → site
+  *Sport coverage* view → [`docs/SOURCE-REGISTRY.md`](docs/SOURCE-REGISTRY.md)):
+  official-body candidates, the fetched robots.txt text and date, licence
+  state, automation gate computed in code, and pre-registered strategy
+  designs per sport (43 registered designs today, 24 of them graded). A
+  licence may only be called "open" when the tested policy registry says
+  so; a link may only be called verified when the fetch returned the
+  expected page.
+- **Generated fact sheet + regeneration gate**
+  (`northstar/facts.py`, `python -m northstar.cli facts`): every headline
+  number in the docs is written from the pipeline payload, and
+  `tests/test_facts.py` fails when `docs/FACTS.md` or
+  `docs/SOURCE-REGISTRY.md` is stale. `python -m northstar.cli sources`
+  prints the 21-sport gate matrix.
+- **Seven second-generation prediction desks** (added 2026-09-22, all
+  pre-registered, all on committed ODbL results): `hockey-elo-mov-v1`
+  (margin-of-victory Elo, the World-Football-Elo weight quoted in
+  `docs/STRATEGIES.md` R11), `hockey-totals-poisson-v1` +
+  `hockey-totals-over-v1` (a **new prediction-only market**, total goals
+  over/under 5.5, graded through a new binary evaluation path),
+  `darts-mov-elo-v1`, and the full-season football trio
+  `elo-favourite-3way-v1` (backtested on all 306 finished 2024/25
+  Bundesliga results instead of only the forward ledger),
+  `football-totals-poisson-v1` + `football-totals-over-v1`. Each carries a
+  naive baseline; none enters the PnL family and none reports PnL.
 - **CI**: `ci.yml` (tests + fixture re-verification on PR/push),
   `pages.yml` (rebuilds site data, deploys only the site payload),
   `capture.yml` (Monday 06:30 UTC + scoped pushes: captures permitted
@@ -195,9 +235,11 @@ are checked.
 ```bash
 python3 -m venv .venv && .venv/bin/pip install pytest
 
-python -m pytest                      # 384 tests, offline
+python -m pytest                      # 433 test functions, offline
 python -m northstar.cli run-pipeline --fresh   # rebuild store + site data
 python -m northstar.cli verify              # fixture hashes + 27/27 agreement
+python -m northstar.cli facts --check       # generated docs match the data
+python -m northstar.cli sources             # 21-sport evidence/gate matrix
 node scripts/site-smoke.mjs            # (optional) site render smoke test
 
 python3 -m http.server 4173 --bind 0.0.0.0   # then open http://localhost:4173
@@ -215,10 +257,10 @@ Pages; external source links open in a new tab for manual review.
 | Results source | OpenLigaDB (ODbL-1.0) | OpenLigaDB (ODbL-1.0) | OpenLigaDB (ODbL-1.0), discovery-driven |
 | Identity | **verified** (27/27 dual-source agreement vs football-data) | `probable` (single source; no independent DEL cross-check) | `probable` (single source; audit in `docs/DARTS-AUDIT.md`) |
 | Odds path | football-data.co.uk manual pilot; The Odds API connector inactive | **none verified** → prediction-only | **none** → prediction-only |
-| Engine output | 829 odds snapshots (405 1X2 + 208 O/U 2.5 + 216 AH) · 13 strategies · real settled PnL | Elo **7/11 (63.6%)**, Brier 0.4737 · **vs home baseline 11/17 = 64.7%** · regulation 3-way Poisson **8/17 (47.1%)** vs its home baseline **11/17 = 64.7%** · **PnL unavailable (not zero)** | cold 2025 pool: **0 selections in 141** (max prob 0.551 < 0.60 — silence, no refit); full 2025–26 pool: **39/48 = 81.25%**, Brier 0.349 · **vs listed-first baseline 279/421 = 66.3%** · **PnL unavailable (not zero)** |
-| Regularity | 0 open anomalies on the pilot; 1 flagged on the pl/2026 capture (duplicate conflicting result rows, matchID 86559) | **4 flagged on the 21-match slices** (impossible row layering, matchIDs 76100/76273/76409/76414) and **84 on the full 2024/25 season** (83 layering + 1 rows-vs-goal-list disagreement, matchID 76236 — `docs/HOCKEY-SCHEMA-AUDIT.md`) | **2 flagged** (conflicting duplicate results, matchIDs 79962 + 80237) + 1 abandoned duplicate league excluded |
-| Backtest | twelve of thirteen strategies negative; `ah-poisson-value-v1` **+9.8 u (ROI +44.7%) but Holm-adjusted p = 0.0715 — not significant** (family m=13); `dixon-coles-v1` +5.0 u / p_raw 0.475 also not significant; no edge claimed | no odds → no PnL by construction; Elo does **not** beat the home baseline on this sample; the regulation Poisson desk is below its own home baseline (full season is the pre-registered verdict) | no odds → no PnL by construction; Elo **does** beat the listed-first baseline (81.25% vs 66.3%) |
-| Forward desk | dormant by design across bl1/pl/bl2/la1 (international break; next kick-offs 2026-10-09/10, outside the 10-day horizon); pool already warmed by the whole 2024/25 bl1 season | **LIVE: 63 frozen calls (15 Elo + 16 home + 16 reg-home + 16 reg-Poisson), DEL Sep 22–27**, each freezing its outcome mode | first live event met in play (WSDF final → review queue, next capture resolves); both darts desks activate for the next World Championship (Dec 2026) |
+| Engine output | 829 odds snapshots (405 1X2 + 208 O/U 2.5 + 216 AH) · 13 PnL desks · real settled PnL | **7 prediction-only desks** on the whole season (428 events): Elo **243 calls, 66.3%, Brier 0.446**; always-home baseline **323, 59.8%**; regulation 3-way Poisson **64.7%** vs regulation-home **59.4%**; **new** margin-of-victory Elo **255, 65.5%, Brier 0.454** (does not beat plain Elo); **new** totals O/U 5.5 Poisson **52.3%, Brier 0.515** (below the always-over baseline's **53.6%**) · **PnL unavailable (not zero)** | 3 desks: Elo **48 calls, 81.25%, Brier 0.349** · **new** margin-of-victory Elo **111, 78.4%, Brier 0.358** · listed-first baseline **421, 66.3%** · **PnL unavailable (not zero)** |
+| Regularity | 0 open anomalies on the pilot itself; 1 flagged on the pl/2026 capture (duplicate conflicting result rows, matchID 86559) | **106 flagged source rows** reported by the pipeline (impossible OT/regulation layering + rows-vs-goal-list disagreements, e.g. matchID 76236 — `docs/HOCKEY-SCHEMA-AUDIT.md`); the current per-kind totals are in `docs/FACTS.md` (153 open anomalies repo-wide) | **2 flagged** (conflicting duplicate results, matchIDs 79962 + 80237) + 1 abandoned duplicate league excluded |
+| Backtest | twelve of thirteen PnL desks negative; `ah-poisson-value-v1` **+9.8 u (ROI +44.7%) but Holm-adjusted p = 0.0715 — not significant** (family m=13); `dixon-coles-v1` +5.0 u / p_raw 0.475 also not significant; no edge claimed | no odds → no PnL by construction; Elo does **not** beat the home baseline on this sample; the regulation Poisson desk is below its own home baseline (full season is the pre-registered verdict) | no odds → no PnL by construction; Elo **does** beat the listed-first baseline (81.25% vs 66.3%) |
+| Forward desk | dormant by design across bl1/pl/bl2/la1 (international break; next kick-offs 2026-10-09/10, outside the 10-day horizon); pool already warmed by the whole 2024/25 bl1 season, now also graded on it | **LIVE: 7 desks, 284 frozen calls on DEL Sep 2026 fixtures** (2-way Elo + MoV Elo + home baseline; regulation 3-way Poisson + regulation home; totals 5.5 Poisson + always-over), each freezing its outcome mode | both darts desks (Elo + MoV Elo) activate when an event enters the 10-day horizon (next World Championship, Dec 2026); the WSDF final was met in play and went to the review queue |
 
 Anchors: 72214 M'gladbach 2-3 Leverkusen (23/08/24, B365 5.25/4.5/1.55);
 72300 Mainz 3-1 Dortmund (09/11/24, 3.5/3.6/2.0); 72387 Bayern 4-3 Kiel
@@ -261,6 +303,16 @@ access, so:
 10. Predictions show evidence links, input cutoff, and model version, and
     are refused when the evidence trail is incomplete. Never call an
     untested hypothesis a "top tipster" prediction.
+11. Prose numbers are generated: headline values come from
+    `docs/FACTS.md`, which the pipeline writes and the test suite guards
+    against drift (`python -m northstar.cli facts --check`).
+12. A sport source may only be used when its gate says so: the gate is
+    computed from the stored robots.txt/licence evidence
+    (`northstar/sources.py`), never asserted in a document. A robots.txt
+    verdict is not a licence; a missing robots.txt is not permission.
+13. Every local link in the docs and the site must resolve — checked by
+    `tests/test_docs_links.py` — so a "source for manual review" is never
+    a dead link.
 
 Full protocol: [`docs/data-contract.md`](docs/data-contract.md).
 
@@ -269,22 +321,25 @@ Full protocol: [`docs/data-contract.md`](docs/data-contract.md).
 ```
 northstar/            package: models, db, policy, settlement, backtest,
                       evaluation, leaderboard, predictor, report, timeutil,
-                      stats, registry, capture, forward, value, cli,
+                      stats, registry, capture, forward, sources, facts, cli,
                       adapters/{openligadb,official_results,the_odds_api,
                       football_data,olbg},
                       strategies/{base,market,elo,draw,value,totals,asian,
                       hockey,darts,baselines}
-tests/                384 offline tests (pytest)
+tests/                433 offline test functions (pytest; counted from
+                      source in docs/FACTS.md)
 data/fixtures/        committed pilot fixtures: football-bl1 + hockey-del
                       (sha256-verified)
 data/fixtures/current/ CI-captured live-season fixtures + capture log
                       (bl1/pl/bl2/la1/del 2026/27, PDC darts 2025-26; sha256 sidecars)
 data/forward/         append-only forward-test ledger (frozen predictions)
+data/sources/         OLBG 21-sport source registry (robots/licence evidence)
 data/raw/             manual OLBG snapshots (provenance headers)
 site-data/site.json   generated site payload (rebuilt by the pipeline)
 index.html app.js styles.css   GitHub Pages site
 docs/                 LICENSING, OLBG-RESEARCH, STATUS, data-contract,
-                      STRATEGIES, FORWARD-TEST, DARTS-AUDIT,
+                      STRATEGIES, FORWARD-TEST, DARTS-AUDIT, FACTS
+                      (generated), SOURCE-REGISTRY (generated),
                       OLBG-CAPTURE-RUNBOOK (the weekly manual OLBG cadence)
 .github/workflows/    ci.yml, pages.yml, capture.yml, ingest.yml,
                       olbg-capture-reminder.yml (manual-cadence reminder)
@@ -329,18 +384,36 @@ scripts/assemble_fixture.py     strict chunk-assembly + validation used to
 
 ## Suggested next session (summary)
 
-Full list in [`docs/STATUS.md`](docs/STATUS.md): let the live forward test
-grade the 63 frozen DEL calls (the regulation 3-way desks grade the
-3-period result; football MD5 issues automatically from 2026-10-09, warmed
-by the whole 2024/25 bl1 season; darts WM in December); verify the
-CI-fetched whole DEL season widens the hockey pilot as designed (the
-regulation Poisson desk stands or falls on it — it is below its home
-baseline on the 21-event slice); **run** the manual OLBG snapshot cadence
-each week (the runbook and Monday reminder issue exist; ToS means only a
-human can take the snapshot); scale odds via human manual import or a
-licensed provider (then PnL-capable forward desks — and the first
-out-of-sample check of the AH desk's exploratory positive result); give
-hockey an independent cross-check and a permissioned odds path before it
-ever shows PnL; the 18 `verification_blocked` sports need a permissioned
-results path first; add more markets (BTTS is blocked on a priced source);
-harden identity with a third source.
+Generated, prioritised list with every open item: [`docs/STATUS.md`](docs/STATUS.md).
+Top five:
+
+1. **Let the forward test grade.** The ledger holds 284 frozen calls
+   (0 graded). When DEL results land, per-desk accuracy/Brier appears
+   automatically; the totals and regulation desks have never been graded
+   live before, so their first graded rows are the real out-of-sample test
+   of the new evaluation paths.
+2. **Close the cricket licence question.** Cricket is the most promising
+   *new* sport: Cricsheet publishes 22,983 matches and its robots.txt
+   allows crawling (only `/data/` is excluded from indexing), but the
+   licence statement has not been transcribed or reviewed. If it permits
+   research use, cricket becomes sport #4 with ball-by-ball data.
+3. **Get a licensed odds path** (The Odds API connector is implemented but
+   inactive). Without it every new sport is accuracy-only: no PnL, no
+   leaderboard entry, no comparison against a market baseline.
+4. **Add an independent second result source** for DEL (IIHF or a league
+   export) and for the 2026/27 football captures: that is what upgrades an
+   identity from `probable` to `verified` and what the 27-match pilot's
+   27/27 cross-check already demonstrates.
+5. **Run the weekly manual OLBG snapshot cadence**
+   ([`docs/OLBG-CAPTURE-RUNBOOK.md`](docs/OLBG-CAPTURE-RUNBOOK.md)); the
+   Monday reminder workflow opens the checklist issue and never touches
+   olbg.com.
+
+
+
+Full list in [`docs/STATUS.md`](docs/STATUS.md): the 18
+`verification_blocked` sports each need a permissioned results path (their
+candidate source, robots finding and licence gate are now written down in
+`docs/SOURCE-REGISTRY.md`); BTTS and other markets are blocked on a priced
+source; identity wants a third source; and hockey/darts want an
+independent cross-check before any PnL claim could exist.

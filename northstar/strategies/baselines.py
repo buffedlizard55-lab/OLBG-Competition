@@ -21,7 +21,8 @@ from __future__ import annotations
 from datetime import timedelta
 from typing import Any, Dict
 
-from ..models import SPORT_DARTS, SPORT_ICE_HOCKEY
+from ..models import (MARKET_TOTALS_2_5, SPORT_DARTS, SPORT_FOOTBALL,
+                      SPORT_ICE_HOCKEY)
 from .base import Strategy
 
 DECISION_LAG = timedelta(minutes=30)
@@ -53,6 +54,80 @@ class HockeyHomeBaseline(Strategy):
                     "model_prob": {"home": 0.5, "draw": 0.0, "away": 0.5},
                     "prior": "flat 0.5/0.5 (uninformative by design)",
                     "rule": "always the home side",
+                }}
+
+
+class FootballHomeBaseline(Strategy):
+    """Always predict the home side (football 3-way naive baseline).
+
+    Reference point for the no-market football desks on the whole committed
+    bl1 2024/25 season: if the Elo desk does not beat "always home" on the
+    same 306 matches, its hit rate is not evidence of information.  The
+    probabilities are a flat 0.50 / 0.25 / 0.25 ranking prior stated before
+    grading (uninformative by design and never fitted; unlike the 2-way
+    baselines its Brier is not a fixed 0.5), so only the hit rate is a
+    meaningful reference.
+    """
+
+    def __init__(self):
+        super().__init__(
+            name="Always-home naive baseline (football season)",
+            description=("Always predicts the home side on the 3-way market. "
+                         "Flat 0.50 / 0.25 / 0.25 prior stated before "
+                         "grading (uninformative by design, never fitted): "
+                         "only the hit rate is a meaningful reference - the "
+                         "Brier number is not a fixed constant for a 3-way "
+                         "prior. Baseline for the full-season football "
+                         "accuracy desks - prediction-only, never PnL."),
+            odds_provider=None, sport=SPORT_FOOTBALL)
+
+    def predict(self, event, tbs, start, market_odds=None,
+                odds_observed_at=None, as_of=None) -> Dict[str, Any]:
+        at = as_of if as_of is not None else start - DECISION_LAG
+        if at >= start:
+            return {"cutoff_utc": start - DECISION_LAG,
+                    "selection_key": "none", "selection_text": "no bet",
+                    "model": {"reason": "decision time not before start"}}
+        return {"cutoff_utc": at, "selection_key": "home",
+                "selection_text": event["home_team"],
+                "model": {
+                    "model_prob": {"home": 0.50, "draw": 0.25, "away": 0.25},
+                    "prior": "flat 0.50/0.25/0.25 (uninformative by design)",
+                    "rule": "always the home side",
+                    "odds": "none (no permissioned odds path)",
+                }}
+
+
+class FootballTotalsOverBaseline(Strategy):
+    """Always over 2.5 goals (football totals naive baseline)."""
+
+    def __init__(self):
+        super().__init__(
+            name="Always-over 2.5 naive baseline (football season)",
+            description=("Always predicts OVER 2.5 total goals. Flat 0.5/0.5 "
+                         "prior (uninformative by design: Brier stays 0.5; "
+                         "the hit rate is the reference point). Baseline for "
+                         "the full-season football totals desk - "
+                         "prediction-only, never PnL."),
+            odds_provider=None, sport=SPORT_FOOTBALL,
+            market=MARKET_TOTALS_2_5,
+            market_outcome="total_goals_over_under_2_5")
+
+    def predict(self, event, tbs, start, market_odds=None,
+                odds_observed_at=None, as_of=None) -> Dict[str, Any]:
+        at = as_of if as_of is not None else start - DECISION_LAG
+        if at >= start:
+            return {"cutoff_utc": start - DECISION_LAG,
+                    "selection_key": "none", "selection_text": "no bet",
+                    "model": {"reason": "decision time not before start"}}
+        return {"cutoff_utc": at, "selection_key": "over",
+                "selection_text": "over 2.5 total goals",
+                "model": {
+                    "model_prob": {"over": 0.5, "under": 0.5},
+                    "prior": "flat 0.5/0.5 (uninformative by design)",
+                    "rule": "always over 2.5",
+                    "line": 2.5,
+                    "odds": "none (no permissioned odds path)",
                 }}
 
 

@@ -80,6 +80,11 @@ For each captured fixture group, with that capture's own `as_of`:
   section). The entry's `outcome` key decides what "the result" means:
   - `final` (default, all pre-2026-09-22 entries): the stored final
     scoreline, 2-way or 3-way by the desk's market.
+  - `total_goals_over_under_5_5` / `total_goals_over_under_2_5` (the
+    hockey totals desks, and the football season desks when they are
+    graded): the total scored on the stored final scoreline against the
+    half-goal line — never a push. Brier is computed on the two outcomes
+    (`brier_binary`).
   - `regulation_3way` (hockey regulation desks): the 3-period outcome,
     resolved from the stored final-priority row's `resultTypeKind` —
     `After90Minutes` → the stored scoreline **is** regulation;
