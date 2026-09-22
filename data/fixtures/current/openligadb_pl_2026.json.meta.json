@@ -1,5 +1,5 @@
 {
-  "captured_at_utc": "2026-09-22T01:42:58Z",
+  "captured_at_utc": "2026-09-22T06:38:45Z",
   "collection_mode": "automated_api",
   "fixture": "openligadb_pl_2026.json",
   "league_name": "Premier League 2026/2027",
@@ -9,9 +9,9 @@
   "n_finished": 40,
   "n_matches": 380,
   "note": "whole-season payload fetched via the permitted automated API (ODbL-1.0); canonical compact JSON; the only edit is the removal of presentation-only team crest URLs (teamIconUrl) - scores, times, ids and names are untouched (raw sha256 recorded)",
-  "sha256": "ddaadba3580a65a4203673ef65176ba07ec0360bceb96e2e2482a2cb9d9eb351",
+  "sha256": "0247afc0dd7df7620fd5f29c753fe825928ee3c04a0d2f6efdcc03cefc53d1b1",
   "source_id": "openligadb",
-  "source_sha256_raw": "05b72f2bc3d73cb2fa4a277744fa5060be3a937f59ff50004567ea9c9d4f3106",
+  "source_sha256_raw": "ada8eeade5e94a0e973c1912b6798a4b71771b973e40e994bb7abb7f092c4e50",
   "sport": "football",
   "stripped_fields": {
     "team_keys": [
