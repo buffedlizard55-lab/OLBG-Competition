@@ -851,6 +851,78 @@
       "start_utc": "2026-09-27T17:00:00Z",
       "strategy_id": "hockey-home-v1",
       "strategy_name": "Home-ice naive baseline (hockey)"
+    },
+    {
+      "away_team": "Iserlohn Roosters",
+      "competition": "DEL 2026/2027",
+      "cutoff_utc": "2026-09-22T01:36:04Z",
+      "event": "Adler Mannheim v Iserlohn Roosters",
+      "event_id": "ev-4bd15c703cd4fd3521e5",
+      "group_name": "5. Spieltag",
+      "group_order": 5,
+      "home_team": "Adler Mannheim",
+      "issued_at_utc": "2026-09-22T01:36:04Z",
+      "label": "del-2026",
+      "market": "match_winner_2way",
+      "model": {
+        "decision_lag": "start-30min",
+        "model_prob": {
+          "away": 0.4051223579677582,
+          "draw": 0.0,
+          "home": 0.5948776420322418
+        },
+        "odds": "none (no permissioned odds path)",
+        "ratings": {
+          "away": 1469.583727737929,
+          "home": 1501.3203016881046
+        }
+      },
+      "model_version": "nr-forward-2026-09-20.1",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "prediction_id": "fwd-3e7580f97e8a1310faa0",
+      "selection": "Adler Mannheim",
+      "selection_key": "home",
+      "source_event_id": "84344",
+      "source_url": "https://api.openligadb.de/getmatchdata/del/2026/84344",
+      "sport": "ice_hockey",
+      "start_utc": "2026-10-01T17:30:00Z",
+      "strategy_id": "hockey-elo-v1",
+      "strategy_name": "Hockey Elo favourite (no-market pilot)"
+    },
+    {
+      "away_team": "Iserlohn Roosters",
+      "competition": "DEL 2026/2027",
+      "cutoff_utc": "2026-09-22T01:36:04Z",
+      "event": "Adler Mannheim v Iserlohn Roosters",
+      "event_id": "ev-4bd15c703cd4fd3521e5",
+      "group_name": "5. Spieltag",
+      "group_order": 5,
+      "home_team": "Adler Mannheim",
+      "issued_at_utc": "2026-09-22T01:36:04Z",
+      "label": "del-2026",
+      "market": "match_winner_2way",
+      "model": {
+        "model_prob": {
+          "away": 0.5,
+          "draw": 0.0,
+          "home": 0.5
+        },
+        "prior": "flat 0.5/0.5 (uninformative by design)",
+        "rule": "always the home side"
+      },
+      "model_version": "nr-forward-2026-09-20.1",
+      "odds": null,
+      "odds_note": "no permissioned odds path for the current season - prediction-only, graded on accuracy",
+      "prediction_id": "fwd-b17bd341fe3bbae45238",
+      "selection": "Adler Mannheim",
+      "selection_key": "home",
+      "source_event_id": "84344",
+      "source_url": "https://api.openligadb.de/getmatchdata/del/2026/84344",
+      "sport": "ice_hockey",
+      "start_utc": "2026-10-01T17:30:00Z",
+      "strategy_id": "hockey-home-v1",
+      "strategy_name": "Home-ice naive baseline (hockey)"
     }
   ],
   "version": "nr-forward-ledger-1"
