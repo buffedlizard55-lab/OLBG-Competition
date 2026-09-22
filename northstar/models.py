@@ -40,6 +40,13 @@ TOTALS_2_5_LINE = 2.5
 # neighbouring integer/half lines; integer lines can push (stake refunded).
 # Rule set: settlement.match_outcome_asian_handicap.
 MARKET_ASIAN_HANDICAP = "asian_handicap"
+# Total goals over/under 5.5 (ice hockey). Prediction-only: there is no
+# permissioned DEL odds path in this repository, so the desk is graded on
+# the stored final score (>= 6 goals = over, <= 5 = under; a half-goal line
+# can never push) by northstar.evaluation - never settled, never PnL.
+# Market id added 2026-09-22 with the hockey totals desks.
+MARKET_TOTALS_5_5 = "total_goals_over_under_5_5"
+TOTALS_5_5_LINE = 5.5
 
 EVENT_STATUS_SCHEDULED = "scheduled"
 EVENT_STATUS_LIVE = "live"

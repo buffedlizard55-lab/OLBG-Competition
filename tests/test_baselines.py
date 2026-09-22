@@ -190,8 +190,16 @@ class TestNaiveBaselineWiring:
         from northstar.strategies import (
             NAIVE_BASELINE_FOR, PREDICTION_ONLY_STRATEGIES, REGISTRY,
         )
+        # Every accuracy desk must name the baseline it is quoted against
+        # (added 2026-09-22: hockey MoV Elo and the hockey totals desk, plus
+        # the darts MoV control).  A model desk without a baseline is a
+        # wiring bug: its hit rate would be quoted against nothing.
         assert set(NAIVE_BASELINE_FOR) == {
-            "hockey-elo-v1", "hockey-reg-poisson-v1", "darts-elo-v1"}
+            "hockey-elo-v1", "hockey-reg-poisson-v1",
+            "hockey-elo-mov-v1", "hockey-totals-poisson-v1",
+            "darts-elo-v1", "darts-mov-elo-v1",
+            # Full-season football accuracy pair (added 2026-09-22).
+            "elo-favourite-3way-v1", "football-totals-poisson-v1"}
         for sid, baseline_id in NAIVE_BASELINE_FOR.items():
             assert sid in REGISTRY and baseline_id in REGISTRY
             assert sid in PREDICTION_ONLY_STRATEGIES
@@ -205,9 +213,8 @@ class TestNaiveBaselineWiring:
         site = json.load(open(os.path.join(root, "site-data", "site.json"),
                               encoding="utf-8"))
         bt = site.get("backtest") or {}
-        expect = {"hockey-elo-v1": "hockey-home-v1",
-                  "hockey-reg-poisson-v1": "hockey-reg-home-v1",
-                  "darts-elo-v1": "darts-listed-first-v1"}
+        from northstar.strategies import NAIVE_BASELINE_FOR
+        expect = NAIVE_BASELINE_FOR
         for sid, baseline_id in expect.items():
             nb = (bt.get(sid) or {}).get("naive_baseline")
             assert nb, f"{sid} must carry its naive baseline comparison"

@@ -35,7 +35,9 @@ from . import models
 from .adapters.openligadb import availability_for
 from .backtest import TimeBoundedStore, TimeLeakageError
 from .db import Store
-from .evaluation import OUTCOMES, brier_three, outcome_key, regulation_outcome
+from .evaluation import (OUTCOMES, TOTALS_OUTCOME_MODES, TOTALS_OUTCOMES,
+                         brier_binary, brier_three, outcome_key,
+                         regulation_outcome, totals_outcome)
 from .models import (
     EVENT_STATUS_FINISHED, EVENT_STATUS_SCHEDULED, MARKET_MATCH_WINNER_2WAY,
     MARKET_MATCH_WINNER_3WAY, TIP_STATUS_UNSETTLEABLE, Tip,
@@ -109,10 +111,15 @@ def save_ledger(path: str, ledger: Dict[str, Any]) -> bool:
 def _sport_market(sport: Optional[str],
                   market_outcome: str = "final") -> str:
     # The hockey regulation desks trade the 3-period outcome, not the
-    # incl.-OT/SO final; stamp the market id so the site labels the call
+    # incl.-OT/SO final; the totals desks trade a binary over/under line on
+    # the final score.  Stamp the market id so the site labels the call
     # correctly (the outcome mode itself is frozen alongside it).
     if market_outcome == "regulation_3way":
         return models.MARKET_REGULATION_3WAY
+    totals_line = TOTALS_OUTCOME_MODES.get(market_outcome)
+    if totals_line is not None:
+        return (models.MARKET_TOTALS_5_5 if totals_line >= 5.0
+                else models.MARKET_TOTALS_2_5)
     return MARKET_MATCH_WINNER_3WAY if sport == models.SPORT_FOOTBALL \
         else MARKET_MATCH_WINNER_2WAY
 
@@ -404,7 +411,10 @@ def grade_forward(store: Store, ledger: Dict[str, Any],
             # regulation draw that loses in OT/SO is a HIT for the desk
             # that called it - never a 2-way-final miss.
             outcome_mode = entry.get("outcome", "final")
-            if outcome_mode == "regulation_3way":
+            totals_line = TOTALS_OUTCOME_MODES.get(outcome_mode)
+            if totals_line is not None:
+                actual = totals_outcome(hg + ag, totals_line)
+            elif outcome_mode == "regulation_3way":
                 primary = max(
                     results,
                     key=lambda r: parse_utc(r["officially_final_at_utc"]))
@@ -421,7 +431,10 @@ def grade_forward(store: Store, ledger: Dict[str, Any],
             else:
                 actual = outcome_key(hg, ag)
             probs = (entry.get("model") or {}).get("model_prob") or {}
-            if outcome_mode == "regulation_3way":
+            if totals_line is not None:
+                result_display = (f"{hg}-{ag} ({hg + ag} goals, "
+                                  f"line {totals_line})")
+            elif outcome_mode == "regulation_3way":
                 if (primary.get("result_type_kind")
                         == models.RESULT_KIND_AFTER_90):
                     result_display = f"{hg}-{ag} (regulation)"
@@ -436,8 +449,13 @@ def grade_forward(store: Store, ledger: Dict[str, Any],
                 "actual": actual,
                 "outcome_mode": outcome_mode,
                 "hit": bool(entry["selection_key"] == actual),
-                "brier": (round(brier_three(probs, actual), 6)
-                          if all(k in probs for k in OUTCOMES) else None),
+                "brier": (
+                    round(brier_binary(probs, actual), 6)
+                    if totals_line is not None
+                    and all(k in probs for k in TOTALS_OUTCOMES)
+                    else round(brier_three(probs, actual), 6)
+                    if totals_line is None
+                    and all(k in probs for k in OUTCOMES) else None),
                 "graded_from": [r["provider"] for r in results],
             })
             graded.append(row)

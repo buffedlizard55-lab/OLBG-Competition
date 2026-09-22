@@ -37,6 +37,7 @@ so they settle real paper PnL and enter the Holm family.
 from __future__ import annotations
 
 import math
+from datetime import timedelta
 from typing import Any, Dict, Optional
 
 from ..models import MARKET_TOTALS_2_5, SPORT_FOOTBALL
@@ -48,6 +49,7 @@ LEAGUE_PRIOR_AWAY = 1.30
 MIN_LEAGUE_MATCHES = 10
 EDGE_THRESHOLD = 0.03
 LINE = 2.5
+DECISION_LAG = timedelta(minutes=30)
 
 
 def poisson_cdf(k: int, lam: float) -> float:
@@ -152,6 +154,50 @@ class PoissonTotalsValue(Strategy):
                               "rule": "poisson edge >= threshold"}}
         return no_bet(odds_observed_at,
                       {**trail, "reason": "edge below threshold"})
+
+
+class PoissonTotalsArgmax(Strategy):
+    """Total goals 2.5 stated argmax, no market input (prediction-only).
+
+    Same Poisson construction and priors as :class:`PoissonTotalsValue`, but
+    it needs no price: it states the more likely side of the 2.5 line for
+    EVERY match, which is what makes it comparable, match for match, with
+    the always-over baseline on the whole committed 2024/25 season (306
+    finished Bundesliga matches).  Pre-registered, not fitted; graded on
+    accuracy/Brier, never PnL.
+    """
+
+    def __init__(self):
+        super().__init__(
+            name="Poisson totals argmax (football season, no-market)",
+            description=(f"Independent-Poisson goal model "
+                         f"(Maher/Dixon-Coles lineage; league rates + "
+                         f"shrunk attack/defence multipliers from released "
+                         f"matches only, prior weight {PRIOR_MATCHES} "
+                         f"matches, generic prior {LEAGUE_PRIOR_HOME}/"
+                         f"{LEAGUE_PRIOR_AWAY} until "
+                         f">= {MIN_LEAGUE_MATCHES} released). States the "
+                         f"more likely side of the 2.5 line for EVERY match "
+                         f"- prediction-only (no odds path on the committed "
+                         f"current season), graded on accuracy/Brier, never "
+                         f"PnL."),
+            odds_provider=None, sport=SPORT_FOOTBALL,
+            market=MARKET_TOTALS_2_5,
+            market_outcome="total_goals_over_under_2_5")
+
+    def predict(self, event, tbs, start, market_odds=None,
+                odds_observed_at=None, as_of=None) -> Dict[str, Any]:
+        at = as_of if as_of is not None else start - DECISION_LAG
+        if at >= start:
+            return no_bet(start - DECISION_LAG,
+                          {"reason": "decision time not before start"})
+        xg = expected_goals(tbs, event["home_team"], event["away_team"], at)
+        probs = xg["model_prob"]
+        side = "over" if probs["over"] >= probs["under"] else "under"
+        return {"cutoff_utc": at, "selection_key": side,
+                "selection_text": f"{side} 2.5 goals",
+                "model": {**xg, "rule": "argmax P(total > 2.5)",
+                          "odds": "none (no permissioned odds path)"}}
 
 
 class MarketTotalsFavourite(Strategy):

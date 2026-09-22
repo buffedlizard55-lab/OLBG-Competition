@@ -20,9 +20,49 @@ from __future__ import annotations
 
 from typing import Any, Dict, List
 
-REGISTRY_VERSION = "nr-hypothesis-registry-2026-09-22.2"
+REGISTRY_VERSION = "nr-hypothesis-registry-2026-09-22.3"
 
 HYPOTHESES: List[Dict[str, Any]] = [
+    # ------------------- football: full-season no-market accuracy desks
+    # Added 2026-09-22 (pass 3).  The whole 2024/25 Bundesliga season is
+    # committed (306 finished results), so these desks are graded on real
+    # results at 11x the frozen 27-match PnL pilot - no odds are read, so
+    # there is no PnL claim and no Holm family membership.
+    {
+        "sport": "Football", "name": "Always-home season baseline",
+        "status": "Pilot-tested", "tested": "football-home-baseline-v1",
+        "data": "Whole committed 2024/25 bl1 season (306 finished results)",
+        "test": "Walk-forward, 3-way accuracy (no odds)",
+        "description": "Always predicts the home side with a flat "
+                       "0.50/0.25/0.25 prior. Reference point for the "
+                       "full-season football accuracy desks: the Elo desk "
+                       "must beat this on the same matches or its hit rate "
+                       "is not information.",
+        "refs": [],
+    },
+    {
+        "sport": "Football", "name": "Poisson totals season desk",
+        "status": "Pilot-tested", "tested": "football-totals-poisson-v1",
+        "data": "Whole committed 2024/25 bl1 season (306 finished results)",
+        "test": "Walk-forward, over/under 2.5 accuracy (no odds)",
+        "description": "Same independent-Poisson construction as the pilot "
+                       "totals desk but with no price input: it states the "
+                       "more likely side of the 2.5 line for EVERY match, "
+                       "so it is comparable match-for-match with the "
+                       "always-over baseline over a full season.",
+        "refs": ["https://www.researchgate.net/publication/222532726"],
+    },
+    {
+        "sport": "Football", "name": "Always-over 2.5 season baseline",
+        "status": "Pilot-tested", "tested": "football-totals-over-v1",
+        "data": "Same 306-match season", "test": "Walk-forward, O/U 2.5 "
+                                                 "accuracy (no odds)",
+        "description": "Always predicts OVER 2.5 with a flat 0.5/0.5 prior "
+                       "(Brier 0.5 by construction). The share of over-2.5 "
+                       "matches in the pool is the bar the model must "
+                       "clear.",
+        "refs": [],
+    },
     # ------------------------------------------------ football: backtested
     {
         "sport": "Football", "name": "Market favourite (baseline)",
@@ -350,6 +390,66 @@ HYPOTHESES: List[Dict[str, Any]] = [
         "test": "Walk-forward 2-way accuracy", "refs": [],
     },
     # ------------------------------------------------ blocked sports
+    {
+        "sport": "Ice Hockey",
+        "name": "Margin-of-victory Elo (2-way final)",
+        "status": "Pilot-tested", "tested": "hockey-elo-mov-v1",
+        "data": "OpenLigaDB DEL 2024/25 whole season (ODbL) - no "
+                "permissioned odds",
+        "test": "Walk-forward 2-way accuracy + Brier (no PnL)",
+        "description": "Same expected-score function and home advantage as "
+                       "hockey-elo-v1, but the update scales with the goal "
+                       "margin (K x g with the World-Football-Elo weights, "
+                       "reference R11). Pre-registered control: does the "
+                       "size of a win carry information plain W/L Elo "
+                       "discards? Prediction-only, graded on accuracy/Brier "
+                       "against the hockey-home-v1 baseline.",
+        "refs": ["https://www.eloratings.net/about",
+                 "https://doi.org/10.1016/j.ijforecast.2009.10.002"],
+    },
+    {
+        "sport": "Ice Hockey",
+        "name": "Poisson total goals O/U 5.5",
+        "status": "Pilot-tested", "tested": "hockey-totals-poisson-v1",
+        "data": "OpenLigaDB DEL 2024/25 whole season (ODbL) - no "
+                "permissioned odds",
+        "test": "Walk-forward binary accuracy + Brier (no PnL)",
+        "description": "Second prediction-only market for hockey: the "
+                       "Maher/Dixon-Coles independent-Poisson goal model "
+                       "(same league-rate/shrunk-multiplier construction as "
+                       "the regulation 3-way desk) states the more likely "
+                       "side of the 5.5 total for every match. Graded "
+                       "against the always-over baseline "
+                       "(hockey-totals-over-v1).",
+        "refs": ["https://research-information.bris.ac.uk/en/publications/"
+                 "modelling-association-football-scores-and-inefficiencies-"
+                 "in-the-f/"],
+    },
+    {
+        "sport": "Ice Hockey",
+        "name": "Always-over naive baseline (totals)",
+        "status": "Pilot-tested", "tested": "hockey-totals-over-v1",
+        "data": "Same verified DEL results",
+        "test": "Walk-forward binary accuracy + Brier (no PnL)",
+        "description": "Reference bar for the totals desk: always over 5.5 "
+                       "goals, flat 0.5/0.5 prior (Brier 0.5 by "
+                       "construction; the hit rate is the point).",
+        "refs": [],
+    },
+    {
+        "sport": "Darts",
+        "name": "Margin-of-victory Elo",
+        "status": "Pilot-tested", "tested": "darts-mov-elo-v1",
+        "data": "OpenLigaDB PDC captures (ODbL) - no permissioned odds",
+        "test": "Walk-forward 2-way accuracy + Brier (no PnL)",
+        "description": "The plain darts Elo with the update scaled by the "
+                       "stored leg/set margin (same margin weights as the "
+                       "hockey MoV desk). The margin unit differs by event "
+                       "format and the source does not label it per row - a "
+                       "stated weakness, recorded in every model trail. "
+                       "Graded against darts-listed-first-v1.",
+        "refs": ["https://www.eloratings.net/about"],
+    },
     {
         "sport": "Horse Racing", "name": "Place probability by field size",
         "status": "Blocked",
