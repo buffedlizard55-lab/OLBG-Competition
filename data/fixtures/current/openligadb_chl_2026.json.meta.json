@@ -1,23 +1,23 @@
 {
-  "captured_at_utc": "2026-09-22T17:25:22Z",
+  "captured_at_utc": "2026-09-22T17:25:27Z",
   "collection_mode": "automated_api",
-  "fixture": "openligadb_del_2026.json",
-  "league_name": "DEL 2026/2027",
+  "fixture": "openligadb_chl_2026.json",
+  "league_name": "Champions Hockey League 2026/2027",
   "league_season": 2026,
-  "league_shortcut": "del",
+  "league_shortcut": "CHL",
   "license_id": "odbl-1.0",
-  "n_finished": 14,
-  "n_matches": 364,
+  "n_finished": 48,
+  "n_matches": 72,
   "note": "whole-season payload fetched via the permitted automated API (ODbL-1.0); canonical compact JSON; the only edit is the removal of presentation-only team crest URLs (teamIconUrl) - scores, times, ids and names are untouched (raw sha256 recorded)",
-  "sha256": "f065a952abd45511a3337b33505bf370f38b450ec581b057b7fd3d343a2de0eb",
+  "sha256": "f2b0c2c076ee255b3e91fa472a7d67868c0c380c615fc6399e957d80388e494e",
   "source_id": "openligadb",
-  "source_sha256_raw": "4967e86efbbaf2ba9ca5f86aa4d34d5810432c6e9bd31708d6ffd1b06e494cd9",
+  "source_sha256_raw": "27c4ca643484975de5a0ad1a8077aff967f97788e56e1de16f136c7ff819c75b",
   "sport": "ice_hockey",
   "stripped_fields": {
     "team_keys": [
       "teamIconUrl"
     ],
-    "values_removed": 728
+    "values_removed": 30
   },
-  "url": "https://api.openligadb.de/getmatchdata/del/2026"
+  "url": "https://api.openligadb.de/getmatchdata/CHL/2026"
 }
