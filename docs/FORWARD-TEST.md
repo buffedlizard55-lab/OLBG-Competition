@@ -104,20 +104,25 @@ For each captured fixture group, with that capture's own `as_of`:
 
 ## Current state (2026-09-22, live)
 
-- **Sixty-three frozen calls, all DEL 2026/27** (16 upcoming games inside
-  the horizon at the capture instant), 0 graded yet, 0 leaks; they grade
-  automatically at the next capture after results land:
-  - `hockey-elo-v1` — **15 calls** (selectivity ≥ 0.55; the warmed pool —
-    17 clean del/2024 history events now in the store — pushes one more
-    match over the threshold than the 2026-09-22 01:43Z cold run, which
-    had frozen 10).
+- **284 frozen calls, all DEL 2026/27**, 0 graded yet, 0 overdue, 0 leaks
+  (the ledger grows by ~21 calls per capture as further matchdays enter the
+  10-day horizon; the exact per-desk split is generated into
+  `docs/FACTS.md` and the site payload). They grade automatically at the
+  next capture after results land:
+  - `hockey-elo-v1` — 36 calls (selectivity ≥ 0.55; the pool is warmed by
+    the whole del/2024 season, so the cold-run silence of the first
+    2026-09-22 capture does not recur).
+  - `hockey-elo-mov-v1` — 35 calls (the margin-of-victory control).
   - `hockey-home-v1`, `hockey-reg-home-v1`, `hockey-reg-poisson-v1` —
-    **16 calls each** (no selectivity; the reg pair is the regulation 3-way
-    desk + its always-home baseline, added 2026-09-22). The reg desks'
-    graded hit rate is the live reference for the hockey model desks.
+    43 calls each (no selectivity; the reg pair is the regulation 3-way
+    desk + its always-home baseline). The reg desks' graded hit rate is
+    the live reference for the hockey model desks.
+  - `hockey-totals-poisson-v1`, `hockey-totals-over-v1` — 42 each (the
+    over/under 5.5 market and its always-over baseline).
   - First grading happens automatically; the regulation 3-way desks grade
     on the regulation outcome (a regulation draw that loses in OT/SO is a
-    hit — see grading rules above).
+    hit — see grading rules above), and the totals desks on the binary
+    over/under line.
 - **Desk `elo-favourite-3way-v1` (football): dormant by design.** At the
   capture instant, Bundesliga MD1–4 were finished and MD5 starts
   **2026-10-09** (international break) — outside the horizon. First
